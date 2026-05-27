@@ -117,4 +117,4 @@ extension/
 
 ## 📞 サポート
 
-問題があれば [support@rakuraku.example.com](mailto:support@rakuraku.example.com) までご連絡ください。
+問題があれば [koizumishota0323@gmail.com](mailto:koizumishota0323@gmail.com) までご連絡ください。

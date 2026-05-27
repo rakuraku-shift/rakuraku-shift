@@ -181,7 +181,8 @@ async function sendLicenseEmail(to, shopName, licenseCode) {
         <p style="font-size:12px;color:#94A3B8;line-height:1.7;">
           ※ 14日後に月額¥9,800（税込）の自動課金が開始されます。<br>
           ※ 解約はいつでも可能、翌月以降のご請求は発生しません。<br>
-          ※ ご不明な点は ${process.env.EMAIL_USER} までお問い合わせください。
+          ※ ご不明な点は ${process.env.EMAIL_USER} / 📞 080-5168-3303 までお問い合わせください。<br>
+          ※ 運営: RAKURAKU（代表 小泉 咲太）
         </p>
       </div>
     `,
