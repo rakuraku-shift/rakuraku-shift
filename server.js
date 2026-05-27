@@ -896,6 +896,93 @@ app.get('/api/master-data/:shopId', (req, res) => {
   res.json(readJSON(file, null));
 });
 
+// ── LINE 公式アカウント連携 API ────────────────────
+app.post('/api/notification/line/connect', (req, res) => {
+  const { cid, secret, token, shopId } = req.body || {};
+  if (!cid || !secret || !token) return res.status(400).json({ error: 'cid, secret, token 必須' });
+  const safeId = _safeShopId(shopId || 'default');
+  const file = path.join(DATA_DIR, `line-config-${safeId}.json`);
+  try {
+    writeJSON(file, { cid, secret, token, connectedAt: Date.now() });
+    console.log(`[line/connect] ${safeId} / cid=${cid}`);
+    res.json({ ok: true });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/notification/line/test', async (req, res) => {
+  const { token } = req.body || {};
+  if (!token) return res.status(400).json({ error: 'token 必須' });
+  /* LINE Messaging API への疎通テスト（GET /v2/bot/info） */
+  try {
+    const https = require('https');
+    const opts = {
+      hostname: 'api.line.me',
+      path: '/v2/bot/info',
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + token }
+    };
+    const data = await new Promise((resolve, reject) => {
+      const r = https.request(opts, response => {
+        let body = '';
+        response.on('data', c => body += c);
+        response.on('end', () => {
+          if (response.statusCode === 200) resolve(JSON.parse(body));
+          else reject(new Error('LINE API ' + response.statusCode + ': ' + body));
+        });
+      });
+      r.on('error', reject);
+      r.end();
+    });
+    console.log(`[line/test] OK — ${data.basicId || data.userId || 'unknown'}`);
+    res.json({ ok: true, info: data });
+  } catch(e) {
+    console.warn('[line/test] error:', e.message);
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+/* シフト確定 → LINE 全員push (将来 webhook トリガで自動化) */
+app.post('/api/notification/line/broadcast', async (req, res) => {
+  const { shopId, message } = req.body || {};
+  if (!message) return res.status(400).json({ error: 'message 必須' });
+  const safeId = _safeShopId(shopId || 'default');
+  const file = path.join(DATA_DIR, `line-config-${safeId}.json`);
+  const config = readJSON(file, null);
+  if (!config || !config.token) return res.status(400).json({ error: 'LINE未接続' });
+  try {
+    const https = require('https');
+    const body = JSON.stringify({ messages: [{ type: 'text', text: message }] });
+    await new Promise((resolve, reject) => {
+      const r = https.request({
+        hostname: 'api.line.me',
+        path: '/v2/bot/message/broadcast',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(body),
+          'Authorization': 'Bearer ' + config.token,
+        }
+      }, response => {
+        let buf = '';
+        response.on('data', c => buf += c);
+        response.on('end', () => {
+          if (response.statusCode === 200) resolve();
+          else reject(new Error('LINE ' + response.statusCode + ': ' + buf));
+        });
+      });
+      r.on('error', reject);
+      r.write(body);
+      r.end();
+    });
+    console.log(`[line/broadcast] ${safeId} — ${message.slice(0, 30)}…`);
+    res.json({ ok: true });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ── 本部 集計 API（複数店舗横断 KPI）─────────────────
 app.get('/api/hq/summary', (req, res) => {
   try {

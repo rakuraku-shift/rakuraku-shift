@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>通知設定 — RAKURAKU</title>
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;--blue:#3B82F6;--green:#22C55E;
+        --line-green:#06C755;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:var(--slate-50);min-height:100vh;line-height:1.6;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:840px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:840px;margin:0 auto;padding:24px;}
+  .page-header{margin-bottom:22px;}
+  .page-header h1{font-size:26px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px;}
+  .page-header .sub{font-size:13px;color:var(--slate-500);font-weight:600;}
+
+  .card{background:#fff;border-radius:14px;padding:22px;border:1.5px solid var(--slate-100);box-shadow:0 4px 20px rgba(0,0,0,.04);margin-bottom:16px;}
+  .card-hdr{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+  .card-hdr .ic{font-size:28px;}
+  .card-hdr h2{font-size:18px;font-weight:900;letter-spacing:-.01em;}
+  .card-hdr .badge{font-size:10px;font-weight:800;padding:3px 10px;border-radius:12px;}
+  .badge-ready{background:#DCFCE7;color:#16A34A;}
+  .badge-soon{background:#FEF3C7;color:#B45309;}
+  .badge-beta{background:#DBEAFE;color:var(--blue);}
+  .card-sub{font-size:12px;color:var(--slate-500);margin-bottom:18px;line-height:1.7;}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:11px;font-weight:800;color:var(--slate-700);margin-bottom:5px;letter-spacing:.03em;}
+  .field input, .field select, .field textarea{
+    width:100%;padding:11px 13px;border:1.5px solid var(--slate-200);border-radius:8px;
+    font-size:13px;font-family:inherit;outline:none;background:var(--slate-50);transition:all .15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--indigo);background:#fff;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:600px){.grid-2{grid-template-columns:1fr;}}
+
+  .toggle-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed var(--slate-100);}
+  .toggle-row:last-child{border-bottom:none;}
+  .toggle-row .l{font-size:13px;font-weight:700;color:var(--slate-700);}
+  .toggle-row .desc{font-size:11px;color:var(--slate-500);font-weight:500;margin-top:3px;}
+  .toggle{position:relative;width:42px;height:24px;background:var(--slate-200);border-radius:12px;cursor:pointer;transition:background .2s;flex-shrink:0;}
+  .toggle.on{background:var(--indigo);}
+  .toggle::after{content:'';position:absolute;left:2px;top:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+  .toggle.on::after{left:20px;}
+
+  .btn{padding:11px 18px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;border:none;}
+  .btn-primary{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;box-shadow:0 4px 12px rgba(79,70,229,.25);}
+  .btn-line{background:var(--line-green);color:#fff;}
+  .btn-ghost{background:var(--slate-100);color:var(--slate-700);}
+  .btn-block{display:block;width:100%;}
+
+  .instruction-box{background:linear-gradient(135deg,var(--slate-50),#fff);border:1.5px dashed var(--slate-200);border-radius:10px;padding:16px;font-size:12px;color:var(--slate-700);line-height:1.8;}
+  .instruction-box ol{padding-left:18px;margin-top:6px;}
+  .instruction-box ol li{margin-bottom:5px;}
+  .instruction-box code{background:var(--slate-100);padding:2px 6px;border-radius:4px;font-size:11px;font-family:'SF Mono',monospace;}
+
+  .qr-area{display:flex;gap:14px;align-items:center;padding:14px;background:linear-gradient(135deg,#ECFDF5,#fff);border-radius:10px;border:1.5px solid #BBF7D0;}
+  .qr-placeholder{width:100px;height:100px;background:#fff;border:2px dashed var(--slate-200);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--slate-400);font-size:9px;text-align:center;flex-shrink:0;font-weight:700;}
+  .qr-info{flex:1;font-size:12px;color:var(--slate-700);line-height:1.7;}
+  .qr-info strong{color:var(--line-green);}
+
+  .channel-status{padding:14px;border-radius:10px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:10px;}
+  .channel-status.connected{background:#DCFCE7;color:#15803D;}
+  .channel-status.disconnected{background:var(--slate-50);color:var(--slate-500);}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;padding:12px 22px;border-radius:24px;font-size:13px;font-weight:700;display:none;z-index:1000;}
+  .toast.show{display:block;}
+
+  .footer-note{text-align:center;font-size:11px;color:var(--slate-500);padding:24px 0;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU 通知設定</span></a>
+    <a href="/shift.html" style="font-size:12px;color:var(--slate-500);font-weight:700;">← シフト画面</a>
+  </div>
+</header>
+
+<div class="container">
+
+<div class="page-header">
+  <h1>🔔 通知設定</h1>
+  <p class="sub">シフト確定・締切リマインド・緊急募集の通知方法を設定</p>
+</div>
+
+<!-- ─── メール通知（既に実装済） ─── -->
+<div class="card">
+  <div class="card-hdr">
+    <div class="ic">📧</div>
+    <h2>メール通知</h2>
+    <span class="badge badge-ready">✓ 稼働中</span>
+  </div>
+  <p class="card-sub">スタッフがシフト提出時に登録したメールアドレスへ自動送信。Gmail / Outlook / 携帯キャリアメール対応。</p>
+
+  <div class="toggle-row">
+    <div>
+      <div class="l">シフト確定通知</div>
+      <div class="desc">シフト作成完了時、全スタッフに自動送信</div>
+    </div>
+    <div class="toggle on" onclick="toggleSetting(this,'mail-confirm')"></div>
+  </div>
+  <div class="toggle-row">
+    <div>
+      <div class="l">提出締切リマインド</div>
+      <div class="desc">締切24時間前に未提出スタッフへ送信</div>
+    </div>
+    <div class="toggle on" onclick="toggleSetting(this,'mail-deadline')"></div>
+  </div>
+  <div class="toggle-row">
+    <div>
+      <div class="l">緊急シフト調整依頼</div>
+      <div class="desc">不足コマがあった時、調整可能なスタッフへ送信</div>
+    </div>
+    <div class="toggle on" onclick="toggleSetting(this,'mail-adjustment')"></div>
+  </div>
+</div>
+
+<!-- ─── LINE 公式アカウント通知 ─── -->
+<div class="card">
+  <div class="card-hdr">
+    <div class="ic">💬</div>
+    <h2>LINE 公式アカウント通知</h2>
+    <span class="badge badge-beta">β 版・設定可</span>
+  </div>
+  <p class="card-sub">LINE 公式アカウント (Messaging API) 経由でスタッフのLINEへ直接通知。<strong>開封率はメールの3倍以上</strong>。</p>
+
+  <div class="channel-status disconnected" id="line-status">
+    <span>⚪</span>
+    <span>LINE公式アカウント 未接続</span>
+  </div>
+
+  <div style="margin-top:16px;">
+    <div class="instruction-box">
+      <strong>📋 接続手順:</strong>
+      <ol>
+        <li><a href="https://developers.line.biz/console/" target="_blank" style="color:var(--indigo);font-weight:700;">LINE Developers Console</a> で <code>Messaging API</code> チャネルを作成</li>
+        <li>「Messaging API設定」タブから <code>Channel Access Token (長期)</code> を発行</li>
+        <li>下のフォームに Channel ID + Channel Secret + Access Token を入力</li>
+        <li>「接続テスト」ボタンで疎通確認</li>
+        <li>スタッフが <strong>友だち追加</strong> すると user_id が紐付け可能に</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:14px;">
+    <div class="field">
+      <label>Channel ID</label>
+      <input type="text" id="line-cid" placeholder="1234567890" autocomplete="off" />
+    </div>
+    <div class="field">
+      <label>Channel Secret</label>
+      <input type="password" id="line-secret" placeholder="••••••••••••" autocomplete="off" />
+    </div>
+  </div>
+  <div class="field">
+    <label>Channel Access Token (長期)</label>
+    <input type="password" id="line-token" placeholder="••••••••••••••••" autocomplete="off" />
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-line" onclick="connectLine()">💬 接続・保存</button>
+    <button class="btn btn-ghost" onclick="testLine()">🧪 接続テスト</button>
+  </div>
+
+  <div class="qr-area" style="margin-top:14px;">
+    <div class="qr-placeholder">QR<br>(接続後)</div>
+    <div class="qr-info">
+      接続後、ここに <strong>スタッフ向け友だち追加QR</strong> が表示されます。<br>
+      スタッフがLINEで友だち追加 → 名前を送信 → 自動で user_id 紐付け → シフト通知が届くようになります。
+    </div>
+  </div>
+</div>
+
+<!-- ─── プッシュ通知 (PWA) ─── -->
+<div class="card">
+  <div class="card-hdr">
+    <div class="ic">🔔</div>
+    <h2>プッシュ通知 (PWA)</h2>
+    <span class="badge badge-beta">β 版</span>
+  </div>
+  <p class="card-sub">RAKURAKU をホーム画面に追加するとブラウザ経由でプッシュ通知を受信できます。インストール不要。</p>
+
+  <div class="channel-status disconnected" id="push-status">
+    <span>⚪</span>
+    <span id="push-status-text">プッシュ通知 未有効</span>
+  </div>
+
+  <button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="enablePush()">🔔 プッシュ通知を有効にする</button>
+
+  <div class="instruction-box" style="margin-top:14px;">
+    <strong>💡 仕組み:</strong> Service Worker (sw.js) が常駐し、サーバーからの push を受信。<br>
+    シフト確定・緊急依頼・締切が <strong>アプリ未起動でも届きます</strong>。<br>
+    対応OS: iOS 16.4+ / Android Chrome / デスクトップ全般
+  </div>
+</div>
+
+<!-- ─── SMS 通知 ─── -->
+<div class="card">
+  <div class="card-hdr">
+    <div class="ic">📱</div>
+    <h2>SMS 通知 (緊急時のみ)</h2>
+    <span class="badge badge-soon">準備中</span>
+  </div>
+  <p class="card-sub">急なシフト変更や当日欠勤対応など、確実に届けたい時のみ使用。1通あたり ¥3〜10 程度（Twilio API 連携）。</p>
+
+  <div class="toggle-row">
+    <div>
+      <div class="l">緊急シフト変更</div>
+      <div class="desc">当日欠勤や時間変更が発生時のみSMS送信</div>
+    </div>
+    <div class="toggle" onclick="toggleSetting(this,'sms-emergency')"></div>
+  </div>
+
+  <div class="instruction-box" style="margin-top:14px;">
+    💴 概算費用: 月20通×¥5 = <strong>月¥100程度</strong>（10名規模の店舗想定）
+  </div>
+</div>
+
+<!-- ─── Slack / Discord ─── -->
+<div class="card">
+  <div class="card-hdr">
+    <div class="ic">🔗</div>
+    <h2>Slack / Discord 連携</h2>
+    <span class="badge badge-soon">計画中</span>
+  </div>
+  <p class="card-sub">スタッフ間のチャットツールが既にある場合、シフト情報を自動投稿。</p>
+
+  <div class="field">
+    <label>Webhook URL</label>
+    <input type="text" id="webhook-url" placeholder="https://hooks.slack.com/... または Discord Webhook URL" />
+  </div>
+  <button class="btn btn-ghost btn-block" onclick="showToast('🚧 Slack/Discord 連携は v2.0 で実装予定です')">📌 Webhookを登録</button>
+</div>
+
+<div class="footer-note">
+  通知設定は店舗ごとに保存されます。<br>
+  困った時は <a href="mailto:koizumishota0323@gmail.com" style="color:var(--indigo);font-weight:700;">📧 koizumishota0323@gmail.com</a> までお問合せください。
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'rakuraku-notification-settings';
+
+function loadSettings() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveSettings(s) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+function toggleSetting(el, key) {
+  el.classList.toggle('on');
+  const s = loadSettings();
+  s[key] = el.classList.contains('on');
+  saveSettings(s);
+  showToast('💾 設定を保存しました');
+}
+
+function initToggles() {
+  const s = loadSettings();
+  /* デフォルトON */
+  ['mail-confirm','mail-deadline','mail-adjustment'].forEach(k => {
+    if (s[k] === undefined) s[k] = true;
+  });
+  saveSettings(s);
+  document.querySelectorAll('.toggle').forEach(el => {
+    /* onclickから key を抽出 */
+    const m = /toggleSetting\(this,'([^']+)'\)/.exec(el.getAttribute('onclick') || '');
+    if (m && s[m[1]]) el.classList.add('on');
+  });
+}
+
+async function connectLine() {
+  const cid = document.getElementById('line-cid').value.trim();
+  const secret = document.getElementById('line-secret').value.trim();
+  const token = document.getElementById('line-token').value.trim();
+  if (!cid || !secret || !token) { showToast('⚠ 3項目すべて入力してください'); return; }
+
+  const s = loadSettings();
+  s.line = { cid, secret, token, connectedAt: Date.now() };
+  saveSettings(s);
+
+  /* サーバーへ POST (将来) */
+  try {
+    await fetch('/api/notification/line/connect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(s.line)
+    });
+  } catch(e) { /* fallback to localStorage only */ }
+
+  const status = document.getElementById('line-status');
+  status.className = 'channel-status connected';
+  status.innerHTML = '<span>🟢</span><span>LINE公式アカウント 接続済 (Channel ID: ' + cid + ')</span>';
+  showToast('💬 LINE接続完了！スタッフに友だち追加QRを共有してください');
+}
+
+async function testLine() {
+  const s = loadSettings();
+  if (!s.line || !s.line.token) { showToast('⚠ 先に接続設定を保存してください'); return; }
+  showToast('🧪 接続テストを実行中...');
+  try {
+    const res = await fetch('/api/notification/line/test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: s.line.token })
+    });
+    if (res.ok) showToast('✅ 接続成功！LINE通知が利用可能です');
+    else throw new Error();
+  } catch(e) {
+    showToast('⚠ 接続テストに失敗。トークンを確認してください');
+  }
+}
+
+async function enablePush() {
+  if (!('Notification' in window)) {
+    showToast('⚠ このブラウザはプッシュ通知に対応していません');
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    /* Service Worker 登録 */
+    if ('serviceWorker' in navigator) {
+      try {
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        document.getElementById('push-status').className = 'channel-status connected';
+        document.getElementById('push-status-text').textContent = 'プッシュ通知 有効';
+        showToast('🔔 プッシュ通知を有効化しました！');
+        /* テスト通知 */
+        setTimeout(() => {
+          reg.showNotification('RAKURAKU 通知テスト', {
+            body: '通知の有効化が完了しました 🎉',
+            icon: '/icon-192.png',
+            badge: '/icon-192.png'
+          });
+        }, 1500);
+      } catch(e) {
+        showToast('⚠ Service Worker 登録失敗: ' + e.message);
+      }
+    }
+  } else {
+    showToast('⚠ プッシュ通知が拒否されました');
+  }
+}
+
+function checkPushStatus() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    document.getElementById('push-status').className = 'channel-status connected';
+    document.getElementById('push-status-text').textContent = 'プッシュ通知 有効';
+  } else if (Notification.permission === 'denied') {
+    document.getElementById('push-status-text').textContent = 'プッシュ通知 拒否済（ブラウザ設定から許可してください）';
+  }
+}
+
+function checkLineStatus() {
+  const s = loadSettings();
+  if (s.line && s.line.cid) {
+    const status = document.getElementById('line-status');
+    status.className = 'channel-status connected';
+    status.innerHTML = '<span>🟢</span><span>LINE公式アカウント 接続済 (Channel ID: ' + s.line.cid + ')</span>';
+    document.getElementById('line-cid').value = s.line.cid;
+    /* secret/tokenは表示しない */
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initToggles();
+  checkPushStatus();
+  checkLineStatus();
+});
+</script>
+</body>
+</html>
