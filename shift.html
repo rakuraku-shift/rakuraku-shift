@@ -6125,6 +6125,38 @@ ${slotLines}
   }
 
   // ── Reminder card (店長ビュー) ──
+  /* ─── スタッフソート: 役職優先 + あかさたな順 ─── */
+  function _isManagerRole(name) {
+    return /店長|副店長|マネージャ|チーフ|主任|リーダー|店主|オーナー|代表/i.test(name || '');
+  }
+  function _roleRank(name) {
+    if (/^|.*店長(?!\s*\(?副)/.test(name) && !/副店長/.test(name)) return 0; // 店長
+    if (/副店長/.test(name)) return 1;
+    if (/マネージャ|チーフ|主任|リーダー/.test(name)) return 2;
+    if (/店主|オーナー|代表/.test(name)) return 0;
+    return 99;
+  }
+  function sortStaffJapanese(arr) {
+    return [...(arr || [])].sort((a, b) => {
+      const aRank = _roleRank(a.name);
+      const bRank = _roleRank(b.name);
+      if (aRank !== bRank) return aRank - bRank;
+      /* 同じランク内: あかさたな順（日本語ロケールソート） */
+      return (a.name || '').localeCompare(b.name || '', 'ja');
+    });
+  }
+
+  /* ─── リスト折りたたみ: 多い時は省略表示 ─── */
+  const STAFF_LIST_COLLAPSE_THRESHOLD = 8;
+  function _isExpandedKey(listId) { return 'rakuraku_list_expanded_' + listId; }
+  function isListExpanded(listId) { try { return storageGet(_isExpandedKey(listId)) === '1'; } catch(e) { return false; } }
+  function toggleList(listId) {
+    const cur = isListExpanded(listId);
+    try { storageSet(_isExpandedKey(listId), cur ? '0' : '1'); } catch(e) {}
+    /* 再描画 */
+    if (listId === 'master-list' && typeof renderReminderCard === 'function') renderReminderCard();
+  }
+
   function renderReminderCard() {
     renderLicenseGenCard(); // ライセンスコード発行欄を更新
     // 締切日時をinputに反映
@@ -6150,19 +6182,36 @@ ${slotLines}
         <p>スタッフを追加してリマインドを管理しましょう</p>
       </div>`;
     } else {
-      listEl.innerHTML = master.map(s => {
+      /* ソート: 役職優先 → あかさたな順 */
+      const sortedMaster = sortStaffJapanese(master);
+      const expanded = isListExpanded('master-list');
+      const visibleMaster = (sortedMaster.length > STAFF_LIST_COLLAPSE_THRESHOLD && !expanded)
+        ? sortedMaster.slice(0, STAFF_LIST_COLLAPSE_THRESHOLD)
+        : sortedMaster;
+      const hiddenCount = sortedMaster.length - visibleMaster.length;
+
+      const itemsHtml = visibleMaster.map(s => {
         const isOk = submitted.has(s.name);
         const ct = s.email ? '📧 ' + s.email : '連絡先未登録';
+        const isMgr = _isManagerRole(s.name);
+        const mgrBadge = isMgr ? '<span style="background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;margin-right:4px;letter-spacing:.04em;">役職</span>' : '';
         return `<div class="master-item">
           <div class="master-av ${isOk ? 'ok' : ''}">${s.name.charAt(0)}</div>
           <div class="master-info">
-            <div class="master-name">${s.name}</div>
+            <div class="master-name">${mgrBadge}${s.name}</div>
             <div class="master-ct"><span>${ct}</span></div>
           </div>
           <span class="master-badge ${isOk ? 'ok' : 'ng'}">${isOk ? '✅ 提出済み' : '⏳ 未提出'}</span>
           <button class="master-rm" onclick="removeMasterStaff('${s.id}')">✕</button>
         </div>`;
       }).join('');
+
+      const toggleBtn = sortedMaster.length > STAFF_LIST_COLLAPSE_THRESHOLD
+        ? `<button onclick="toggleList('master-list')" style="width:100%;padding:10px;margin-top:8px;background:linear-gradient(135deg,#EEF2FF,#FAF5FF);border:1.5px dashed #A5B4FC;border-radius:10px;color:#4F46E5;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .15s;">
+            ${expanded ? '▲ 省略する（先頭'+STAFF_LIST_COLLAPSE_THRESHOLD+'名のみ表示）' : '▼ 残り '+hiddenCount+'名 を表示する'}
+          </button>`
+        : '';
+      listEl.innerHTML = itemsHtml + toggleBtn;
     }
 
     // リマインドボタン状態
