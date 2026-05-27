@@ -100,6 +100,7 @@
   <div class="cat-btn" onclick="showCategory('trouble')"><span class="ic">🆘</span>トラブル</div>
   <div class="cat-btn" onclick="showCategory('feature')"><span class="ic">✨</span>機能</div>
   <div class="cat-btn" onclick="showCategory('secure')"><span class="ic">🔒</span>セキュリティ</div>
+  <div class="cat-btn" onclick="showCategory('staff')"><span class="ic">👤</span>スタッフ向け</div>
   <div class="cat-btn" onclick="showCategory('other')"><span class="ic">💬</span>その他</div>
 </div>
 
@@ -295,6 +296,63 @@
   </div>
 </div>
 
+<!-- スタッフ向け -->
+<div class="faq-group" data-cat="staff">
+  <div class="faq-group-title">👤 スタッフ向け (アルバイト・社員)</div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">店舗から教わったURLにアクセスしたら何をすればいい?</div>
+    <div class="faq-a">3つのタブが表示されます:<br>
+      <strong>① シフト提出</strong> — 来月のシフト希望を出す<br>
+      <strong>② アンケート</strong> — 月1で職場評価 (匿名)<br>
+      <strong>③ シフト管理</strong> — 店長専用 (タップしない)<br>
+      最初は ① でお名前 + メール + 希望日時を入力するだけです。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">確定したシフトはどこで確認できる?</div>
+    <div class="faq-a">スタッフ用 URL の <strong>「📅 マイシフト」</strong> リンク、または <a href="/myshift.html">myshift.html</a> から確認できます。<br>
+      ホーム画面に「<strong>マイシフト</strong>」ショートカットを追加しておくと、出勤前に1タップで確認可能です。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">急な体調不良で休みたい時はどうする?</div>
+    <div class="faq-a">マイシフト画面の <strong>「🆘 休み変更届」</strong> ボタンから提出してください。店長に通知が届き、承認/却下されます。<br>
+      <strong>できるだけ早めに</strong> 提出をお願いします (代替スタッフの手配が必要なため)。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">出退勤はどうやって打刻する?</div>
+    <div class="faq-a">マイシフト画面の <strong>「⏰ 出退勤打刻」</strong> から、店舗内で打刻してください。<br>
+      <strong>GPS位置情報</strong> で店舗にいることが確認されます。範囲外で打刻すると店長に警告が届きます。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">休憩はどう取ればいい?</div>
+    <div class="faq-a">出勤打刻 → 休憩開始 → 休憩終了 → 退勤打刻 の流れで打刻します。<br>
+      労基法により <strong>6時間超の勤務は45分以上</strong>、<strong>8時間超は60分以上</strong> の休憩が必須です。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">給与明細はもらえる?</div>
+    <div class="faq-a">店舗の運用方針によりますが、店長が <strong>月次の給与明細PDF</strong> を発行してメールでお送りすることができます。<br>
+      もしまだ受け取ったことがない場合は、店長に「<strong>RAKURAKU の給与明細PDF をください</strong>」とお願いしてみてください。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">日本語以外の言語に切り替えられる?</div>
+    <div class="faq-a">はい、画面右上の言語切替で <strong>日本語 / English / 中文 / 한국어</strong> に切り替えできます。<br>
+      シフト希望提出・打刻・マイシフト確認 すべて母国語で操作できます。
+    </div>
+  </div>
+</div>
+
 <!-- その他 -->
 <div class="faq-group" data-cat="other">
   <div class="faq-group-title">💬 その他</div>
@@ -311,12 +369,33 @@
 
   <div class="faq-item">
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">無料デモは受けられますか？</div>
-    <div class="faq-a">はい、15-30分のオンラインデモ（Zoom）を承っています。お問い合わせフォームから「<strong>無料デモ希望</strong>」とお知らせください。</div>
+    <div class="faq-a">はい、15分のオンラインデモ (Zoom/Google Meet) を承っています。<a href="/demo-reservation.html"><strong>🎁 デモ予約フォーム</strong></a> から24時間以内に Zoom URL をお送りします。</div>
   </div>
 
   <div class="faq-item">
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">導入実績はどれくらいありますか？</div>
     <div class="faq-a">2026年5月のサービスローンチ直後で、現在は初期パートナー店舗様と運用中です。導入第1号店舗様には <strong>3ヶ月無料</strong> 等の特典を提供しています。お早めにご相談ください。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">LINE公式アカウント連携はできますか?</div>
+    <div class="faq-a">はい、<a href="/notification-settings.html"><strong>通知設定</strong></a> ページから LINE Messaging API のチャネル情報を入力するだけで、シフト確定通知・お知らせを LINE 経由で全員に配信できます。<br>
+      LINE 公式アカウントが既にある店舗様であれば、追加費用なしで連携可能です。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">給与計算ソフト (freee/マネーフォワード) と連携できますか?</div>
+    <div class="faq-a">はい、給与明細画面から <strong>freee形式 / マネーフォワード形式 / 汎用CSV</strong> の3形式でエクスポートできます。<br>
+      各給与計算ソフトの「CSV取込」機能でそのまま読込めるフォーマットなので、二重入力が不要になります。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">紹介プログラムはありますか?</div>
+    <div class="faq-a">はい、<a href="/referral.html"><strong>🤝 紹介プログラム</strong></a> から他の店舗を紹介すると、紹介元・紹介先 <strong>両方が1ヶ月無料</strong> になります。<br>
+      紹介コード (RAKU-XXXX-YYYY) を発行 → 紹介先の店舗が登録時にコード入力 → 自動で適用されます。
+    </div>
   </div>
 </div>
 

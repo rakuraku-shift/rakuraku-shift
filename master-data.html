@@ -375,7 +375,18 @@ function saveMasterData() {
 
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(masterData));
-    showToast('💾 マスタを保存しました');
+
+    /* サーバー同期 (ベストエフォート) */
+    const shopId = (new URLSearchParams(location.search).get('shop')) || localStorage.getItem('rakuraku-shop-id') || 'default';
+    fetch(`/api/master-data/${encodeURIComponent(shopId)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(masterData)
+    }).then(() => {
+      showToast('💾 マスタを保存 → サーバー同期完了 (シフト画面に即反映)');
+    }).catch(() => {
+      showToast('💾 マスタを保存 (オフライン — 接続復帰時に同期)');
+    });
   } catch(e) {
     alert('保存失敗: ' + e.message);
   }

@@ -3804,10 +3804,65 @@
     evening: { min:3, max:6 }
   };
 
+  /* ════════ master-data.html で設定した内容を読み込み ════════
+     優先度: master-data.json (店舗共有) > localStorage (個別) > _DEFAULT_TIME_RULES */
+  function _loadMasterData() {
+    try {
+      var raw = localStorage.getItem('rakuraku-master-data');
+      if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return null;
+  }
+
+  /* マスタデータの slot 配列 → time-rules 形式に変換 */
+  function _masterToTimeRules(master) {
+    if (!master || !master.slots || !master.slots.length) return null;
+    var rules = {};
+    master.slots.forEach(function(s) {
+      var key = s.key === 'morning' || s.key === 'lunch' || s.key === 'evening' ? s.key : null;
+      if (!key) return;
+      rules[key] = { min: s.standardCount || 2, max: (s.standardCount || 2) + 2 };
+    });
+    /* 不足キーはデフォルトで補完 */
+    ['morning','lunch','evening'].forEach(function(k) {
+      if (!rules[k]) rules[k] = JSON.parse(JSON.stringify(_DEFAULT_TIME_RULES[k]));
+    });
+    return rules;
+  }
+
+  /* マスタデータの wage → defaultWage 提案 */
+  function getMasterDefaultWage(role) {
+    var m = _loadMasterData();
+    if (m && m.positions) {
+      var p = m.positions.find(function(pp) { return pp.key === role; });
+      if (p && p.wageNormal) return p.wageNormal;
+    }
+    if (m && m.wages && m.wages.normal) return m.wages.normal;
+    return 1200;
+  }
+
+  /* マスタデータの break ルール取得 */
+  function getMasterBreakRule() {
+    var m = _loadMasterData();
+    if (m && m.breaks) return m.breaks;
+    return { '6h': 45, '8h': 60, deduct: true, required: false };
+  }
+
+  /* マスタデータのホリデー割増 */
+  function getMasterHolidayBonus() {
+    var m = _loadMasterData();
+    return (m && m.holiday && m.holiday.bonus) || 35;
+  }
+
   function loadTimeRules() {
     try {
+      /* まず master-data.html の slots を確認 */
+      var master = _loadMasterData();
+      var fromMaster = _masterToTimeRules(master);
+
       var saved = JSON.parse(storageGet(_sk('noru_time_rules')) || 'null');
-      if (!saved) return JSON.parse(JSON.stringify(_DEFAULT_TIME_RULES));
+      /* 既存設定が無ければ master-data → デフォルトの順で採用 */
+      if (!saved) return fromMaster || JSON.parse(JSON.stringify(_DEFAULT_TIME_RULES));
       /* 旧形式（数値）→ 新形式（{min,max}）に自動変換 */
       var r = {};
       ['morning','lunch','evening'].forEach(function(p) {

@@ -54,6 +54,9 @@
   <label>月: <input id="month-input" type="month" /></label>
   <button onclick="loadAndRender()">🔄 読込</button>
   <button onclick="window.print()">🖨️ 印刷 / PDF保存</button>
+  <button onclick="exportCSV('freee')" style="background:linear-gradient(135deg,#F97316,#EA580C);">📤 freee CSV</button>
+  <button onclick="exportCSV('mf')" style="background:linear-gradient(135deg,#10B981,#059669);">📤 マネフォ CSV</button>
+  <button onclick="exportCSV('generic')" style="background:#475569;">📤 汎用CSV</button>
   <span class="hint">余白「なし」+ カラー印刷 推奨</span>
 </div>
 
@@ -249,6 +252,87 @@
   }
 
   function escape(s) { return String(s||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+
+  /* ════════ CSV エクスポート ════════
+     freee:       https://support.freee.co.jp/hc/ja/articles/202850350  従業員別の給与CSV
+     マネーフォワード: https://biz.moneyforward.com/payroll/    勤怠CSV import
+     汎用:        Excel/カスタム用 */
+  let _lastPayroll = []; /* { name, calc, ym } */
+
+  /* loadAndRender の最後に _lastPayroll を保存するパッチ */
+  const _origLoadAndRender = loadAndRender;
+  loadAndRender = async function() {
+    await _origLoadAndRender();
+    /* 計算済みデータを別途保存 */
+    const shopId = document.getElementById('shop-input').value.trim();
+    const ym = document.getElementById('month-input').value;
+    try {
+      const aRes = await fetch(`/api/attendance/month?shop=${encodeURIComponent(shopId)}&month=${ym}`);
+      if (!aRes.ok) return;
+      const attendance = await aRes.json();
+      const byStaff = {};
+      attendance.forEach(r => {
+        if (!byStaff[r.name]) byStaff[r.name] = [];
+        byStaff[r.name].push(r);
+      });
+      let hourly = 1200;
+      try {
+        const snap = await fetch(`/api/shop/${encodeURIComponent(shopId)}/snapshot`).then(r => r.ok ? r.json() : {});
+        const tpl = snap.job_template ? JSON.parse(snap.job_template) : null;
+        if (tpl && tpl.defaultWageNormal) hourly = parseInt(tpl.defaultWageNormal) || 1200;
+      } catch(e) {}
+      _lastPayroll = Object.entries(byStaff).map(([name, records]) => ({
+        name, calc: calcWorkdays(records, hourly, 0.25, 0), ym
+      }));
+    } catch(e) { console.warn(e); }
+  };
+
+  function exportCSV(format) {
+    if (!_lastPayroll.length) {
+      alert('⚠ 先に「読込」してデータを表示してください');
+      return;
+    }
+    const ym = document.getElementById('month-input').value;
+    const shopId = document.getElementById('shop-input').value.trim();
+    let csv = '', filename = '';
+
+    if (format === 'freee') {
+      /* freee 給与計算 ぺージで取込めるフォーマット */
+      csv = '従業員番号,従業員名,勤務日数,通常勤務時間(分),深夜勤務時間(分),休憩時間(分),通常給与,深夜割増,交通費,支給合計\n';
+      _lastPayroll.forEach((p, i) => {
+        const c = p.calc;
+        csv += `${1000+i},"${p.name.replace(/"/g,'""')}",${c.days.length},${c.totalMinNormal},${c.totalMinNight},${c.totalBreak},${c.wageNormal},${c.wageNight},${c.transport},${c.total}\n`;
+      });
+      filename = `freee-payroll-${shopId}-${ym}.csv`;
+    } else if (format === 'mf') {
+      /* マネーフォワード 給与: 従業員名・基本情報 + 勤怠サマリ */
+      csv = '従業員名,基準月,出勤日数,労働時間(h),深夜労働時間(h),休憩時間(h),時給(円),通常賃金,深夜割増賃金,交通費,総支給額\n';
+      _lastPayroll.forEach(p => {
+        const c = p.calc;
+        csv += `"${p.name.replace(/"/g,'""')}",${ym},${c.days.length},${(c.totalMinNormal/60).toFixed(2)},${(c.totalMinNight/60).toFixed(2)},${(c.totalBreak/60).toFixed(2)},${c.hourly},${c.wageNormal},${c.wageNight},${c.transport},${c.total}\n`;
+      });
+      filename = `mf-payroll-${shopId}-${ym}.csv`;
+    } else {
+      /* 汎用 — Excel貼り付け用に全項目フラット */
+      csv = '日付,従業員名,通常時間(分),深夜時間(分),休憩(分),合計(分),時給,日給(円)\n';
+      _lastPayroll.forEach(p => {
+        p.calc.days.forEach(d => {
+          const dailyTotal = Math.round((d.normalMin/60) * p.calc.hourly + (d.nightMin/60) * p.calc.hourly * 1.25);
+          csv += `${d.day},"${p.name.replace(/"/g,'""')}",${d.normalMin},${d.nightMin},${d.brkMin},${d.totalMin},${p.calc.hourly},${dailyTotal}\n`;
+        });
+      });
+      filename = `payroll-detail-${shopId}-${ym}.csv`;
+    }
+
+    /* BOM 付きで Excel に対応 */
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 </script>
 </body>
 </html>
