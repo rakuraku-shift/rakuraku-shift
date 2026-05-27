@@ -120,6 +120,33 @@
     'my.toast_approved': { ja:'✅ 変更届が承認されました', en:'✅ Request approved', zh:'✅ 申请已批准', ko:'✅ 신청이 승인되었습니다' },
     'my.toast_rejected': { ja:'⚠ 変更届が却下されました', en:'⚠ Request rejected', zh:'⚠ 申请被拒绝', ko:'⚠ 신청이 거부되었습니다' },
     'my.required_fields': { ja:'名前・日付・理由は必須です', en:'Name, date, and reason are required', zh:'姓名、日期和原因为必填', ko:'이름, 날짜, 사유는 필수입니다' },
+
+    /* ─── order.html モバイルオーダー (店内) ─── */
+    'order.shop_loading': { ja:'店舗名', en:'Shop Name', zh:'店铺名', ko:'매장명' },
+    'order.table': { ja:'テーブル', en:'Table', zh:'桌号', ko:'테이블' },
+    'order.tab_menu': { ja:'メニュー', en:'Menu', zh:'菜单', ko:'메뉴' },
+    'order.tab_history': { ja:'注文履歴・お会計', en:'Orders & Bill', zh:'订单·结账', ko:'주문 내역·계산' },
+    'order.cart_count': { ja:'点', en:'items', zh:'件', ko:'개' },
+    'order.cart_order': { ja:'注文する', en:'Place Order', zh:'下单', ko:'주문하기' },
+    'order.call_staff': { ja:'店員を呼ぶ', en:'Call Staff', zh:'呼叫店员', ko:'직원 호출' },
+    'order.call_water': { ja:'🚰 お冷ください', en:'🚰 Water Please', zh:'🚰 请来杯水', ko:'🚰 물 부탁해요' },
+    'order.call_towel': { ja:'🧻 おしぼりください', en:'🧻 Towel Please', zh:'🧻 请给毛巾', ko:'🧻 물수건 주세요' },
+    'order.call_bill': { ja:'💴 お会計', en:'💴 Bill', zh:'💴 结账', ko:'💴 계산' },
+    'order.call_other': { ja:'🙋 店員を呼ぶ', en:'🙋 Call Staff', zh:'🙋 呼叫店员', ko:'🙋 직원 호출' },
+    'order.call_done': { ja:'✅ 呼び出しました。少々お待ちください', en:'✅ Staff notified. Please wait.', zh:'✅ 已通知店员，请稍候', ko:'✅ 직원에게 알렸습니다' },
+    'order.takeout_mode': { ja:'🛍 テイクアウト', en:'🛍 Takeout', zh:'🛍 外带', ko:'🛍 포장' },
+    'order.takeout_time': { ja:'受取時刻', en:'Pickup Time', zh:'取餐时间', ko:'수령 시간' },
+    'order.dinein_mode': { ja:'🪑 店内', en:'🪑 Dine-in', zh:'🪑 堂食', ko:'🪑 매장 내' },
+    'order.history_empty': { ja:'まだ注文がありません', en:'No orders yet', zh:'尚无订单', ko:'주문이 없습니다' },
+    'order.total': { ja:'合計', en:'Total', zh:'合计', ko:'합계' },
+
+    /* ─── kitchen.html キッチン ─── */
+    'kit.title': { ja:'🍳 キッチン受注画面', en:'🍳 Kitchen Order Display', zh:'🍳 厨房接单画面', ko:'🍳 주방 주문 화면' },
+    'kit.no_orders': { ja:'新しい注文はありません', en:'No new orders', zh:'暂无新订单', ko:'새 주문이 없습니다' },
+    'kit.new_order': { ja:'🔔 新規注文', en:'🔔 New Order', zh:'🔔 新订单', ko:'🔔 새 주문' },
+    'kit.served': { ja:'提供済み', en:'Served', zh:'已上菜', ko:'제공 완료' },
+    'kit.cooking': { ja:'調理中', en:'Cooking', zh:'制作中', ko:'조리 중' },
+    'kit.call_notify': { ja:'📢 店員呼び出し', en:'📢 Staff Call', zh:'📢 呼叫店员', ko:'📢 직원 호출' },
   };
 
   const SUPPORTED_LANGS = ['ja', 'en', 'zh', 'ko'];

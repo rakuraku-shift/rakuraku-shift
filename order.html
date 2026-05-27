@@ -77,6 +77,22 @@
   .qty-btn.plus { background: var(--primary); color:#fff; border-color: var(--primary); }
   .qty-val { min-width: 18px; text-align: center; font-weight: 700; font-size: 0.95rem; }
 
+  /* 言語切替 */
+  .lang-switcher-host { display:inline-flex; gap:2px; background:rgba(0,0,0,.06); border-radius:8px; padding:3px; font-size:11px; font-weight:800; }
+  .lang-switcher-host button { padding:4px 9px; border:none; background:transparent; color:inherit; cursor:pointer; border-radius:5px; font-family:inherit; font-weight:800; }
+
+  /* 店員呼び出しボタン群 */
+  .call-bar { background:#fff; padding:10px 12px; border-bottom:1px solid var(--border); display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:6px; }
+  .call-bar button { padding:9px 4px; background:#fff; border:1.5px solid var(--border); border-radius:10px; font-size:11px; font-weight:700; cursor:pointer; transition:all .15s; color:var(--text); font-family:inherit; line-height:1.3; }
+  .call-bar button:hover { border-color:var(--primary); color:var(--primary); }
+  .call-bar button:active { background:var(--primary); color:#fff; transform:scale(.96); }
+  @media(max-width:380px) { .call-bar { grid-template-columns:1fr 1fr; } }
+
+  /* テイクアウト切替 */
+  .mode-toggle { display:flex; gap:0; background:var(--border); padding:3px; border-radius:10px; margin:0 12px 8px; }
+  .mode-toggle button { flex:1; padding:8px; border:none; background:transparent; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; color:var(--muted); font-family:inherit; transition:all .15s; }
+  .mode-toggle button.active { background:#fff; color:var(--primary); box-shadow:0 1px 4px rgba(0,0,0,.08); }
+
   /* SECTION TITLES */
   .cat-title {
     font-size: 0.78rem; font-weight: 700; color: var(--muted); letter-spacing: 1px;
@@ -157,15 +173,32 @@
 <body>
 
 <header>
-  <div class="shop-name" id="shop-name">店舗名</div>
-  <div class="table-badge" id="table-badge">テーブル -</div>
+  <div class="shop-name" id="shop-name" data-i18n="order.shop_loading">店舗名</div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div id="lang-switcher"></div>
+    <div class="table-badge" id="table-badge">テーブル -</div>
+  </div>
 </header>
+
+<!-- 店員呼び出し (Airレジオーダー風) -->
+<div class="call-bar">
+  <button onclick="callStaff('water')" data-i18n="order.call_water">🚰 お冷ください</button>
+  <button onclick="callStaff('towel')" data-i18n="order.call_towel">🧻 おしぼりください</button>
+  <button onclick="callStaff('bill')" data-i18n="order.call_bill">💴 お会計</button>
+  <button onclick="callStaff('other')" data-i18n="order.call_other">🙋 店員を呼ぶ</button>
+</div>
+
+<!-- 店内/テイクアウト切替 -->
+<div class="mode-toggle">
+  <button id="mode-dinein" class="active" onclick="setMode('dinein')" data-i18n="order.dinein_mode">🪑 店内</button>
+  <button id="mode-takeout" onclick="setMode('takeout')" data-i18n="order.takeout_mode">🛍 テイクアウト</button>
+</div>
 
 <div id="banner-area"></div>
 
 <div id="tabs">
-  <button class="tab active" data-tab="menu">メニュー</button>
-  <button class="tab" data-tab="history">注文履歴・お会計</button>
+  <button class="tab active" data-tab="menu" data-i18n="order.tab_menu">メニュー</button>
+  <button class="tab" data-tab="history" data-i18n="order.tab_history">注文履歴・お会計</button>
 </div>
 
 <div id="view-menu">
@@ -478,6 +511,56 @@
   window.App = { inc, dec };
   loadMenu();
 })();
+
+/* ─── 店員呼び出し (Airレジオーダー風) ─── */
+async function callStaff(type) {
+  try {
+    const res = await fetch('/api/restaurant/call', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        shopId: (new URLSearchParams(location.search)).get('shop') || 'default',
+        tableNo: (new URLSearchParams(location.search)).get('table') || '-',
+        type,
+      }),
+    });
+    if (!res.ok) throw new Error('failed');
+    const msg = window.RakuI18n ? RakuI18n.t('order.call_done') : '✅ 呼び出しました';
+    showCallToast(msg);
+  } catch(e) {
+    showCallToast('⚠ ' + e.message);
+  }
+}
+function showCallToast(msg) {
+  let t = document.getElementById('call-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'call-toast';
+    t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:14px 24px;border-radius:30px;font-weight:800;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:1000;opacity:0;transition:opacity .2s;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  setTimeout(() => { t.style.opacity = '0'; }, 3000);
+}
+
+/* ─── 店内/テイクアウト 切替 ─── */
+let _orderMode = 'dinein';
+function setMode(mode) {
+  _orderMode = mode;
+  document.getElementById('mode-dinein').classList.toggle('active', mode === 'dinein');
+  document.getElementById('mode-takeout').classList.toggle('active', mode === 'takeout');
+  try { localStorage.setItem('rakuraku_order_mode', mode); } catch(e) {}
+}
+/* 復元 */
+try {
+  const saved = localStorage.getItem('rakuraku_order_mode');
+  if (saved === 'takeout') setMode('takeout');
+} catch(e) {}
+</script>
+<script src="/i18n.js"></script>
+<script>
+  if (window.RakuI18n) RakuI18n.buildSwitcher('lang-switcher');
 </script>
 </body>
 </html>

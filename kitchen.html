@@ -136,11 +136,24 @@
 <header>
   <div class="h-left">
     <div id="live-dot"></div>
-    <div class="h-title">キッチン受付</div>
+    <div class="h-title" data-i18n="kit.title">キッチン受付</div>
     <div id="count">0件</div>
   </div>
-  <button id="sound-toggle">🔔 通知音 OFF</button>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div id="lang-switcher"></div>
+    <button id="sound-toggle">🔔 通知音 OFF</button>
+  </div>
 </header>
+
+<!-- 店員呼び出し通知バー -->
+<div id="call-banner" style="display:none;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:14px 18px;font-weight:800;font-size:15px;border-bottom:2px solid #047857;box-shadow:0 2px 8px rgba(0,0,0,.15);align-items:center;gap:12px;animation:callPulse 1s infinite;">
+  <span style="font-size:22px;">📢</span>
+  <span id="call-banner-text" style="flex:1;"></span>
+  <button onclick="dismissCall()" style="background:rgba(255,255,255,.25);border:none;color:#fff;padding:6px 14px;border-radius:6px;cursor:pointer;font-weight:800;font-size:13px;">✓ 対応した</button>
+</div>
+<style>
+@keyframes callPulse{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,.15);}50%{box-shadow:0 0 28px rgba(22,163,74,.7);}}
+</style>
 
 <div id="filters">
   <button class="flt active" data-filter="active">受付中・調理中 <span class="flt-badge" id="b-active">0</span></button>
@@ -300,7 +313,41 @@
 
   // 経過時間の表示を更新
   setInterval(render, 30000);
+
+  /* ─── 店員呼び出し通知 ─── */
+  if (typeof io === 'function' && window.socket) {
+    window.socket.on('restaurant_call', function(call) {
+      showCallBanner(call);
+      try { new Audio('data:audio/wav;base64,UklGRl4AAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YToAAAA=').play().catch(()=>{}); } catch(e) {}
+    });
+  } else if (typeof io === 'function') {
+    /* fallback: 自前で接続 */
+    const _s = io({ transports:['websocket','polling'] });
+    _s.on('restaurant_call', function(call) { showCallBanner(call); });
+  }
+
+  function showCallBanner(call) {
+    const labels = {
+      water:  { ja:'🚰 お冷',  en:'🚰 Water',  zh:'🚰 水',     ko:'🚰 물' },
+      towel:  { ja:'🧻 おしぼり', en:'🧻 Towel',   zh:'🧻 毛巾',   ko:'🧻 물수건' },
+      bill:   { ja:'💴 お会計', en:'💴 Bill',    zh:'💴 结账',   ko:'💴 계산' },
+      other:  { ja:'🙋 呼び出し', en:'🙋 Call',  zh:'🙋 呼叫',   ko:'🙋 호출' },
+    };
+    const lang = window.RakuI18n ? RakuI18n.getLang() : 'ja';
+    const label = (labels[call.type] && labels[call.type][lang]) || call.type;
+    const callLbl = window.RakuI18n ? RakuI18n.t('kit.call_notify') : '📢 店員呼び出し';
+    document.getElementById('call-banner-text').textContent = `${callLbl} — Table ${call.tableNo}: ${label}`;
+    document.getElementById('call-banner').style.display = 'flex';
+  }
+  function dismissCall() {
+    document.getElementById('call-banner').style.display = 'none';
+  }
+  window.dismissCall = dismissCall;
 })();
+</script>
+<script src="/i18n.js"></script>
+<script>
+  if (window.RakuI18n) RakuI18n.buildSwitcher('lang-switcher');
 </script>
 </body>
 </html>
