@@ -43,10 +43,12 @@ const SUBSCRIPTIONS_FILE = path.join(DATA_DIR, 'subscriptions.json');
 const SHOPS_DIR          = path.join(DATA_DIR, 'shops');
 const ADMIN_FILE         = path.join(DATA_DIR, 'admin.json');
 const ATTENDANCE_DIR     = path.join(DATA_DIR, 'attendance');
+const CHANGE_REQ_DIR     = path.join(DATA_DIR, 'change-requests');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
 if (!fs.existsSync(SHOPS_DIR)) fs.mkdirSync(SHOPS_DIR, { recursive: true });
 if (!fs.existsSync(ATTENDANCE_DIR)) fs.mkdirSync(ATTENDANCE_DIR, { recursive: true });
+if (!fs.existsSync(CHANGE_REQ_DIR)) fs.mkdirSync(CHANGE_REQ_DIR, { recursive: true });
 
 // ── アンケート ──
 function loadSurveys() { return readJSON(SURVEY_FILE, []); }
@@ -284,6 +286,30 @@ function appendAttendance(shopId, record) {
   return record;
 }
 
+/* ── 休み変更届データ管理 ── */
+function changeReqFile(shopId) {
+  const safe = _safeShopId(shopId) || 'default';
+  return path.join(CHANGE_REQ_DIR, `${safe}.json`);
+}
+function loadChangeReqs(shopId) { return readJSON(changeReqFile(shopId), []); }
+function saveChangeReqs(shopId, all) { writeJSON(changeReqFile(shopId), all); }
+function appendChangeReq(shopId, req) {
+  const all = loadChangeReqs(shopId);
+  all.push(req);
+  saveChangeReqs(shopId, all);
+  return req;
+}
+function updateChangeReqStatus(shopId, reqId, status, decidedBy) {
+  const all = loadChangeReqs(shopId);
+  const idx = all.findIndex(r => r.id === reqId);
+  if (idx < 0) return null;
+  all[idx].status = status;
+  all[idx].decidedBy = decidedBy || null;
+  all[idx].decidedAt = Date.now();
+  saveChangeReqs(shopId, all);
+  return all[idx];
+}
+
 // ══════════════════════════════════════════
 //  PRICE ENGINE
 // ══════════════════════════════════════════
@@ -345,7 +371,7 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
   res.json({ received: true });
 });
 
-app.use(express.json());
+app.use(express.json({ limit: '6mb' }));
 
 // ルートディレクトリの全ファイルを配信（HTML, CSS, JS など）
 app.use(express.static(path.join(__dirname)));
@@ -767,6 +793,53 @@ app.get('/api/attendance/month', (req, res) => {
   res.json(loadAttendance(shop, ym));
 });
 
+// ── 休み変更届 API ────────────────────────────────
+app.post('/api/change-request', (req, res) => {
+  const { shopId, name, date, reason, note, type } = req.body || {};
+  if (!shopId || !name || !date) {
+    return res.status(400).json({ error: 'shopId, name, date 必須' });
+  }
+  const reqRecord = {
+    id: 'cr' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    shopId,
+    name: String(name).slice(0, 64),
+    date,
+    reason: reason || '',
+    note: note || '',
+    type: type || 'absence',
+    status: 'pending',
+    createdAt: Date.now(),
+  };
+  appendChangeReq(shopId, reqRecord);
+  const room = 'shop:' + _safeShopId(shopId);
+  io.to(room).emit('change_request_updated', { shopId, action: 'created', request: reqRecord });
+  console.log(`[change-request] 新規申請 — ${shopId} / ${name} / ${date} / ${reason}`);
+  res.json({ ok: true, request: reqRecord });
+});
+
+app.get('/api/change-request', (req, res) => {
+  const { shop, status, name } = req.query;
+  if (!shop) return res.status(400).json({ error: 'shop 必須' });
+  let all = loadChangeReqs(shop);
+  if (status) all = all.filter(r => r.status === status);
+  if (name) all = all.filter(r => r.name === name);
+  all.sort((a, b) => b.createdAt - a.createdAt);
+  res.json(all);
+});
+
+app.put('/api/change-request/:id', (req, res) => {
+  const { shopId, status, decidedBy } = req.body || {};
+  if (!shopId || !status) return res.status(400).json({ error: 'shopId, status 必須' });
+  if (!['approved', 'rejected', 'pending'].includes(status)) {
+    return res.status(400).json({ error: 'status は approved/rejected/pending' });
+  }
+  const updated = updateChangeReqStatus(shopId, req.params.id, status, decidedBy);
+  if (!updated) return res.status(404).json({ error: '申請が見つかりません' });
+  const room = 'shop:' + _safeShopId(shopId);
+  io.to(room).emit('change_request_updated', { shopId, action: status, request: updated });
+  res.json({ ok: true, request: updated });
+});
+
 // ── 在庫 API ────────────────────────────────
 app.get('/api/stock', (req, res) => {
   res.json(loadStock());
@@ -963,6 +1036,8 @@ app.post('/api/survey/send-invite', async (req, res) => {
 // ══════════════════════════════════════════
 const RESTAURANT_MENU_FILE   = path.join(DATA_DIR, 'restaurant-menu.json');
 const RESTAURANT_ORDERS_FILE = path.join(DATA_DIR, 'restaurant-orders.json');
+const MENU_IMG_DIR           = path.join(DATA_DIR, 'menu-images');
+if (!fs.existsSync(MENU_IMG_DIR)) fs.mkdirSync(MENU_IMG_DIR, { recursive: true });
 
 function loadRestaurantMenu() {
   return readJSON(RESTAURANT_MENU_FILE, {
@@ -1022,6 +1097,36 @@ app.put('/api/restaurant/menu', (req, res) => {
   saveRestaurantMenu(m);
   io.emit('restaurant_menu_updated');
   res.json({ ok: true });
+});
+
+// ── 商品画像アップロード（data URL を受け取り data/menu-images/ に保存） ──
+app.post('/api/restaurant/upload-image', (req, res) => {
+  const { dataUrl } = req.body || {};
+  if (!dataUrl) return res.status(400).json({ error: 'dataUrl required' });
+  const m = /^data:image\/(jpeg|jpg|png|webp);base64,(.+)$/i.exec(dataUrl);
+  if (!m) return res.status(400).json({ error: '対応形式: jpg / png / webp' });
+  const ext = m[1].toLowerCase() === 'jpeg' ? 'jpg' : m[1].toLowerCase();
+  const buf = Buffer.from(m[2], 'base64');
+  if (buf.length > 4 * 1024 * 1024) return res.status(413).json({ error: '画像は4MB以下にしてください' });
+  const filename = `img_${Date.now()}_${crypto.randomBytes(4).toString('hex')}.${ext}`;
+  fs.writeFileSync(path.join(MENU_IMG_DIR, filename), buf);
+  res.json({ url: `/data/menu-images/${filename}` });
+});
+
+// ── 商品画像削除（ファイルを物理削除） ──
+app.post('/api/restaurant/delete-image', (req, res) => {
+  const { url } = req.body || {};
+  if (!url || !url.startsWith('/data/menu-images/')) {
+    return res.status(400).json({ error: 'invalid url' });
+  }
+  const filename = path.basename(url);
+  const fp = path.join(MENU_IMG_DIR, filename);
+  try {
+    if (fs.existsSync(fp)) fs.unlinkSync(fp);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // ── 注文 ────────────────────────────────────

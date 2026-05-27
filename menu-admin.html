@@ -25,14 +25,19 @@
     display: flex; justify-content: space-between; align-items: center;
     position: sticky; top: 0; z-index: 10;
   }
-  .h-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; }
+  .h-title { font-size: 1.05rem; font-weight: 800; letter-spacing: 1px; }
+  .h-actions { display: flex; gap: 8px; align-items: center; }
   .btn-save {
     background: var(--primary); color: #fff; border: none;
-    padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;
+    padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.9rem;
   }
   .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+  .preview-link {
+    background: #333; color: #fff; padding: 8px 14px; border-radius: 8px;
+    text-decoration: none; font-size: 0.82rem;
+  }
 
-  main { max-width: 900px; margin: 0 auto; padding: 20px; }
+  main { max-width: 920px; margin: 0 auto; padding: 20px; }
 
   .panel {
     background: var(--card); border-radius: 12px; padding: 18px;
@@ -41,8 +46,13 @@
   .panel-title {
     font-size: 0.95rem; font-weight: 800; margin-bottom: 14px;
     padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .panel-title .hint {
+    font-size: 0.72rem; font-weight: normal; color: var(--muted); letter-spacing: 0;
   }
 
+  /* 店舗設定 */
   .form-row {
     display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap;
   }
@@ -51,63 +61,141 @@
     padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
     font-size: 0.92rem; flex: 1; min-width: 100px;
   }
-  .form-row input[type="checkbox"] { flex: 0; min-width: 0; }
 
-  .cat-list, .item-list { display: flex; flex-direction: column; gap: 8px; }
+  /* カテゴリ */
+  .cat-list { display: flex; flex-direction: column; gap: 8px; }
   .cat-card {
     border: 1px solid var(--border); border-radius: 10px; padding: 12px;
     display: flex; gap: 10px; align-items: center;
   }
   .cat-card input.name { flex: 1; padding: 6px 10px; border:1px solid var(--border); border-radius:6px; font-size:0.92rem; }
   .cat-card input.order { width: 60px; padding: 6px 10px; border:1px solid var(--border); border-radius:6px; }
+
+  /* 商品 — カードレイアウト */
+  .item-list { display: flex; flex-direction: column; gap: 14px; }
+  .item-card {
+    border: 1px solid var(--border); border-radius: 12px; padding: 14px;
+    display: grid; grid-template-columns: 140px 1fr; gap: 16px;
+    background: #fff;
+  }
+  .item-card.disabled { opacity: 0.6; background: #fafafa; }
+
+  /* 画像エリア */
+  .img-area {
+    width: 140px; height: 140px;
+    border-radius: 10px; background: #f3f4f6;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; border: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .img-area img { width: 100%; height: 100%; object-fit: cover; }
+  .img-area .placeholder {
+    text-align: center; color: var(--muted); font-size: 0.75rem; padding: 8px;
+  }
+  .img-area .placeholder .big-emoji { font-size: 2.6rem; display: block; margin-bottom: 4px; }
+  .img-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.5); color: #fff;
+    display: none; align-items: center; justify-content: center;
+    font-size: 0.82rem; font-weight: 600;
+  }
+  .img-area:hover .img-overlay { display: flex; }
+  .img-actions {
+    display: flex; gap: 6px; margin-top: 6px;
+  }
+  .img-actions button {
+    flex: 1; padding: 6px 8px; font-size: 0.75rem; border-radius: 6px;
+    border: 1px solid var(--border); background: #fff; cursor: pointer; font-weight: 600;
+  }
+  .img-actions button.danger { color: var(--red); border-color: #fecaca; }
+  .img-actions button.danger:hover { background: #fef2f2; }
+  .img-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* フィールドエリア */
+  .fields { display: flex; flex-direction: column; gap: 10px; }
+  .field-row { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+  .field-row.row-name { grid-template-columns: 2fr 1fr; }
+  @media (min-width: 720px) {
+    .field-row.row-numbers { grid-template-columns: 1fr 1fr 90px 90px; }
+  }
+  .field {
+    display: flex; flex-direction: column; gap: 4px; min-width: 0;
+  }
+  .field label {
+    font-size: 0.72rem; color: var(--muted); font-weight: 600;
+  }
+  .field input, .field select, .field textarea {
+    padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px;
+    font-size: 0.92rem; font-family: inherit; width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 56px; }
+  .field .suffix-wrap {
+    position: relative;
+  }
+  .field .suffix-wrap input { padding-right: 38px; }
+  .field .suffix {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 0.82rem; pointer-events: none;
+  }
+
+  /* カードの下端のコントロール行 */
+  .card-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 4px;
+  }
+  .avail-toggle { display: flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 600; }
+  .avail-toggle input { width: 18px; height: 18px; }
+  .btn-del-item {
+    background: #fff; border: 1px solid #fecaca; color: var(--red);
+    padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  }
+  .btn-del-item:hover { background: #fef2f2; }
+
+  /* モバイル */
+  @media (max-width: 600px) {
+    .item-card { grid-template-columns: 1fr; }
+    .img-area { width: 100%; height: 180px; }
+  }
+
+  /* 追加・削除ボタン */
+  .add-btn {
+    background: #fff; color: var(--muted); border: 2px dashed var(--border);
+    padding: 14px; border-radius: 10px; width: 100%; cursor: pointer;
+    font-weight: 600; margin-top: 12px;
+  }
+  .add-btn:hover { background: #fafafa; border-color: var(--primary); color: var(--primary); }
   .icon-btn {
     background: #f3f4f6; border: 1px solid var(--border); color: var(--muted);
     padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.78rem;
   }
   .icon-btn.danger:hover { background: #fef2f2; color: var(--red); border-color: var(--red); }
 
-  .item-card {
-    border: 1px solid var(--border); border-radius: 10px; padding: 12px;
-    display: grid; grid-template-columns: 50px 1fr 120px 100px 80px 80px auto;
-    gap: 8px; align-items: center;
-  }
-  @media (max-width: 720px) {
-    .item-card { grid-template-columns: 50px 1fr auto; grid-template-rows: auto auto auto; }
-    .item-card .price, .item-card .order-input, .item-card .avail-wrap { grid-column: 1 / span 3; }
-  }
-  .item-card .emoji { font-size: 1.6rem; text-align: center; }
-  .item-card input, .item-card select {
-    padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.88rem; width: 100%;
-  }
-  .item-card .avail-wrap { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
-
-  .add-btn {
-    background: #fff; color: var(--text); border: 2px dashed var(--border);
-    padding: 12px; border-radius: 10px; width: 100%; cursor: pointer;
-    font-weight: 600; color: var(--muted); margin-top: 8px;
-  }
-  .add-btn:hover { background: #fafafa; border-color: var(--primary); color: var(--primary); }
-
+  /* トースト */
   #toast {
     position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
     background: var(--text); color: #fff; padding: 12px 24px; border-radius: 30px;
     font-size: 0.9rem; opacity: 0; transition: opacity 0.3s; z-index: 100;
+    max-width: 90%; text-align: center;
   }
   #toast.show { opacity: 1; }
   #toast.error { background: var(--red); }
 
-  .preview-link {
-    display: inline-block; background: #eee; color: var(--text);
-    padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 0.85rem;
-    margin-right: 8px;
+  /* 隠しファイル入力 */
+  .file-input { display: none; }
+
+  /* 未保存警告 */
+  .dirty-badge {
+    background: #fef3c7; color: #92400e; font-size: 0.7rem;
+    padding: 3px 10px; border-radius: 999px; font-weight: 700;
+    display: none;
   }
+  .dirty-badge.show { display: inline-block; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="h-title">📋 メニュー管理</div>
-  <div>
+  <div class="h-title">📋 メニュー管理 <span class="dirty-badge" id="dirty">未保存の変更あり</span></div>
+  <div class="h-actions">
     <a class="preview-link" href="order.html?table=1" target="_blank">プレビュー</a>
     <button class="btn-save" id="btn-save">変更を保存</button>
   </div>
@@ -135,24 +223,37 @@
   </div>
 
   <div class="panel">
-    <div class="panel-title">カテゴリ</div>
+    <div class="panel-title">
+      <span>カテゴリ</span>
+      <span class="hint">表示順は数字が小さい順</span>
+    </div>
     <div class="cat-list" id="cat-list"></div>
     <button class="add-btn" onclick="App.addCat()">＋ カテゴリを追加</button>
   </div>
 
   <div class="panel">
-    <div class="panel-title">メニュー商品</div>
+    <div class="panel-title">
+      <span>メニュー商品</span>
+      <span class="hint">画像エリアをクリックでアップロード</span>
+    </div>
     <div class="item-list" id="item-list"></div>
     <button class="add-btn" onclick="App.addItem()">＋ 商品を追加</button>
   </div>
 </main>
 
+<input type="file" id="file-input" class="file-input" accept="image/jpeg,image/png,image/webp">
 <div id="toast"></div>
 
 <script>
 (() => {
   let menu = { settings: {}, categories: [], items: [] };
+  let dirty = false;
+  let uploadingItemId = null;
 
+  function setDirty(v = true) {
+    dirty = v;
+    document.getElementById('dirty').classList.toggle('show', v);
+  }
   function toast(msg, error = false) {
     const t = document.getElementById('toast');
     t.textContent = msg;
@@ -165,10 +266,11 @@
   async function load() {
     const r = await fetch('/api/restaurant/menu');
     menu = await r.json();
-    if (!menu.settings) menu.settings = {};
-    if (!menu.categories) menu.categories = [];
-    if (!menu.items) menu.items = [];
+    menu.settings ||= {};
+    menu.categories ||= [];
+    menu.items ||= [];
     render();
+    setDirty(false);
   }
 
   function render() {
@@ -177,10 +279,10 @@
     document.getElementById('tax-included').value = String(menu.settings.taxIncluded ?? true);
 
     const cats = menu.categories.slice().sort((a,b) => (a.order||0)-(b.order||0));
-    document.getElementById('cat-list').innerHTML = cats.map((c, i) => `
+    document.getElementById('cat-list').innerHTML = cats.map(c => `
       <div class="cat-card">
-        <input class="order" type="number" value="${c.order ?? i+1}" onchange="App.updateCat('${c.id}','order',this.value)" title="表示順">
-        <input class="name" type="text" value="${escapeAttr(c.name)}" onchange="App.updateCat('${c.id}','name',this.value)" placeholder="カテゴリ名">
+        <input class="order" type="number" value="${c.order ?? 0}" onchange="App.updateCat('${c.id}','order',this.value)" title="表示順">
+        <input class="name" type="text" value="${esc(c.name)}" onchange="App.updateCat('${c.id}','name',this.value)" placeholder="カテゴリ名">
         <button class="icon-btn danger" onclick="App.delCat('${c.id}')">削除</button>
       </div>
     `).join('');
@@ -191,50 +293,105 @@
       if (ca !== cb) return ca - cb;
       return (a.order||0) - (b.order||0);
     });
-    document.getElementById('item-list').innerHTML = items.map(it => `
-      <div class="item-card">
-        <input class="emoji" type="text" value="${escapeAttr(it.emoji||'')}" maxlength="2" onchange="App.updateItem('${it.id}','emoji',this.value)" placeholder="🍺">
-        <input type="text" value="${escapeAttr(it.name)}" onchange="App.updateItem('${it.id}','name',this.value)" placeholder="商品名">
-        <select onchange="App.updateItem('${it.id}','categoryId',this.value)">
-          ${cats.map(c => `<option value="${c.id}" ${it.categoryId===c.id?'selected':''}>${escapeAttr(c.name)}</option>`).join('')}
-        </select>
-        <input class="price" type="number" value="${it.price}" min="0" step="10" onchange="App.updateItem('${it.id}','price',this.value)" placeholder="価格">
-        <input class="order-input" type="number" value="${it.order ?? 0}" onchange="App.updateItem('${it.id}','order',this.value)" placeholder="順序">
-        <label class="avail-wrap">
-          <input type="checkbox" ${it.available!==false?'checked':''} onchange="App.updateItem('${it.id}','available',this.checked)">
-          販売中
-        </label>
-        <button class="icon-btn danger" onclick="App.delItem('${it.id}')">削除</button>
+
+    document.getElementById('item-list').innerHTML = items.map(it => itemCard(it, cats)).join('');
+  }
+
+  function itemCard(it, cats) {
+    const imgHtml = it.image
+      ? `<img src="${esc(it.image)}" alt="${esc(it.name)}"><div class="img-overlay">画像を変更</div>`
+      : `<div class="placeholder"><span class="big-emoji">${it.emoji || '🍽️'}</span>画像を追加</div>`;
+    const delImgBtn = it.image
+      ? `<button class="danger" onclick="App.deleteImage('${it.id}')">画像削除</button>`
+      : '';
+    return `
+      <div class="item-card ${it.available===false?'disabled':''}">
+        <div>
+          <div class="img-area" onclick="App.uploadImage('${it.id}')">${imgHtml}</div>
+          <div class="img-actions">
+            <button onclick="App.uploadImage('${it.id}')">${it.image ? '画像変更' : '画像追加'}</button>
+            ${delImgBtn}
+          </div>
+        </div>
+        <div class="fields">
+          <div class="field-row row-name">
+            <div class="field">
+              <label>商品名</label>
+              <input type="text" value="${esc(it.name)}" onchange="App.updateItem('${it.id}','name',this.value)" placeholder="例: 生ビール">
+            </div>
+            <div class="field">
+              <label>カテゴリ</label>
+              <select onchange="App.updateItem('${it.id}','categoryId',this.value)">
+                ${cats.map(c => `<option value="${c.id}" ${it.categoryId===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          <div class="field-row row-numbers">
+            <div class="field">
+              <label>価格</label>
+              <div class="suffix-wrap">
+                <input type="number" min="0" step="10" value="${it.price ?? 0}" onchange="App.updateItem('${it.id}','price',this.value)">
+                <span class="suffix">円</span>
+              </div>
+            </div>
+            <div class="field">
+              <label>カロリー</label>
+              <div class="suffix-wrap">
+                <input type="number" min="0" step="1" value="${it.calories ?? ''}" onchange="App.updateItem('${it.id}','calories',this.value)" placeholder="未設定">
+                <span class="suffix">kcal</span>
+              </div>
+            </div>
+            <div class="field">
+              <label>絵文字</label>
+              <input type="text" maxlength="2" value="${esc(it.emoji||'')}" onchange="App.updateItem('${it.id}','emoji',this.value)" placeholder="🍺">
+            </div>
+            <div class="field">
+              <label>表示順</label>
+              <input type="number" value="${it.order ?? 0}" onchange="App.updateItem('${it.id}','order',this.value)">
+            </div>
+          </div>
+          <div class="field">
+            <label>説明（任意）</label>
+            <textarea onchange="App.updateItem('${it.id}','description',this.value)" placeholder="例: キリン一番搾り 中ジョッキ">${esc(it.description||'')}</textarea>
+          </div>
+          <div class="card-foot">
+            <label class="avail-toggle">
+              <input type="checkbox" ${it.available!==false?'checked':''} onchange="App.updateItem('${it.id}','available',this.checked)">
+              販売中
+            </label>
+            <button class="btn-del-item" onclick="App.delItem('${it.id}')">この商品を削除</button>
+          </div>
+        </div>
       </div>
-    `).join('');
+    `;
   }
 
-  function escapeAttr(s) {
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
+  function uid(p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 
-  function uid(prefix) {
-    return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  }
-
+  // ── カテゴリ ──
   function addCat() {
     menu.categories.push({ id: uid('c_'), name: '新カテゴリ', order: menu.categories.length + 1 });
-    render();
+    setDirty(); render();
   }
   function updateCat(id, key, val) {
     const c = menu.categories.find(x => x.id === id);
     if (!c) return;
-    if (key === 'order') c.order = Number(val);
-    else c[key] = val;
-    render();
+    c[key] = key === 'order' ? Number(val) : val;
+    setDirty();
+    if (key === 'order' || key === 'name') render();
   }
   function delCat(id) {
-    const usedBy = menu.items.filter(x => x.categoryId === id).length;
-    if (usedBy && !confirm(`このカテゴリは${usedBy}件の商品で使用されています。商品ごと削除しますか？`)) return;
+    const used = menu.items.filter(x => x.categoryId === id).length;
+    if (used && !confirm(`このカテゴリは${used}件の商品で使用されています。商品ごと削除しますか？`)) return;
     menu.categories = menu.categories.filter(x => x.id !== id);
     menu.items = menu.items.filter(x => x.categoryId !== id);
-    render();
+    setDirty(); render();
   }
+
+  // ── 商品 ──
   function addItem() {
     if (!menu.categories.length) { toast('先にカテゴリを追加してください', true); return; }
     menu.items.push({
@@ -242,31 +399,115 @@
       categoryId: menu.categories[0].id,
       name: '新メニュー',
       price: 500,
+      calories: null,
       emoji: '🍽️',
       description: '',
+      image: null,
       available: true,
       order: menu.items.length + 1,
     });
-    render();
+    setDirty(); render();
   }
   function updateItem(id, key, val) {
     const it = menu.items.find(x => x.id === id);
     if (!it) return;
-    if (key === 'price' || key === 'order') it[key] = Number(val);
+    if (key === 'price' || key === 'order') it[key] = Number(val) || 0;
+    else if (key === 'calories') it[key] = val === '' ? null : Number(val);
     else if (key === 'available') it[key] = !!val;
     else it[key] = val;
+    setDirty();
+    if (key === 'available' || key === 'categoryId' || key === 'order') render();
   }
   function delItem(id) {
     if (!confirm('この商品を削除しますか？')) return;
+    const it = menu.items.find(x => x.id === id);
+    // 画像があれば削除も試みる（保存後に整合性合わせる）
+    if (it?.image) deleteImageFile(it.image).catch(() => {});
     menu.items = menu.items.filter(x => x.id !== id);
-    render();
+    setDirty(); render();
   }
 
-  // 設定変更
-  document.getElementById('shop-name').onchange = (e) => menu.settings.shopName = e.target.value;
-  document.getElementById('tax-rate').onchange = (e) => menu.settings.taxRate = Number(e.target.value);
-  document.getElementById('tax-included').onchange = (e) => menu.settings.taxIncluded = e.target.value === 'true';
+  // ── 画像アップロード ──
+  function uploadImage(itemId) {
+    uploadingItemId = itemId;
+    document.getElementById('file-input').value = '';
+    document.getElementById('file-input').click();
+  }
 
+  document.getElementById('file-input').onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file || !uploadingItemId) return;
+    const it = menu.items.find(x => x.id === uploadingItemId);
+    if (!it) return;
+    try {
+      toast('画像を処理中...');
+      const dataUrl = await resizeImage(file, 800, 0.85);
+      const r = await fetch('/api/restaurant/upload-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dataUrl }),
+      });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || 'アップロードに失敗しました');
+      // 既存画像があれば物理削除（メニューはまだ未保存だが画像ファイルだけ整理）
+      if (it.image) deleteImageFile(it.image).catch(() => {});
+      it.image = j.url;
+      setDirty(); render();
+      toast('✓ 画像を設定しました');
+    } catch (err) {
+      toast(err.message, true);
+    }
+    uploadingItemId = null;
+  };
+
+  async function deleteImage(itemId) {
+    const it = menu.items.find(x => x.id === itemId);
+    if (!it || !it.image) return;
+    if (!confirm('画像を削除しますか？')) return;
+    const oldUrl = it.image;
+    it.image = null;
+    setDirty(); render();
+    try { await deleteImageFile(oldUrl); } catch {}
+    toast('✓ 画像を削除しました');
+  }
+
+  async function deleteImageFile(url) {
+    await fetch('/api/restaurant/delete-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+  }
+
+  function resizeImage(file, maxW, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('ファイル読み込みエラー'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('画像形式が無効です'));
+        img.onload = () => {
+          const scale = Math.min(1, maxW / img.width);
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ── 店舗設定 ──
+  document.getElementById('shop-name').onchange = (e) => { menu.settings.shopName = e.target.value; setDirty(); };
+  document.getElementById('tax-rate').onchange = (e) => { menu.settings.taxRate = Number(e.target.value); setDirty(); };
+  document.getElementById('tax-included').onchange = (e) => { menu.settings.taxIncluded = e.target.value === 'true'; setDirty(); };
+
+  // ── 保存 ──
   document.getElementById('btn-save').onclick = async (e) => {
     e.target.disabled = true; e.target.textContent = '保存中...';
     try {
@@ -277,6 +518,7 @@
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || '保存に失敗');
+      setDirty(false);
       toast('✓ 保存しました');
     } catch (err) {
       toast(err.message, true);
@@ -285,7 +527,11 @@
     }
   };
 
-  window.App = { addCat, updateCat, delCat, addItem, updateItem, delItem };
+  window.addEventListener('beforeunload', (e) => {
+    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  window.App = { addCat, updateCat, delCat, addItem, updateItem, delItem, uploadImage, deleteImage };
   load();
 })();
 </script>

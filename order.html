@@ -53,14 +53,17 @@
     display: flex; gap: 12px; align-items: center; box-shadow: var(--shadow);
   }
   .item-emoji {
-    width: 56px; height: 56px; font-size: 2rem;
+    width: 72px; height: 72px; font-size: 2rem;
     display: flex; align-items: center; justify-content: center;
     background: #fff4f0; border-radius: 12px; flex-shrink:0;
+    overflow: hidden;
   }
+  .item-emoji img { width: 100%; height: 100%; object-fit: cover; }
   .item-info { flex: 1; min-width: 0; }
   .item-name { font-weight: 700; font-size: 1rem; margin-bottom: 2px; }
   .item-desc { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; line-height:1.3; }
   .item-price { font-weight: 700; color: var(--primary); font-size: 0.95rem; }
+  .item-cal { font-size: 0.7rem; color: var(--muted); margin-left: 6px; font-weight: 500; }
   .item-unavail { opacity: 0.5; }
   .item-unavail-label { font-size:0.7rem; background:#eee; color:var(--muted); padding:2px 8px; border-radius:6px; }
 
@@ -248,13 +251,17 @@
         const cur = cart.get(it.id);
         const qty = cur?.qty || 0;
         const unavail = !it.available;
+        const thumb = it.image
+          ? `<img src="${escapeHtml(it.image)}" alt="${escapeHtml(it.name)}">`
+          : (it.emoji || '🍽️');
+        const calHtml = it.calories ? `<span class="item-cal">${it.calories}kcal</span>` : '';
         html += `
           <div class="item ${unavail ? 'item-unavail' : ''}">
-            <div class="item-emoji">${it.emoji || '🍽️'}</div>
+            <div class="item-emoji">${thumb}</div>
             <div class="item-info">
               <div class="item-name">${escapeHtml(it.name)}</div>
               ${it.description ? `<div class="item-desc">${escapeHtml(it.description)}</div>` : ''}
-              <div class="item-price">¥${it.price.toLocaleString()}${unavail ? ' <span class="item-unavail-label">在庫切れ</span>' : ''}</div>
+              <div class="item-price">¥${it.price.toLocaleString()}${calHtml}${unavail ? ' <span class="item-unavail-label">在庫切れ</span>' : ''}</div>
             </div>
             ${unavail ? '' : `
               <div class="qty-ctrl">
