@@ -6246,7 +6246,7 @@ ${slotLines}
   }
 
   /* ─── リスト折りたたみ: 多い時は省略表示 ─── */
-  const STAFF_LIST_COLLAPSE_THRESHOLD = 8;
+  const STAFF_LIST_COLLAPSE_THRESHOLD = 3;
   function _isExpandedKey(listId) { return 'rakuraku_list_expanded_' + listId; }
   function isListExpanded(listId) { try { return storageGet(_isExpandedKey(listId)) === '1'; } catch(e) { return false; } }
   function toggleList(listId) {
