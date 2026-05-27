@@ -2267,13 +2267,13 @@
         <span class="sf-step-pill">01</span>
       </div>
       <div>
-        <div class="sf-step-title">基本情報</div>
-        <div class="sf-step-sub">お名前を入力してください</div>
+        <div class="sf-step-title" data-i18n="sf.step1_title">基本情報</div>
+        <div class="sf-step-sub" data-i18n="sf.step1_sub">お名前を入力してください</div>
       </div>
     </div>
 
     <div class="sf-field name-input-wrap">
-      <label class="sf-label">氏名 <span style="font-size:10px;color:var(--slate-400);font-weight:600;margin-left:4px;">💡 1文字入力で候補表示</span></label>
+      <label class="sf-label"><span data-i18n="sf.label_name">氏名</span> <span style="font-size:10px;color:var(--slate-400);font-weight:600;margin-left:4px;" data-i18n="sf.label_name_hint">💡 1文字入力で候補表示</span></label>
       <input class="sf-input" type="text" id="staff-name"
              placeholder="山田 太郎"
              oninput="onNameInput()" onfocus="onNameInput()" autocomplete="off" />
@@ -2290,16 +2290,16 @@
 
     <div class="sf-field sf-field--last">
       <label class="sf-label">
-        メールアドレス
-        <span class="sf-opt-tag">任意</span>
+        <span data-i18n="sf.label_email">メールアドレス</span>
+        <span class="sf-opt-tag" data-i18n="common.optional">任意</span>
       </label>
       <input class="sf-input" type="email" id="staff-email"
              placeholder="taro@example.com"
              oninput="hideAutofillBadge()" />
-      <div id="autofill-badge" class="autofill-badge" style="display:none;">
+      <div id="autofill-badge" class="autofill-badge" style="display:none;" data-i18n="sf.autofill_badge">
         ✨ 前回のメールアドレスを自動入力しました
       </div>
-      <div class="sf-hint">シフト不足時に優先的に通知が届きます</div>
+      <div class="sf-hint" data-i18n="sf.email_hint">シフト不足時に優先的に通知が届きます</div>
     </div>
   </div>
 
@@ -2310,8 +2310,8 @@
         <span class="sf-step-pill">02</span>
       </div>
       <div style="flex:1;">
-        <div class="sf-step-title">希望日を選択</div>
-        <div class="sf-step-sub">出勤可能な日付をタップで選択（複数可）</div>
+        <div class="sf-step-title" data-i18n="sf.step2_title">希望日を選択</div>
+        <div class="sf-step-sub" data-i18n="sf.step2_sub">出勤可能な日付をタップで選択（複数可）</div>
       </div>
       <span class="sf-count-badge" id="dates-badge"></span>
     </div>
@@ -2326,7 +2326,7 @@
     </div>
 
     <div id="selected-dates-section" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--slate-100);">
-      <div class="sf-inner-label">選択中の日付</div>
+      <div class="sf-inner-label" data-i18n="sf.selected_dates">選択中の日付</div>
       <div class="dates-wrap" id="selected-dates-list" style="min-height:auto;"></div>
     </div>
   </div>
@@ -2338,8 +2338,8 @@
         <span class="sf-step-pill">03</span>
       </div>
       <div style="flex:1;">
-        <div class="sf-step-title">希望時間帯</div>
-        <div class="sf-step-sub">出勤可能な時間帯を選択（複数可）</div>
+        <div class="sf-step-title" data-i18n="sf.step3_title">希望時間帯</div>
+        <div class="sf-step-sub" data-i18n="sf.step3_sub">出勤可能な時間帯を選択（複数可）</div>
       </div>
       <span class="time-count-badge zero" id="time-count-badge"></span>
     </div>
@@ -2347,28 +2347,28 @@
     <div class="ts-grid" id="time-slots">
       <button type="button" class="time-chip ts-card" data-slot="morning" onclick="toggleTime(this)">
         <span class="ts-emoji">🌅</span>
-        <div class="ts-info"><div class="ts-name">朝</div><div class="ts-time">9:00〜13:00</div></div>
+        <div class="ts-info"><div class="ts-name" data-i18n="time.morning">朝</div><div class="ts-time">9:00〜13:00</div></div>
       </button>
       <button type="button" class="time-chip ts-card" data-slot="lunch" onclick="toggleTime(this)">
         <span class="ts-emoji">☀️</span>
-        <div class="ts-info"><div class="ts-name">昼</div><div class="ts-time">11:00〜15:00</div></div>
+        <div class="ts-info"><div class="ts-name" data-i18n="time.lunch">昼</div><div class="ts-time">11:00〜15:00</div></div>
       </button>
       <button type="button" class="time-chip ts-card" data-slot="afternoon" onclick="toggleTime(this)">
         <span class="ts-emoji">🌤</span>
-        <div class="ts-info"><div class="ts-name">夕方</div><div class="ts-time">15:00〜19:00</div></div>
+        <div class="ts-info"><div class="ts-name" data-i18n="time.afternoon">夕方</div><div class="ts-time">15:00〜19:00</div></div>
       </button>
       <button type="button" class="time-chip ts-card" data-slot="evening" onclick="toggleTime(this)">
         <span class="ts-emoji">🌙</span>
-        <div class="ts-info"><div class="ts-name">夜</div><div class="ts-time">18:00〜22:00</div></div>
+        <div class="ts-info"><div class="ts-name" data-i18n="time.evening">夜</div><div class="ts-time">18:00〜22:00</div></div>
       </button>
       <button type="button" class="time-chip ts-card ts-card--full" data-slot="full" onclick="toggleTime(this)">
         <span class="ts-emoji">🕐</span>
-        <div class="ts-info"><div class="ts-name">フルタイム</div><div class="ts-time">終日対応可</div></div>
+        <div class="ts-info"><div class="ts-name" data-i18n="time.full">フルタイム</div><div class="ts-time" data-i18n="time.full_sub">終日対応可</div></div>
       </button>
     </div>
 
     <div class="custom-time-wrap">
-      <div class="sf-inner-label">カスタム時間を指定</div>
+      <div class="sf-inner-label" data-i18n="sf.custom_time">カスタム時間を指定</div>
       <div class="time-picker-row">
         <input type="time" id="ct-start" />
         <span class="time-picker-sep">〜</span>
@@ -2386,8 +2386,8 @@
         <span class="sf-step-pill sf-step-pill--final">04</span>
       </div>
       <div>
-        <div class="sf-step-title">確認・提出</div>
-        <div class="sf-step-sub">内容を確認して提出してください</div>
+        <div class="sf-step-title" data-i18n="sf.step4_title">確認・提出</div>
+        <div class="sf-step-sub" data-i18n="sf.step4_sub">内容を確認して提出してください</div>
       </div>
     </div>
 
