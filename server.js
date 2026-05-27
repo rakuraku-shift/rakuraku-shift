@@ -41,6 +41,7 @@ const SURVEY_FILE       = path.join(DATA_DIR, 'surveys.json');
 const REGISTRY_FILE     = path.join(DATA_DIR, 'staff-registry.json');
 const SUBSCRIPTIONS_FILE = path.join(DATA_DIR, 'subscriptions.json');
 const SHOPS_DIR          = path.join(DATA_DIR, 'shops');
+const ADMIN_FILE         = path.join(DATA_DIR, 'admin.json');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
 if (!fs.existsSync(SHOPS_DIR)) fs.mkdirSync(SHOPS_DIR, { recursive: true });
@@ -233,6 +234,27 @@ function setShopKey(shopId, key, value) {
   data._updatedAt = Date.now();
   saveShopData(shopId, data);
   return data;
+}
+
+/* ── 本社管理データ (noru-admin.html 用) ── */
+function loadAdminData() { return readJSON(ADMIN_FILE, {}); }
+function saveAdminData(data) { writeJSON(ADMIN_FILE, data); }
+function setAdminKey(key, value) {
+  const data = loadAdminData();
+  data[key] = value;
+  data._updatedAt = Date.now();
+  saveAdminData(data);
+  return data;
+}
+/* shopId から店舗メタ情報（名前・オーナー等）を取得 */
+function getShopMetaById(shopId) {
+  const data = loadAdminData();
+  let shops = [];
+  try {
+    const raw = data['noru_admin_shops'];
+    shops = typeof raw === 'string' ? JSON.parse(raw) : (raw || []);
+  } catch(e) {}
+  return shops.find(s => s.shopId === shopId || s.id === shopId) || null;
 }
 
 // ══════════════════════════════════════════
