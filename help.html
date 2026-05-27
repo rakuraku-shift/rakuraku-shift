@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>よくあるご質問・サポート — RAKURAKU</title>
+<meta name="description" content="RAKURAKU シフト管理SaaSのよくあるご質問・サポート。導入・操作・料金・トラブルシューティング。" />
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<meta name="theme-color" content="#4F46E5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --indigo:#4F46E5; --indigo-d:#3730A3; --indigo-l:#EEF2FF;
+    --purple:#7C3AED; --emerald:#10B981; --emerald-l:#ECFDF5;
+    --amber:#F59E0B; --red:#EF4444;
+    --slate-900:#0F172A; --slate-700:#334155; --slate-500:#64748B; --slate-300:#CBD5E1; --slate-200:#E2E8F0; --slate-100:#F1F5F9; --slate-50:#F8FAFC;
+  }
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:#fff;line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:var(--indigo);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);}
+  .nav-inner{max-width:920px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;letter-spacing:-.01em;}
+  .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;box-shadow:0 4px 12px rgba(79,70,229,.3);}
+  .nav-back{font-size:13px;color:var(--slate-700);font-weight:700;}
+
+  .container{max-width:780px;margin:0 auto;padding:0 24px;}
+  .hero{padding:60px 0 30px;text-align:center;}
+  .hero h1{font-size:36px;font-weight:900;letter-spacing:-.02em;margin-bottom:12px;}
+  .hero p{font-size:15px;color:var(--slate-500);font-weight:600;}
+  @media(max-width:640px){.hero h1{font-size:26px;}}
+
+  .search-box{margin:0 auto 30px;max-width:520px;}
+  .search-input{width:100%;padding:14px 18px;border:2px solid var(--slate-200);border-radius:12px;font-size:14px;font-family:inherit;outline:none;background:#fff;transition:border-color .15s;}
+  .search-input:focus{border-color:var(--indigo);}
+
+  .category-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:40px;}
+  @media(max-width:640px){.category-nav{grid-template-columns:1fr 1fr;}}
+  .cat-btn{padding:12px;background:var(--slate-50);border:1.5px solid var(--slate-100);border-radius:10px;font-size:12px;font-weight:800;color:var(--slate-700);text-align:center;cursor:pointer;transition:all .15s;}
+  .cat-btn:hover, .cat-btn.active{border-color:var(--indigo);background:var(--indigo-l);color:var(--indigo);}
+  .cat-btn .ic{font-size:20px;display:block;margin-bottom:4px;}
+
+  .faq-group{margin-bottom:40px;}
+  .faq-group-title{font-size:18px;font-weight:900;color:var(--indigo);margin-bottom:14px;display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:2px solid var(--indigo-l);}
+  .faq-item{border-bottom:1px solid var(--slate-100);padding:16px 0;}
+  .faq-q{font-weight:800;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;color:var(--slate-900);}
+  .faq-q::after{content:'＋';color:var(--indigo);font-weight:900;font-size:20px;flex-shrink:0;transition:transform .2s;}
+  .faq-item.open .faq-q::after{transform:rotate(45deg);}
+  .faq-a{font-size:14px;color:var(--slate-500);max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;line-height:1.8;}
+  .faq-item.open .faq-a{max-height:600px;padding-top:14px;}
+  .faq-a code{background:var(--slate-100);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--indigo);font-weight:700;}
+  .faq-a ol, .faq-a ul{padding-left:20px;margin:8px 0;}
+  .faq-a li{margin:4px 0;}
+
+  .contact-card{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-radius:20px;padding:40px 32px;text-align:center;margin:30px 0 60px;}
+  .contact-card h2{font-size:24px;font-weight:900;margin-bottom:10px;color:#fff;}
+  .contact-card p{color:rgba(255,255,255,.85);margin-bottom:24px;font-size:14px;}
+  .contact-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .contact-btn{padding:12px 24px;background:#fff;color:var(--indigo)!important;border-radius:10px;font-size:13px;font-weight:800;text-decoration:none;}
+  .contact-btn:hover{text-decoration:none;opacity:.9;}
+
+  .footer{text-align:center;padding:30px 0;font-size:11px;color:var(--slate-500);border-top:1px solid var(--slate-100);}
+
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <span class="logo-mark">R</span>
+      <span>RAKURAKU</span>
+    </a>
+    <a href="/" class="nav-back">← トップへ戻る</a>
+  </div>
+</header>
+
+<div class="container">
+
+<section class="hero">
+  <h1>よくあるご質問・サポート</h1>
+  <p>導入・操作・料金・トラブルなど、お困りごとはこちら。</p>
+</section>
+
+<div class="search-box">
+  <input type="text" class="search-input" id="search-input" placeholder="🔍 質問を検索（例: 料金, QR, スタッフ）" oninput="filterFAQ()">
+</div>
+
+<div class="category-nav">
+  <div class="cat-btn active" onclick="showCategory('all')"><span class="ic">📋</span>すべて</div>
+  <div class="cat-btn" onclick="showCategory('start')"><span class="ic">🚀</span>導入・開始</div>
+  <div class="cat-btn" onclick="showCategory('use')"><span class="ic">⚙️</span>使い方</div>
+  <div class="cat-btn" onclick="showCategory('price')"><span class="ic">💴</span>料金・解約</div>
+  <div class="cat-btn" onclick="showCategory('trouble')"><span class="ic">🆘</span>トラブル</div>
+  <div class="cat-btn" onclick="showCategory('feature')"><span class="ic">✨</span>機能</div>
+  <div class="cat-btn" onclick="showCategory('secure')"><span class="ic">🔒</span>セキュリティ</div>
+  <div class="cat-btn" onclick="showCategory('other')"><span class="ic">💬</span>その他</div>
+</div>
+
+<!-- 導入・開始 -->
+<div class="faq-group" data-cat="start">
+  <div class="faq-group-title">🚀 導入・開始</div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">14日間の無料トライアルはどうやって始めればいいですか？</div>
+    <div class="faq-a">トップページの「<strong>🎁 14日間無料で試す</strong>」ボタンから、店舗名・お名前・メールアドレスを入力するだけで開始できます。クレジットカードの登録は不要です。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">アプリのインストールは必要ですか？</div>
+    <div class="faq-a">不要です。スマホ・PCのブラウザで利用できます。<br>iPhoneの場合は Safari で開いて「ホーム画面に追加」、Android Chromeは「アプリをインストール」でアプリのように使えます（PWA対応）。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">スタッフ側の登録は必要ですか？</div>
+    <div class="faq-a">アカウント作成は<strong>不要</strong>です。店長が共有するQRコードをスタッフが読み取って、名前と希望日時を入力するだけで提出完了します。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">何人くらいのスタッフを管理できますか？</div>
+    <div class="faq-a">スタッフ数は<strong>無制限</strong>です。月額料金は店舗単位なので、何人スタッフが居ても追加料金はかかりません。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">3分で始めるガイドはありますか？</div>
+    <div class="faq-a">はい、<a href="/getting-started.html">こちらのガイド</a>で、ステップ・バイ・ステップで案内しています。</div>
+  </div>
+</div>
+
+<!-- 使い方 -->
+<div class="faq-group" data-cat="use">
+  <div class="faq-group-title">⚙️ 使い方</div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">QRコードはどこから発行できますか？</div>
+    <div class="faq-a">本社管理コンソール（<code>/noru-admin.html</code>）の店舗カードに自動的に表示されます。<br>
+      <ul>
+        <li><strong>⬇️ PNG ダウンロード</strong> — 高画質画像</li>
+        <li><strong>🖨️ A4印刷</strong> — 店内掲示用デザイン</li>
+        <li><strong>📲 LINE で共有</strong> — テキストとURLをコピー</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">複数店舗の管理はできますか？</div>
+    <div class="faq-a">はい、店舗ごとに別URLが発行されるので、データを混在させずに複数店舗を運用できます。本社管理コンソールから全店舗を一元管理できます。各店舗で月額がかかります。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">深夜割増以外の割増賃金にも対応していますか？</div>
+    <div class="faq-a">現在は深夜（22:00〜翌5:00 +25%）の自動計算に対応しています。時間外労働・休日労働の割増は労基法に基づき別途計算が必要ですが、アプリ内に解説パネルを用意しています。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">不足コマが出た時はどうなりますか？</div>
+    <div class="faq-a">3段階で自動的に募集をかけます：
+      <ol>
+        <li>既に提出しているスタッフへ「時間調整」依頼メールを一斉送信</li>
+        <li>自社スタッフに「時給アップで来てくれない？」と内部募集（時給インセンティブ付き）</li>
+        <li>それでも足りなければ <strong>Timee / シェアフル / バイトル</strong> へワンタップで求人配信</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Chrome拡張機能は必須ですか？</div>
+    <div class="faq-a">必須ではありません。拡張機能なしでも「クリップボード自動コピー → 各サイトを新タブで開く → ペースト」の半自動配信が動作します。<br>
+    拡張機能を入れると、フォームに自動入力されるため完全ワンタップになります。<a href="/extension/README.md">インストール手順</a></div>
+  </div>
+</div>
+
+<!-- 料金・解約 -->
+<div class="faq-group" data-cat="price">
+  <div class="faq-group-title">💴 料金・解約</div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">月額料金はいくらですか？</div>
+    <div class="faq-a"><strong>1店舗あたり 月額 ¥9,800（税込）</strong>です。初期費用・契約期間の縛り・違約金は一切ありません。<br>年払いプランなら <strong>¥98,000/年（2ヶ月分お得）</strong> もご用意しています。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">解約はいつでもできますか？</div>
+    <div class="faq-a">はい、いつでも解約可能です。違約金は一切ありません。解約申請の翌月以降、ご請求は発生しません。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">14日間の無料期間中に解約したらどうなりますか？</div>
+    <div class="faq-a">14日間の無料期間中はクレカ登録不要なので、<strong>何もせずに離脱すれば自動的に終了</strong>します。費用は一切発生しません。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">支払い方法は何がありますか？</div>
+    <div class="faq-a">クレジットカード（Visa / Mastercard / JCB / AMEX）と銀行振込（請求書発行）に対応しています。クレジットカードは月次自動引落です。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">領収書は発行できますか？</div>
+    <div class="faq-a">はい、Stripe（決済代行）から自動的に領収書PDFがメール送信されます。インボイス対応の登録番号も記載されます。</div>
+  </div>
+</div>
+
+<!-- トラブル -->
+<div class="faq-group" data-cat="trouble">
+  <div class="faq-group-title">🆘 トラブルシューティング</div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">ライセンスコードのメールが届きません</div>
+    <div class="faq-a">以下をご確認ください：
+      <ol>
+        <li><strong>迷惑メールフォルダ</strong>に振り分けられていないか</li>
+        <li>登録メールアドレスのスペルミスがないか</li>
+        <li>会社のメールセキュリティで自動ブロックされていないか（@gmail.comからの送信です）</li>
+      </ol>
+      それでも届かない場合は <a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a> までご連絡ください。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">スタッフが提出しても店長画面に反映されない</div>
+    <div class="faq-a">以下をご確認ください：
+      <ol>
+        <li>店長とスタッフが <strong>同じ店舗URL</strong>（?shop=◯◯）を使っているか</li>
+        <li>画面右下に <strong>「● オンライン同期中」</strong> が表示されているか（緑バッジ）</li>
+        <li>店長画面の <code>⌘+Shift+R</code> で強制再読込</li>
+      </ol>
+      「オフライン」表示の場合、インターネット接続を確認してください。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">管理者PINを忘れました</div>
+    <div class="faq-a">初期PINは <code>1234</code> です。変更後に忘れた場合は、ブラウザの設定でlocalStorageをクリアすると初期PINに戻ります。<br>※ ただしシフトデータも消えるため、本社管理コンソールから再ログインしてサーバー同期させてください。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">QRコードを読み取っても画面が表示されない</div>
+    <div class="faq-a">QRコードに埋め込まれているURLが古い場合があります。本社管理コンソールから最新QRを再発行してください。<br>または、URLを直接ブラウザに貼り付けてアクセスをお試しください。</div>
+  </div>
+</div>
+
+<!-- 機能 -->
+<div class="faq-group" data-cat="feature">
+  <div class="faq-group-title">✨ 機能・カスタマイズ</div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">給与計算の出力データは？</div>
+    <div class="faq-a">スタッフごとの月次給与（時給×勤務時間+深夜割増+交通費）をCSV/印刷可能形式で出力できます。深夜割増は労働基準法第37条準拠で自動計算されます。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">スタッフ評価機能とは？</div>
+    <div class="faq-a">スタッフをポジションごと（ホール・キッチン・レジ等）に5段階で評価し、シフト編成時に <strong>得意なポジションに自動配置</strong> できる機能です。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">店舗ロゴをカスタマイズできますか？</div>
+    <div class="faq-a">現在はベータ機能として、店舗管理画面の設定からロゴ画像をアップロードできます。今後のアップデートで本格対応予定です。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">予約管理機能はありますか？</div>
+    <div class="faq-a">現バージョンではシフト管理に特化しています。予約管理は2026年下期に追加予定です。要望はぜひお寄せください。</div>
+  </div>
+</div>
+
+<!-- セキュリティ -->
+<div class="faq-group" data-cat="secure">
+  <div class="faq-group-title">🔒 セキュリティ・プライバシー</div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">データはどこに保存されていますか？</div>
+    <div class="faq-a">日本国内のクラウドサーバー（Railway）で暗号化保管されています。スタッフの個人情報（メールアドレス等）は同サーバー内に閉じており、第三者への提供は行いません。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">クレジットカード情報は安全ですか？</div>
+    <div class="faq-a">弊社はクレジットカード情報を保持していません。決済は <strong>Stripe（PCI DSS Level 1 準拠）</strong> が直接処理します。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">解約後、データはどうなりますか？</div>
+    <div class="faq-a">契約終了後3ヶ月間データを保管し、その後完全に削除します。ご本人からの即時削除要請にも対応します。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">管理者PINの強度は？</div>
+    <div class="faq-a">4桁PINで、5回連続失敗で運営に通知されます。<br>より強固な保護をご希望の場合は、ブラウザ自体のパスワードロック・指紋認証併用を推奨します。</div>
+  </div>
+</div>
+
+<!-- その他 -->
+<div class="faq-group" data-cat="other">
+  <div class="faq-group-title">💬 その他</div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">業種は飲食店だけですか？</div>
+    <div class="faq-a">主に <strong>バー・飲食店</strong> に最適化していますが、シフト制で運営されている業種（小売・美容・サービス）でも基本機能はお使いいただけます。深夜割増計算は飲食店業態向けに特化しています。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">機能追加の要望は受け付けていますか？</div>
+    <div class="faq-a">はい、大歓迎です！ <a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a> までご連絡ください。導入店舗様のご要望を優先的に開発しています。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">無料デモは受けられますか？</div>
+    <div class="faq-a">はい、15-30分のオンラインデモ（Zoom）を承っています。お問い合わせフォームから「<strong>無料デモ希望</strong>」とお知らせください。</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">導入実績はどれくらいありますか？</div>
+    <div class="faq-a">2026年5月のサービスローンチ直後で、現在は初期パートナー店舗様と運用中です。導入第1号店舗様には <strong>3ヶ月無料</strong> 等の特典を提供しています。お早めにご相談ください。</div>
+  </div>
+</div>
+
+</div>
+
+<div class="container">
+  <div class="contact-card">
+    <h2>解決しなかった場合は</h2>
+    <p>お気軽にお問い合わせください。代表が直接対応します。</p>
+    <div class="contact-links">
+      <a class="contact-btn" href="mailto:koizumishota0323@gmail.com">📨 メール</a>
+      <a class="contact-btn" href="tel:08051683303">📞 080-5168-3303</a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  RAKURAKU / 代表 小泉 咲太 · &copy; 2026 RAKURAKU. All rights reserved.
+</div>
+
+<script>
+  function showCategory(cat) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    event.target.closest('.cat-btn').classList.add('active');
+    document.querySelectorAll('.faq-group').forEach(g => {
+      g.classList.toggle('hidden', cat !== 'all' && g.dataset.cat !== cat);
+    });
+  }
+  function filterFAQ() {
+    const q = document.getElementById('search-input').value.toLowerCase().trim();
+    document.querySelectorAll('.faq-item').forEach(item => {
+      const text = item.innerText.toLowerCase();
+      item.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+    document.querySelectorAll('.faq-group').forEach(g => {
+      const visible = [...g.querySelectorAll('.faq-item')].some(i => i.style.display !== 'none');
+      g.style.opacity = visible ? '1' : '.3';
+    });
+  }
+</script>
+
+</body>
+</html>
