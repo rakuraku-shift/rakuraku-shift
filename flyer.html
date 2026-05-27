@@ -36,7 +36,7 @@
   .toolbar .hint{color:#94A3B8;font-size:11px;margin-left:auto;}
 
   /* ────── A4 ページ ────── */
-  .page{width:210mm;height:297mm;background:#fff;margin:20px auto;box-shadow:0 8px 32px rgba(0,0,0,.15);position:relative;overflow:hidden;page-break-after:always;}
+  .page{width:210mm;height:297mm;background:#fff;margin:20px auto;box-shadow:0 8px 32px rgba(0,0,0,.15);position:relative;overflow:hidden;page-break-after:always;display:flex;flex-direction:column;}
   .page:last-child{page-break-after:auto;margin-bottom:80px;}
 
   /* ============================================
@@ -75,19 +75,19 @@
   .trial-cta-qr img{width:30mm;height:30mm;display:block;background:#fff;padding:2mm;border-radius:6px;}
   .trial-cta-qr-lbl{font-size:9px;color:var(--slate-500);font-weight:700;margin-top:2mm;}
 
-  .front-footer{position:absolute;bottom:0;left:0;right:0;background:var(--slate-900);color:#fff;padding:5mm 14mm;display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;}
+  .front-footer{margin-top:auto;background:var(--slate-900);color:#fff;padding:5mm 14mm;display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;flex-shrink:0;}
   .front-footer .ff-url{color:#FCD34D;}
   .front-footer .ff-contact{color:#CBD5E1;}
 
   /* ============================================
      BACK PAGE
      ============================================ */
-  .back-header{padding:12mm 14mm 6mm;background:var(--slate-50);border-bottom:3px solid var(--indigo);}
+  .back-header{padding:9mm 14mm 5mm;background:var(--slate-50);border-bottom:3px solid var(--indigo);}
   .back-eyebrow{display:inline-block;font-size:10px;font-weight:800;color:var(--indigo);letter-spacing:.08em;margin-bottom:3mm;}
   .back-h2{font-size:24px;font-weight:900;line-height:1.2;letter-spacing:-.01em;}
   .back-h2 .hl{background:linear-gradient(180deg,transparent 60%,#FEF3C7 60%);}
 
-  .killer-feature{padding:7mm 14mm 5mm;}
+  .killer-feature{padding:5mm 14mm 4mm;}
   .kf-card{background:linear-gradient(135deg,var(--indigo) 0%,var(--purple) 100%);color:#fff;border-radius:12px;padding:6mm 6mm;position:relative;overflow:hidden;}
   .kf-card::after{content:'⚡';position:absolute;top:-6mm;right:-6mm;font-size:80px;opacity:.12;}
   .kf-title{font-size:18px;font-weight:900;margin-bottom:4mm;letter-spacing:-.01em;position:relative;z-index:1;}
@@ -99,13 +99,13 @@
   .kf-bottom{margin-top:4mm;background:rgba(252,211,77,.15);border-left:3px solid #FCD34D;padding:3mm 4mm;border-radius:0 6px 6px 0;font-size:10px;font-weight:700;position:relative;z-index:1;}
   .kf-bottom strong{color:#FCD34D;}
 
-  .features-grid{padding:5mm 14mm 5mm;display:grid;grid-template-columns:1fr 1fr;gap:3mm 5mm;}
+  .features-grid{padding:3mm 14mm 3mm;display:grid;grid-template-columns:1fr 1fr;gap:2.5mm 4mm;}
   .ft{background:var(--slate-50);border-radius:8px;padding:4mm;border:1px solid var(--slate-100);}
   .ft-icon{font-size:18px;}
   .ft-title{font-size:11px;font-weight:800;margin-top:1mm;letter-spacing:-.01em;}
   .ft-desc{font-size:9px;color:var(--slate-500);margin-top:1.5mm;line-height:1.55;font-weight:500;}
 
-  .compare{margin:3mm 14mm;background:#FEF3C7;border:1px solid #FCD34D;border-radius:10px;padding:5mm;}
+  .compare{margin:2mm 14mm;background:#FEF3C7;border:1px solid #FCD34D;border-radius:10px;padding:4mm 5mm;}
   .compare-title{font-size:11px;font-weight:900;color:#92400E;letter-spacing:.02em;margin-bottom:3mm;}
   .compare-row{display:grid;grid-template-columns:50mm 1fr;gap:3mm;font-size:11px;align-items:center;padding:1.5mm 0;}
   .compare-row + .compare-row{border-top:1px dashed rgba(146,64,14,.2);}
@@ -114,7 +114,7 @@
   .compare-val .strike{text-decoration:line-through;color:var(--slate-500);font-weight:600;font-size:10px;margin-right:5px;}
   .compare-val.win{color:#047857;}
 
-  .pricing-strip{margin:4mm 14mm;background:linear-gradient(135deg,var(--slate-900),#1E293B);color:#fff;border-radius:12px;padding:5mm 6mm;display:flex;justify-content:space-between;align-items:center;}
+  .pricing-strip{margin:2mm 14mm 4mm;background:linear-gradient(135deg,var(--slate-900),#1E293B);color:#fff;border-radius:12px;padding:4mm 5mm;display:flex;justify-content:space-between;align-items:center;}
   .ps-left .ps-plan{font-size:10px;font-weight:800;color:#A78BFA;letter-spacing:.06em;}
   .ps-left .ps-amount{font-size:30px;font-weight:900;line-height:1;letter-spacing:-.02em;margin-top:1mm;}
   .ps-left .ps-amount .yen{font-size:16px;vertical-align:top;margin-right:2px;}
@@ -124,7 +124,7 @@
   .ps-right-badge{background:var(--emerald);color:#fff;font-size:10px;font-weight:900;padding:3px 10px;border-radius:20px;letter-spacing:.04em;}
   .ps-right-note{font-size:9px;color:#94A3B8;margin-top:2mm;font-weight:600;line-height:1.5;}
 
-  .back-footer{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:6mm 14mm;display:flex;align-items:center;gap:6mm;}
+  .back-footer{margin-top:auto;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:5mm 14mm;display:flex;align-items:center;gap:5mm;flex-shrink:0;}
   .bf-left{flex:1;}
   .bf-cta{font-size:16px;font-weight:900;letter-spacing:-.01em;}
   .bf-contact{font-size:11px;margin-top:2mm;font-weight:700;line-height:1.6;}
