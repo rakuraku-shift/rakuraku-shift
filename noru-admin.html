@@ -301,6 +301,18 @@
     <div id="sales-overview-content"><div class="ov-empty">契約店舗が登録されると表示されます</div></div>
   </div>
 
+  <!-- 不正打刻アラート -->
+  <div class="overview-card" id="violations-card" style="display:none;">
+    <div class="overview-title">🚫 不正打刻アラート（GPS範囲外）</div>
+    <div id="violations-content"></div>
+  </div>
+
+  <!-- 変更届受信箱 -->
+  <div class="overview-card" id="change-req-card" style="display:none;">
+    <div class="overview-title">📨 休み変更届（要対応）</div>
+    <div id="change-req-content"></div>
+  </div>
+
   <!-- 店舗一覧 -->
   <div class="sec-hdr">
     <div class="sec-title">契約店舗</div>
@@ -355,6 +367,26 @@
     <div class="form-row">
       <label class="form-label">電話番号</label>
       <input id="f-phone" class="form-input" placeholder="090-0000-0000">
+    </div>
+    <div class="form-row" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+      <label class="form-label">🌍 店舗位置（GPS出退勤の判定に使用）</label>
+    </div>
+    <div class="form-row-2">
+      <div class="form-row" style="margin:0;">
+        <label class="form-label">緯度（latitude）</label>
+        <input id="f-lat" class="form-input" type="number" step="0.00000001" placeholder="35.6595">
+      </div>
+      <div class="form-row" style="margin:0;">
+        <label class="form-label">経度（longitude）</label>
+        <input id="f-lng" class="form-input" type="number" step="0.00000001" placeholder="139.7004">
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">許容半径（m）— 標準: 200m</label>
+      <input id="f-radius" class="form-input" type="number" placeholder="200">
+      <div style="font-size:10px;color:var(--slate-5);margin-top:4px;">
+        💡 <a href="https://www.google.com/maps" target="_blank" style="color:var(--indigo);">Google Maps</a> で店舗を右クリック → 表示された緯度経度をコピー
+      </div>
     </div>
     <button class="modal-save" id="modal-save-btn" onclick="saveShop()">登録する</button>
   </div>
@@ -667,6 +699,102 @@
         '<thead><tr><th>店舗</th><th style="text-align:right;">実績</th><th style="text-align:right;">達成率</th><th>進捗</th></tr></thead>'+
         '<tbody>'+rows+'</tbody>'+
       '</table>';
+    /* 並行: 不正打刻 + 変更届 もリロード */
+    renderViolations();
+    renderChangeRequests();
+  }
+
+  /* ─── 不正打刻アラート ─── */
+  async function renderViolations(){
+    var shops = loadShops();
+    var card = document.getElementById('violations-card');
+    var el   = document.getElementById('violations-content');
+    if (!shops.length) { card.style.display='none'; return; }
+    var ym = new Date().toISOString().slice(0,7);
+    var allViolations = [];
+    for (var i = 0; i < shops.length; i++) {
+      try {
+        var r = await fetch('/api/attendance/month?shop=' + encodeURIComponent(shops[i].shopId) + '&month=' + ym);
+        if (r.ok) {
+          var arr = await r.json();
+          arr.filter(function(rec){ return rec.outsideAllowed; }).forEach(function(rec){
+            allViolations.push(Object.assign({}, rec, { shopName: shops[i].name }));
+          });
+        }
+      } catch(e){}
+    }
+    if (!allViolations.length) { card.style.display='none'; return; }
+    card.style.display='block';
+    allViolations.sort(function(a,b){ return b.ts - a.ts; });
+    var rows = allViolations.slice(0, 20).map(function(v){
+      var d = new Date(v.ts);
+      var time = (d.getMonth()+1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+      var typeLbl = { in:'出勤', out:'退勤', break_start:'休憩開始', break_end:'休憩終了' }[v.type] || v.type;
+      var distLbl = v.distanceM != null ? Math.round(v.distanceM) + 'm' : '?';
+      return '<tr>'+
+        '<td style="font-size:10px;color:var(--slate-7);">'+time+'</td>'+
+        '<td>'+esc(v.shopName)+'</td>'+
+        '<td>'+esc(v.name)+'</td>'+
+        '<td><span style="background:rgba(239,68,68,.15);color:#F87171;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:800;">'+typeLbl+'</span></td>'+
+        '<td style="text-align:right;color:#F87171;font-weight:800;">🚫 '+distLbl+'</td>'+
+      '</tr>';
+    }).join('');
+    el.innerHTML = '<div style="font-size:10px;color:var(--slate-5);margin-bottom:8px;">直近20件（今月分）</div>'+
+      '<table class="overview-table">'+
+      '<thead><tr><th>日時</th><th>店舗</th><th>スタッフ</th><th>種別</th><th style="text-align:right;">距離</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table>';
+  }
+
+  /* ─── 変更届受信箱 ─── */
+  async function renderChangeRequests(){
+    var shops = loadShops();
+    var card = document.getElementById('change-req-card');
+    var el   = document.getElementById('change-req-content');
+    if (!shops.length) { card.style.display='none'; return; }
+    var allPending = [];
+    for (var i = 0; i < shops.length; i++) {
+      try {
+        var r = await fetch('/api/change-request?shop=' + encodeURIComponent(shops[i].shopId) + '&status=pending');
+        if (r.ok) {
+          var arr = await r.json();
+          arr.forEach(function(req){ allPending.push(Object.assign({}, req, { shopName: shops[i].name })); });
+        }
+      } catch(e){}
+    }
+    if (!allPending.length) { card.style.display='none'; return; }
+    card.style.display='block';
+    allPending.sort(function(a,b){ return b.createdAt - a.createdAt; });
+    var rows = allPending.map(function(req){
+      var dt = new Date(req.createdAt);
+      var dateLbl = req.date;
+      return '<tr>'+
+        '<td style="font-size:10px;color:var(--slate-5);">'+(dt.getMonth()+1)+'/'+dt.getDate()+' '+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0')+'</td>'+
+        '<td>'+esc(req.shopName)+'</td>'+
+        '<td>'+esc(req.name)+'</td>'+
+        '<td style="color:var(--amber);font-weight:800;">'+dateLbl+' 休</td>'+
+        '<td>'+esc(req.reason)+(req.note ? ' <span style="color:var(--slate-5);font-size:10px;">('+esc(req.note)+')</span>' : '')+'</td>'+
+        '<td style="text-align:right;white-space:nowrap;">'+
+          '<button onclick="decideChangeReq(\''+esc(req.shopId)+'\',\''+esc(req.id)+'\',\'approved\')" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;border:none;padding:4px 10px;border-radius:5px;cursor:pointer;font-weight:800;font-size:10px;margin-right:4px;">✓ 承認</button>'+
+          '<button onclick="decideChangeReq(\''+esc(req.shopId)+'\',\''+esc(req.id)+'\',\'rejected\')" style="background:rgba(239,68,68,.15);color:#F87171;border:1px solid rgba(239,68,68,.3);padding:4px 10px;border-radius:5px;cursor:pointer;font-weight:800;font-size:10px;">✕ 却下</button>'+
+        '</td>'+
+      '</tr>';
+    }).join('');
+    el.innerHTML =
+      '<table class="overview-table">'+
+      '<thead><tr><th>申請日時</th><th>店舗</th><th>スタッフ</th><th>休みたい日</th><th>理由</th><th></th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table>';
+  }
+
+  async function decideChangeReq(shopId, reqId, status){
+    try {
+      var r = await fetch('/api/change-request/' + encodeURIComponent(reqId), {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shopId, status, decidedBy: 'admin' }),
+      });
+      if (!r.ok) throw new Error('failed');
+      showToast(status === 'approved' ? '✅ 承認しました' : '✕ 却下しました');
+      renderChangeRequests();
+    } catch(e) { showToast('⚠ ' + e.message); }
   }
 
   /* ═══════════════════════════════════
@@ -1010,10 +1138,11 @@
     _editingIdx = -1;
     document.getElementById('modal-title').textContent = '店舗を追加';
     document.getElementById('modal-save-btn').textContent = '登録する';
-    ['f-shopId','f-name','f-contact','f-email','f-phone'].forEach(function(id){
+    ['f-shopId','f-name','f-contact','f-email','f-phone','f-lat','f-lng','f-radius'].forEach(function(id){
       var el = document.getElementById(id); if(el) el.value='';
     });
     document.getElementById('f-fee').value = '5000';
+    document.getElementById('f-radius').value = '200';
     document.getElementById('f-shopId').removeAttribute('disabled');
     document.getElementById('add-modal').classList.add('open');
   }
@@ -1031,6 +1160,9 @@
     document.getElementById('f-fee').value      = s.fee     || '';
     document.getElementById('f-email').value    = s.email   || '';
     document.getElementById('f-phone').value    = s.phone   || '';
+    document.getElementById('f-lat').value      = s.latitude != null ? s.latitude : '';
+    document.getElementById('f-lng').value      = s.longitude != null ? s.longitude : '';
+    document.getElementById('f-radius').value   = s.allowedRadiusMeters != null ? s.allowedRadiusMeters : '200';
     document.getElementById('f-shopId').setAttribute('disabled','disabled');
     document.getElementById('add-modal').classList.add('open');
   }
@@ -1046,18 +1178,24 @@
     var fee     = (document.getElementById('f-fee').value||'0').trim();
     var email   = (document.getElementById('f-email').value||'').trim();
     var phone   = (document.getElementById('f-phone').value||'').trim();
+    var lat     = parseFloat(document.getElementById('f-lat').value);
+    var lng     = parseFloat(document.getElementById('f-lng').value);
+    var radius  = parseInt(document.getElementById('f-radius').value, 10);
 
     if(!name){ showToast('⚠️ 店舗名を入力してください'); return; }
 
+    var extras = {};
+    if (!isNaN(lat))    extras.latitude = lat;
+    if (!isNaN(lng))    extras.longitude = lng;
+    if (!isNaN(radius)) extras.allowedRadiusMeters = radius;
+
     var shops = loadShops();
     if(_editingIdx >= 0){
-      // 編集
-      shops[_editingIdx] = Object.assign(shops[_editingIdx], { name, contact, fee, email, phone });
+      shops[_editingIdx] = Object.assign(shops[_editingIdx], { name, contact, fee, email, phone }, extras);
     } else {
       if(!shopId){ showToast('⚠️ 店舗IDを入力してください'); return; }
-      // 重複チェック
       if(shops.some(function(s){ return s.shopId===shopId; })){ showToast('⚠️ 同じIDの店舗が既に存在します'); return; }
-      shops.push({ shopId, name, contact, fee, email, phone, joinedAt: new Date().toISOString().slice(0,10) });
+      shops.push(Object.assign({ shopId, name, contact, fee, email, phone, joinedAt: new Date().toISOString().slice(0,10) }, extras));
     }
     saveShops(shops);
     closeAddModal();

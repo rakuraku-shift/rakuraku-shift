@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>月次経営レポート — RAKURAKU</title>
+<meta name="theme-color" content="#4F46E5">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--emerald:#10B981;--red:#EF4444;--amber:#F59E0B;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  @page{size:A4 portrait;margin:0;}
+  @media print{html,body{margin:0;background:#fff;}.toolbar{display:none !important;}.page{box-shadow:none !important;margin:0 !important;page-break-after:always;}}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:#E5E7EB;line-height:1.6;}
+  .toolbar{position:sticky;top:0;z-index:100;background:#0F172A;color:#fff;padding:12px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.3);}
+  .toolbar h1{font-size:14px;font-weight:800;}
+  .toolbar select, .toolbar input{padding:6px 10px;border:none;border-radius:6px;font-size:12px;font-family:inherit;}
+  .toolbar button{padding:7px 16px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:800;font-size:12px;}
+  .toolbar .hint{margin-left:auto;color:#94A3B8;font-size:11px;}
+  .page{width:210mm;min-height:297mm;background:#fff;margin:20px auto;padding:18mm 16mm;box-shadow:0 8px 32px rgba(0,0,0,.15);position:relative;}
+  .header{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:8mm 10mm;border-radius:10px;margin-bottom:8mm;display:flex;justify-content:space-between;align-items:center;}
+  .h-title{font-size:22px;font-weight:900;letter-spacing:-.02em;}
+  .h-sub{font-size:11px;opacity:.9;margin-top:1mm;font-weight:700;}
+  .h-period{font-size:18px;font-weight:900;}
+  .section{margin-bottom:7mm;}
+  .section-title{font-size:14px;font-weight:900;color:var(--indigo);margin-bottom:3mm;padding-bottom:2mm;border-bottom:2px solid var(--indigo);display:flex;align-items:center;gap:6px;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;}
+  .kpi{background:var(--slate-50);border:1px solid var(--slate-100);border-radius:8px;padding:4mm;text-align:center;}
+  .kpi-lbl{font-size:9px;color:var(--slate-500);font-weight:800;letter-spacing:.04em;}
+  .kpi-val{font-size:22px;font-weight:900;color:var(--indigo);margin-top:1mm;letter-spacing:-.01em;}
+  .kpi-sub{font-size:8.5px;color:var(--slate-500);margin-top:1mm;font-weight:600;}
+  .kpi.warn .kpi-val{color:var(--amber);}
+  .kpi.good .kpi-val{color:var(--emerald);}
+  table{width:100%;border-collapse:collapse;font-size:10.5px;}
+  th, td{padding:6px 8px;border-bottom:1px solid var(--slate-100);text-align:left;}
+  th{background:var(--slate-50);font-weight:800;font-size:10px;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  .insight{background:linear-gradient(135deg,#FAF5FF,#F0FDF4);border-left:4px solid var(--indigo);padding:4mm 5mm;border-radius:0 8px 8px 0;font-size:11px;line-height:1.7;margin-bottom:3mm;}
+  .insight strong{color:var(--indigo);}
+  .footer-note{margin-top:10mm;font-size:9px;color:var(--slate-500);text-align:center;border-top:1px solid var(--slate-100);padding-top:4mm;font-weight:600;}
+  .empty{text-align:center;color:var(--slate-500);font-size:14px;padding:30mm 0;font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>📊 月次経営レポート</h1>
+  <label>店舗ID: <input id="shop-input" placeholder="bar-exchange" /></label>
+  <label>月: <input id="month-input" type="month" /></label>
+  <button onclick="loadAndRender()">🔄 読込</button>
+  <button onclick="window.print()">🖨️ 印刷 / PDF保存</button>
+  <span class="hint">余白「なし」+ カラー印刷 推奨</span>
+</div>
+
+<div id="content">
+  <div class="page"><div class="empty">📋 店舗ID と 月を入力して「読込」してください</div></div>
+</div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  document.getElementById('shop-input').value = params.get('shop') || '';
+  document.getElementById('month-input').value = params.get('month') || new Date().toISOString().slice(0,7);
+  if (params.get('shop')) loadAndRender();
+
+  async function loadAndRender() {
+    const shopId = document.getElementById('shop-input').value.trim();
+    const ym     = document.getElementById('month-input').value;
+    if (!shopId || !ym) return;
+    history.replaceState(null, '', `?shop=${encodeURIComponent(shopId)}&month=${ym}`);
+
+    /* データ取得 */
+    let attendance = [], meta = { shopName: shopId }, snapshot = {};
+    try {
+      const [aRes, mRes, sRes] = await Promise.all([
+        fetch(`/api/attendance/month?shop=${encodeURIComponent(shopId)}&month=${ym}`),
+        fetch(`/api/shop/${encodeURIComponent(shopId)}/meta`),
+        fetch(`/api/shop/${encodeURIComponent(shopId)}/snapshot`),
+      ]);
+      if (aRes.ok) attendance = await aRes.json();
+      if (mRes.ok) meta = await mRes.json();
+      if (sRes.ok) snapshot = await sRes.json();
+    } catch(e) {}
+
+    /* スタッフ別集計 */
+    const byStaff = {};
+    attendance.forEach(r => {
+      if (!byStaff[r.name]) byStaff[r.name] = [];
+      byStaff[r.name].push(r);
+    });
+
+    /* 不正打刻数 */
+    const violations = attendance.filter(r => r.outsideAllowed).length;
+
+    /* 勤務時間集計 */
+    let totalMin = 0, totalNight = 0, totalLabor = 0;
+    const hourly = parseInt(JSON.parse(snapshot.job_template || '{}').defaultWageNormal) || 1200;
+    const staffSummary = Object.entries(byStaff).map(([name, records]) => {
+      const c = calcWorkMin(records);
+      const wageN = Math.round((c.normalMin/60) * hourly);
+      const wageNT = Math.round((c.nightMin/60) * hourly * 1.25);
+      totalMin += c.normalMin + c.nightMin;
+      totalNight += c.nightMin;
+      totalLabor += wageN + wageNT;
+      return { name, days: c.days, totalMin: c.normalMin + c.nightMin, nightMin: c.nightMin, brkMin: c.brkMin, labor: wageN + wageNT };
+    }).sort((a,b) => b.labor - a.labor);
+
+    /* 売上データ（shift_sales キー想定） */
+    let sales = 0;
+    try {
+      const salesData = snapshot.shift_sales ? JSON.parse(snapshot.shift_sales) : {};
+      Object.values(salesData).forEach(v => { if (typeof v === 'number') sales += v; });
+    } catch(e) {}
+
+    const laborRate = sales > 0 ? (totalLabor / sales * 100) : 0;
+    const [y, mo] = ym.split('-');
+
+    document.getElementById('content').innerHTML = `
+      <div class="page">
+        <div class="header">
+          <div>
+            <div class="h-title">📊 月次経営レポート</div>
+            <div class="h-sub">${escape(meta.shopName || shopId)} ・ ${escape(meta.address || '')}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="h-period">${y}年${parseInt(mo)}月</div>
+            <div class="h-sub">発行日: ${new Date().toISOString().slice(0,10)}</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">📈 KPI サマリー</div>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="kpi-lbl">月次売上</div><div class="kpi-val">¥${sales.toLocaleString()}</div></div>
+            <div class="kpi"><div class="kpi-lbl">人件費合計</div><div class="kpi-val">¥${totalLabor.toLocaleString()}</div></div>
+            <div class="kpi ${laborRate > 35 ? 'warn' : laborRate < 25 ? 'good' : ''}"><div class="kpi-lbl">人件費率</div><div class="kpi-val">${laborRate.toFixed(1)}%</div><div class="kpi-sub">適正 25-35%</div></div>
+            <div class="kpi"><div class="kpi-lbl">総勤務時間</div><div class="kpi-val">${Math.floor(totalMin/60)}h</div></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">⚠️ アラート</div>
+          <div class="insight">
+            ${violations > 0 ? `<strong>🚫 不正打刻: ${violations}件</strong> 検出されました。詳細は本社管理コンソールでご確認ください。<br>` : `<strong>✅ 不正打刻なし</strong> — 全打刻が店舗範囲内で行われました。<br>`}
+            ${laborRate > 35 ? `<strong>⚠️ 人件費率が35%超</strong> — シフト最適化を推奨します。<br>` : ''}
+            ${laborRate < 20 && sales > 0 ? `<strong>⚠️ 人件費率が低すぎる可能性</strong> — 過剰労働の可能性があります。<br>` : ''}
+            ${totalNight > totalMin * 0.5 ? `<strong>🌙 深夜勤務比率が高い</strong> — 健康管理にご注意ください。` : ''}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">👥 スタッフ別 勤務サマリー（人件費 高い順）</div>
+          <table>
+            <thead><tr><th>スタッフ名</th><th class="num">勤務日数</th><th class="num">総勤務時間</th><th class="num">深夜時間</th><th class="num">人件費</th><th class="num">構成比</th></tr></thead>
+            <tbody>
+              ${staffSummary.map(s => {
+                const ratio = totalLabor > 0 ? (s.labor / totalLabor * 100) : 0;
+                return `<tr>
+                  <td><strong>${escape(s.name)}</strong></td>
+                  <td class="num">${s.days}日</td>
+                  <td class="num">${Math.floor(s.totalMin/60)}h ${s.totalMin%60}m</td>
+                  <td class="num">${Math.floor(s.nightMin/60)}h ${s.nightMin%60}m</td>
+                  <td class="num">¥${s.labor.toLocaleString()}</td>
+                  <td class="num">${ratio.toFixed(1)}%</td>
+                </tr>`;
+              }).join('')}
+              ${staffSummary.length === 0 ? '<tr><td colspan="6" style="text-align:center;color:var(--slate-500);padding:8mm;">勤務データがありません</td></tr>' : ''}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <div class="section-title">💡 経営インサイト</div>
+          <div class="insight">
+            ${sales > 0 ? `<strong>売上 ¥${sales.toLocaleString()}</strong>に対して<strong>人件費率 ${laborRate.toFixed(1)}%</strong>。` : `売上データ未入力のため、人件費率は算出できません。`}
+            ${staffSummary.length ? `稼働中スタッフ <strong>${staffSummary.length}名</strong>、総勤務 <strong>${Math.floor(totalMin/60)}時間</strong>。` : ''}
+            ${staffSummary[0] ? `最も人件費が高いのは <strong>${escape(staffSummary[0].name)}</strong>（¥${staffSummary[0].labor.toLocaleString()}）。` : ''}
+            ${violations > 0 ? `<br>⚠️ 不正打刻 ${violations}件 は早急に確認・対応をお願いします。` : ''}
+          </div>
+        </div>
+
+        <div class="footer-note">RAKURAKU 自動生成レポート · ${escape(meta.shopName || '')} · ${y}年${parseInt(mo)}月分</div>
+      </div>
+    `;
+  }
+
+  function calcWorkMin(records) {
+    const byDay = {};
+    records.sort((a,b) => a.ts - b.ts).forEach(r => {
+      const dk = new Date(r.ts).toISOString().slice(0,10);
+      if (!byDay[dk]) byDay[dk] = [];
+      byDay[dk].push(r);
+    });
+    let normalMin = 0, nightMin = 0, brkMin = 0;
+    Object.values(byDay).forEach(recs => {
+      let inT = null, breakT = null;
+      recs.forEach(r => {
+        if (r.type === 'in') inT = r.ts;
+        else if (r.type === 'out' && inT) {
+          const seg = (r.ts - inT) / 60000;
+          const night = calcNightMin(inT, r.ts);
+          normalMin += seg - night; nightMin += night; inT = null;
+        }
+        else if (r.type === 'break_start' && inT) {
+          const seg = (r.ts - inT) / 60000;
+          const night = calcNightMin(inT, r.ts);
+          normalMin += seg - night; nightMin += night;
+          breakT = r.ts; inT = null;
+        }
+        else if (r.type === 'break_end' && breakT) {
+          brkMin += (r.ts - breakT) / 60000; inT = r.ts; breakT = null;
+        }
+      });
+    });
+    return { days: Object.keys(byDay).length, normalMin: Math.floor(normalMin), nightMin: Math.floor(nightMin), brkMin: Math.floor(brkMin) };
+  }
+  function calcNightMin(startTs, endTs) {
+    let total = 0; const oneDay = 86400000; let cur = startTs;
+    while (cur < endTs) {
+      const d = new Date(cur);
+      const ds = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+      const segEnd = Math.min(endTs, ds + oneDay);
+      /* 22-翌5 = 22h-29h */
+      const o1 = Math.max(cur, ds + 22*3600*1000), o2 = Math.min(segEnd, ds + 29*3600*1000);
+      if (o2 > o1) total += (o2 - o1) / 60000;
+      /* 0-5時部分 */
+      const e1 = Math.max(cur, ds), e2 = Math.min(segEnd, ds + 5*3600*1000);
+      if (e2 > e1) total += (e2 - e1) / 60000;
+      cur = segEnd;
+    }
+    return total;
+  }
+  function escape(s) { return String(s||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+</script>
+</body>
+</html>
