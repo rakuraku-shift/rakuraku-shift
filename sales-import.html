@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>売上データ取込 — RAKURAKU</title>
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:var(--slate-50);min-height:100vh;line-height:1.6;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:980px;margin:0 auto;padding:24px;}
+  .page-header{margin-bottom:22px;}
+  .page-header h1{font-size:26px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px;}
+  .page-header .sub{font-size:13px;color:var(--slate-500);font-weight:600;}
+
+  .tabs{display:flex;gap:6px;border-bottom:2px solid var(--slate-100);margin-bottom:20px;overflow-x:auto;}
+  .tab{padding:10px 18px;background:none;border:none;font-size:13px;font-weight:800;color:var(--slate-500);cursor:pointer;font-family:inherit;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;}
+  .tab.active{color:var(--indigo);border-bottom-color:var(--indigo);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .card{background:#fff;border-radius:14px;padding:22px;border:1.5px solid var(--slate-100);box-shadow:0 4px 20px rgba(0,0,0,.04);margin-bottom:16px;}
+  .card h2{font-size:16px;font-weight:900;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  @media(max-width:680px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+  .field label{display:block;font-size:11px;font-weight:800;color:var(--slate-700);margin-bottom:5px;letter-spacing:.03em;}
+  .field input{width:100%;padding:10px 12px;border:1.5px solid var(--slate-200);border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:var(--slate-50);transition:all .15s;}
+  .field input:focus{border-color:var(--indigo);background:#fff;}
+
+  .btn{padding:11px 18px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;border:none;}
+  .btn-primary{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;box-shadow:0 4px 12px rgba(79,70,229,.25);}
+  .btn-ghost{background:var(--slate-100);color:var(--slate-700);}
+  .btn-block{display:block;width:100%;}
+
+  .quick-input{display:grid;grid-template-columns:1fr 110px 110px 110px 90px;gap:8px;align-items:center;padding:8px;border-bottom:1px solid var(--slate-100);}
+  .quick-input.header{font-weight:800;font-size:11px;color:var(--slate-500);background:var(--slate-50);}
+  .quick-input input{padding:7px 9px;font-size:12px;border:1px solid var(--slate-200);border-radius:6px;background:#fff;font-family:inherit;}
+  @media(max-width:680px){.quick-input{grid-template-columns:1fr 90px;}.quick-input.header{display:none;}}
+
+  .file-drop{border:2px dashed var(--slate-200);border-radius:12px;padding:36px 20px;text-align:center;background:var(--slate-50);cursor:pointer;transition:all .15s;}
+  .file-drop:hover{border-color:var(--indigo);background:var(--indigo-l);}
+  .file-drop .ic{font-size:42px;display:block;margin-bottom:10px;}
+  .file-drop .title{font-size:14px;font-weight:800;margin-bottom:5px;}
+  .file-drop .sub{font-size:11px;color:var(--slate-500);}
+
+  .integration-card{padding:18px;border:1.5px solid var(--slate-100);border-radius:12px;margin-bottom:12px;display:flex;align-items:flex-start;gap:14px;background:#fff;}
+  .integration-card .ic{width:54px;height:54px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;}
+  .integration-card .body{flex:1;}
+  .integration-card .name{font-size:14px;font-weight:900;margin-bottom:3px;}
+  .integration-card .desc{font-size:11px;color:var(--slate-500);line-height:1.6;margin-bottom:8px;}
+  .integration-card .status{font-size:10px;font-weight:800;padding:3px 10px;border-radius:10px;display:inline-block;}
+  .status-ready{background:#DCFCE7;color:#16A34A;}
+  .status-soon{background:#FEF3C7;color:#B45309;}
+  .status-comingsoon{background:var(--slate-100);color:var(--slate-500);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;padding:10px 12px;background:var(--slate-50);font-weight:800;color:var(--slate-700);font-size:11px;border-bottom:2px solid var(--slate-100);}
+  td{padding:10px 12px;border-bottom:1px solid var(--slate-100);}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;}
+
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+  @media(max-width:680px){.kpi-row{grid-template-columns:repeat(2,1fr);}}
+  .kpi-mini{background:#fff;padding:14px;border-radius:10px;border:1.5px solid var(--slate-100);}
+  .kpi-mini .l{font-size:10px;color:var(--slate-500);font-weight:800;letter-spacing:.04em;}
+  .kpi-mini .v{font-size:20px;font-weight:900;color:var(--slate-900);letter-spacing:-.02em;margin-top:4px;}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;padding:12px 22px;border-radius:24px;font-size:13px;font-weight:700;display:none;z-index:1000;}
+  .toast.show{display:block;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU 売上取込</span></a>
+    <a href="/shift.html" style="font-size:12px;color:var(--slate-500);font-weight:700;">← シフト画面</a>
+  </div>
+</header>
+
+<div class="container">
+
+<div class="page-header">
+  <h1>💰 売上データ取込</h1>
+  <p class="sub">日次売上を入力するだけで人件費率が自動計算 → 月次レポートに反映</p>
+</div>
+
+<!-- KPI 概要 -->
+<div class="kpi-row">
+  <div class="kpi-mini"><div class="l">今月売上</div><div class="v" id="kpi-month-sales">¥0</div></div>
+  <div class="kpi-mini"><div class="l">予想人件費</div><div class="v" id="kpi-labor-cost">¥0</div></div>
+  <div class="kpi-mini"><div class="l">人件費率</div><div class="v" id="kpi-labor-rate">—</div></div>
+  <div class="kpi-mini"><div class="l">前月比</div><div class="v" id="kpi-mom">—</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('manual')">✏️ 手動入力 (毎日)</button>
+  <button class="tab" onclick="switchTab('csv')">📄 CSV 取込</button>
+  <button class="tab" onclick="switchTab('pos')">🔗 POS 連携</button>
+</div>
+
+<!-- ─── 手動入力タブ ─── -->
+<div class="tab-panel active" id="tab-manual">
+  <div class="card">
+    <h2>✏️ 売上を直接入力</h2>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:14px;">毎日の閉店後、5秒で入力。深夜や繁忙日は<strong>分けて入力</strong>するとより精度の高いレポートに。</p>
+
+    <div class="grid-3">
+      <div class="field">
+        <label>日付</label>
+        <input type="date" id="m-date" value="" />
+      </div>
+      <div class="field">
+        <label>売上 (税込円)</label>
+        <input type="number" id="m-sales" min="0" step="100" placeholder="例) 285000" />
+      </div>
+      <div class="field">
+        <label>来客数</label>
+        <input type="number" id="m-customers" min="0" step="1" placeholder="例) 42" />
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="field">
+        <label>原価 (任意・税抜円)</label>
+        <input type="number" id="m-cost" min="0" step="100" placeholder="材料費・酒代など" />
+      </div>
+      <div class="field">
+        <label>メモ (任意)</label>
+        <input type="text" id="m-memo" placeholder="例) 雨で来客少なめ" />
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="saveDaily()" style="margin-top:12px;">💾 この日を保存</button>
+  </div>
+
+  <div class="card">
+    <h2>📅 今月の入力履歴</h2>
+    <div style="max-height:380px;overflow-y:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>日付</th>
+            <th class="num">売上</th>
+            <th class="num">来客</th>
+            <th class="num">客単価</th>
+            <th>メモ</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody">
+          <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--slate-500);">まだ入力がありません</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CSV 取込タブ ─── -->
+<div class="tab-panel" id="tab-csv">
+  <div class="card">
+    <h2>📄 CSV ファイルから一括取込</h2>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:14px;">Excel・Numbers・POSレジから出力した CSV を取込めます。<br>必須列: <code>date, sales</code>　任意列: <code>customers, cost, memo</code></p>
+
+    <div class="file-drop" onclick="document.getElementById('csv-file').click()">
+      <span class="ic">📂</span>
+      <div class="title">CSV ファイルをドラッグ or タップで選択</div>
+      <div class="sub">UTF-8 推奨 (Shift-JIS も自動判定)</div>
+    </div>
+    <input type="file" id="csv-file" accept=".csv,.tsv,.txt" style="display:none;" onchange="parseCsvFile(this.files[0])" />
+
+    <div id="csv-preview" style="margin-top:16px;display:none;">
+      <h3 style="font-size:13px;font-weight:800;margin-bottom:8px;">📋 取込プレビュー</h3>
+      <div style="max-height:320px;overflow:auto;border:1px solid var(--slate-100);border-radius:8px;">
+        <table id="csv-preview-table"></table>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="importCsvData()" style="margin-top:10px;">✅ 全件取込する</button>
+    </div>
+
+    <div style="margin-top:14px;padding:14px;background:var(--slate-50);border-radius:8px;font-size:11px;color:var(--slate-700);">
+      <strong>📝 CSV例:</strong><br>
+      <code style="font-family:'SF Mono',monospace;font-size:10px;display:block;background:#fff;padding:8px;margin-top:6px;border-radius:4px;">
+date,sales,customers,cost,memo<br>
+2026-05-01,285000,42,68000,雨<br>
+2026-05-02,312000,48,72000,<br>
+2026-05-03,398000,56,82000,GW初日
+      </code>
+    </div>
+  </div>
+</div>
+
+<!-- ─── POS 連携タブ ─── -->
+<div class="tab-panel" id="tab-pos">
+  <div class="card">
+    <h2>🔗 POSレジ 連携設定</h2>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:18px;">対応POSと連携すると、売上が <strong>毎日自動取込</strong> されます。手入力不要。</p>
+
+    <div class="integration-card">
+      <div class="ic" style="background:#000;color:#fff;">⬛</div>
+      <div class="body">
+        <div class="name">Square POS</div>
+        <div class="desc">Square Locations API 経由で日次売上を自動取込。<br>API トークン (Access Token) を取得して下に入力</div>
+        <span class="status status-soon">β 接続可</span>
+      </div>
+      <button class="btn btn-ghost" onclick="connectPOS('square')">設定</button>
+    </div>
+
+    <div class="integration-card">
+      <div class="ic" style="background:#FF6B00;color:#fff;">🛒</div>
+      <div class="body">
+        <div class="name">Airレジ (リクルート)</div>
+        <div class="desc">Airレジ Web版から CSV エクスポート → 上のCSV取込タブにドロップ。<br>Airレジは公式API非提供のため CSV経由</div>
+        <span class="status status-ready">CSV経由 OK</span>
+      </div>
+      <button class="btn btn-ghost" onclick="switchTab('csv')">CSV取込へ</button>
+    </div>
+
+    <div class="integration-card">
+      <div class="ic" style="background:#1ABC9C;color:#fff;">💳</div>
+      <div class="body">
+        <div class="name">スマレジ</div>
+        <div class="desc">スマレジ プラットフォームAPI で日次自動取込。<br>契約プランによってはAPI利用に追加料金が必要</div>
+        <span class="status status-soon">β 接続可</span>
+      </div>
+      <button class="btn btn-ghost" onclick="connectPOS('smaregi')">設定</button>
+    </div>
+
+    <div class="integration-card">
+      <div class="ic" style="background:#3B82F6;color:#fff;">🍽</div>
+      <div class="body">
+        <div class="name">ユビレジ</div>
+        <div class="desc">ユビレジWeb管理画面 → 売上CSV出力 → CSV取込タブで読込</div>
+        <span class="status status-ready">CSV経由 OK</span>
+      </div>
+      <button class="btn btn-ghost" onclick="switchTab('csv')">CSV取込へ</button>
+    </div>
+
+    <div class="integration-card">
+      <div class="ic" style="background:#F97316;color:#fff;">📊</div>
+      <div class="body">
+        <div class="name">freee 会計連携</div>
+        <div class="desc">freee API 経由で売上+人件費を会計データへ自動同期。<br>RAKURAKU からの双方向連携 (v2.0計画中)</div>
+        <span class="status status-comingsoon">計画中</span>
+      </div>
+    </div>
+
+    <div class="integration-card">
+      <div class="ic" style="background:#10B981;color:#fff;">💰</div>
+      <div class="body">
+        <div class="name">マネーフォワード クラウド給与</div>
+        <div class="desc">RAKURAKU から月次給与データを CSV エクスポート → MF 給与へ取込<br>給与計算をワンタッチで完了</div>
+        <span class="status status-comingsoon">計画中</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'rakuraku-sales-data';
+
+function loadSales() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveSalesData(d) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch(e) {}
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  /* イベントから来た場合は target を使う、関数呼び出しから来た場合は探す */
+  if (event && event.target && event.target.classList) {
+    event.target.classList.add('active');
+  } else {
+    document.querySelectorAll('.tab').forEach(t => {
+      if (t.textContent.toLowerCase().includes(name.toLowerCase())) t.classList.add('active');
+    });
+  }
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function saveDaily() {
+  const date = document.getElementById('m-date').value;
+  const sales = +document.getElementById('m-sales').value || 0;
+  const customers = +document.getElementById('m-customers').value || 0;
+  const cost = +document.getElementById('m-cost').value || 0;
+  const memo = document.getElementById('m-memo').value.trim();
+  if (!date || sales <= 0) { showToast('⚠ 日付と売上は必須'); return; }
+
+  const data = loadSales();
+  data[date] = { date, sales, customers, cost, memo, savedAt: Date.now() };
+  saveSalesData(data);
+
+  /* サーバー同期 (将来) */
+  try {
+    fetch('/api/sales/daily', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data[date])
+    }).catch(()=>{});
+  } catch(e) {}
+
+  document.getElementById('m-sales').value = '';
+  document.getElementById('m-customers').value = '';
+  document.getElementById('m-cost').value = '';
+  document.getElementById('m-memo').value = '';
+  showToast(`💾 ${date} の売上を保存しました`);
+  renderHistory();
+  updateKPI();
+}
+
+function renderHistory() {
+  const data = loadSales();
+  const tbody = document.getElementById('history-tbody');
+  const month = new Date().toISOString().slice(0,7);
+  const entries = Object.values(data)
+    .filter(d => d.date && d.date.startsWith(month))
+    .sort((a,b) => b.date.localeCompare(a.date));
+  if (!entries.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--slate-500);">今月の入力はまだありません</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = entries.map(d => {
+    const avg = d.customers ? Math.round(d.sales / d.customers) : 0;
+    return `<tr>
+      <td>${d.date}</td>
+      <td class="num">¥${d.sales.toLocaleString()}</td>
+      <td class="num">${d.customers}</td>
+      <td class="num">¥${avg.toLocaleString()}</td>
+      <td>${escapeHtml(d.memo || '')}</td>
+      <td><button class="btn btn-ghost" style="padding:4px 8px;font-size:10px;" onclick="deleteDaily('${d.date}')">削除</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function deleteDaily(date) {
+  if (!confirm(`${date} のデータを削除しますか？`)) return;
+  const data = loadSales();
+  delete data[date];
+  saveSalesData(data);
+  renderHistory();
+  updateKPI();
+  showToast('🗑 削除しました');
+}
+
+function updateKPI() {
+  const data = loadSales();
+  const month = new Date().toISOString().slice(0,7);
+  const lastMonth = new Date(); lastMonth.setMonth(lastMonth.getMonth() - 1);
+  const lastMonthKey = lastMonth.toISOString().slice(0,7);
+
+  let monthSales = 0, lastMonthSales = 0;
+  Object.values(data).forEach(d => {
+    if (!d.date) return;
+    if (d.date.startsWith(month)) monthSales += d.sales || 0;
+    else if (d.date.startsWith(lastMonthKey)) lastMonthSales += d.sales || 0;
+  });
+
+  document.getElementById('kpi-month-sales').textContent = '¥' + monthSales.toLocaleString();
+
+  /* 人件費見積もり: localStorage の shift-data から */
+  let laborCost = 0;
+  try {
+    const shiftData = JSON.parse(localStorage.getItem('rakuraku-shift-data') || '{}');
+    const staffs = shiftData.staffs || shiftData.staff || [];
+    const shifts = shiftData.generatedShifts || shiftData.shifts || [];
+    shifts.forEach(sh => {
+      if (!sh.date || !sh.date.startsWith(month)) return;
+      (sh.assignments || []).forEach(a => {
+        const staff = staffs.find(s => s.id === a.staffId || s.name === a.staffName);
+        if (!staff || !a.start || !a.end) return;
+        const wage = staff.wage || 1200;
+        const hrs = calcHours(a.start, a.end);
+        laborCost += wage * hrs;
+      });
+    });
+  } catch(e) {}
+
+  document.getElementById('kpi-labor-cost').textContent = '¥' + Math.round(laborCost).toLocaleString();
+
+  const rate = monthSales > 0 ? (laborCost / monthSales * 100) : 0;
+  const rateEl = document.getElementById('kpi-labor-rate');
+  rateEl.textContent = rate > 0 ? rate.toFixed(1) + '%' : '—';
+  rateEl.style.color = rate > 35 ? '#EF4444' : rate > 30 ? '#F59E0B' : rate > 0 ? '#10B981' : '';
+
+  const mom = lastMonthSales > 0 ? ((monthSales - lastMonthSales) / lastMonthSales * 100) : 0;
+  const momEl = document.getElementById('kpi-mom');
+  momEl.textContent = lastMonthSales > 0 ? (mom >= 0 ? '+' : '') + mom.toFixed(1) + '%' : '—';
+  momEl.style.color = mom >= 0 ? '#10B981' : '#EF4444';
+}
+
+function calcHours(start, end) {
+  const [sh, sm] = start.split(':').map(Number);
+  const [eh, em] = end.split(':').map(Number);
+  let mins = (eh * 60 + em) - (sh * 60 + sm);
+  if (mins < 0) mins += 24 * 60;
+  return mins / 60;
+}
+
+/* ====== CSV ====== */
+let _csvParsed = [];
+function parseCsvFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const txt = e.target.result;
+    const rows = txt.split(/\r?\n/).filter(r => r.trim());
+    const header = rows[0].split(',').map(s => s.trim().toLowerCase());
+    const dateIdx = header.indexOf('date');
+    const salesIdx = header.indexOf('sales');
+    const custIdx = header.indexOf('customers');
+    const costIdx = header.indexOf('cost');
+    const memoIdx = header.indexOf('memo');
+    if (dateIdx < 0 || salesIdx < 0) {
+      showToast('⚠ "date" と "sales" 列が必須です');
+      return;
+    }
+    _csvParsed = rows.slice(1).map(r => {
+      const cols = r.split(',');
+      return {
+        date: (cols[dateIdx] || '').trim(),
+        sales: +(cols[salesIdx] || 0),
+        customers: custIdx >= 0 ? +(cols[custIdx] || 0) : 0,
+        cost: costIdx >= 0 ? +(cols[costIdx] || 0) : 0,
+        memo: memoIdx >= 0 ? (cols[memoIdx] || '').trim() : '',
+      };
+    }).filter(r => r.date && r.sales > 0);
+
+    const root = document.getElementById('csv-preview');
+    const tableHtml = `<thead><tr><th>日付</th><th>売上</th><th>来客</th><th>原価</th><th>メモ</th></tr></thead><tbody>` +
+      _csvParsed.slice(0, 30).map(r => `<tr><td>${r.date}</td><td class="num">¥${r.sales.toLocaleString()}</td><td class="num">${r.customers}</td><td class="num">¥${r.cost.toLocaleString()}</td><td>${escapeHtml(r.memo)}</td></tr>`).join('') +
+      `</tbody>`;
+    document.getElementById('csv-preview-table').innerHTML = tableHtml;
+    root.style.display = 'block';
+    showToast(`📄 ${_csvParsed.length} 行をプレビュー (上位30件表示)`);
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function importCsvData() {
+  if (!_csvParsed.length) return;
+  const data = loadSales();
+  _csvParsed.forEach(r => { data[r.date] = { ...r, savedAt: Date.now() }; });
+  saveSalesData(data);
+  document.getElementById('csv-preview').style.display = 'none';
+  _csvParsed = [];
+  showToast(`✅ 全 ${Object.keys(data).length} 日分の売上を取込完了`);
+  switchTab('manual');
+  renderHistory();
+  updateKPI();
+}
+
+/* ====== POS 連携 ====== */
+function connectPOS(provider) {
+  let label = provider;
+  let urlGuide = '';
+  if (provider === 'square') {
+    label = 'Square';
+    urlGuide = 'https://developer.squareup.com/apps';
+  } else if (provider === 'smaregi') {
+    label = 'スマレジ';
+    urlGuide = 'https://www.smaregi.dev/';
+  }
+  const token = prompt(`${label} の Access Token を入力してください\n\n取得方法: ${urlGuide}\n\nトークンは安全に保管され、サーバー側で暗号化されます。`);
+  if (!token) return;
+  fetch('/api/pos/connect', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ provider, token })
+  }).then(res => res.json()).then(data => {
+    if (data.ok) {
+      showToast(`🔗 ${label} 連携が完了 — 翌日から自動取込が始まります`);
+    } else {
+      showToast('⚠ 連携失敗: ' + (data.error || 'unknown'));
+    }
+  }).catch(e => showToast('⚠ ' + e.message));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('m-date').value = new Date().toISOString().slice(0,10);
+  renderHistory();
+  updateKPI();
+});
+</script>
+</body>
+</html>

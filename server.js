@@ -923,6 +923,39 @@ app.post('/api/send-mail', async (req, res) => {
   res.json({ ok: true, sent, failed });
 });
 
+// ── 売上データ API ────────────────────
+app.post('/api/sales/daily', (req, res) => {
+  const { date, sales, customers, cost, memo, shopId } = req.body || {};
+  if (!date || sales === undefined) return res.status(400).json({ error: 'date, sales 必須' });
+  const safeId = _safeShopId(shopId || 'default');
+  const file = path.join(DATA_DIR, `sales-${safeId}.json`);
+  const all = readJSON(file, {});
+  all[date] = { date, sales, customers, cost, memo, savedAt: Date.now() };
+  writeJSON(file, all);
+  const room = 'shop:' + safeId;
+  io.to(room).emit('sales_updated', { shopId, date, sales });
+  res.json({ ok: true });
+});
+
+app.get('/api/sales/daily/:shopId', (req, res) => {
+  const safeId = _safeShopId(req.params.shopId);
+  const file = path.join(DATA_DIR, `sales-${safeId}.json`);
+  res.json(readJSON(file, {}));
+});
+
+// ── POS 連携 API (Square / スマレジ etc) ────────────
+app.post('/api/pos/connect', (req, res) => {
+  const { provider, token, shopId } = req.body || {};
+  if (!provider || !token) return res.status(400).json({ error: 'provider, token 必須' });
+  const safeId = _safeShopId(shopId || 'default');
+  const file = path.join(DATA_DIR, `pos-${safeId}.json`);
+  const configs = readJSON(file, {});
+  configs[provider] = { token, connectedAt: Date.now(), provider };
+  writeJSON(file, configs);
+  console.log(`[pos/connect] ${safeId} / ${provider}`);
+  res.json({ ok: true });
+});
+
 // ── LINE 公式アカウント連携 API ────────────────────
 app.post('/api/notification/line/connect', (req, res) => {
   const { cid, secret, token, shopId } = req.body || {};
