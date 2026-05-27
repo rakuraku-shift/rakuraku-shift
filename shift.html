@@ -4623,8 +4623,13 @@
       return;
     }
 
-    /* 名前順 */
-    entries.sort(function(a,b) { return a[0].localeCompare(b[0],'ja'); });
+    /* 役職優先 + あかさたな順 */
+    entries.sort(function(a,b) {
+      var aRank = (typeof _roleRank === 'function') ? _roleRank(a[0]) : 99;
+      var bRank = (typeof _roleRank === 'function') ? _roleRank(b[0]) : 99;
+      if (aRank !== bRank) return aRank - bRank;
+      return a[0].localeCompare(b[0],'ja');
+    });
 
     var POSITIONS = [
       { key:'hall',    icon:'🏃', label:'ホール', color:'#F97316' },
@@ -4632,7 +4637,13 @@
       { key:'cashier', icon:'🧾', label:'レジ',    color:'#3B82F6' }
     ];
 
-    listEl.innerHTML = entries.map(function(kv) {
+    /* 3人以上で折りたたみ */
+    var expanded = (typeof isListExpanded === 'function') && isListExpanded('registry-section');
+    var visibleEntries = (entries.length > STAFF_LIST_COLLAPSE_THRESHOLD && !expanded)
+      ? entries.slice(0, STAFF_LIST_COLLAPSE_THRESHOLD)
+      : entries;
+
+    var itemsHtml = visibleEntries.map(function(kv) {
       var name = kv[0]; var w = kv[1];
       var positions = w.positions || (w.role && w.role !== 'unassigned' ? [w.role] : []);
       var safeName = name.replace(/'/g,"\\'");
@@ -4726,6 +4737,7 @@
         wagePanel+
       '</div>';
     }).join('');
+    listEl.innerHTML = itemsHtml + (typeof _renderCollapseToggle === 'function' ? _renderCollapseToggle('registry-section', entries.length) : '');
   }
 
   /* 給与設定の値を保存 */
@@ -4887,7 +4899,14 @@
       document.getElementById('stat-shifts').textContent = '0';
       return;
     }
-    list.innerHTML = subs.map(s => {
+    /* 役職優先 + あかさたな順 でソート → 3人以上で折りたたみ */
+    const sortedSubs = (typeof sortStaffJapanese === 'function') ? sortStaffJapanese(subs) : subs;
+    const expanded = isListExpanded('submissions-list');
+    const visibleSubs = (sortedSubs.length > STAFF_LIST_COLLAPSE_THRESHOLD && !expanded)
+      ? sortedSubs.slice(0, STAFF_LIST_COLLAPSE_THRESHOLD)
+      : sortedSubs;
+
+    const itemsHtml = visibleSubs.map(s => {
       const avCls = `sub-avatar av-${s.role}`;
       const pillCls = `role-pill pill-${s.role}`;
       const presetStr = (s.times||[]).map(t => TIME_LABELS[t]||t).join(' / ');
@@ -4896,11 +4915,13 @@
       const datesStr  = s.dates.map(d => { const[,m,day]=d.split('-').map(Number); return `${m}/${day}`; }).join(' · ');
       const contactBadges = s.email
         ? `<span class="sub-contact-badge">📧 メール登録済</span>` : '';
+      const isMgr = (typeof _isManagerRole === 'function') && _isManagerRole(s.name);
+      const mgrBadge = isMgr ? '<span style="background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;margin-right:4px;letter-spacing:.04em;">役職</span>' : '';
       return `<div class="sub-item">
         <div class="${avCls}">${s.name.charAt(0)}</div>
         <div class="sub-body">
           <div class="sub-name-row">
-            <span class="sub-name">${s.name}</span>
+            <span class="sub-name">${mgrBadge}${s.name}</span>
             <span class="${pillCls}">${ROLE_LABELS[s.role]}</span>
           </div>
           <div class="sub-meta">
@@ -4911,6 +4932,7 @@
         </div>
       </div>`;
     }).join('');
+    list.innerHTML = itemsHtml + _renderCollapseToggle('submissions-list', sortedSubs.length);
 
     // 登録メール一覧を更新
     loadRegistrySection();
@@ -5866,16 +5888,24 @@ ${slotLines}
         対象スタッフがいません。<br>シフトを提出したスタッフがメールアドレスを登録すると通知できます。
       </div>`;
     } else {
-      staffEl.innerHTML = allStaff.map(s => {
+      /* 役職優先 + あかさたな順 + 3人以上で折りたたみ */
+      const sortedStaff = (typeof sortStaffJapanese === 'function') ? sortStaffJapanese(allStaff) : allStaff;
+      const expanded = isListExpanded('notify-staff-list');
+      const visible = (sortedStaff.length > STAFF_LIST_COLLAPSE_THRESHOLD && !expanded)
+        ? sortedStaff.slice(0, STAFF_LIST_COLLAPSE_THRESHOLD)
+        : sortedStaff;
+      const itemsHtml = visible.map(s => {
         const hasEmail = !!s.email;
         const targetDates = s.dates
           .filter(d => _shortageMap[d] && _shortageMap[d].has(s.role))
           .map(d => { const [,m,day]=d.split('-').map(Number); return `${m}/${day}`; })
           .join('・');
+        const isMgr = (typeof _isManagerRole === 'function') && _isManagerRole(s.name);
+        const mgrBadge = isMgr ? '<span style="background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;margin-right:4px;letter-spacing:.04em;">役職</span>' : '';
         return `<div class="notify-staff-item" style="opacity:${hasEmail ? '1' : '0.45'}">
           <div class="notify-staff-avatar">${s.name.charAt(0)}</div>
           <div class="notify-staff-info">
-            <div class="notify-staff-name">${s.name}
+            <div class="notify-staff-name">${mgrBadge}${s.name}
               <span class="role-pill pill-${s.role}" style="margin-left:4px;">${ROLE_LABELS[s.role]}</span>
             </div>
             <div class="notify-staff-contact">
@@ -5887,6 +5917,7 @@ ${slotLines}
           </div>
         </div>`;
       }).join('');
+      staffEl.innerHTML = itemsHtml + _renderCollapseToggle('notify-staff-list', sortedStaff.length);
     }
 
     // ③ インセンティブ初期化
@@ -6252,8 +6283,26 @@ ${slotLines}
   function toggleList(listId) {
     const cur = isListExpanded(listId);
     try { storageSet(_isExpandedKey(listId), cur ? '0' : '1'); } catch(e) {}
-    /* 再描画 */
+    /* 再描画（リストごとに対応する関数を呼ぶ） */
     if (listId === 'master-list' && typeof renderReminderCard === 'function') renderReminderCard();
+    else if (listId === 'submissions-list' && typeof renderManagerView === 'function') renderManagerView();
+    else if (listId === 'registry-section' && typeof loadRegistrySection === 'function') loadRegistrySection();
+    else if (listId === 'notify-staff-list' && typeof openNotifyModal === 'function') {
+      /* notify モーダルが開いていればそのまま再描画 */
+      const el = document.getElementById('notify-overlay');
+      if (el && el.classList.contains('open') && typeof _renderNotifyStaffList === 'function') _renderNotifyStaffList();
+    }
+  }
+
+  /* 折りたたみボタン生成（共通） */
+  function _renderCollapseToggle(listId, totalCount, threshold) {
+    threshold = threshold || STAFF_LIST_COLLAPSE_THRESHOLD;
+    if (totalCount <= threshold) return '';
+    const expanded = isListExpanded(listId);
+    const hidden = totalCount - threshold;
+    return `<button onclick="toggleList('${listId}')" style="width:100%;padding:10px;margin-top:8px;background:linear-gradient(135deg,#EEF2FF,#FAF5FF);border:1.5px dashed #A5B4FC;border-radius:10px;color:#4F46E5;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .15s;">
+      ${expanded ? '▲ 省略する（先頭' + threshold + '件のみ表示）' : '▼ 残り ' + hidden + '件 を表示する'}
+    </button>`;
   }
 
   function renderReminderCard() {
