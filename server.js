@@ -658,6 +658,28 @@ app.post('/api/shop/:shopId/data', (req, res) => {
   res.json({ ok: true, _updatedAt: data._updatedAt });
 });
 
+// ── 店舗メタ情報 API（shift.html が店舗名等を取得） ────────────
+app.get('/api/shop/:shopId/meta', (req, res) => {
+  const meta = getShopMetaById(req.params.shopId);
+  if (!meta) {
+    return res.json({ shopId: req.params.shopId, name: req.params.shopId, _missing: true });
+  }
+  res.json(meta);
+});
+
+// ── 本社管理データ同期 API（noru-admin.html 用） ────────────
+app.get('/api/admin/snapshot', (req, res) => {
+  res.json(loadAdminData());
+});
+
+app.post('/api/admin/data', (req, res) => {
+  const { key, value } = req.body || {};
+  if (!key) return res.status(400).json({ error: 'key required' });
+  const data = setAdminKey(key, value);
+  io.emit('admin_data_updated', { key, value, ts: data._updatedAt });
+  res.json({ ok: true, _updatedAt: data._updatedAt });
+});
+
 // ── 在庫 API ────────────────────────────────
 app.get('/api/stock', (req, res) => {
   res.json(loadStock());

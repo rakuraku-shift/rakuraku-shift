@@ -2490,7 +2490,7 @@
       RAKURAKU · シフト管理コンソール
     </div>
     <div class="mh-title">シフト管理</div>
-    <div class="mh-sub">BAR EXCHANGE — 提出データをリアルタイムで確認</div>
+    <div class="mh-sub" id="mh-shop-name">― 提出データをリアルタイムで確認</div>
     <div class="mh-badges">
       <div class="mh-badge"><div class="mh-badge-dot mh-badge-dot--green"></div>データ同期中</div>
       <div class="mh-badge"><div class="mh-badge-dot mh-badge-dot--blue"></div>自動生成対応</div>
@@ -6612,6 +6612,21 @@ BAR EXCHANGEのシフト担当です。
     renderReminderCard();
   }
 
+  /* ── 店舗メタ情報を取得して表示 ── */
+  async function loadShopMeta() {
+    try {
+      const res = await fetch('/api/shop/' + encodeURIComponent(getShopId()) + '/meta');
+      if (!res.ok) return;
+      const meta = await res.json();
+      const nm = (meta && meta.shopName) || (meta && meta.name) || getShopId();
+      const el = document.getElementById('mh-shop-name');
+      if (el) el.textContent = nm + ' — 提出データをリアルタイムで確認';
+      /* 提出画面のヒーロー部にも反映可能（将来用） */
+      const titleEl = document.querySelector('.staff-hero .sh-shop-name');
+      if (titleEl) titleEl.textContent = nm;
+    } catch(e) {}
+  }
+
   /* ── サーバー同期ブートストラップ（クロスデバイス対応） ── */
   bootstrapFromServer().then(function(ok) {
     if (ok) {
@@ -6621,6 +6636,8 @@ BAR EXCHANGEのシフト担当です。
       if (typeof renderManagerView === 'function')  { try { renderManagerView(); }  catch(e) {} }
       if (typeof renderDeadlineBanner === 'function'){ try { renderDeadlineBanner(); } catch(e) {} }
     }
+    /* 店舗メタ情報も取得 */
+    loadShopMeta();
     /* Socket.io でリアルタイム配信を受け取る */
     setupSocketSync();
   });
