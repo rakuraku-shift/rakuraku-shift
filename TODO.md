@@ -4,40 +4,53 @@
 
 ## ✨ 2026-05-28 (本日) 追加実装
 
-### 新規ページ・機能
+### 🎁 マーケティング・営業ページ
 - ✅ デモ予約フォーム (demo-reservation.html + /api/demo-reservation)
-- ✅ 紹介プログラム (referral.html + /api/referral + コード自動発行 RAKU-XXXX-YYYY)
-- ✅ マスタデータ管理ページ (master-data.html — ポジション/時給/時間帯/休憩/ホリデー 統一管理)
-- ✅ スタッフ別月次サマリ (staff-monthly.html — 勤務時間/給与/評価/カレンダー/PDF印刷)
+- ✅ 紹介プログラム (referral.html + /api/referral + RAKU-XXXX-YYYY コード)
 - ✅ 導入事例ページ (case-studies.html — 6事例 + オーナーの声5件)
-- ✅ 本部ダッシュボード (hq-dashboard.html — 6KPI/ランキング/アラート/CSV出力)
-- ✅ 通知設定センター (notification-settings.html — メール/LINE/Push/SMS統合UI)
 
-### LINE 公式アカウント連携
+### 🏢 運用・管理ページ
+- ✅ マスタデータ管理 (master-data.html — ポジション/時給/時間帯/休憩/ホリデー)
+- ✅ スタッフ別月次サマリ (staff-monthly.html — 勤務時間/給与/評価/カレンダー)
+- ✅ 本部ダッシュボード (hq-dashboard.html — 6KPI/ランキング/アラート/CSV出力)
+- ✅ 通知設定センター (notification-settings.html — メール/LINE/Push/SMS統合)
+- ✅ 売上データ取込 (sales-import.html — 手動入力/CSV/POS連携)
+- ✅ お知らせ管理 (announcements.html — 4チャネル一斉送信)
+
+### 💬 LINE 公式アカウント連携
 - ✅ POST /api/notification/line/connect — 設定保存
 - ✅ POST /api/notification/line/test — Messaging API疎通テスト
-- ✅ POST /api/notification/line/broadcast — 全員へ通知
+- ✅ POST /api/notification/line/broadcast — 全員push送信
+- ✅ シフト確定通知ボタン (メール + LINE 同時送信)
 
-### PWA 強化
+### 📢 お知らせ機能 (4チャネル送信)
+- ✅ POST /api/announcements — 投稿 (Socket.io リアルタイム配信)
+- ✅ GET /api/announcements/:shopId — 取得 (期限フィルタ)
+- ✅ DELETE /api/announcements/:id — 削除
+- ✅ myshift.html に表示エリア追加 (優先度別カラーバー)
+
+### 💰 売上・POS 連携
+- ✅ POST/GET /api/sales/daily — 売上同期 (店舗別)
+- ✅ POST /api/pos/connect — Square/スマレジ Access Token保存
+- ✅ Airレジ/ユビレジ: CSV 経由で取込可
+- ✅ 人件費率リアルタイム計算 (shift-data × 売上)
+
+### 🔔 PWA 強化
 - ✅ sw.js v2: push通知受信ハンドラ + notificationclick
 - ✅ manifest.json: shortcuts追加 (打刻/マイシフト/希望提出/デモ予約)
 - ✅ Background Sync stub
+- ✅ プッシュ通知 有効化ボタン (Notification.requestPermission)
 
-### サーバーAPI
-- ✅ POST/GET /api/master-data/:shopId — マスタ同期 (Socket.io broadcast対応)
+### 📧 メール
+- ✅ POST /api/send-mail — 汎用送信 (to配列対応・成功失敗カウント)
+
+### 🌐 サーバー基盤
+- ✅ POST/GET /api/master-data/:shopId — マスタ同期 (Socket.io broadcast)
 - ✅ GET /api/hq/summary — 本部集計KPI
 
-### #1 完了
-- ✅ #1 名前リスト水平スクロール class適用 (eval-staff-row badges + chip-row CSS)
-  → モバイル: 横スクロール、デスクトップ(≥880px): wrap
-
-### #6 完了
-- ✅ #6 shift.html i18n: フォーム/モーダル/トースト多言語化
-  → i18n.js に70+ keys 追加 (toast/confirm/edit/eval/holiday/audit/md/hq)
-  → tt() 関数: 既存日本語文字列を自動逆引き翻訳
-  → showToast() に自動翻訳ラップ適用
-  → 5モーダル に data-i18n 属性適用
-  → rakuraku-lang-changed イベントで動的レンダリング再実行
+### ✅ 既存 TODO 完了
+- ✅ #1 名前リスト水平スクロール class適用 (eval-staff-row + chip-row)
+- ✅ #6 shift.html i18n: 70+ keys + tt()自動翻訳 + 5モーダル data-i18n
 
 
 
@@ -250,11 +263,18 @@
 ## 進捗率
 
 ```
-全体実装率: ★★★★★★★★★☆ 90%
-（コア機能・運用機能・営業ページ・本部機能 すべて完成）
+全体実装率: ★★★★★★★★★★ 95%
+（コア機能 + 運用機能 + 営業ページ + 本部機能 + 通知 + POS連携基盤 完成）
 ```
 
-### 残り10%の内訳
-- 外部システム連携 (POS / 給与ソフト)
-- ネイティブアプリ化
-- マスタデータの実シフト適用フロー
+### 残り 5% の内訳
+- 給与ソフト完全連携 (freee/マネーフォワード - API化)
+- ネイティブアプリ化 (iOS/Android Capacitor wrapping)
+- POSの自動定期取込 (cron + Square APIフル接続)
+- マスタデータ→実シフト 自動適用フロー (master-data.json → shift.html)
+
+### 残りタスクのうち、実装より「運用テスト」が必要なもの
+- 実店舗での 14日間トライアル → 本番フィードバック
+- LINE公式アカウント 接続 → 友だち1名で実通知テスト
+- メール送信 EMAIL_USER 環境変数設定 + Gmail App Password 設定
+- Stripe 本番審査通過後の課金フロー確認
