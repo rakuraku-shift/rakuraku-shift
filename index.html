@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>RAKURAKU — バー・飲食店向けシフト管理SaaS</title>
+<meta name="description" content="RAKURAKU は1タップで完璧なシフト作成。バー・飲食店向けクラウド型シフト管理プラットフォーム。深夜割増自動計算・売上管理・スタッフ評価まで一気通貫。"/>
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<!-- OGP -->
+<meta property="og:title" content="RAKURAKU — バー・飲食店向けシフト管理"/>
+<meta property="og:description" content="1タップで完璧なシフト作成。深夜割増自動計算・売上管理・スタッフ評価まで。"/>
+<meta property="og:type" content="website"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --indigo:#4F46E5; --indigo-d:#3730A3; --indigo-l:#EEF2FF;
+    --purple:#7C3AED; --slate-900:#0F172A; --slate-700:#334155;
+    --slate-500:#64748B; --slate-300:#CBD5E1; --slate-200:#E2E8F0;
+    --slate-100:#F1F5F9; --slate-50:#F8FAFC; --emerald:#10B981;
+    --amber:#F59E0B; --red:#EF4444; --white:#fff;
+  }
+  html,body{font-family:'Inter','Noto Sans JP',-apple-system,sans-serif;color:var(--slate-900);background:var(--white);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:var(--indigo);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  img,svg{display:block;max-width:100%;}
+  .container{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+  /* ─── Header ─── */
+  .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;letter-spacing:-.01em;}
+  .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;box-shadow:0 4px 12px rgba(79,70,229,.3);}
+  .nav-links{display:flex;gap:24px;align-items:center;font-size:14px;font-weight:600;}
+  .nav-links a{color:var(--slate-700);}
+  .nav-cta{padding:9px 18px;background:var(--indigo);color:#fff!important;border-radius:8px;font-size:13px;font-weight:700;}
+  .nav-cta:hover{background:var(--indigo-d);text-decoration:none;}
+
+  @media(max-width:640px){
+    .nav-links{display:none;}
+    .nav-links .nav-cta{display:inline-block;}
+    .nav-inner .nav-cta-mobile{display:inline-block;padding:8px 14px;background:var(--indigo);color:#fff;border-radius:8px;font-size:12px;font-weight:700;}
+  }
+
+  /* ─── Hero ─── */
+  .hero{padding:90px 0 70px;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(79,70,229,.08),transparent 60%);pointer-events:none;}
+  .hero-badge{display:inline-block;padding:6px 14px;background:var(--indigo-l);color:var(--indigo);border-radius:20px;font-size:12px;font-weight:800;margin-bottom:20px;letter-spacing:.04em;}
+  .hero h1{font-size:48px;font-weight:900;line-height:1.2;letter-spacing:-.02em;margin-bottom:18px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero p.lead{font-size:18px;color:var(--slate-500);max-width:600px;margin:0 auto 36px;}
+  .hero-cta{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+  .btn-primary{padding:16px 32px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff!important;border-radius:12px;font-size:15px;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(79,70,229,.35);transition:transform .15s;display:inline-flex;align-items:center;gap:8px;}
+  .btn-primary:hover{transform:translateY(-2px);text-decoration:none;}
+  .btn-secondary{padding:16px 28px;background:#fff;color:var(--slate-700)!important;border:1.5px solid var(--slate-200);border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;}
+  .btn-secondary:hover{text-decoration:none;border-color:var(--indigo);color:var(--indigo)!important;}
+  @media(max-width:640px){.hero h1{font-size:32px;} .hero p.lead{font-size:15px;}}
+
+  /* ─── Section ─── */
+  section{padding:80px 0;}
+  .section-tag{display:inline-block;font-size:12px;font-weight:800;color:var(--indigo);background:var(--indigo-l);padding:5px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:.04em;}
+  .section-title{font-size:36px;font-weight:900;letter-spacing:-.01em;margin-bottom:14px;text-align:center;}
+  .section-sub{font-size:15px;color:var(--slate-500);text-align:center;max-width:600px;margin:0 auto 50px;}
+  @media(max-width:640px){.section-title{font-size:24px;} section{padding:50px 0;}}
+
+  /* ─── Pain Points ─── */
+  .pains{background:var(--slate-50);}
+  .pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .pain{background:#fff;border-radius:14px;padding:24px;border:1px solid var(--slate-100);}
+  .pain-icon{font-size:32px;margin-bottom:12px;}
+  .pain-title{font-size:16px;font-weight:800;margin-bottom:6px;}
+  .pain-desc{font-size:13px;color:var(--slate-500);}
+  @media(max-width:640px){.pain-grid{grid-template-columns:1fr;}}
+
+  /* ─── Features ─── */
+  .feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+  .feat{background:#fff;border:1.5px solid var(--slate-100);border-radius:16px;padding:28px;transition:all .2s;}
+  .feat:hover{border-color:var(--indigo);box-shadow:0 8px 28px rgba(79,70,229,.08);transform:translateY(-2px);}
+  .feat-icon{width:48px;height:48px;border-radius:12px;background:var(--indigo-l);color:var(--indigo);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px;}
+  .feat-title{font-size:18px;font-weight:800;margin-bottom:8px;}
+  .feat-desc{font-size:14px;color:var(--slate-500);line-height:1.7;}
+  @media(max-width:640px){.feat-grid{grid-template-columns:1fr;}}
+
+  /* ─── Pricing ─── */
+  .pricing{background:linear-gradient(180deg,var(--slate-50),#fff);}
+  .price-card{max-width:480px;margin:0 auto;background:#fff;border:2px solid var(--indigo);border-radius:20px;padding:40px 32px;text-align:center;box-shadow:0 20px 60px rgba(79,70,229,.15);position:relative;}
+  .price-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.06em;}
+  .price-plan{font-size:14px;color:var(--slate-500);font-weight:700;margin-bottom:8px;}
+  .price-amount{font-size:60px;font-weight:900;line-height:1;color:var(--slate-900);margin:8px 0;}
+  .price-amount .yen{font-size:24px;font-weight:800;vertical-align:top;margin-right:4px;}
+  .price-amount .per{font-size:16px;font-weight:600;color:var(--slate-500);}
+  .price-tax{font-size:11px;color:var(--slate-400);margin-bottom:24px;}
+  .price-features{text-align:left;margin:24px 0;}
+  .price-features li{list-style:none;padding:8px 0;font-size:14px;color:var(--slate-700);display:flex;align-items:center;gap:8px;}
+  .price-features li::before{content:'✓';color:var(--emerald);font-weight:900;font-size:16px;}
+  .price-note{font-size:11px;color:var(--slate-400);margin-top:16px;line-height:1.5;}
+  .trial-banner{background:linear-gradient(135deg,rgba(16,185,129,.10),rgba(16,185,129,.04));border:1.5px dashed #10B981;border-radius:14px;padding:16px;margin:18px 0 14px;}
+  .trial-banner-title{font-size:17px;font-weight:900;color:#047857;margin-bottom:4px;letter-spacing:-.01em;}
+  .trial-banner-sub{font-size:11px;color:#059669;font-weight:700;letter-spacing:.02em;}
+  .price-annual{background:var(--indigo-l);border:1px solid rgba(79,70,229,.15);border-radius:12px;padding:12px 16px;margin:12px 0 22px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .price-annual-label{font-size:11px;color:var(--indigo);font-weight:800;letter-spacing:.04em;}
+  .price-annual-amount{font-size:17px;font-weight:900;color:var(--slate-900);}
+  .price-annual-per{font-size:11px;color:var(--slate-500);font-weight:600;margin-left:4px;}
+  .price-annual-save{display:inline-block;background:var(--emerald);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:10px;margin-left:6px;letter-spacing:.04em;vertical-align:middle;}
+
+  /* ─── Subscribe Modal ─── */
+  .sub-modal{display:none;position:fixed;inset:0;z-index:1100;background:rgba(15,23,42,.7);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+  .sub-modal.show{display:flex;}
+  .sub-modal-card{background:#fff;max-width:440px;width:100%;border-radius:20px;padding:36px 28px 28px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3);max-height:92vh;overflow-y:auto;}
+  .sub-modal-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:var(--slate-100);cursor:pointer;font-size:14px;color:var(--slate-500);font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .sub-modal-close:hover{background:var(--slate-200);}
+  .sub-modal-hdr{text-align:center;margin-bottom:22px;}
+  .sub-modal-eyebrow{display:inline-block;background:#ECFDF5;color:#047857;font-size:11px;font-weight:800;padding:5px 12px;border-radius:20px;margin-bottom:10px;letter-spacing:.04em;}
+  .sub-modal-hdr h2{font-size:22px;font-weight:900;margin-bottom:6px;letter-spacing:-.01em;}
+  .sub-modal-hdr p{font-size:12px;color:var(--slate-500);font-weight:600;}
+  .sub-form label{display:block;font-size:12px;font-weight:800;color:var(--slate-700);margin-bottom:14px;}
+  .sub-form .req{color:#EF4444;margin-left:2px;}
+  .sub-form input{width:100%;padding:12px 14px;margin-top:6px;border:1.5px solid var(--slate-200);border-radius:10px;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s;color:var(--slate-900);}
+  .sub-form input:focus{border-color:var(--indigo);}
+  .sub-plan-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 16px;}
+  .sub-plan-opt{display:flex;align-items:center;justify-content:center;padding:12px 8px;border:1.5px solid var(--slate-200);border-radius:10px;cursor:pointer;font-size:11px;font-weight:700;color:var(--slate-700);transition:all .15s;margin:0;position:relative;text-align:center;}
+  .sub-plan-opt input{position:absolute;opacity:0;pointer-events:none;}
+  .sub-plan-opt:has(input:checked){border-color:var(--indigo);background:var(--indigo-l);color:var(--indigo);}
+  .sub-plan-opt em{color:var(--emerald);font-style:normal;font-size:10px;margin-left:4px;font-weight:800;}
+  .sub-submit{width:100%;padding:16px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(79,70,229,.3);transition:all .15s;margin-top:6px;}
+  .sub-submit:hover:not(:disabled){transform:translateY(-1px);}
+  .sub-submit:disabled{opacity:.6;cursor:wait;transform:none;}
+  .sub-fine{font-size:10px;color:var(--slate-400);text-align:center;margin-top:10px;line-height:1.5;}
+  .sub-error{display:none;background:#FEF2F2;color:#991B1B;font-size:12px;padding:10px 12px;border-radius:8px;margin-bottom:12px;font-weight:600;}
+  .sub-error.show{display:block;}
+
+  /* ─── How it works ─── */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:step;}
+  .step{background:var(--slate-50);border-radius:14px;padding:24px;position:relative;}
+  .step::before{counter-increment:step;content:counter(step);position:absolute;top:18px;right:18px;font-size:34px;font-weight:900;color:var(--indigo-l);line-height:1;}
+  .step-title{font-size:14px;font-weight:800;margin-bottom:6px;color:var(--indigo);}
+  .step-desc{font-size:13px;color:var(--slate-700);line-height:1.6;}
+  @media(max-width:640px){.steps{grid-template-columns:1fr 1fr;}}
+
+  /* ─── FAQ ─── */
+  .faq-list{max-width:760px;margin:0 auto;}
+  .faq-item{border-bottom:1px solid var(--slate-100);padding:18px 0;}
+  .faq-q{font-weight:800;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;}
+  .faq-q::after{content:'＋';color:var(--indigo);font-weight:900;font-size:20px;flex-shrink:0;transition:transform .2s;}
+  .faq-item.open .faq-q::after{transform:rotate(45deg);}
+  .faq-a{font-size:14px;color:var(--slate-500);max-height:0;overflow:hidden;transition:max-height .25s,padding .25s;line-height:1.7;}
+  .faq-item.open .faq-a{max-height:400px;padding-top:12px;}
+
+  /* ─── CTA strip ─── */
+  .cta-strip{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-radius:24px;padding:50px 32px;text-align:center;margin:0 24px;}
+  .cta-strip h2{font-size:28px;font-weight:900;margin-bottom:8px;color:#fff;}
+  .cta-strip p{color:rgba(255,255,255,.85);margin-bottom:26px;font-size:14px;}
+  .cta-strip .btn-primary{background:#fff;color:var(--indigo)!important;box-shadow:none;}
+
+  /* ─── Footer / 特商法 ─── */
+  footer{background:var(--slate-900);color:#94A3B8;padding:60px 0 30px;font-size:13px;}
+  footer .container{max-width:1000px;}
+  .footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:30px;margin-bottom:40px;}
+  @media(max-width:768px){.footer-top{grid-template-columns:1fr;}}
+  .footer-brand{font-size:20px;font-weight:900;color:#fff;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .footer-brand .logo-mark{box-shadow:none;}
+  .footer-desc{font-size:13px;line-height:1.7;color:#94A3B8;margin-bottom:8px;}
+  .footer-col h4{font-size:12px;font-weight:800;color:#fff;margin-bottom:14px;letter-spacing:.08em;}
+  .footer-col a{color:#94A3B8;display:block;padding:4px 0;font-size:13px;}
+  .footer-col a:hover{color:#fff;}
+
+  .legal{border-top:1px solid #1E293B;padding-top:30px;}
+  .legal h3{color:#fff;font-size:14px;font-weight:800;margin-bottom:14px;}
+  .legal-table{width:100%;font-size:12px;border-collapse:collapse;}
+  .legal-table th,.legal-table td{padding:9px 12px;border-bottom:1px solid #1E293B;text-align:left;vertical-align:top;}
+  .legal-table th{color:#CBD5E1;font-weight:700;width:38%;background:rgba(255,255,255,.02);}
+  .legal-table td{color:#94A3B8;line-height:1.6;}
+  .copyright{text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #1E293B;font-size:11px;color:#64748B;}
+
+  /* ─── Overlay (利用規約・プライバシー) ─── */
+  .overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px;}
+  .overlay.show{display:flex;}
+  .overlay-card{background:#fff;border-radius:16px;max-width:760px;width:100%;max-height:85vh;overflow-y:auto;padding:36px;color:var(--slate-900);}
+  .overlay-card h2{font-size:22px;font-weight:900;margin-bottom:18px;}
+  .overlay-card h3{font-size:15px;font-weight:800;margin:18px 0 6px;color:var(--indigo);}
+  .overlay-card p,.overlay-card li{font-size:13px;line-height:1.8;color:var(--slate-700);}
+  .overlay-card ul,.overlay-card ol{margin-left:20px;margin-bottom:10px;}
+  .overlay-close{float:right;font-size:22px;background:none;border:none;cursor:pointer;color:var(--slate-500);font-family:inherit;}
+</style>
+</head>
+<body>
+
+<!-- ════════ HEADER ════════ -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark">R</span>
+      <span>RAKURAKU</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#features">機能</a>
+      <a href="#pricing">料金</a>
+      <a href="#how">使い方</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact" class="nav-cta">お問い合わせ</a>
+    </nav>
+    <a href="#contact" class="nav-cta-mobile" style="display:none;">お問合せ</a>
+  </div>
+</header>
+
+<!-- ════════ HERO ════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">🎁 14日間無料トライアル ・ クレカ登録不要</div>
+    <h1>
+      シフト作成、<br>
+      <span class="grad">1タップで完璧に。</span>
+    </h1>
+    <p class="lead">
+      アルバイトはスマホで希望時間を提出するだけ。<br>
+      店長はワンタップでシフト表が完成。<br>
+      深夜割増・売上管理・スタッフ評価まで全部入り。
+    </p>
+    <div class="hero-cta">
+      <a href="#" onclick="event.preventDefault();openSubModal();" class="btn-primary">🎁 14日間無料で試す</a>
+      <a href="#how" class="btn-secondary">📺 使い方を見る</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ PAIN POINTS ════════ -->
+<section class="pains">
+  <div class="container">
+    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;">こんな悩みありませんか？</span>
+    <h2 class="section-title">飲食店の「シフト疲れ」</h2>
+    <p class="section-sub">手書き・Excel・LINEのやり取りで毎月毎月、店長の貴重な時間を奪っていませんか？</p>
+    <div class="pain-grid">
+      <div class="pain">
+        <div class="pain-icon">😫</div>
+        <div class="pain-title">月末は徹夜でシフト作成</div>
+        <div class="pain-desc">紙とExcelで朝までシフト調整。本業に集中できない。</div>
+      </div>
+      <div class="pain">
+        <div class="pain-icon">📵</div>
+        <div class="pain-title">LINEで希望日が大量に届く</div>
+        <div class="pain-desc">スタッフからのLINEに埋もれて、誰がいつ入れるか分からない。</div>
+      </div>
+      <div class="pain">
+        <div class="pain-icon">💸</div>
+        <div class="pain-title">深夜割増の計算ミス</div>
+        <div class="pain-desc">22時以降の25%割増を手計算。給与トラブルの原因に。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FEATURES ════════ -->
+<section id="features">
+  <div class="container">
+    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;">FEATURES</span>
+    <h2 class="section-title">RAKURAKU が解決します</h2>
+    <p class="section-sub">飲食店オーナーの現場経験から生まれた、本当に必要な機能だけを搭載。</p>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon">📱</div>
+        <div class="feat-title">スマホで希望提出</div>
+        <div class="feat-desc">スタッフはQRコードを読み取って、カレンダーから希望日と時間をタップするだけ。担当ポジションは店側で設定するので、アルバイト側の入力負担はゼロ。</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">✨</div>
+        <div class="feat-title">ワンタップでシフト作成</div>
+        <div class="feat-desc">大きな「シフト作成」ボタン1回で、朝/昼/夜の人員バランス・ポジション配置を考慮したシフト表が即完成。印刷もPDF風に綺麗に出力。</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">💴</div>
+        <div class="feat-title">深夜割増を自動計算</div>
+        <div class="feat-desc">労働基準法第37条準拠で、22:00〜翌5:00の深夜時間に+25%を自動適用。時給・交通費・役職手当を入れるだけで月次給与が自動算出。</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">売上と人件費率を可視化</div>
+        <div class="feat-desc">月次売上目標と達成率、前年比、人件費率を一画面で。25-35%の目安と色分けで経営判断を即サポート。</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">人員不足を3段階で自動解決</div>
+        <div class="feat-desc">
+          <strong>① 既存スタッフへ時間調整依頼メール</strong>を一斉送信 →
+          <strong>② 自社スタッフに時給インセンティブ付き内部募集</strong> →
+          <strong>③ それでも不足なら Timee／シェアフル／バイトル へワンタップ外部求人配信</strong>。<br>
+          新規募集の前にできることを全部自動でやるので、外部求人コストを最小化できます。
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">⭐</div>
+        <div class="feat-title">スタッフ評価機能</div>
+        <div class="feat-desc">ポジションごとに5段階で評価。誰がホールが得意か、キッチンの揚げ場ができるか一目瞭然。シフト編成の最適化に直結。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ HOW IT WORKS ════════ -->
+<section id="how" class="pains">
+  <div class="container">
+    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;">HOW IT WORKS</span>
+    <h2 class="section-title">3ステップで導入完了</h2>
+    <p class="section-sub">難しい設定は不要。アプリのインストールも不要。スマホのブラウザで完結。</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-title">STEP 1</div>
+        <div class="step-desc">店舗URLとQRコードを発行。スタッフに共有するだけ。</div>
+      </div>
+      <div class="step">
+        <div class="step-title">STEP 2</div>
+        <div class="step-desc">スタッフがスマホで希望日・時間を提出。</div>
+      </div>
+      <div class="step">
+        <div class="step-title">STEP 3</div>
+        <div class="step-desc">店長が「ワンタップでシフト作成」をタップ。</div>
+      </div>
+      <div class="step">
+        <div class="step-title">STEP 4</div>
+        <div class="step-desc">PDF印刷 or 給与計算まで一気通貫。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ PRICING ════════ -->
+<section id="pricing" class="pricing">
+  <div class="container">
+    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;">PRICING</span>
+    <h2 class="section-title">シンプルな月額制</h2>
+    <p class="section-sub">店舗単位の定額制。スタッフ数・利用回数に関係なく、月額固定で安心。</p>
+    <div class="price-card">
+      <span class="price-badge">⭐ 全店舗共通プラン</span>
+      <div class="price-plan">スタンダード</div>
+      <div class="trial-banner">
+        <div class="trial-banner-title">🎁 まずは 14日間 無料でお試し</div>
+        <div class="trial-banner-sub">クレカ登録不要 ・ 自動課金なし ・ いつでも解約OK</div>
+      </div>
+      <div class="price-amount">
+        <span class="yen">¥</span>9,800<span class="per">/月（税込）</span>
+      </div>
+      <div class="price-tax">※ 初期費用 無料 / 契約期間の縛りなし</div>
+      <div class="price-annual">
+        <span class="price-annual-label">年払いなら</span>
+        <span class="price-annual-amount">¥98,000<span class="price-annual-per">/年</span><span class="price-annual-save">2ヶ月分お得</span></span>
+      </div>
+      <ul class="price-features">
+        <li>スタッフ数 無制限</li>
+        <li>シフト提出・自動生成 無制限</li>
+        <li>深夜割増・給与計算 込み</li>
+        <li>売上管理・人件費率分析</li>
+        <li>スタッフ評価機能</li>
+        <li>調整依頼メール送信機能</li>
+        <li>PWA対応（ホーム画面追加可）</li>
+        <li>月次バージョンアップ無料</li>
+      </ul>
+      <a href="#" onclick="event.preventDefault();openSubModal();" class="btn-primary" style="width:100%;justify-content:center;">🎁 14日間無料で始める</a>
+      <div class="price-note">
+        ※ 14日間の無料期間中はご請求が一切発生しません。<br>
+        ※ お申し込み後、専用URLとライセンスコードを即時メールでお送りします。<br>
+        ※ 期間終了後は月次自動引落（クレジットカード / 銀行振込対応）。<br>
+        ※ いつでも解約可能。違約金一切ありません。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FAQ ════════ -->
+<section id="faq">
+  <div class="container">
+    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;">FAQ</span>
+    <h2 class="section-title">よくあるご質問</h2>
+    <div class="faq-list" style="margin-top:30px;">
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">アプリのインストールは必要ですか？</div>
+        <div class="faq-a">不要です。スマホ・PCのブラウザで利用できます。ホーム画面に追加すればアプリのように起動できます（PWA対応）。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">スタッフ側の登録は必要ですか？</div>
+        <div class="faq-a">アカウント作成は不要です。店長が共有するQRコードを読み取って、名前と希望日時を入力するだけで提出完了します。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">複数店舗の管理はできますか？</div>
+        <div class="faq-a">はい、店舗ごとに別URLが発行されるので、データを混在させずに複数店舗を運用できます。各店舗で月額がかかります。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">深夜割増以外の割増賃金にも対応していますか？</div>
+        <div class="faq-a">現在は深夜（22:00〜翌5:00 +25%）の自動計算に対応しています。時間外労働・休日労働の割増は労基法に基づき別途計算が必要ですが、アプリ内に解説パネルを用意しています。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">解約はいつでもできますか？</div>
+        <div class="faq-a">はい、いつでも解約可能です。違約金は一切ありません。解約申請の翌月以降、ご請求は発生しません。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">無料お試しはありますか？</div>
+        <div class="faq-a">はい、14日間の無料トライアルがございます。クレカ登録不要・自動課金なしなので、お試し後そのまま離脱されても費用は一切発生しません。料金プランの「14日間無料で始める」ボタンからすぐに開始できます。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ CTA ════════ -->
+<section style="padding:40px 0;">
+  <div class="cta-strip">
+    <h2>シフトに費やす時間を、本業に。</h2>
+    <p>導入相談・無料デモのご希望はお気軽にお問い合わせください。</p>
+    <a href="#contact" class="btn-primary">📨 お問い合わせはこちら</a>
+  </div>
+</section>
+
+<!-- ════════ FOOTER & 特商法 ════════ -->
+<footer id="contact">
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">
+          <span class="logo-mark">R</span>
+          <span>RAKURAKU</span>
+        </div>
+        <p class="footer-desc">バー・飲食店向け<br>シフト管理プラットフォーム</p>
+      </div>
+      <div class="footer-col">
+        <h4>SERVICE</h4>
+        <a href="#features">機能一覧</a>
+        <a href="#pricing">料金プラン</a>
+        <a href="#how">使い方</a>
+        <a href="#faq">よくある質問</a>
+      </div>
+      <div class="footer-col">
+        <h4>LEGAL</h4>
+        <a href="#" onclick="event.preventDefault();openOverlay('terms');">利用規約</a>
+        <a href="#" onclick="event.preventDefault();openOverlay('privacy');">プライバシーポリシー</a>
+        <a href="#tokushoho">特定商取引法に基づく表記</a>
+      </div>
+      <div class="footer-col">
+        <h4>CONTACT</h4>
+        <a href="mailto:support@rakuraku.example.com">📧 メールでお問合せ</a>
+        <a href="#" style="pointer-events:none;color:#64748B;">受付: 平日 10:00-18:00</a>
+      </div>
+    </div>
+
+    <!-- 特商法に基づく表記 -->
+    <div id="tokushoho" class="legal">
+      <h3>📋 特定商取引法に基づく表記</h3>
+      <table class="legal-table">
+        <tr><th>販売事業者</th><td>【あなたの会社名 / 屋号】</td></tr>
+        <tr><th>運営責任者</th><td>【代表者名】</td></tr>
+        <tr><th>所在地</th><td>【〒000-0000 住所】<br>※請求があれば遅延なく開示します</td></tr>
+        <tr><th>電話番号</th><td>【000-0000-0000】<br>※請求があれば遅延なく開示します</td></tr>
+        <tr><th>メールアドレス</th><td>support@rakuraku.example.com</td></tr>
+        <tr><th>ウェブサイトURL</th><td>https://rakuraku.example.com</td></tr>
+        <tr><th>販売価格</th><td>スタンダードプラン: 月額 ¥9,800（税込）<br>※ 各サービス紹介ページに表示の金額</td></tr>
+        <tr><th>商品代金以外の必要料金</th><td>なし（決済手数料は当社負担）<br>※ 通信費・銀行振込手数料はお客様負担</td></tr>
+        <tr><th>お支払い方法</th><td>クレジットカード（Visa / Mastercard / JCB / AMEX）<br>銀行振込（請求書発行）</td></tr>
+        <tr><th>お支払い時期</th><td>毎月1日に自動課金（クレジットカード）<br>銀行振込の場合は当月末日まで</td></tr>
+        <tr><th>サービス提供時期</th><td>お申し込み・お支払い確認後、即時ご利用いただけます</td></tr>
+        <tr><th>返品・キャンセル</th><td>サービスの性質上、月次料金のお支払い後の返金は原則承っておりません。<br>解約はいつでも可能で、解約月の翌月以降のご請求は発生しません。</td></tr>
+        <tr><th>動作環境</th><td>iOS Safari 14+、Android Chrome 90+、PC Chrome / Safari / Edge 最新版</td></tr>
+      </table>
+      <p style="font-size:11px;color:#64748B;margin-top:14px;">※ 【】内は導入後に正式情報に置き換えてください。Stripe審査時はテストユーザーとして閲覧されます。</p>
+    </div>
+
+    <div class="copyright">© 2026 RAKURAKU. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- ════════ Terms Overlay ════════ -->
+<div class="overlay" id="overlay-terms" onclick="if(event.target===this)closeOverlay()">
+  <div class="overlay-card">
+    <button class="overlay-close" onclick="closeOverlay()">✕</button>
+    <h2>利用規約</h2>
+    <p>本規約は、RAKURAKU（以下「本サービス」）の利用条件を定めるものです。本サービスをご利用の際は、本規約に同意したものとみなされます。</p>
+    <h3>第1条（適用）</h3>
+    <p>本規約は、本サービスの提供条件およびサービス運営者（以下「当社」）と利用者との間の権利義務関係を定めます。</p>
+    <h3>第2条（利用登録）</h3>
+    <p>利用者は、当社所定の方法によって申込みを行い、当社の承諾をもって利用契約が成立します。</p>
+    <h3>第3条（料金および支払方法）</h3>
+    <p>利用者は、当社が定める利用料金（月額¥9,800税込）を、当社が指定する方法により支払うものとします。</p>
+    <h3>第4条（禁止事項）</h3>
+    <p>利用者は、本サービスの利用にあたり以下の行為を行ってはなりません：</p>
+    <ul>
+      <li>法令または公序良俗に違反する行為</li>
+      <li>本サービスの運営を妨害する行為</li>
+      <li>他の利用者・第三者の権利を侵害する行為</li>
+      <li>本サービスを不正に複製・改変・配布する行為</li>
+    </ul>
+    <h3>第5条（解約）</h3>
+    <p>利用者は、いつでも所定の方法により本サービスを解約できます。解約月の翌月以降の利用料金は発生しません。</p>
+    <h3>第6条（免責事項）</h3>
+    <p>当社は、本サービスの利用により利用者に生じた損害について、当社の故意または重大な過失による場合を除き、責任を負わないものとします。</p>
+    <h3>第7条（規約の変更）</h3>
+    <p>当社は、必要に応じて本規約を変更できます。変更後の規約は、本サービス上に表示した時点から効力を生じます。</p>
+    <h3>第8条（準拠法・管轄）</h3>
+    <p>本規約は日本法に準拠し、本サービスに関する紛争は東京地方裁判所を専属的合意管轄とします。</p>
+    <p style="margin-top:20px;color:var(--slate-400);">制定日: 2026年5月26日</p>
+  </div>
+</div>
+
+<!-- ════════ Privacy Overlay ════════ -->
+<div class="overlay" id="overlay-privacy" onclick="if(event.target===this)closeOverlay()">
+  <div class="overlay-card">
+    <button class="overlay-close" onclick="closeOverlay()">✕</button>
+    <h2>プライバシーポリシー</h2>
+    <p>当社は、利用者の個人情報保護の重要性を認識し、以下のプライバシーポリシーに基づき適切に取り扱います。</p>
+    <h3>1. 取得する情報</h3>
+    <ul>
+      <li>利用登録時にご提供いただく情報（店舗名・代表者名・メールアドレス・電話番号）</li>
+      <li>サービス利用中に生成される情報（シフト提出データ・売上データ・スタッフ情報）</li>
+      <li>クッキー等によるアクセス情報</li>
+    </ul>
+    <h3>2. 利用目的</h3>
+    <ul>
+      <li>本サービスの提供・運営</li>
+      <li>料金請求・お支払い処理</li>
+      <li>サポート・お問い合わせ対応</li>
+      <li>サービス改善・新機能開発</li>
+    </ul>
+    <h3>3. 第三者提供</h3>
+    <p>当社は、法令に基づく場合を除き、ご本人の同意なく個人情報を第三者に提供しません。</p>
+    <h3>4. 業務委託</h3>
+    <p>決済処理（Stripe Inc.）・データ保管（クラウドサーバー）等で外部事業者を利用します。委託先には適切な管理を求めます。</p>
+    <h3>5. データの保管・削除</h3>
+    <p>個人情報は契約終了後3ヶ月間保管し、その後速やかに削除します。ご本人からの削除要請にも随時対応します。</p>
+    <h3>6. お問い合わせ</h3>
+    <p>個人情報に関するお問い合わせは、support@rakuraku.example.com までご連絡ください。</p>
+    <p style="margin-top:20px;color:var(--slate-400);">制定日: 2026年5月26日</p>
+  </div>
+</div>
+
+<!-- ════════ Subscribe Modal ════════ -->
+<div class="sub-modal" id="sub-modal" onclick="if(event.target===this)closeSubModal()">
+  <div class="sub-modal-card">
+    <button class="sub-modal-close" onclick="closeSubModal()" aria-label="閉じる">✕</button>
+    <div class="sub-modal-hdr">
+      <div class="sub-modal-eyebrow">🎁 14日間無料トライアル</div>
+      <h2>RAKURAKU を始める</h2>
+      <p>14日間無料 ・ 自動課金は期間終了後 ・ いつでも解約OK</p>
+    </div>
+    <div class="sub-error" id="sub-error"></div>
+    <form class="sub-form" onsubmit="event.preventDefault();submitSubscribe();">
+      <label>店舗名 <span class="req">*</span>
+        <input type="text" id="sub-shop" required placeholder="例) BAR RAKURAKU 渋谷" autocomplete="organization" />
+      </label>
+      <label>お名前（代表者） <span class="req">*</span>
+        <input type="text" id="sub-owner" required placeholder="山田 太郎" autocomplete="name" />
+      </label>
+      <label>メールアドレス <span class="req">*</span>
+        <input type="email" id="sub-email" required placeholder="ライセンスコードをお送りします" autocomplete="email" />
+      </label>
+      <label>電話番号（任意）
+        <input type="tel" id="sub-phone" placeholder="サポート連絡用" autocomplete="tel" />
+      </label>
+      <div class="sub-plan-toggle">
+        <label class="sub-plan-opt"><input type="radio" name="sub-plan" value="monthly" checked /><span>月払い<br>¥9,800/月</span></label>
+        <label class="sub-plan-opt"><input type="radio" name="sub-plan" value="annual" /><span>年払い ¥98,000<br><em>2ヶ月分お得</em></span></label>
+      </div>
+      <button type="submit" class="sub-submit" id="sub-submit-btn">🎁 次へ進む（Stripe決済ページへ）</button>
+      <p class="sub-fine">送信後、Stripeの安全な決済ページが開きます。<br>クレカ情報入力後、14日間は一切ご請求が発生しません。</p>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openOverlay(name) {
+    document.getElementById('overlay-' + name).classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeOverlay() {
+    document.querySelectorAll('.overlay').forEach(function(o) { o.classList.remove('show'); });
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { closeOverlay(); closeSubModal(); }
+  });
+
+  /* ─── Subscribe Modal ─── */
+  function openSubModal() {
+    document.getElementById('sub-modal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function(){ document.getElementById('sub-shop').focus(); }, 80);
+  }
+  function closeSubModal() {
+    document.getElementById('sub-modal').classList.remove('show');
+    document.body.style.overflow = '';
+    var err = document.getElementById('sub-error');
+    if (err) { err.classList.remove('show'); err.textContent = ''; }
+  }
+  async function submitSubscribe() {
+    var btn = document.getElementById('sub-submit-btn');
+    var err = document.getElementById('sub-error');
+    var orig = btn.innerHTML;
+    err.classList.remove('show'); err.textContent = '';
+    btn.disabled = true;
+    btn.innerHTML = '処理中…';
+    try {
+      var payload = {
+        shopName:  document.getElementById('sub-shop').value.trim(),
+        ownerName: document.getElementById('sub-owner').value.trim(),
+        email:     document.getElementById('sub-email').value.trim(),
+        phone:     document.getElementById('sub-phone').value.trim(),
+        plan:      document.querySelector('input[name="sub-plan"]:checked').value,
+      };
+      var res = await fetch('/api/subscribe/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || '登録に失敗しました');
+      if (!data.url) throw new Error('Stripe URLが取得できませんでした');
+      window.location.href = data.url;
+    } catch (e) {
+      err.textContent = 'エラー: ' + e.message;
+      err.classList.add('show');
+      btn.disabled = false;
+      btn.innerHTML = orig;
+    }
+  }
+
+  /* スムーススクロール */
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var hash = this.getAttribute('href');
+      if (hash === '#' || hash.length < 2) return;
+      var t = document.querySelector(hash);
+      if (t) {
+        e.preventDefault();
+        t.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    });
+  });
+</script>
+</body>
+</html>

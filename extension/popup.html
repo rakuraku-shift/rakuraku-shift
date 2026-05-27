@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>RAKURAKU 求人自動入力</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 300px; padding: 18px; font-family: 'Noto Sans JP', 'Helvetica Neue', sans-serif; color: #0F172A; }
+  h1 { font-size: 15px; font-weight: 900; margin-bottom: 6px; color: #4F46E5; display: flex; align-items: center; gap: 6px; }
+  h1 .v { font-size: 10px; color: #94A3B8; font-weight: 700; }
+  p { font-size: 12px; color: #475569; line-height: 1.6; margin-bottom: 12px; }
+  .status { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #ECFDF5; border: 1px solid #10B981; border-radius: 8px; font-size: 12px; color: #047857; font-weight: 700; margin-bottom: 12px; }
+  .links { display: flex; flex-direction: column; gap: 4px; }
+  .links a { font-size: 11px; color: #4F46E5; text-decoration: none; padding: 6px 0; border-top: 1px solid #F1F5F9; font-weight: 700; }
+  .links a:hover { text-decoration: underline; }
+  .links a:first-child { border-top: none; }
+  .footer { margin-top: 12px; font-size: 10px; color: #94A3B8; text-align: center; line-height: 1.6; }
+</style>
+</head>
+<body>
+  <h1>🚀 RAKURAKU 求人自動入力 <span class="v" id="ver"></span></h1>
+  <p>RAKURAKU から配信ボタンを押すと、Timee／シェアフル／バイトル の求人投稿ページが自動で開き、内容が自動入力されます。</p>
+  <div class="status">✓ 拡張機能はアクティブです</div>
+  <div class="links">
+    <a href="https://app.timee.co.jp/business" target="_blank">🔗 Timee 事業者ログイン</a>
+    <a href="https://business.sharefull.com/" target="_blank">🔗 シェアフル 事業者ログイン</a>
+    <a href="https://www.baitoru.com/biz/" target="_blank">🔗 バイトル 事業者ログイン</a>
+  </div>
+  <div class="footer">配信前に各サイトへログインしておいてください。<br>自動「投稿」はしません。必ず内容確認後に「公開」を押してください。</div>
+<script src="popup.js"></script>
+</body>
+</html>

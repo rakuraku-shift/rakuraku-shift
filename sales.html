@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAR EXCHANGE — 売上管理</title>
+<script src="/socket.io/socket.io.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --green:#00ff88; --red:#ff3355; --gold:#ffd700;
+    --blue:#4488ff; --purple:#aa66ff; --bg:#060608;
+    --card:#0d0f14; --border:#1a2030; --text:#e8eaf0; --muted:#4a5270;
+    --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+
+  /* ─── HEADER ─── */
+  #hdr{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 28px;height:60px;
+    background:#0a0c10;border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:100;
+  }
+  .logo{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--green);letter-spacing:4px;}
+  .hdr-title{font-size:0.72rem;font-weight:700;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+  .hdr-right{display:flex;align-items:center;gap:10px;}
+  #date-label{font-family:var(--mono);font-size:0.8rem;color:var(--muted);}
+  #mode-badge{
+    font-size:0.65rem;font-weight:700;letter-spacing:2px;padding:4px 10px;
+    border-radius:4px;border:1px solid;
+  }
+  #mode-badge.live{background:#00ff8818;border-color:#00ff88;color:#00ff88;}
+  #mode-badge.local{background:#4488ff18;border-color:#4488ff;color:#4488ff;}
+  .hdr-btn{
+    background:none;border:1px solid var(--border);color:var(--muted);
+    padding:6px 14px;border-radius:6px;font-size:0.75rem;cursor:pointer;
+    transition:all 0.2s;font-family:var(--sans);
+  }
+  .hdr-btn:hover{border-color:var(--green);color:var(--green);}
+  #print-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+  /* ─── MAIN ─── */
+  main{max-width:1280px;margin:0 auto;padding:28px 24px 48px;}
+
+  /* ─── KPI ROW ─── */
+  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px;}
+  .kpi{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:18px 20px;position:relative;overflow:hidden;
+  }
+  .kpi::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  }
+  .kpi.c-green::before{background:var(--green);}
+  .kpi.c-blue::before{background:var(--blue);}
+  .kpi.c-gold::before{background:var(--gold);}
+  .kpi.c-purple::before{background:var(--purple);}
+  .kpi.c-red::before{background:var(--red);}
+  .kpi-label{font-size:0.67rem;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
+  .kpi-val{font-family:var(--mono);font-size:1.9rem;font-weight:700;line-height:1;}
+  .kpi.c-green .kpi-val{color:var(--green);}
+  .kpi.c-blue  .kpi-val{color:var(--blue);}
+  .kpi.c-gold  .kpi-val{color:var(--gold);}
+  .kpi.c-purple .kpi-val{color:var(--purple);}
+  .kpi.c-red   .kpi-val{color:var(--red);}
+  .kpi-sub{font-size:0.7rem;color:var(--muted);margin-top:8px;}
+
+  /* ─── GRID ─── */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+  .grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+
+  /* ─── SECTION CARD ─── */
+  .section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
+  .sec-title{
+    font-size:0.7rem;font-weight:700;letter-spacing:2px;color:var(--muted);
+    text-transform:uppercase;margin-bottom:18px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .sec-badge{
+    font-family:var(--mono);font-size:0.72rem;letter-spacing:0;
+    text-transform:none;color:var(--text);
+  }
+
+  /* ─── HOURLY CHART ─── */
+  #hourly-chart{display:block;width:100%;height:110px;}
+
+  /* ─── DRINK TABLE ─── */
+  .drink-tbl{width:100%;border-collapse:collapse;}
+  .drink-tbl th{
+    text-align:left;font-size:0.67rem;font-weight:700;letter-spacing:1px;
+    color:var(--muted);text-transform:uppercase;padding-bottom:12px;
+    border-bottom:1px solid var(--border);
+  }
+  .drink-tbl th.r{text-align:right;}
+  .drink-tbl td{padding:9px 0;border-bottom:1px solid #0a0c10;vertical-align:middle;}
+  .drink-tbl td.r{text-align:right;}
+  .drink-tbl tr:last-child td{border-bottom:none;}
+  .dn-cell{display:flex;align-items:center;gap:10px;}
+  .dn-emoji{font-size:1.1rem;width:24px;text-align:center;}
+  .dn-name{font-size:0.84rem;font-weight:600;}
+  .bar-wrap{display:flex;align-items:center;gap:8px;}
+  .bar-bg{flex:1;height:6px;background:#1a2030;border-radius:3px;min-width:80px;}
+  .bar-fill{height:100%;border-radius:3px;transition:width 0.6s ease;}
+  .cnt-val{font-family:var(--mono);font-size:0.83rem;font-weight:700;min-width:40px;text-align:right;}
+  .rev-val{font-family:var(--mono);font-size:0.8rem;color:var(--muted);}
+  .no-data{text-align:center;color:var(--muted);font-size:0.8rem;padding:32px 0;}
+
+  /* ─── RANK ─── */
+  .rank-list{display:flex;flex-direction:column;gap:7px;}
+  .rank-row{display:flex;align-items:center;gap:12px;padding:8px 10px;background:#080a0e;border-radius:8px;}
+  .rk-no{font-family:var(--mono);font-size:0.8rem;font-weight:700;width:22px;text-align:center;flex-shrink:0;}
+  .rk-no.g{color:var(--gold);}
+  .rk-no.s{color:#c0c0c0;}
+  .rk-no.b{color:#cd7f32;}
+  .rk-name{flex:1;font-size:0.84rem;}
+  .rk-val{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--green);}
+
+  /* ─── RECENT ORDERS ─── */
+  .order-log{display:flex;flex-direction:column;gap:5px;max-height:360px;overflow-y:auto;}
+  .order-log::-webkit-scrollbar{width:4px;}
+  .order-log::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+  .or-row{
+    display:flex;align-items:center;gap:8px;padding:7px 10px;
+    background:#080a0e;border-radius:7px;font-size:0.78rem;
+    animation:fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+  .or-time{font-family:var(--mono);font-size:0.7rem;color:var(--muted);width:50px;flex-shrink:0;}
+  .or-emoji{font-size:0.95rem;width:20px;text-align:center;flex-shrink:0;}
+  .or-name{flex:1;color:var(--text);}
+  .or-price{font-family:var(--mono);font-weight:700;color:var(--green);flex-shrink:0;}
+  .or-who{font-size:0.7rem;color:var(--muted);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+  /* ─── REVENUE BY TIME ─── */
+  .time-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #0a0c10;font-size:0.8rem;}
+  .time-row:last-child{border-bottom:none;}
+  .time-label{color:var(--muted);font-family:var(--mono);font-size:0.75rem;width:80px;}
+  .time-bar-wrap{flex:1;margin:0 12px;}
+  .time-bar-bg{height:5px;background:#1a2030;border-radius:3px;}
+  .time-bar-fill{height:100%;border-radius:3px;background:var(--blue);transition:width 0.5s ease;}
+  .time-val{font-family:var(--mono);font-size:0.75rem;color:var(--text);text-align:right;min-width:50px;}
+
+  /* ─── FOOTER ─── */
+  #last-updated{text-align:right;font-size:0.68rem;color:var(--muted);margin-top:20px;font-family:var(--mono);}
+
+  /* ─── PRINT ─── */
+  @media print{
+    #hdr{position:static;}
+    .hdr-btn{display:none;}
+    body{background:#fff;color:#000;}
+    .kpi,.section{border-color:#ddd;background:#fff;}
+    .kpi-val,.rk-val,.cnt-val,.or-price{color:#000!important;}
+    .kpi-label,.sec-title,.muted,.kpi-sub,.or-time,.or-who,.rev-val{color:#666!important;}
+    .bar-bg{background:#eee;}
+    #mode-badge{display:none;}
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media(max-width:900px){
+    .kpi-row{grid-template-columns:repeat(3,1fr);}
+    .grid-2,.grid-3{grid-template-columns:1fr;}
+    .kpi-val{font-size:1.4rem;}
+  }
+  @media(max-width:600px){
+    .kpi-row{grid-template-columns:repeat(2,1fr);}
+    main{padding:16px 12px 48px;}
+    .section{padding:16px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div style="display:flex;align-items:center;gap:20px;">
+    <div class="logo">BAR EXCHANGE</div>
+    <div class="hdr-title">売上管理</div>
+  </div>
+  <div class="hdr-right">
+    <div id="date-label">—</div>
+    <div id="mode-badge" class="local">OFFLINE</div>
+    <button class="hdr-btn" id="refresh-btn">🔄 更新</button>
+    <button class="hdr-btn" id="print-btn">🖨 印刷</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- KPI -->
+  <div class="kpi-row">
+    <div class="kpi c-green">
+      <div class="kpi-label">本日の売上</div>
+      <div class="kpi-val" id="kpi-revenue">—</div>
+      <div class="kpi-sub" id="kpi-revenue-sub">累計売上</div>
+    </div>
+    <div class="kpi c-blue">
+      <div class="kpi-label">総注文数</div>
+      <div class="kpi-val" id="kpi-orders">—</div>
+      <div class="kpi-sub" id="kpi-orders-sub">本日合計</div>
+    </div>
+    <div class="kpi c-purple">
+      <div class="kpi-label">平均単価</div>
+      <div class="kpi-val" id="kpi-avg">—</div>
+      <div class="kpi-sub">1注文あたり</div>
+    </div>
+    <div class="kpi c-gold">
+      <div class="kpi-label">人気 No.1</div>
+      <div class="kpi-val" id="kpi-top" style="font-size:1.3rem;">—</div>
+      <div class="kpi-sub" id="kpi-top-sub"></div>
+    </div>
+    <div class="kpi c-red">
+      <div class="kpi-label">今の時間帯</div>
+      <div class="kpi-val" id="kpi-hour">—</div>
+      <div class="kpi-sub" id="kpi-hour-sub">件</div>
+    </div>
+  </div>
+
+  <!-- 時間帯チャート + ドリンク別 -->
+  <div class="grid-2">
+    <div class="section">
+      <div class="sec-title">時間帯別注文数 <span class="sec-badge" id="hourly-peak"></span></div>
+      <canvas id="hourly-chart"></canvas>
+    </div>
+    <div class="section">
+      <div class="sec-title">ドリンク別 売上内訳 <span class="sec-badge" id="drink-count-badge"></span></div>
+      <div id="drink-table-wrap"><div class="no-data">データ読み込み中...</div></div>
+    </div>
+  </div>
+
+  <!-- 注文ランキング + 最近の注文 -->
+  <div class="grid-2">
+    <div class="section">
+      <div class="sec-title">注文ランキング <span class="sec-badge" id="rank-badge"></span></div>
+      <div class="rank-list" id="rank-list"><div class="no-data">注文データなし</div></div>
+    </div>
+    <div class="section">
+      <div class="sec-title">最近の注文 <span class="sec-badge" id="recent-badge"></span></div>
+      <div class="order-log" id="order-log"><div class="no-data">まだ注文がありません</div></div>
+    </div>
+  </div>
+
+  <!-- ガチャ履歴 -->
+  <div class="section" style="margin-bottom:16px;">
+    <div class="sec-title">🎰 本日のガチャ結果 <span class="sec-badge" id="gacha-total-badge"></span></div>
+    <div id="gacha-summary" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;"></div>
+    <div id="gacha-history" style="display:flex;flex-direction:column;gap:5px;max-height:200px;overflow-y:auto;">
+      <div class="no-data">ガチャデータなし</div>
+    </div>
+  </div>
+
+  <div id="last-updated"></div>
+</main>
+
+<script>
+// ══════════════════════════════════════════
+//  TRANSPORT
+// ══════════════════════════════════════════
+const Transport = (() => {
+  const channel = new BroadcastChannel('barexchange');
+  let socket = null, connected = false;
+  const _ls = {};
+
+  function on(type, fn) { (_ls[type] || (_ls[type] = [])).push(fn); }
+  function emit(type, data = {}) {
+    if (connected) socket.emit(type, data);
+    else channel.postMessage({ type, ...data });
+  }
+  function _dispatch(type, data) { (_ls[type] ?? []).forEach(fn => fn(data)); }
+
+  if (typeof io !== 'undefined') {
+    socket = io({ reconnectionAttempts: 3, timeout: 3000 });
+    socket.on('connect', () => {
+      connected = true;
+      const b = document.getElementById('mode-badge');
+      b.textContent = '● LIVE'; b.className = 'live';
+      fetchData();
+    });
+    socket.on('disconnect', () => {
+      connected = false;
+      const b = document.getElementById('mode-badge');
+      b.textContent = 'OFFLINE'; b.className = 'local';
+    });
+    socket.onAny((event, data) => _dispatch(event, data));
+  }
+  channel.onmessage = ev => { if (!connected) _dispatch(ev.data.type, ev.data); };
+
+  return { on, emit, isConnected: () => connected };
+})();
+
+// ══════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════
+let dashData = null;
+let currentDrinks = loadCfgDrinks();
+
+function loadCfgDrinks() {
+  try {
+    const raw = localStorage.getItem('barexchange_config');
+    if (raw) return JSON.parse(raw).drinks ?? [];
+  } catch {}
+  return [];
+}
+
+async function fetchData() {
+  if (Transport.isConnected()) {
+    try {
+      const res = await fetch('/api/dashboard');
+      if (res.ok) {
+        dashData = await res.json();
+        // サーバーからドリンク情報も取得
+        try {
+          const stateRes = await fetch('/api/state');
+          if (stateRes.ok) {
+            const state = await stateRes.json();
+            currentDrinks = state.drinks;
+          }
+        } catch {}
+        render();
+        return;
+      }
+    } catch {}
+  }
+  // スタンドアロン: localStorage から集計
+  currentDrinks = loadCfgDrinks();
+  dashData = buildLocalData();
+  render();
+}
+
+function buildLocalData() {
+  const drinks = currentDrinks;
+  const todayStart = new Date().setHours(0, 0, 0, 0);
+
+  // customer.html が書き込む ranking log
+  const rankLog = (() => {
+    try { return JSON.parse(localStorage.getItem('barexchange_rankings') ?? '[]'); } catch { return []; }
+  })();
+  const orders = rankLog.filter(o => (o.ts ?? 0) >= todayStart);
+
+  // ドリンク別集計
+  const drinkMap = {};
+  drinks.forEach(d => { drinkMap[d.id] = { name:d.name, emoji:d.emoji, count:0, revenue:0 }; });
+  orders.forEach(o => {
+    if (!drinkMap[o.drinkId]) drinkMap[o.drinkId] = { name:o.drinkId, emoji:'🍺', count:0, revenue:0 };
+    drinkMap[o.drinkId].count++;
+    drinkMap[o.drinkId].revenue += o.price ?? 0;
+  });
+
+  // 時間帯別
+  const byHour = Array(24).fill(0);
+  orders.forEach(o => { byHour[new Date(o.ts).getHours()]++; });
+
+  // プレイヤー別
+  const playerCount = {};
+  orders.forEach(o => { const k = o.name || '匿名'; playerCount[k] = (playerCount[k] ?? 0) + 1; });
+
+  const totalRevenue = orders.reduce((s, o) => s + (o.price ?? 0), 0);
+
+  return {
+    date: todayKey(),
+    totalOrders:  orders.length,
+    totalRevenue,
+    drinkStats:   Object.values(drinkMap).sort((a, b) => b.count - a.count),
+    byHour,
+    playerRanking: Object.entries(playerCount)
+      .sort((a, b) => b[1] - a[1]).slice(0, 10)
+      .map(([name, count]) => ({ name, count })),
+    rankings: [...orders].sort((a, b) => b.ts - a.ts).slice(0, 50),
+  };
+}
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+// ══════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════
+function render() {
+  if (!dashData) return;
+  const d = dashData;
+
+  document.getElementById('date-label').textContent = d.date ?? todayKey();
+
+  // KPI
+  const avg = d.totalOrders > 0 ? Math.round(d.totalRevenue / d.totalOrders) : 0;
+  const top = d.drinkStats?.find(s => s.count > 0);
+  const currentH = new Date().getHours();
+  const thisHour = d.byHour?.[currentH] ?? 0;
+
+  document.getElementById('kpi-revenue').textContent = '¥' + (d.totalRevenue ?? 0).toLocaleString();
+  document.getElementById('kpi-orders').textContent  = (d.totalOrders ?? 0).toLocaleString() + ' 件';
+  document.getElementById('kpi-avg').textContent     = avg > 0 ? '¥' + avg.toLocaleString() : '—';
+  document.getElementById('kpi-top').textContent     = top ? `${top.emoji} ${top.name}` : '—';
+  document.getElementById('kpi-top-sub').textContent = top ? `${top.count}件 / ¥${top.revenue.toLocaleString()}` : '';
+  document.getElementById('kpi-hour').textContent    = thisHour + ' 件';
+  document.getElementById('kpi-hour-sub').textContent = `${currentH}時台の注文`;
+
+  renderHourlyChart(d.byHour ?? Array(24).fill(0));
+  renderDrinkTable(d.drinkStats ?? []);
+  renderRankings(d.playerRanking ?? []);
+  renderRecentOrders(d.rankings ?? []);
+
+  document.getElementById('last-updated').textContent =
+    '最終更新: ' + new Date().toLocaleTimeString('ja-JP');
+}
+
+// ─── 時間帯チャート ───
+function renderHourlyChart(byHour) {
+  const canvas = document.getElementById('hourly-chart');
+  const W = canvas.offsetWidth || 500;
+  const H = 110;
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  const max = Math.max(...byHour, 1);
+  const currentH = new Date().getHours();
+  const barW = W / 24;
+  const labelH = 16;
+  const chartH = H - labelH;
+
+  byHour.forEach((v, h) => {
+    const bh = (v / max) * (chartH - 16);
+    const x  = h * barW;
+    const y  = chartH - bh;
+
+    const isCurrent = h === currentH;
+    const isPast    = h <  currentH;
+
+    // bar
+    ctx.fillStyle = isCurrent ? '#00ff88' : isPast ? '#1a5040' : '#1a2030';
+    if (isCurrent) {
+      ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 8;
+    } else {
+      ctx.shadowBlur = 0;
+    }
+    const rx = 2;
+    roundRect(ctx, x + 1.5, y, barW - 3, bh, rx);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // count label
+    if (v > 0) {
+      ctx.fillStyle = isCurrent ? '#00ff88' : '#4a6060';
+      ctx.font = '8px JetBrains Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(v, x + barW / 2, y - 2);
+    }
+
+    // hour label
+    if (h === 0 || h === 6 || h === 12 || h === 18 || h === 23 || h === currentH) {
+      ctx.fillStyle = isCurrent ? '#00ff88' : '#4a5270';
+      ctx.font = '9px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(h + '時', x + barW / 2, H);
+    }
+  });
+
+  const peakH   = byHour.indexOf(Math.max(...byHour));
+  const peakCnt = byHour[peakH];
+  document.getElementById('hourly-peak').textContent =
+    peakCnt > 0 ? `ピーク: ${peakH}時台 (${peakCnt}件)` : '';
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  if (h <= 0) return;
+  if (h < r * 2) r = h / 2;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x, y + h);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// ─── ドリンク別テーブル ───
+function renderDrinkTable(stats) {
+  const wrap = document.getElementById('drink-table-wrap');
+  const active = stats.filter(s => s.count > 0);
+  const maxCnt = Math.max(...active.map(s => s.count), 1);
+  const totalRev = active.reduce((s, d) => s + d.revenue, 0);
+
+  if (active.length === 0) {
+    wrap.innerHTML = '<div class="no-data">注文データがありません</div>';
+    document.getElementById('drink-count-badge').textContent = '';
+    return;
+  }
+
+  document.getElementById('drink-count-badge').textContent = `${active.length}種`;
+
+  const colors = ['#00ff88','#ffd700','#4488ff','#aa66ff','#ff3355','#ff8800','#00ccff'];
+
+  wrap.innerHTML = `
+    <table class="drink-tbl">
+      <thead>
+        <tr>
+          <th>ドリンク</th>
+          <th>注文数</th>
+          <th class="r">売上</th>
+          <th class="r">構成比</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${active.map((s, i) => {
+          const pct = Math.round(s.count / maxCnt * 100);
+          const share = totalRev > 0 ? Math.round(s.revenue / totalRev * 100) : 0;
+          const color = colors[i % colors.length];
+          return `
+            <tr>
+              <td>
+                <div class="dn-cell">
+                  <span class="dn-emoji">${s.emoji}</span>
+                  <span class="dn-name">${s.name}</span>
+                </div>
+              </td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-bg">
+                    <div class="bar-fill" style="width:${pct}%;background:${color};"></div>
+                  </div>
+                  <span class="cnt-val" style="color:${color};">${s.count}</span>
+                </div>
+              </td>
+              <td class="r"><span class="rev-val">¥${s.revenue.toLocaleString()}</span></td>
+              <td class="r"><span style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);">${share}%</span></td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+// ─── プレイヤーランキング ───
+function renderRankings(rankings) {
+  const list = document.getElementById('rank-list');
+  const medals = ['🥇','🥈','🥉'];
+  const cls    = ['g','s','b'];
+
+  if (rankings.length === 0) {
+    list.innerHTML = '<div class="no-data">注文データがありません</div>';
+    document.getElementById('rank-badge').textContent = '';
+    return;
+  }
+
+  document.getElementById('rank-badge').textContent = `${rankings.length}名`;
+  list.innerHTML = rankings.slice(0, 10).map((r, i) => `
+    <div class="rank-row">
+      <span class="rk-no ${cls[i] ?? ''}">${medals[i] ?? i + 1}</span>
+      <span class="rk-name">${r.name}</span>
+      <span class="rk-val">${r.count}杯</span>
+    </div>
+  `).join('');
+}
+
+// ─── 最近の注文 ───
+function renderRecentOrders(orders) {
+  const log = document.getElementById('order-log');
+
+  if (orders.length === 0) {
+    log.innerHTML = '<div class="no-data">まだ注文がありません</div>';
+    document.getElementById('recent-badge').textContent = '';
+    return;
+  }
+
+  const limit = 30;
+  document.getElementById('recent-badge').textContent = `直近${Math.min(orders.length, limit)}件`;
+
+  log.innerHTML = orders.slice(0, limit).map(o => {
+    const d = currentDrinks.find(x => x.id === o.drinkId);
+    const time = new Date(o.ts ?? Date.now()).toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit'});
+    return `
+      <div class="or-row">
+        <span class="or-time">${time}</span>
+        <span class="or-emoji">${d?.emoji ?? '🍺'}</span>
+        <span class="or-name">${d?.name ?? o.drinkId}</span>
+        <span class="or-price">¥${(o.price ?? 0).toLocaleString()}</span>
+        <span class="or-who">${o.name ?? ''}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  REAL-TIME EVENTS
+// ══════════════════════════════════════════
+Transport.on('price_update', () => {
+  if (Transport.isConnected()) fetchData();
+});
+Transport.on('player_order', () => { fetchData(); });
+Transport.on('order',        () => { if (!Transport.isConnected()) fetchData(); });
+Transport.on('config_updated', data => {
+  if (data.config?.drinks) currentDrinks = data.config.drinks;
+  fetchData();
+});
+Transport.on('gacha_pulled', () => { fetchGachaHistory(); });
+
+// ══════════════════════════════════════════
+//  EVENTS & INIT
+// ══════════════════════════════════════════
+document.getElementById('refresh-btn').addEventListener('click', fetchData);
+document.getElementById('print-btn').addEventListener('click', () => window.print());
+
+// ── ガチャ履歴 ──
+async function fetchGachaHistory() {
+  let history = [];
+  if (Transport.isConnected()) {
+    try {
+      const res = await fetch('/api/gacha/history');
+      if (res.ok) history = await res.json();
+    } catch {}
+  }
+  renderGachaHistory(history);
+}
+
+function renderGachaHistory(history) {
+  const summaryEl = document.getElementById('gacha-summary');
+  const histEl    = document.getElementById('gacha-history');
+  const badgeEl   = document.getElementById('gacha-total-badge');
+
+  if (!history.length) {
+    summaryEl.innerHTML = '';
+    histEl.innerHTML = '<div class="no-data">本日のガチャデータなし</div>';
+    if (badgeEl) badgeEl.textContent = '';
+    return;
+  }
+
+  if (badgeEl) badgeEl.textContent = `計 ${history.length} 回`;
+
+  // 景品別集計
+  const tally = {};
+  history.forEach(h => {
+    const k = h.prizeId;
+    if (!tally[k]) tally[k] = { name: h.prizeName ?? k, emoji: h.prizeEmoji ?? '🎰', count: 0 };
+    tally[k].count++;
+  });
+
+  summaryEl.innerHTML = Object.values(tally).map(t => `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:0.82rem;">
+      ${t.emoji} ${t.name}: <strong style="font-family:var(--mono);">${t.count}件</strong>
+    </div>
+  `).join('');
+
+  histEl.innerHTML = [...history].reverse().slice(0, 30).map(h => {
+    const time = new Date(h.ts).toLocaleTimeString('ja-JP', { hour:'2-digit', minute:'2-digit' });
+    const isWin = h.prizeId !== 'miss';
+    return `
+      <div class="or-row">
+        <span class="or-time">${time}</span>
+        <span class="or-emoji">${h.prizeEmoji ?? '🎰'}</span>
+        <span class="or-name" style="color:${isWin ? 'var(--green)' : 'var(--muted)'};">${h.prizeName ?? h.prizeId}</span>
+        <span class="or-who">${h.name ?? '匿名'}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// 60秒ごと自動更新
+setInterval(fetchData, 60000);
+setInterval(fetchGachaHistory, 60000);
+
+fetchData();
+fetchGachaHistory();
+</script>
+</body>
+</html>

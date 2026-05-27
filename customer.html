@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>BAR EXCHANGE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --green: #00ff88; --red: #ff3355; --gold: #ffd700;
+    --blue: #4488ff;  --bg: #060608;  --card: #0d0f14;
+    --border: #1a2030; --text: #e8eaf0; --muted: #4a5270;
+    --mono: 'JetBrains Mono', monospace; --sans: 'Inter', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; padding-bottom:80px; }
+
+  /* ─── HEADER ─── */
+  #hdr {
+    position:sticky; top:0; z-index:100;
+    background:#0a0c10ee; backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border); padding:12px 16px 8px;
+  }
+  .hdr-top { display:flex; justify-content:space-between; align-items:center; }
+  .logo { font-family:var(--mono); font-size:0.95rem; font-weight:700; color:var(--green); letter-spacing:3px; }
+  #clock { font-family:var(--mono); font-size:0.8rem; color:var(--muted); }
+  #player-name-btn {
+    font-size:0.7rem; padding:4px 10px; border-radius:20px;
+    background:#ffffff10; border:1px solid var(--border);
+    color:var(--text); cursor:pointer;
+  }
+
+  /* ─── BANNERS ─── */
+  #crash-banner {
+    display:none; text-align:center; padding:8px;
+    font-size:0.8rem; font-weight:700; letter-spacing:2px;
+    background:linear-gradient(90deg,#ff0040,#ff4400,#ff0040);
+    background-size:200%; animation:crash-scroll 1s linear infinite; color:#fff;
+  }
+  @keyframes crash-scroll { to{background-position:200%;} }
+  #closed-banner {
+    display:none; text-align:center; padding:8px;
+    font-size:0.75rem; letter-spacing:2px; color:var(--muted);
+    background:#111318; border-bottom:1px solid var(--border);
+  }
+
+  /* ─── TABS ─── */
+  #tabs {
+    display:flex; border-bottom:1px solid var(--border);
+    background:var(--bg); position:sticky; top:58px; z-index:99;
+  }
+  .tab {
+    flex:1; text-align:center; padding:11px 0;
+    font-size:0.72rem; font-weight:600; letter-spacing:1px;
+    color:var(--muted); cursor:pointer;
+    border-bottom:2px solid transparent; transition:all .2s;
+  }
+  .tab.active { color:var(--green); border-bottom-color:var(--green); }
+
+  /* ─── PAGES ─── */
+  .page { display:none; padding:12px 14px; }
+  .page.active { display:block; }
+
+  /* ─── DRINK CARDS ─── */
+  #drink-list { display:flex; flex-direction:column; gap:10px; }
+
+  .dc {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:14px; padding:14px 15px; position:relative;
+    overflow:hidden; transition:border-color .3s;
+  }
+  .dc::before {
+    content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  }
+  .dc.up   { border-color:#00ff8828; }
+  .dc.up::before   { background:linear-gradient(90deg,transparent,var(--green),transparent); }
+  .dc.down { border-color:#ff335528; }
+  .dc.down::before { background:linear-gradient(90deg,transparent,var(--red),transparent); }
+  .dc.spotlight    { border-color:#ffd70045 !important; }
+  .dc.spotlight::before { background:linear-gradient(90deg,transparent,var(--gold),transparent) !important; }
+  .dc.sold-out     { opacity:0.55; filter:grayscale(0.5); }
+
+  .dc-head { display:flex; justify-content:space-between; align-items:flex-start; }
+  .dc-name-row { display:flex; align-items:center; gap:7px; }
+  .dc-emoji { font-size:1.3rem; }
+  .dc-name  { font-size:0.92rem; font-weight:700; }
+  .spot-badge {
+    font-size:0.52rem; padding:2px 6px;
+    background:#ffd70018; color:var(--gold);
+    border:1px solid #ffd70035; border-radius:3px; letter-spacing:1px;
+  }
+
+  .dc-price-row { display:flex; align-items:baseline; gap:5px; margin:5px 0 3px; }
+  .dc-price {
+    font-family:var(--mono); font-size:1.9rem; font-weight:700;
+    line-height:1; transition:color .3s;
+  }
+  .dc-yen { font-size:0.85rem; color:var(--muted); font-family:var(--mono); }
+  .dc-pill {
+    font-family:var(--mono); font-size:0.68rem; font-weight:700;
+    padding:2px 7px; border-radius:10px; letter-spacing:1px;
+  }
+  .dc-pill.up   { background:#00ff8818; color:var(--green); border:1px solid #00ff8835; }
+  .dc-pill.down { background:#ff335518; color:var(--red);   border:1px solid #ff335535; }
+  .dc-pill.flat { background:#ffffff08; color:var(--muted); border:1px solid #ffffff12; }
+
+  /* 注文ボタン */
+  .order-btn {
+    padding:8px 14px; border-radius:8px; font-size:0.78rem;
+    font-weight:700; letter-spacing:1px; border:none; cursor:pointer;
+    font-family:var(--sans); transition:all .15s; flex-shrink:0;
+  }
+  .order-btn:active { transform:scale(0.95); }
+  .order-btn.normal { background:var(--green); color:#000; }
+  .order-btn.deal   { background:var(--gold);  color:#000; }
+  .order-btn.high   { background:#ff335520; color:var(--red); border:1px solid #ff335540; }
+
+  /* 警告 */
+  .dc-warning {
+    margin-top:7px; padding:5px 9px; border-radius:7px;
+    font-size:0.7rem; font-family:var(--mono);
+    display:flex; align-items:center; gap:5px;
+  }
+  .warn-deal { background:#ffd70010; color:var(--gold);  border:1px solid #ffd70025; }
+  .warn-up   { background:#ff335510; color:var(--red);   border:1px solid #ff335525; }
+  .warn-next { background:#ffffff08; color:var(--muted); border:1px solid #ffffff14; }
+
+  /* バー */
+  .dc-bar-wrap { margin-top:7px; }
+  .dc-bar-label { display:flex; justify-content:space-between; font-size:0.55rem; color:var(--muted); margin-bottom:3px; font-family:var(--mono); }
+  .dc-bar-bg    { height:3px; background:#1a2030; border-radius:2px; overflow:hidden; }
+  .dc-bar-fill  { height:100%; border-radius:2px; transition:width .4s; }
+
+  /* ─── RANKING ─── */
+  .rank-hdr { font-size:0.58rem; letter-spacing:3px; color:var(--muted); margin-bottom:10px; padding-bottom:7px; border-bottom:1px solid var(--border); }
+  .rank-card { background:var(--card); border:1px solid var(--border); border-radius:12px; margin-bottom:10px; overflow:hidden; }
+  .rank-card h3 { font-size:0.58rem; letter-spacing:3px; color:var(--muted); padding:11px 14px 8px; border-bottom:1px solid var(--border); }
+  .rank-row { display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px solid #0a0c10; }
+  .rank-row:last-child { border-bottom:none; }
+  .rk-no { font-family:var(--mono); font-size:0.78rem; color:var(--muted); min-width:22px; }
+  .rk-no.g { color:#ffd700; font-weight:700; }
+  .rk-no.s { color:#c0c0c0; font-weight:700; }
+  .rk-no.b { color:#cd7f32; font-weight:700; }
+  .rk-emoji { font-size:1.1rem; }
+  .rk-main  { flex:1; }
+  .rk-name  { font-size:0.82rem; font-weight:600; }
+  .rk-sub   { font-size:0.62rem; color:var(--muted); margin-top:1px; }
+  .rk-val   { font-family:var(--mono); font-size:0.78rem; }
+  .rk-val.green { color:var(--green); }
+  .rk-val.gold  { color:var(--gold); }
+  .rk-val.red   { color:var(--red); }
+
+  /* ─── バッジ ─── */
+  #my-badges { padding:12px 14px; }
+  .badge-hdr { font-size:0.58rem; letter-spacing:3px; color:var(--muted); margin-bottom:10px; }
+  .badges-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .badge-item {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:10px; padding:12px 8px; text-align:center;
+    transition:all .2s;
+  }
+  .badge-item.earned { border-color:#ffd70040; background:#ffd70008; }
+  .badge-item.locked { opacity:0.35; }
+  .badge-icon  { font-size:1.6rem; margin-bottom:5px; }
+  .badge-name  { font-size:0.68rem; font-weight:700; color:var(--text); }
+  .badge-desc  { font-size:0.58rem; color:var(--muted); margin-top:2px; line-height:1.4; }
+
+  .empty-state { text-align:center; padding:28px 16px; color:var(--muted); font-size:0.78rem; line-height:1.9; }
+
+  /* ─── SHARE SHEET ─── */
+  #share-overlay {
+    position:fixed; inset:0; z-index:500;
+    background:#00000090; backdrop-filter:blur(6px);
+    display:none; align-items:flex-end; justify-content:center;
+  }
+  #share-overlay.open { display:flex; }
+
+  #share-card {
+    background:#0d0f14; border:1px solid #2a3348;
+    border-radius:20px 20px 0 0; padding:24px 20px 36px;
+    width:100%; max-width:480px;
+    animation:slide-up .3s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes slide-up { from{transform:translateY(100%);} to{transform:translateY(0);} }
+
+  .share-close { float:right; font-size:1.2rem; color:var(--muted); background:none; border:none; cursor:pointer; padding:0 4px; }
+
+  .share-drink-row { display:flex; align-items:center; gap:12px; margin:16px 0; }
+  .share-emoji { font-size:2.5rem; }
+  .share-info h2 { font-size:1.1rem; font-weight:700; }
+  .share-price {
+    font-family:var(--mono); font-size:2rem; font-weight:900;
+    color:var(--green); line-height:1; margin:2px 0;
+  }
+  .share-saving { font-size:0.78rem; color:var(--muted); font-family:var(--mono); }
+
+  .share-text-preview {
+    background:var(--bg); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:0.8rem; color:#8090b0; line-height:1.6;
+    margin-bottom:16px; font-family:var(--mono);
+  }
+
+  .share-btns { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .share-btn {
+    padding:12px; border-radius:10px; font-size:0.82rem; font-weight:700;
+    letter-spacing:1px; border:none; cursor:pointer; font-family:var(--sans);
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    transition:opacity .2s;
+  }
+  .share-btn:active { opacity:0.8; }
+  .share-btn.native { background:var(--green); color:#000; grid-column:1/-1; }
+  .share-btn.x-btn  { background:#1da1f2; color:#fff; }
+  .share-btn.copy   { background:#ffffff14; color:var(--text); border:1px solid var(--border); }
+
+  /* ─── NAME MODAL ─── */
+  /* ─── NAME MODAL ─── */
+  #name-overlay {
+    position:fixed; inset:0; z-index:600;
+    background:radial-gradient(ellipse at 50% 60%, #0a1a2a 0%, #000000dd 100%);
+    backdrop-filter:blur(16px);
+    display:flex; align-items:center; justify-content:center; padding:20px;
+    animation:overlayIn .3s ease;
+  }
+  @keyframes overlayIn { from{opacity:0} to{opacity:1} }
+
+  #name-modal {
+    background:linear-gradient(160deg, #10141e 0%, #0a0c12 100%);
+    border:1px solid #2a3a55;
+    border-radius:24px; padding:0; width:100%; max-width:360px;
+    text-align:center; overflow:hidden; position:relative;
+    box-shadow:0 0 60px #00ff8818, 0 24px 60px #00000080;
+    animation:modalIn .4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes modalIn {
+    from{opacity:0;transform:scale(0.85) translateY(20px)}
+    to{opacity:1;transform:scale(1) translateY(0)}
+  }
+
+  /* 上部グローライン */
+  #name-modal::before {
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,transparent,#00ff88,#ffd700,#00ff88,transparent);
+    animation:shimmer 2.5s linear infinite;background-size:200% 100%;
+  }
+  @keyframes shimmer { to{background-position:200% 0} }
+
+  /* ブランドヘッダー */
+  .nm-brand {
+    padding:18px 24px 0;
+    font-family:var(--mono);font-size:0.65rem;font-weight:700;
+    letter-spacing:4px;color:#2a4040;text-transform:uppercase;
+  }
+
+  /* アイコンエリア */
+  .nm-icon-wrap {
+    padding:20px 0 4px;position:relative;display:inline-block;
+    width:100%;
+  }
+  .nm-icon {
+    font-size:3.8rem;display:inline-block;
+    animation:iconFloat 3s ease-in-out infinite;
+    filter:drop-shadow(0 0 20px #00ff8870);
+  }
+  @keyframes iconFloat {
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-8px)}
+  }
+
+  /* テキスト */
+  .nm-title {
+    font-size:1.7rem;font-weight:900;letter-spacing:1px;
+    background:linear-gradient(135deg,#ffffff,#b0c8ff);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;margin-bottom:6px;padding:0 24px;
+  }
+  .nm-sub {
+    font-size:0.8rem;color:var(--muted);margin-bottom:0;
+    line-height:1.7;padding:0 24px;
+  }
+
+  /* ベネフィットバッジ */
+  .nm-benefits {
+    display:flex;justify-content:center;gap:8px;
+    padding:16px 16px 0;flex-wrap:wrap;
+  }
+  .nm-badge {
+    font-size:0.68rem;font-weight:700;padding:5px 11px;
+    border-radius:20px;letter-spacing:0.5px;
+    background:#ffffff0a;border:1px solid #ffffff18;color:var(--muted);
+  }
+  .nm-badge.g{background:#00ff8812;border-color:#00ff8840;color:#00ff88;}
+  .nm-badge.gold{background:#ffd70012;border-color:#ffd70040;color:#ffd700;}
+  .nm-badge.b{background:#4488ff12;border-color:#4488ff40;color:#4488ff;}
+
+  /* フォームエリア */
+  .nm-form { padding:20px 24px 24px; }
+
+  #name-input {
+    width:100%;background:#060810;
+    border:2px solid #1e2a40;
+    color:var(--text);padding:14px 18px;border-radius:14px;
+    font-size:1.05rem;font-family:var(--sans);outline:none;
+    text-align:center;margin-bottom:14px;
+    transition:border-color .25s, box-shadow .25s;
+    letter-spacing:1px;
+  }
+  #name-input::placeholder{color:#2a3a50;letter-spacing:2px;}
+  #name-input:focus {
+    border-color:var(--green);
+    box-shadow:0 0 0 4px #00ff8818;
+  }
+
+  #name-submit {
+    width:100%;padding:15px;
+    background:linear-gradient(135deg,#00ff88,#00cc66);
+    color:#000;border:none;border-radius:14px;
+    font-size:1rem;font-weight:900;
+    cursor:pointer;font-family:var(--sans);letter-spacing:2px;
+    transition:all .2s;box-shadow:0 4px 20px #00ff8830;
+    text-transform:uppercase;
+  }
+  #name-submit:hover{transform:translateY(-2px);box-shadow:0 6px 28px #00ff8850;}
+  #name-submit:active{transform:translateY(0);}
+
+  .nm-divider {
+    display:flex;align-items:center;gap:10px;margin:12px 0;
+    color:#1e2a40;font-size:0.7rem;
+  }
+  .nm-divider::before,.nm-divider::after{content:'';flex:1;height:1px;background:#1e2a40;}
+
+  #name-skip {
+    display:block;width:100%;padding:11px;
+    font-size:0.78rem;color:var(--muted);
+    background:#ffffff08;border:1px solid #1e2a40;
+    border-radius:12px;cursor:pointer;font-family:var(--sans);
+    transition:all .2s;
+  }
+  #name-skip:hover{color:var(--text);border-color:#2a3a50;background:#ffffff10;}
+
+  /* ─── TICKER ─── */
+  #ticker-wrap {
+    position:fixed; bottom:0;left:0;right:0; height:34px;
+    background:#08090cee; border-top:1px solid var(--border);
+    overflow:hidden; display:flex; align-items:center; z-index:100;
+  }
+  #ticker { display:flex; gap:0; white-space:nowrap; will-change:transform; }
+  .tick { display:inline-flex; align-items:center; gap:5px; padding:0 18px 0 0; font-family:var(--mono); font-size:0.7rem; }
+  .tick-name { color:var(--muted); }
+  .tick-price { color:var(--text); }
+  .tick-ch.up   { color:var(--green); }
+  .tick-ch.down { color:var(--red); }
+  .tick-ch.flat { color:var(--muted); }
+  .tick-sep { color:#1a2030; margin-right:18px; }
+
+  /* price flash */
+  @keyframes flash-up   { 0%{color:var(--green);} 100%{color:#fff;} }
+  @keyframes flash-down { 0%{color:var(--red);}   100%{color:#fff;} }
+  .flash-up   { animation:flash-up .7s ease; }
+  .flash-down { animation:flash-down .7s ease; }
+</style>
+<script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+<!-- NAME MODAL -->
+<div id="name-overlay">
+  <div id="name-modal">
+    <div class="nm-brand">BAR EXCHANGE</div>
+    <div class="nm-icon-wrap">
+      <span class="nm-icon">🎰</span>
+    </div>
+    <div class="nm-title">ようこそ！</div>
+    <div class="nm-sub">ニックネームを登録して<br>今夜の主役になろう</div>
+    <div class="nm-benefits">
+      <span class="nm-badge g">🏆 ランキング参加</span>
+      <span class="nm-badge gold">🎖 バッジ獲得</span>
+      <span class="nm-badge b">🎰 ガチャ参加</span>
+    </div>
+    <div class="nm-form">
+      <input type="text" id="name-input" placeholder="あなたの名前" maxlength="12" autocomplete="off">
+      <button id="name-submit">参加する →</button>
+      <div class="nm-divider">または</div>
+      <button id="name-skip">匿名で参加する</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div class="hdr-top">
+    <div class="logo">BAR EXCHANGE</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <a href="gacha.html" style="font-size:0.72rem;padding:5px 12px;border-radius:6px;
+        background:#ffd70018;border:1px solid #ffd70060;color:#ffd700;text-decoration:none;
+        font-weight:700;letter-spacing:1px;">🎰 ガチャ</a>
+      <button id="player-name-btn">👤 ゲスト</button>
+      <div id="clock">--:--</div>
+    </div>
+  </div>
+</div>
+
+<div id="crash-banner">💥 MARKET CRASH — 全品目が暴落中！</div>
+<div id="closed-banner">○ MARKET CLOSED — 本日の営業は終了しました</div>
+
+<!-- TABS -->
+<div id="tabs">
+  <div class="tab active" data-tab="prices">💰 価格</div>
+  <div class="tab" data-tab="ranking">🏆 ランキング</div>
+  <div class="tab" data-tab="badges">🎖 バッジ</div>
+</div>
+
+<!-- PAGE: PRICES -->
+<div id="page-prices" class="page active">
+  <div id="drink-list"></div>
+</div>
+
+<!-- PAGE: RANKING -->
+<div id="page-ranking" class="page">
+  <div id="rank-section"></div>
+</div>
+
+<!-- PAGE: BADGES -->
+<div id="page-badges" class="page">
+  <div id="my-badges"></div>
+</div>
+
+<!-- TICKER -->
+<div id="ticker-wrap"><div id="ticker"></div></div>
+
+<!-- SHARE SHEET -->
+<div id="share-overlay">
+  <div id="share-card">
+    <button class="share-close" id="share-close">✕</button>
+    <div style="font-size:0.65rem;letter-spacing:3px;color:var(--muted);">ORDER CONFIRMED</div>
+    <div class="share-drink-row">
+      <div class="share-emoji" id="s-emoji">🥃</div>
+      <div class="share-info">
+        <h2 id="s-name">ハイボール</h2>
+        <div class="share-price" id="s-price">¥280</div>
+        <div class="share-saving" id="s-saving">ベースより ▼¥220 お得</div>
+      </div>
+    </div>
+    <div class="share-text-preview" id="s-text"></div>
+    <div class="share-btns">
+      <button class="share-btn native" id="share-native">📤 シェアする</button>
+      <button class="share-btn x-btn"  id="share-x">𝕏 でポスト</button>
+      <button class="share-btn copy"   id="share-copy">📋 コピー</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  CONSTANTS & CONFIG
+// ══════════════════════════════════════════
+const Transport = (() => {
+  const channel = new BroadcastChannel('barexchange');
+  let socket = null, connected = false;
+  const _ls = {};
+
+  function on(type, fn) { (_ls[type] || (_ls[type] = [])).push(fn); }
+  function emit(type, data = {}) {
+    if (connected) socket.emit(type, data);
+    else channel.postMessage({ type, ...data });
+  }
+  function _dispatch(type, data) { (_ls[type] ?? []).forEach(fn => fn(data)); }
+
+  if (typeof io !== 'undefined') {
+    socket = io({ reconnectionAttempts: 3, timeout: 3000 });
+    socket.on('connect',    () => { connected = true; });
+    socket.on('disconnect', () => { connected = false; });
+    socket.onAny((event, data) => _dispatch(event, data));
+  }
+  channel.onmessage = ev => { if (!connected) _dispatch(ev.data.type, ev.data); };
+
+  return { on, emit, isConnected: () => connected };
+})();
+const RANK_KEY     = 'barexchange_rankings';   // 全プレイヤーの注文ログ
+const MY_KEY       = 'barexchange_my_orders';  // 自分の注文
+const NAME_KEY     = 'barexchange_player_name';
+
+const DEFAULT_DRINKS = [
+  { id:'highball',  name:'ハイボール',   emoji:'🥃', base:500,  min:280, max:980,  rivals:['beer','lemon_sour'] },
+  { id:'beer',      name:'ビール',       emoji:'🍺', base:600,  min:350, max:1100, rivals:['highball']          },
+  { id:'wine',      name:'ワイン',       emoji:'🍷', base:700,  min:420, max:1300, rivals:['cocktail']          },
+  { id:'cocktail',  name:'カクテル',     emoji:'🍸', base:800,  min:500, max:1500, rivals:['wine']              },
+  { id:'sake',      name:'日本酒',       emoji:'🍶', base:650,  min:400, max:1200, rivals:['shochu']            },
+  { id:'shochu',    name:'焼酎',         emoji:'🥂', base:550,  min:320, max:1000, rivals:['sake']              },
+  { id:'lemon_sour',name:'レモンサワー', emoji:'🍋', base:480,  min:280, max:900,  rivals:['highball']          },
+  { id:'whisky',    name:'ウイスキー',   emoji:'🥃', base:900,  min:600, max:1600, rivals:['brandy']            },
+  { id:'brandy',    name:'ブランデー',   emoji:'🫗', base:950,  min:600, max:1700, rivals:['whisky']            },
+  { id:'gin_tonic', name:'ジントニック', emoji:'🍹', base:750,  min:450, max:1400, rivals:['cocktail']          },
+  { id:'champagne', name:'シャンパン',   emoji:'🥂', base:1200, min:800, max:2200, rivals:['wine']              },
+  { id:'matcha',    name:'抹茶ラテ(NA)',emoji:'🍵', base:400,  min:250, max:750,  rivals:[]                    },
+];
+
+const BADGE_DEFS = [
+  { id:'first',     icon:'🎉', name:'初注文',       desc:'初めての注文',         check: (o) => o.length >= 1 },
+  { id:'bargain',   icon:'⚡', name:'バーゲンハンター', desc:'ベース比15%安く注文', check: (o) => o.some(x => x.price <= x.base * 0.85) },
+  { id:'heavy',     icon:'🔥', name:'飲みすぎ',     desc:'5杯以上注文',          check: (o) => o.length >= 5 },
+  { id:'crash_buy', icon:'💥', name:'クラッシュゲット', desc:'暴落中に注文',     check: (o) => o.some(x => x.isCrash) },
+  { id:'allstar',   icon:'👑', name:'全制覇',       desc:'全ドリンクを制覇',     check: (o, drinks) => new Set(o.map(x=>x.drinkId)).size >= drinks.length },
+];
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+function loadCfg() {
+  try { const r = localStorage.getItem('barexchange_config'); if(r) return JSON.parse(r); } catch{}
+  return null;
+}
+let cfg      = loadCfg();
+let drinks   = cfg?.drinks ?? DEFAULT_DRINKS;
+let priceStep= (cfg?.settings?.priceStep ?? 8)  / 100;
+let rivalStep= (cfg?.settings?.rivalStep ?? 5)  / 100;
+let windowMs = (cfg?.settings?.windowMin ?? 5)  * 60000;
+let spotId   = cfg?.settings?.spotlightId ?? null;
+let isOpen   = cfg?.settings?.isOpen ?? true;
+
+let prices    = {};
+let orders    = [];
+let prevPrices= {};
+drinks.forEach(d => { prices[d.id] = d.base; });
+
+// 自分の名前
+let myName = localStorage.getItem(NAME_KEY) ?? null;
+let myOrders = (() => { try { return JSON.parse(localStorage.getItem(MY_KEY) ?? '[]'); } catch { return []; } })();
+// 全員のランキングログ
+let rankLog = (() => { try { return JSON.parse(localStorage.getItem(RANK_KEY) ?? '[]'); } catch { return []; } })();
+
+// 今日の日付（ランキングリセット用）
+const today = new Date().toDateString();
+if (localStorage.getItem('barexchange_date') !== today) {
+  localStorage.setItem('barexchange_date', today);
+  rankLog = []; localStorage.setItem(RANK_KEY, '[]');
+  myOrders = []; localStorage.setItem(MY_KEY, '[]');
+}
+
+// ══════════════════════════════════════════
+//  NAME MODAL
+// ══════════════════════════════════════════
+function setName(name) {
+  myName = name || ('ゲスト' + Math.floor(Math.random() * 9999));
+  localStorage.setItem(NAME_KEY, myName);
+  document.getElementById('player-name-btn').textContent = '👤 ' + myName;
+  document.getElementById('name-overlay').style.display = 'none';
+}
+
+if (!myName) {
+  document.getElementById('name-overlay').style.display = 'flex';
+} else {
+  document.getElementById('name-overlay').style.display = 'none';
+  document.getElementById('player-name-btn').textContent = '👤 ' + myName;
+}
+
+document.getElementById('name-submit').addEventListener('click', () => {
+  const v = document.getElementById('name-input').value.trim();
+  setName(v);
+});
+document.getElementById('name-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { const v = document.getElementById('name-input').value.trim(); setName(v); }
+});
+document.getElementById('name-skip').addEventListener('click', () => setName(''));
+document.getElementById('player-name-btn').addEventListener('click', () => {
+  document.getElementById('name-overlay').style.display = 'flex';
+  document.getElementById('name-input').value = '';
+  setTimeout(() => document.getElementById('name-input').focus(), 100);
+});
+
+// ══════════════════════════════════════════
+//  BROADCAST
+// ══════════════════════════════════════════
+Transport.on('order', data => {
+  orders.push({ id: data.drinkId, t: data.ts ?? Date.now() });
+  calcPrices(); renderPrices(); renderTicker();
+});
+
+Transport.on('player_order', data => {
+  rankLog.push(data);
+  localStorage.setItem(RANK_KEY, JSON.stringify(rankLog));
+  if (document.getElementById('page-ranking').classList.contains('active')) renderRanking();
+});
+
+Transport.on('config_updated', data => {
+  cfg = data.config; drinks = cfg.drinks;
+  priceStep = (cfg.settings.priceStep ?? 8)  / 100;
+  rivalStep = (cfg.settings.rivalStep ?? 5)  / 100;
+  windowMs  = (cfg.settings.windowMin ?? 5)  * 60000;
+  spotId    = cfg.settings.spotlightId ?? null;
+  isOpen    = cfg.settings.isOpen ?? true;
+  drinks.forEach(d => { if(!prices[d.id]) prices[d.id] = d.base; });
+  document.getElementById('drink-list').innerHTML = '';
+  prevPrices = {};
+  renderAll();
+});
+
+Transport.on('market_status', data => {
+  isOpen = data.isOpen; renderBanners();
+});
+
+// サーバーモード: price_update で価格・在庫状態を同期
+Transport.on('price_update', state => {
+  if (!Transport.isConnected()) return;
+  isOpen = state.isOpen ?? isOpen;
+  // drinks配列ごと更新（在庫情報含む）
+  if (state.drinks) {
+    drinks = state.drinks.map(d => ({
+      ...drinks.find(x => x.id === d.id) ?? d,
+      soldOut: d.soldOut ?? false,
+      stockLow: d.stockLow ?? false,
+      stock: d.stock ?? null,
+    }));
+    state.drinks.forEach(d => { prices[d.id] = d.price; });
+  }
+  renderPrices(); renderTicker(); renderBanners();
+  document.getElementById('crash-banner').style.display = state.isCrash ? 'block' : 'none';
+});
+
+// ══════════════════════════════════════════
+//  PRICE CALC
+// ══════════════════════════════════════════
+function calcPrices() {
+  const cutoff = Date.now() - windowMs;
+  const recent = orders.filter(o => o.t > cutoff);
+  drinks.forEach(drink => {
+    const own   = recent.filter(o => o.id === drink.id).length;
+    const rival = recent.filter(o => drink.rivals.includes(o.id)).length;
+    let p = Math.round(drink.base * (1 + own * priceStep - rival * rivalStep));
+    prices[drink.id] = Math.max(drink.min, Math.min(drink.max, p));
+  });
+}
+
+// ══════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════
+function renderAll() { renderBanners(); renderPrices(); renderTicker(); }
+
+function renderBanners() {
+  document.getElementById('closed-banner').style.display = !isOpen ? 'block' : 'none';
+}
+
+function renderPrices() {
+  const list = document.getElementById('drink-list');
+  drinks.forEach(d => {
+    const price  = prices[d.id] ?? d.base;
+    const change = Math.round((price - d.base) / d.base * 100);
+    const prev   = prevPrices[d.id];
+    const trend  = prev == null ? 'flat' : price > prev + 5 ? 'up' : price < prev - 5 ? 'down' : 'flat';
+    const spot   = d.id === spotId;
+    const isDeal = price <= d.base * 0.95;
+    const isHigh = price >= d.base * 1.20;
+    const nextUp = Math.round(d.base * priceStep);
+    const barPct = Math.round((price - d.min) / (d.max - d.min) * 100);
+    const barColor = isDeal ? '#00ff88' : isHigh ? '#ff3355' : '#4488ff';
+
+    const stockBadge = soldOut
+      ? `<div class="dc-warning warn-up">🚫 売り切れました</div>`
+      : stockLow
+      ? `<div class="dc-warning warn-up">⚠️ 残りわずか！在庫が少なくなっています</div>`
+      : '';
+    const warnHtml = soldOut ? stockBadge : stockLow ? stockBadge
+      : isDeal
+      ? `<div class="dc-warning warn-deal">🎯 今がお得！ベースより¥${d.base - price}安い</div>`
+      : isHigh
+      ? `<div class="dc-warning warn-up">⚠️ 値上がり中 — 次の注文でさらに+¥${nextUp}</div>`
+      : `<div class="dc-warning warn-next">次の注文で +¥${nextUp}</div>`;
+
+    const soldOut  = d.soldOut  ?? false;
+    const stockLow = d.stockLow ?? false;
+    const btnClass = soldOut ? 'high' : isDeal ? 'deal' : isHigh ? 'high' : 'normal';
+    const btnText  = soldOut ? '🚫 売り切れ' : isDeal ? '🎯 今すぐ注文！' : '注文した！';
+
+    let card = document.getElementById('cust-' + d.id);
+    if (!card) {
+      card = document.createElement('div');
+      card.id = 'cust-' + d.id;
+      list.appendChild(card);
+    }
+
+    card.className = `dc ${trend}${spot ? ' spotlight' : ''}${soldOut ? ' sold-out' : ''}`;
+    card.innerHTML = `
+      <div class="dc-head">
+        <div>
+          <div class="dc-name-row">
+            <span class="dc-emoji">${d.emoji}</span>
+            <span class="dc-name">${d.name}</span>
+            ${spot ? '<span class="spot-badge">⭐ PICK</span>' : ''}
+          </div>
+          <div class="dc-price-row">
+            <span class="dc-price" id="cp-${d.id}">${price.toLocaleString()}</span>
+            <span class="dc-yen">円</span>
+            <span class="dc-pill ${trend}">${fmtChange(change)}</span>
+          </div>
+        </div>
+        <button class="order-btn ${btnClass}" data-id="${d.id}">${btnText}</button>
+      </div>
+      ${warnHtml}
+      <div class="dc-bar-wrap">
+        <div class="dc-bar-label">
+          <span>¥${d.min.toLocaleString()}</span>
+          <span>BASE ¥${d.base.toLocaleString()}</span>
+          <span>¥${d.max.toLocaleString()}</span>
+        </div>
+        <div class="dc-bar-bg"><div class="dc-bar-fill" style="width:${barPct}%;background:${barColor};"></div></div>
+      </div>
+    `;
+
+    // 注文ボタン
+    card.querySelector('.order-btn').addEventListener('click', () => handleOrder(d));
+
+    // 価格フラッシュ
+    if (prev != null && prev !== price) {
+      const el = document.getElementById('cp-' + d.id);
+      if (el) { el.classList.remove('flash-up','flash-down'); void el.offsetWidth; el.classList.add(price > prev ? 'flash-up' : 'flash-down'); }
+    }
+    prevPrices[d.id] = price;
+  });
+}
+
+// ══════════════════════════════════════════
+//  ORDER & SHARE
+// ══════════════════════════════════════════
+let pendingShare = null;
+
+function handleOrder(drink) {
+  if (drink.soldOut) return; // 売り切れは注文不可
+  const price  = prices[drink.id] ?? drink.base;
+  const saving = drink.base - price;
+  const isCrash = document.getElementById('crash-banner').style.display === 'block';
+
+  // 自分のログに記録
+  const entry = { drinkId: drink.id, price, base: drink.base, ts: Date.now(), name: myName, isCrash };
+  myOrders.push(entry);
+  localStorage.setItem(MY_KEY, JSON.stringify(myOrders));
+
+  // 全体ランキングログに追加
+  rankLog.push(entry);
+  localStorage.setItem(RANK_KEY, JSON.stringify(rankLog));
+
+  // 注文をサーバー or 他タブに通知
+  Transport.emit('order', { drinkId: drink.id, price, ts: Date.now() });
+  Transport.emit('player_order', entry);
+
+  // シェアシートを表示
+  showShare(drink, price, saving);
+  renderBadges();
+}
+
+function showShare(drink, price, saving) {
+  pendingShare = { drink, price, saving };
+  const barName = 'BAR EXCHANGE';
+  const savingText = saving > 0
+    ? `ベースより ▼¥${saving} お得！`
+    : saving < 0
+    ? `ベースより ▲¥${Math.abs(saving)} 高め`
+    : 'ベース価格';
+
+  const shareText = `${drink.emoji} ${drink.name}を ¥${price} でゲット！${saving > 0 ? `ベースより¥${saving}もお得😆` : ''} #BAR_EXCHANGE #${barName.replace(' ','')}`;
+
+  document.getElementById('s-emoji').textContent = drink.emoji;
+  document.getElementById('s-name').textContent  = drink.name;
+  document.getElementById('s-price').textContent = '¥' + price.toLocaleString();
+  document.getElementById('s-saving').textContent = savingText;
+  document.getElementById('s-text').textContent  = shareText;
+  document.getElementById('share-overlay').classList.add('open');
+}
+
+document.getElementById('share-close').addEventListener('click', () => {
+  document.getElementById('share-overlay').classList.remove('open');
+});
+document.getElementById('share-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('share-overlay'))
+    document.getElementById('share-overlay').classList.remove('open');
+});
+
+document.getElementById('share-native').addEventListener('click', async () => {
+  if (!pendingShare) return;
+  const { drink, price, saving } = pendingShare;
+  const text = `${drink.emoji} ${drink.name}を ¥${price} でゲット！${saving > 0 ? `ベースより¥${saving}もお得😆` : ''} #BAR_EXCHANGE`;
+  if (navigator.share) {
+    try { await navigator.share({ title:'BAR EXCHANGE', text }); } catch {}
+  } else { copyText(text); }
+});
+
+document.getElementById('share-x').addEventListener('click', () => {
+  if (!pendingShare) return;
+  const { drink, price, saving } = pendingShare;
+  const text = `${drink.emoji} ${drink.name}を ¥${price} でゲット！${saving > 0 ? `ベースより¥${saving}もお得😆` : ''} #BAR_EXCHANGE`;
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+});
+
+document.getElementById('share-copy').addEventListener('click', () => {
+  if (!pendingShare) return;
+  const text = document.getElementById('s-text').textContent;
+  copyText(text);
+});
+
+function copyText(text) {
+  navigator.clipboard?.writeText(text).catch(() => {});
+  const btn = document.getElementById('share-copy');
+  btn.textContent = '✅ コピーしました';
+  setTimeout(() => btn.textContent = '📋 コピー', 2000);
+}
+
+// ══════════════════════════════════════════
+//  RANKING
+// ══════════════════════════════════════════
+const medals = ['🥇','🥈','🥉'];
+const noClass= ['g','s','b'];
+
+function renderRanking() {
+  const section = document.getElementById('rank-section');
+  const hasData = rankLog.length > 0;
+
+  if (!hasData) {
+    section.innerHTML = `<div class="rank-hdr">TONIGHT'S RANKING</div>
+      <div class="empty-state">まだ注文データがありません<br>ドリンクを注文するとランキングに参加できます🍺</div>`;
+    return;
+  }
+
+  // 1. 杯数ランキング（プレイヤー別）
+  const playerCount = {};
+  rankLog.forEach(o => {
+    const k = o.name || '匿名';
+    if (!playerCount[k]) playerCount[k] = 0;
+    playerCount[k]++;
+  });
+  const countRank = Object.entries(playerCount).sort((a,b) => b[1]-a[1]).slice(0,5);
+
+  // 2. お得度ランキング（最大節約額）
+  const playerSaving = {};
+  rankLog.forEach(o => {
+    const k = o.name || '匿名';
+    const s = o.base - o.price;
+    if (!playerSaving[k] || s > playerSaving[k].saving) playerSaving[k] = { saving:s, drink:o.drinkId };
+  });
+  const savingRank = Object.entries(playerSaving)
+    .sort((a,b) => b[1].saving - a[1].saving).slice(0,5);
+
+  // 3. 今夜の人気ドリンク
+  const drinkCount = {};
+  rankLog.forEach(o => { drinkCount[o.drinkId] = (drinkCount[o.drinkId] ?? 0) + 1; });
+  const drinkRank = drinks
+    .map(d => ({ ...d, count: drinkCount[d.id] ?? 0 }))
+    .sort((a,b) => b.count - a.count).filter(d => d.count > 0).slice(0,5);
+
+  section.innerHTML = `
+    <div class="rank-hdr">TONIGHT'S RANKING</div>
+
+    <div class="rank-card">
+      <h3>🍺 今夜の杯数ランキング</h3>
+      ${countRank.map(([name, count], i) => `
+        <div class="rank-row">
+          <span class="rk-no ${noClass[i]??''}">${medals[i]??i+1}</span>
+          <div class="rk-main">
+            <div class="rk-name">${name}</div>
+          </div>
+          <span class="rk-val green">${count}杯</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="rank-card">
+      <h3>💰 最大節約額ランキング</h3>
+      ${savingRank.map(([name, { saving, drink }], i) => {
+        const d = drinks.find(x => x.id === drink);
+        const color = saving > 0 ? 'green' : saving < 0 ? 'red' : '';
+        const label = saving > 0 ? `▼¥${saving} お得` : saving < 0 ? `▲¥${Math.abs(saving)}` : '±¥0';
+        return `
+          <div class="rank-row">
+            <span class="rk-no ${noClass[i]??''}">${medals[i]??i+1}</span>
+            <span class="rk-emoji">${d?.emoji??'🍺'}</span>
+            <div class="rk-main">
+              <div class="rk-name">${name}</div>
+              <div class="rk-sub">${d?.name??drink}</div>
+            </div>
+            <span class="rk-val ${color}">${label}</span>
+          </div>
+        `;
+      }).join('')}
+    </div>
+
+    <div class="rank-card">
+      <h3>📊 今夜の人気ドリンク TOP5</h3>
+      ${drinkRank.map((d, i) => `
+        <div class="rank-row">
+          <span class="rk-no ${noClass[i]??''}">${medals[i]??i+1}</span>
+          <span class="rk-emoji">${d.emoji}</span>
+          <div class="rk-main"><div class="rk-name">${d.name}</div></div>
+          <span class="rk-val green">${d.count}杯</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════
+//  BADGES
+// ══════════════════════════════════════════
+function renderBadges() {
+  const el = document.getElementById('my-badges');
+  el.innerHTML = `
+    <div class="badge-hdr">MY BADGES</div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;">
+      ${myName ?? 'ゲスト'} の実績 — ${myOrders.length}杯注文済み
+    </div>
+    <div class="badges-grid">
+      ${BADGE_DEFS.map(b => {
+        const earned = b.check(myOrders, drinks);
+        return `
+          <div class="badge-item ${earned ? 'earned' : 'locked'}">
+            <div class="badge-icon">${b.icon}</div>
+            <div class="badge-name">${b.name}</div>
+            <div class="badge-desc">${b.desc}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+    ${myOrders.length === 0 ? '<div class="empty-state" style="margin-top:16px;">ドリンクを注文するとバッジが解放されます</div>' : ''}
+  `;
+}
+
+// ══════════════════════════════════════════
+//  TICKER
+// ══════════════════════════════════════════
+let tickerOffset = 0, lastTick = 0;
+
+function renderTicker() {
+  const inner = drinks.map(d => {
+    const price  = prices[d.id] ?? d.base;
+    const change = Math.round((price - d.base) / d.base * 100);
+    const trend  = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
+    return `<span class="tick"><span class="tick-name">${d.emoji} ${d.name}</span><span class="tick-price">¥${price.toLocaleString()}</span><span class="tick-ch ${trend}">${fmtChange(change)}</span><span class="tick-sep">|</span></span>`;
+  }).join('');
+  const el = document.getElementById('ticker');
+  el.innerHTML = inner + inner + inner;
+}
+
+function animateTicker(ts) {
+  if (ts - lastTick > 16) {
+    const el = document.getElementById('ticker');
+    tickerOffset -= 0.45;
+    const w = el.scrollWidth / 3;
+    if (Math.abs(tickerOffset) >= w) tickerOffset = 0;
+    el.style.transform = `translateX(${tickerOffset}px)`;
+    lastTick = ts;
+  }
+  requestAnimationFrame(animateTicker);
+}
+
+function fmtChange(pct) {
+  if (pct > 0) return `▲ +${pct}%`;
+  if (pct < 0) return `▼ ${pct}%`;
+  return '— 0%';
+}
+
+// ══════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('page-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'ranking') renderRanking();
+    if (tab.dataset.tab === 'badges')  renderBadges();
+  });
+});
+
+// ══════════════════════════════════════════
+//  CLOCK & DECAY
+// ══════════════════════════════════════════
+setInterval(() => {
+  const t = new Date();
+  document.getElementById('clock').textContent =
+    t.getHours().toString().padStart(2,'0') + ':' + t.getMinutes().toString().padStart(2,'0');
+}, 1000);
+
+setInterval(() => {
+  orders = orders.filter(o => o.t > Date.now() - windowMs);
+  calcPrices(); renderPrices(); renderTicker();
+}, 10000);
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+renderAll();
+renderBadges();
+requestAnimationFrame(animateTicker);
+</script>
+</body>
+</html>

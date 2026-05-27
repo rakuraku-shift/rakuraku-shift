@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>RAKURAKU Admin Console</title>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#070C1A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="RAKURAKU Admin">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #070C1A;
+      --bg2:     #0F172A;
+      --bg3:     #1A2340;
+      --border:  rgba(99,102,241,.2);
+      --indigo:  #6366F1;
+      --indigo-d:#4F46E5;
+      --violet:  #7C3AED;
+      --white:   #FFFFFF;
+      --slate-9: #F8FAFC;
+      --slate-7: #CBD5E1;
+      --slate-5: #64748B;
+      --slate-4: #475569;
+      --red:     #EF4444;
+      --red-bg:  rgba(239,68,68,.12);
+      --green:   #10B981;
+      --green-bg:rgba(16,185,129,.12);
+      --amber:   #F59E0B;
+      --amber-bg:rgba(245,158,11,.12);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:var(--slate-9);min-height:100vh;font-size:14px;line-height:1.5;}
+
+    /* ── LOGIN GATE ── */
+    #login-gate{position:fixed;inset:0;z-index:900;background:linear-gradient(160deg,#03071A,#0A1628 55%,#100A28);display:flex;align-items:center;justify-content:center;padding:24px;}
+    .lg-card{width:min(360px,96vw);display:flex;flex-direction:column;align-items:center;}
+    .lg-logo{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,#E31837,#C0102A);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(227,24,55,.5);margin-bottom:22px;}
+    .lg-title{font-size:24px;font-weight:900;color:#fff;letter-spacing:-.01em;margin-bottom:3px;}
+    .lg-sub{font-size:11px;color:rgba(255,255,255,.35);margin-bottom:32px;letter-spacing:.06em;font-weight:600;}
+    .lg-label{font-size:11px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.06em;margin-bottom:8px;align-self:flex-start;}
+    .lg-input{width:100%;padding:16px 18px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1);border-radius:14px;color:#fff;font-size:15px;font-family:inherit;outline:none;margin-bottom:10px;transition:border-color .15s;}
+    .lg-input:focus{border-color:var(--indigo);}
+    .lg-error{font-size:12px;color:#F87171;font-weight:600;text-align:center;height:18px;margin-bottom:8px;}
+    .lg-btn{width:100%;padding:17px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--indigo-d),var(--violet));color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(79,70,229,.4);transition:opacity .15s;}
+    .lg-btn:active{opacity:.85;}
+    .lg-hint{margin-top:18px;font-size:10px;color:rgba(255,255,255,.15);text-align:center;}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+    .lg-card.shake{animation:shake .4s;}
+
+    /* ── TOP BAR ── */
+    .topbar{background:linear-gradient(100deg,#050A16,#0F172A 60%,#150D38);height:58px;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid rgba(99,102,241,.18);box-shadow:0 1px 24px rgba(79,70,229,.12);position:sticky;top:0;z-index:100;}
+    .tb-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#E31837,#C0102A);display:flex;align-items:center;justify-content:center;margin-right:10px;box-shadow:0 2px 8px rgba(227,24,55,.4);}
+    .tb-name{font-size:16px;font-weight:900;color:#fff;letter-spacing:-.01em;}
+    .tb-badge{font-size:9px;font-weight:800;color:rgba(255,255,255,.45);background:rgba(255,255,255,.07);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.1);margin-left:8px;letter-spacing:.08em;}
+    .tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+    .tb-logout{font-size:11px;color:rgba(255,255,255,.35);font-weight:700;cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.1);transition:all .15s;}
+    .tb-logout:hover{color:var(--white);border-color:rgba(255,255,255,.25);}
+
+    /* ── MAIN ── */
+    .main{max-width:600px;margin:0 auto;padding:20px 16px 80px;}
+
+    /* ── SUMMARY BAR ── */
+    .summary-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+    .sum-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;}
+    .sum-num{font-size:26px;font-weight:900;line-height:1;}
+    .sum-lbl{font-size:10px;color:var(--slate-5);font-weight:700;margin-top:4px;letter-spacing:.03em;}
+    .sum-card--green .sum-num{color:var(--green);}
+    .sum-card--red   .sum-num{color:var(--red);}
+    .sum-card--blue  .sum-num{color:var(--indigo);}
+
+    /* ── MONTH NAV ── */
+    .month-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+    .month-nav-btn{width:34px;height:34px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+    .month-nav-btn:hover{border-color:var(--indigo);color:var(--indigo);}
+    .month-nav-btn:disabled{opacity:.3;cursor:default;}
+    .month-label{font-size:15px;font-weight:800;color:#fff;}
+    .month-sub{font-size:10px;color:var(--slate-5);font-weight:600;text-align:center;margin-top:1px;}
+
+    /* ── SECTION HEADER ── */
+    .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .sec-title{font-size:12px;font-weight:800;color:var(--slate-5);letter-spacing:.08em;text-transform:uppercase;}
+    .btn-add{display:flex;align-items:center;gap:5px;padding:8px 14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--indigo-d),var(--violet));color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+    .btn-add:active{opacity:.85;}
+
+    /* ── SHOP CARDS ── */
+    .shop-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:0;margin-bottom:12px;overflow:hidden;transition:border-color .2s;}
+    .shop-card:has(.sc-body.paid){border-color:rgba(16,185,129,.25);}
+    .sc-head{padding:16px 18px 12px;display:flex;align-items:flex-start;gap:12px;}
+    .sc-avatar{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#fff;flex-shrink:0;}
+    .sc-info{flex:1;min-width:0;}
+    .sc-name{font-size:15px;font-weight:800;color:#fff;margin-bottom:2px;}
+    .sc-meta{font-size:11px;color:var(--slate-5);font-weight:500;}
+    .sc-fee{font-size:11px;font-weight:700;color:var(--slate-7);background:rgba(255,255,255,.06);padding:3px 8px;border-radius:6px;white-space:nowrap;}
+
+    .sc-body{padding:0 18px 16px;}
+    .sc-payment-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid rgba(255,255,255,.06);}
+    .sc-pay-status{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;}
+    .sc-pay-dot{width:8px;height:8px;border-radius:50%;}
+    .sc-pay-dot--green{background:var(--green);box-shadow:0 0 6px rgba(16,185,129,.6);}
+    .sc-pay-dot--red{background:var(--red);box-shadow:0 0 6px rgba(239,68,68,.5);}
+    .sc-pay-dot--amber{background:var(--amber);}
+    .sc-pay-label--green{color:var(--green);}
+    .sc-pay-label--red{color:var(--red);}
+    .sc-pay-label--amber{color:var(--amber);}
+
+    .sc-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;}
+    .sc-btn{padding:9px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;transition:all .15s;white-space:nowrap;}
+    .sc-btn--pay{background:var(--green-bg);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+    .sc-btn--pay:active{background:rgba(16,185,129,.25);}
+    .sc-btn--code{background:rgba(99,102,241,.15);color:#A5B4FC;border:1px solid rgba(99,102,241,.3);}
+    .sc-btn--code:active{background:rgba(99,102,241,.3);}
+    .sc-btn--unpay{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.25);}
+    .sc-btn--unpay:active{background:rgba(239,68,68,.25);}
+    .sc-btn--edit{background:rgba(255,255,255,.05);color:var(--slate-7);border:1px solid rgba(255,255,255,.1);}
+    .sc-btn--edit:active{background:rgba(255,255,255,.1);}
+    .sc-btn--del{background:transparent;color:rgba(239,68,68,.5);border:1px solid rgba(239,68,68,.2);}
+    .sc-btn--del:active{background:var(--red-bg);}
+
+    .sc-code-row{display:flex;align-items:center;gap:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:10px 14px;margin-top:8px;}
+    .sc-code-val{flex:1;font-size:19px;font-weight:900;color:#A5B4FC;letter-spacing:.2em;font-family:inherit;}
+    .sc-code-copy{padding:7px 12px;border:none;border-radius:8px;background:rgba(99,102,241,.3);color:#C7D2FE;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;transition:background .15s;}
+    .sc-code-copy:active{background:rgba(99,102,241,.5);}
+    .sc-code-unpaid{font-size:12px;color:var(--red);font-weight:700;padding:10px 0 2px;}
+
+    /* ── ADD SHOP MODAL ── */
+    #add-modal{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);align-items:flex-end;justify-content:center;padding:0;}
+    #add-modal.open{display:flex;}
+    .modal-card{width:min(500px,100%);background:var(--bg2);border-radius:22px 22px 0 0;padding:24px 20px 40px;border-top:1px solid var(--border);}
+    .modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+    .modal-title{font-size:16px;font-weight:800;color:#fff;}
+    .modal-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.5);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .form-row{margin-bottom:14px;}
+    .form-label{font-size:11px;font-weight:700;color:var(--slate-5);letter-spacing:.04em;margin-bottom:6px;display:block;}
+    .form-input{width:100%;padding:13px 14px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;color:#fff;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s;}
+    .form-input:focus{border-color:var(--indigo);}
+    .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+    .modal-save{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--indigo-d),var(--violet));color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:6px;transition:opacity .15s;}
+    .modal-save:active{opacity:.85;}
+
+    /* ── TOAST ── */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,#1E293B,#0F172A);color:#fff;padding:13px 24px;border-radius:28px;font-size:13px;font-weight:700;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.4);}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+    /* ── EMPTY ── */
+    .empty-state{text-align:center;padding:48px 20px;color:var(--slate-5);}
+    .empty-icon{font-size:40px;margin-bottom:12px;}
+    .empty-text{font-size:14px;font-weight:600;}
+
+    /* ── SETTINGS ── */
+    .settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px;margin-top:24px;}
+    .settings-title{font-size:12px;font-weight:800;color:var(--slate-5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+    .settings-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .settings-input{flex:1;padding:12px 14px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;font-size:13px;font-family:inherit;outline:none;}
+    .settings-input:focus{border-color:var(--indigo);}
+    .settings-btn{padding:12px 16px;border:none;border-radius:10px;background:rgba(99,102,241,.2);color:#A5B4FC;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;}
+
+    /* ── SALES SECTION ── */
+    .sc-sales-toggle{width:100%;padding:9px 18px;background:transparent;border:none;border-top:1px solid rgba(255,255,255,.06);color:rgba(99,102,241,.8);font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:6px;letter-spacing:.03em;transition:background .15s;}
+    .sc-sales-toggle:hover{background:rgba(99,102,241,.07);}
+    .sc-sales-toggle .arrow{transition:transform .2s;display:inline-block;font-style:normal;}
+    .sc-sales-panel{display:none;padding:0 18px 14px;border-top:1px solid rgba(255,255,255,.04);}
+    .sc-sales-panel.open{display:block;}
+    .sc-sales-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+    .sc-sales-field{}
+    .sc-sales-label{font-size:10px;font-weight:700;color:var(--slate-5);margin-bottom:4px;}
+    .sc-sales-inner{display:flex;align-items:center;gap:4px;}
+    .sc-sales-input{flex:1;padding:8px 8px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:8px;color:#fff;font-size:15px;font-weight:800;font-family:inherit;outline:none;text-align:right;transition:border-color .15s;}
+    .sc-sales-input:focus{border-color:var(--indigo);}
+    .sc-sales-unit{font-size:10px;color:var(--slate-5);white-space:nowrap;}
+    .sc-sales-save{width:100%;padding:9px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--indigo-d),var(--violet));color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:10px;transition:opacity .15s;}
+    .sc-sales-save:active{opacity:.8;}
+    .sc-sales-result{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:10px 12px;}
+    .sc-sales-ach-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+    .sc-sales-pct{font-size:20px;font-weight:900;}
+    .sc-sales-pct.ov{color:var(--green);}
+    .sc-sales-pct.cl{color:var(--amber);}
+    .sc-sales-pct.un{color:var(--red);}
+    .sc-sales-badge{font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;}
+    .sc-sales-badge.ov{background:var(--green-bg);color:var(--green);}
+    .sc-sales-badge.cl{background:var(--amber-bg);color:var(--amber);}
+    .sc-sales-badge.un{background:var(--red-bg);color:var(--red);}
+    .sc-sales-bar-track{height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden;margin-bottom:4px;}
+    .sc-sales-bar-fill{height:100%;border-radius:99px;}
+    .sc-sales-bar-fill.ov{background:var(--green);}
+    .sc-sales-bar-fill.cl{background:var(--amber);}
+    .sc-sales-bar-fill.un{background:var(--red);}
+    .sc-sales-sub{font-size:10px;color:var(--slate-5);}
+    .sc-yoy-row{display:flex;align-items:center;gap:7px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06);}
+    .sc-yoy-badge{font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;}
+    .sc-yoy-badge.up{background:var(--green-bg);color:var(--green);}
+    .sc-yoy-badge.dn{background:var(--red-bg);color:var(--red);}
+    .sc-yoy-badge.eq{background:rgba(255,255,255,.06);color:var(--slate-5);}
+    .sc-yoy-note{font-size:10px;color:var(--slate-5);}
+
+    /* ── SALES OVERVIEW SECTION ── */
+    .overview-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:20px;}
+    .overview-title{font-size:12px;font-weight:800;color:var(--slate-5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+    .overview-table{width:100%;border-collapse:collapse;font-size:12px;}
+    .overview-table th{text-align:left;font-size:10px;font-weight:800;color:var(--slate-5);letter-spacing:.05em;padding:4px 8px 8px;border-bottom:1px solid rgba(255,255,255,.07);}
+    .overview-table td{padding:8px 8px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--slate-7);vertical-align:middle;}
+    .overview-table tr:last-child td{border-bottom:none;}
+    .ov-name{color:var(--white);font-weight:700;}
+    .ov-bar-wrap{width:80px;}
+    .ov-bar-track{height:5px;border-radius:99px;background:rgba(255,255,255,.07);}
+    .ov-bar-fill{height:100%;border-radius:99px;}
+    .ov-bar-fill.ov{background:var(--green);}
+    .ov-bar-fill.cl{background:var(--amber);}
+    .ov-bar-fill.un{background:var(--red);}
+    .ov-pct{font-size:12px;font-weight:800;}
+    .ov-pct.ov{color:var(--green);}
+    .ov-pct.cl{color:var(--amber);}
+    .ov-pct.un{color:var(--red);}
+    .ov-empty{font-size:11px;color:var(--slate-5);font-style:italic;padding:8px 0;}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div id="login-gate">
+  <div class="lg-card" id="lg-card">
+    <div class="lg-logo">
+      <svg width="34" height="34" viewBox="0 0 44 44" fill="none">
+        <path d="M 10 14 L 32 14 L 17 36" stroke="white" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="lg-title">RAKURAKU</div>
+    <div class="lg-sub">OPERATOR CONSOLE</div>
+    <div class="lg-label">管理者パスワード</div>
+    <input id="admin-pw-input" class="lg-input" type="password"
+      placeholder="パスワードを入力"
+      onkeydown="if(event.key==='Enter')adminLogin()">
+    <div class="lg-error" id="lg-error"></div>
+    <button class="lg-btn" onclick="adminLogin()">ログイン →</button>
+    <div class="lg-hint">RAKURAKUオペレーター専用コンソールです</div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="tb-logo">
+    <svg width="18" height="18" viewBox="0 0 44 44" fill="none">
+      <path d="M 10 14 L 32 14 L 17 36" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="tb-name">RAKURAKU</div>
+  <div class="tb-badge">ADMIN CONSOLE</div>
+  <div class="tb-right">
+    <div class="tb-logout" onclick="adminLogout()">ログアウト</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- 月ナビゲーション -->
+  <div class="month-row">
+    <button class="month-nav-btn" onclick="changeAdminMonth(-1)">‹</button>
+    <div style="text-align:center;">
+      <div class="month-label" id="admin-month-label">—</div>
+      <div class="month-sub" id="admin-month-sub"></div>
+    </div>
+    <button class="month-nav-btn" id="admin-month-next" onclick="changeAdminMonth(1)">›</button>
+  </div>
+
+  <!-- サマリー -->
+  <div class="summary-bar">
+    <div class="sum-card sum-card--blue">
+      <div class="sum-num" id="sum-total">0</div>
+      <div class="sum-lbl">総店舗数</div>
+    </div>
+    <div class="sum-card sum-card--green">
+      <div class="sum-num" id="sum-paid">0</div>
+      <div class="sum-lbl">支払済</div>
+    </div>
+    <div class="sum-card sum-card--red">
+      <div class="sum-num" id="sum-unpaid">0</div>
+      <div class="sum-lbl">未払い</div>
+    </div>
+  </div>
+
+  <!-- 売上概況 -->
+  <div class="overview-card" id="sales-overview-card">
+    <div class="overview-title">💰 売上概況</div>
+    <div id="sales-overview-content"><div class="ov-empty">契約店舗が登録されると表示されます</div></div>
+  </div>
+
+  <!-- 店舗一覧 -->
+  <div class="sec-hdr">
+    <div class="sec-title">契約店舗</div>
+    <button class="btn-add" onclick="openAddModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      店舗を追加
+    </button>
+  </div>
+  <div id="shop-list"></div>
+
+  <!-- 管理者設定 -->
+  <div class="settings-card">
+    <div class="settings-title">⚙️ 設定</div>
+    <div style="font-size:11px;color:var(--slate-5);margin-bottom:12px;">管理者パスワードの変更</div>
+    <div class="settings-row">
+      <input id="new-pw-input" class="settings-input" type="password" placeholder="新しいパスワード">
+      <button class="settings-btn" onclick="changeAdminPassword()">変更</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ADD SHOP MODAL -->
+<div id="add-modal">
+  <div class="modal-card">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modal-title">店舗を追加</div>
+      <button class="modal-close" onclick="closeAddModal()">×</button>
+    </div>
+    <div class="form-row">
+      <label class="form-label">店舗ID（アプリの getShopId と同じ値）</label>
+      <input id="f-shopId" class="form-input" placeholder="例: bar-exchange" autocomplete="off">
+    </div>
+    <div class="form-row">
+      <label class="form-label">店舗名</label>
+      <input id="f-name" class="form-input" placeholder="例: BAR EXCHANGE 渋谷店">
+    </div>
+    <div class="form-row-2">
+      <div class="form-row" style="margin:0;">
+        <label class="form-label">担当者名</label>
+        <input id="f-contact" class="form-input" placeholder="田中 太郎">
+      </div>
+      <div class="form-row" style="margin:0;">
+        <label class="form-label">月額（円）</label>
+        <input id="f-fee" class="form-input" type="number" placeholder="5000">
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">連絡先メール</label>
+      <input id="f-email" class="form-input" type="email" placeholder="tanaka@example.com">
+    </div>
+    <div class="form-row">
+      <label class="form-label">電話番号</label>
+      <input id="f-phone" class="form-input" placeholder="090-0000-0000">
+    </div>
+    <button class="modal-save" id="modal-save-btn" onclick="saveShop()">登録する</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ═══════════════════════════════════
+     STORAGE
+  ═══════════════════════════════════ */
+  var _mem = {};
+  function sg(k){ try{ return localStorage.getItem(k); }catch(e){ return _mem[k]||null; } }
+  function ss(k,v){ try{ localStorage.setItem(k,v); }catch(e){ _mem[k]=v; } }
+
+  /* ═══════════════════════════════════
+     ADMIN AUTH
+  ═══════════════════════════════════ */
+  var _adminAuthed = false;
+  var DEFAULT_PW   = 'NORU2025';
+
+  /* 🔒 セキュリティ: 5回失敗で運営に通知 */
+  var _SECURITY_EMAIL = 'security@rakuraku.example.com'; // 運営の通報先
+  var _FAIL_LIMIT     = 5;
+  var _FAIL_KEY       = 'noru_admin_fail_count';
+
+  function getAdminPw(){ return sg('noru_admin_pw') || DEFAULT_PW; }
+  function _getAdminFailCount(){ try { return parseInt(localStorage.getItem(_FAIL_KEY)||'0',10)||0; } catch(e){ return 0; } }
+  function _setAdminFailCount(n){ try { localStorage.setItem(_FAIL_KEY, String(n)); } catch(e){} }
+
+  function _triggerAdminSecurityAlert() {
+    var ts = new Date().toLocaleString('ja-JP');
+    var ua = navigator.userAgent;
+    var subject = encodeURIComponent('【RAKURAKU セキュリティ警告】本社管理画面 5回連続失敗');
+    var body    = encodeURIComponent(
+      'RAKURAKU セキュリティ通知\n\n' +
+      '🚨 本社管理画面 (noru-admin.html) で5回連続のパスワード失敗を検知しました。\n\n' +
+      '■ ゲート種別: 本社管理コンソール\n' +
+      '■ 発生日時: ' + ts + '\n' +
+      '■ アクセスURL: ' + location.href + '\n' +
+      '■ 端末情報: ' + ua + '\n\n' +
+      '⚠️ 本社管理画面への不正アクセス試行の可能性があります。\n' +
+      '直ちにパスワード変更をご検討ください。'
+    );
+    try { window.location.href = 'mailto:' + _SECURITY_EMAIL + '?subject=' + subject + '&body=' + body; } catch(e){}
+    _showAdminLockScreen();
+  }
+
+  function _showAdminLockScreen() {
+    var ov = document.getElementById('admin-sec-lock');
+    if(!ov){
+      ov = document.createElement('div');
+      ov.id = 'admin-sec-lock';
+      ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(8px);';
+      ov.innerHTML =
+        '<div style="background:#1A2340;border:1px solid rgba(239,68,68,.4);border-radius:20px;max-width:420px;width:100%;padding:36px 28px;text-align:center;color:#fff;">'+
+          '<div style="font-size:56px;margin-bottom:12px;">🚨</div>'+
+          '<h2 style="font-size:20px;font-weight:900;margin-bottom:8px;color:#fff;">セキュリティロック</h2>'+
+          '<p style="font-size:13px;color:#94A3B8;line-height:1.7;margin-bottom:14px;">'+
+            '本社管理画面で5回連続の入力ミスを検知しました。<br>'+
+            '<strong style="color:#F87171;">運営に通知メールを送信しました。</strong>'+
+          '</p>'+
+          '<div style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:14px;margin-bottom:18px;font-size:12px;color:#FCA5A5;">'+
+            '⏰ <strong>5分間ロック中</strong><br>'+
+            '<span id="adm-lock-timer" style="font-size:22px;font-weight:900;letter-spacing:.05em;">5:00</span>'+
+          '</div>'+
+          '<p style="font-size:11px;color:#64748B;line-height:1.6;">'+
+            'お困りの場合は<br><a href="mailto:'+_SECURITY_EMAIL+'" style="color:#A5B4FC;font-weight:700;">'+_SECURITY_EMAIL+'</a> まで'+
+          '</p>'+
+        '</div>';
+      document.body.appendChild(ov);
+    } else { ov.style.display = 'flex'; }
+    var rem = 5 * 60;
+    var t = document.getElementById('adm-lock-timer');
+    if(window._admLockTimer) clearInterval(window._admLockTimer);
+    window._admLockTimer = setInterval(function(){
+      rem--;
+      if(rem<=0){ clearInterval(window._admLockTimer); ov.style.display='none'; return; }
+      var m=Math.floor(rem/60), s=rem%60;
+      if(t) t.textContent = m+':'+String(s).padStart(2,'0');
+    }, 1000);
+  }
+
+  function adminLogin(){
+    var inp = document.getElementById('admin-pw-input');
+    var pw  = inp ? inp.value : '';
+    if(pw === getAdminPw()){
+      _adminAuthed = true;
+      _setAdminFailCount(0); // 成功でリセット
+      document.getElementById('login-gate').style.display = 'none';
+      initConsole();
+    } else {
+      var n = _getAdminFailCount() + 1;
+      _setAdminFailCount(n);
+      if(n >= _FAIL_LIMIT){
+        _setAdminFailCount(0);
+        _triggerAdminSecurityAlert();
+        return;
+      }
+      var remaining = _FAIL_LIMIT - n;
+      document.getElementById('lg-error').textContent = 'パスワードが違います（あと' + remaining + '回で運営に通知）';
+      var card = document.getElementById('lg-card');
+      card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+      if(inp) inp.value = '';
+    }
+  }
+
+  function adminLogout(){
+    _adminAuthed = false;
+    document.getElementById('login-gate').style.display = 'flex';
+    var inp = document.getElementById('admin-pw-input');
+    if(inp){ inp.value=''; inp.focus(); }
+  }
+
+  function changeAdminPassword(){
+    var inp = document.getElementById('new-pw-input');
+    var pw  = (inp ? inp.value : '').trim();
+    if(!pw || pw.length < 4){ showToast('⚠️ 4文字以上で入力してください'); return; }
+    ss('noru_admin_pw', pw);
+    inp.value = '';
+    showToast('✅ パスワードを変更しました');
+  }
+
+  /* ═══════════════════════════════════
+     SHOPS DATA
+  ═══════════════════════════════════ */
+  function loadShops(){ try{ return JSON.parse(sg('noru_admin_shops')||'[]'); }catch(e){ return []; } }
+  function saveShops(arr){ ss('noru_admin_shops', JSON.stringify(arr)); }
+
+  function getPaymentKey(monthKey, shopId){
+    return 'noru_pay_' + monthKey + '_' + shopId;
+  }
+  function isPaid(monthKey, shopId){
+    var p = sg(getPaymentKey(monthKey, shopId));
+    return p ? JSON.parse(p).paid === true : false;
+  }
+  function setPaid(monthKey, shopId, paid){
+    var data = { paid: paid, at: new Date().toISOString() };
+    ss(getPaymentKey(monthKey, shopId), JSON.stringify(data));
+  }
+
+  /* ═══════════════════════════════════
+     SALES DATA (売上管理)
+  ═══════════════════════════════════ */
+  function _adminSalesKey(shopId, monthKey){
+    return 'noru_shop_sales_' + shopId + '_' + monthKey;
+  }
+  function loadAdminSales(shopId, monthKey){
+    try{ return JSON.parse(sg(_adminSalesKey(shopId,monthKey))||'null') || {}; }catch(e){ return {}; }
+  }
+  function saveAdminSalesRaw(shopId, monthKey, data){
+    ss(_adminSalesKey(shopId, monthKey), JSON.stringify(data));
+  }
+  function _prevYearKey(mk){
+    var p=mk.split('-').map(Number);
+    return (p[0]-1)+'-'+String(p[1]).padStart(2,'0');
+  }
+
+  // 表示中のショップリスト（インデックス参照用）
+  var _renderedShops = [];
+
+  function _shopSid(shopId){
+    return 'sid_' + shopId.replace(/[^a-zA-Z0-9]/g,'_');
+  }
+
+  function toggleSalesPanel(idx){
+    var s = _renderedShops[idx]; if(!s) return;
+    var sid   = _shopSid(s.shopId);
+    var panel = document.getElementById('sc-sales-panel-'+sid);
+    var arrow = document.getElementById('st-arrow-'+sid);
+    if(!panel) return;
+    var isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open', !isOpen);
+    if(arrow) arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
+    if(!isOpen) renderAdminSalesResult(idx);
+  }
+
+  function saveAdminSalesData(idx){
+    var s = _renderedShops[idx]; if(!s) return;
+    var sid  = _shopSid(s.shopId);
+    var mk   = getViewingMonthKey();
+    var tVal = parseFloat((document.getElementById('st-'+sid)||{}).value) || 0;
+    var aVal = parseFloat((document.getElementById('sa-'+sid)||{}).value) || 0;
+    if(!tVal && !aVal){ showToast('⚠️ 目標または実績を入力してください'); return; }
+    saveAdminSalesRaw(s.shopId, mk, { target:tVal, actual:aVal, updatedAt:new Date().toISOString() });
+    renderAdminSalesResult(idx);
+    renderSalesOverview();
+    showToast('💰 売上データを保存しました');
+  }
+
+  function renderAdminSalesResult(idx){
+    var s = _renderedShops[idx]; if(!s) return;
+    var sid  = _shopSid(s.shopId);
+    var el   = document.getElementById('sres-'+sid);
+    if(!el) return;
+    var mk     = getViewingMonthKey();
+    var data   = loadAdminSales(s.shopId, mk);
+    var target = data.target || 0, actual = data.actual || 0;
+    if(!target && !actual){ el.innerHTML=''; return; }
+
+    var pct  = target > 0 ? Math.round(actual/target*100) : (actual>0?999:0);
+    var barW = Math.min(pct,100);
+    var cls  = pct>=100?'ov':pct>=85?'cl':'un';
+    var tag  = pct>=100?'🎉 達成！':pct>=85?'🔥 あと少し！':'⚡ 頑張ろう';
+
+    // 昨年同月比
+    var lyMK   = _prevYearKey(mk);
+    var lyData = loadAdminSales(s.shopId, lyMK);
+    var yoyHtml = '';
+    if(lyData.actual && actual){
+      var yoyPct = Math.round(actual/lyData.actual*100);
+      var diff   = actual - lyData.actual;
+      var yc     = diff>0?'up':diff<0?'dn':'eq';
+      var ys     = diff>0?'▲':diff<0?'▼':'―';
+      var lyP    = lyMK.split('-').map(Number);
+      yoyHtml = '<div class="sc-yoy-row">'+
+        '<span class="sc-yoy-badge '+yc+'">'+ys+' 前年同月比 '+yoyPct+'%</span>'+
+        '<span class="sc-yoy-note">昨年'+lyP[0]+'年'+lyP[1]+'月: '+lyData.actual+'万円</span>'+
+      '</div>';
+    }
+
+    el.innerHTML =
+      '<div class="sc-sales-result">'+
+        '<div class="sc-sales-ach-row">'+
+          '<div><div class="sc-sales-pct '+cls+'">'+pct+'<span style="font-size:11px;">%</span></div>'+
+          '<div class="sc-sales-sub">'+actual+'万 ／ 目標 '+target+'万</div></div>'+
+          '<div class="sc-sales-badge '+cls+'">'+tag+'</div>'+
+        '</div>'+
+        '<div class="sc-sales-bar-track"><div class="sc-sales-bar-fill '+cls+'" style="width:'+barW+'%;"></div></div>'+
+        yoyHtml+
+      '</div>';
+  }
+
+  function renderSalesOverview(){
+    var el = document.getElementById('sales-overview-content');
+    if(!el) return;
+    var shops = loadShops();
+    var mk    = getViewingMonthKey();
+    if(!shops.length){
+      el.innerHTML='<div class="ov-empty">契約店舗が登録されると表示されます</div>';
+      return;
+    }
+    var rows = shops.map(function(s){
+      var d      = loadAdminSales(s.shopId, mk);
+      var target = d.target||0, actual = d.actual||0;
+      if(!target && !actual){
+        return '<tr><td class="ov-name">'+esc(s.name)+'</td><td colspan="3" style="color:var(--slate-5);font-size:10px;">未入力</td></tr>';
+      }
+      var pct  = target>0?Math.round(actual/target*100):(actual>0?999:0);
+      var barW = Math.min(pct,100);
+      var cls  = pct>=100?'ov':pct>=85?'cl':'un';
+      return '<tr>'+
+        '<td class="ov-name">'+esc(s.name)+'</td>'+
+        '<td style="text-align:right;color:var(--slate-7);">'+actual+'万</td>'+
+        '<td style="text-align:right;"><span class="ov-pct '+cls+'">'+pct+'%</span></td>'+
+        '<td class="ov-bar-wrap"><div class="ov-bar-track"><div class="ov-bar-fill '+cls+'" style="width:'+barW+'%;height:5px;"></div></div></td>'+
+      '</tr>';
+    }).join('');
+
+    el.innerHTML =
+      '<table class="overview-table">'+
+        '<thead><tr><th>店舗</th><th style="text-align:right;">実績</th><th style="text-align:right;">達成率</th><th>進捗</th></tr></thead>'+
+        '<tbody>'+rows+'</tbody>'+
+      '</table>';
+  }
+
+  /* ═══════════════════════════════════
+     LICENSE CODE GENERATION（shift.html と同じアルゴリズム）
+  ═══════════════════════════════════ */
+  var _NORU_SECRET = 'NORU_PF_2025_BAR';
+
+  function licHash(str){
+    var h = 5381;
+    for(var i=0;i<str.length;i++){ h=((h<<5)+h)^str.charCodeAt(i); h=h>>>0; }
+    var C='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', code='', n=h;
+    for(var k=0;k<6;k++){ code+=C[n%C.length]; n=Math.floor(n/C.length); }
+    return code;
+  }
+  function genCode(shopId, monthKey){ return licHash(_NORU_SECRET+'::'+shopId+'::'+monthKey); }
+
+  /* 月キー → 翌月キー */
+  function _nextMonthKey(mk){
+    var p = mk.split('-').map(Number);
+    var y = p[0], m = p[1] + 1;
+    if (m > 12) { m = 1; y += 1; }
+    return y + '-' + String(m).padStart(2,'0');
+  }
+
+  /* ライセンスコードをメール送信 */
+  function emailLicense(shopId, monthKey){
+    var shops = loadShops();
+    var s = shops.find(function(x){ return x.shopId === shopId; });
+    if(!s || !s.email){ showToast('⚠️ メールアドレスが登録されていません'); return; }
+    var code = genCode(shopId, monthKey);
+    var p = monthKey.split('-');
+    var yLabel = p[0]+'年'+parseInt(p[1])+'月';
+    var subject = encodeURIComponent('【RAKURAKU】'+yLabel+' ライセンスコード');
+    var body = encodeURIComponent(
+      s.name + ' 様\n\nいつもご利用ありがとうございます。\n' +
+      yLabel + 'のライセンスコードをお送りいたします。\n\n' +
+      '■ ライセンスコード\n' + code + '\n\n' +
+      'シフト管理画面起動時に上記コードをご入力ください。\n\n' +
+      'ご不明な点がございましたら、お気軽にお問い合わせください。\n\n' +
+      'RAKURAKU サポートチーム'
+    );
+    window.location.href = 'mailto:' + s.email + '?subject=' + subject + '&body=' + body;
+  }
+
+  /* ═══════════════════════════════════
+     MONTH NAVIGATION
+  ═══════════════════════════════════ */
+  var _currentViewMonth = null; // null = 今月
+
+  function getTodayMonthKey(){
+    var n = new Date();
+    return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0');
+  }
+  function getViewingMonthKey(){ return _currentViewMonth || getTodayMonthKey(); }
+
+  function changeAdminMonth(dir){
+    var mk = getViewingMonthKey().split('-').map(Number);
+    var y=mk[0], m=mk[1]+dir;
+    if(m>12){m=1;y++;} if(m<1){m=12;y--;}
+    var next = y+'-'+String(m).padStart(2,'0');
+    var today = getTodayMonthKey();
+    // 翌月以上は今月まで
+    if(next > today){ _currentViewMonth = null; }
+    else if(next === today){ _currentViewMonth = null; }
+    else { _currentViewMonth = next; }
+    renderConsole();
+  }
+
+  /* ═══════════════════════════════════
+     RENDER
+  ═══════════════════════════════════ */
+  function initConsole(){
+    renderConsole();
+  }
+
+  function renderConsole(){
+    var mk = getViewingMonthKey();
+    var today = getTodayMonthKey();
+    var isCurrentMonth = !_currentViewMonth;
+    var parts = mk.split('-').map(Number);
+    var label = parts[0]+'年'+parts[1]+'月';
+
+    document.getElementById('admin-month-label').textContent = label;
+    document.getElementById('admin-month-sub').textContent = isCurrentMonth ? '（今月）' : '';
+    var nextBtn = document.getElementById('admin-month-next');
+    if(nextBtn) nextBtn.disabled = isCurrentMonth;
+
+    var shops = loadShops();
+    var paidCount = 0;
+    shops.forEach(function(s){ if(isPaid(mk, s.shopId)) paidCount++; });
+
+    document.getElementById('sum-total').textContent  = shops.length;
+    document.getElementById('sum-paid').textContent   = paidCount;
+    document.getElementById('sum-unpaid').textContent = shops.length - paidCount;
+
+    var list = document.getElementById('shop-list');
+    if(!shops.length){
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">🏪</div><div class="empty-text">契約店舗がまだありません<br>「店舗を追加」から登録してください</div></div>';
+      return;
+    }
+
+    _renderedShops = shops.slice(); // インデックス参照用キャッシュ
+
+    list.innerHTML = shops.map(function(s, idx){
+      var paid = isPaid(mk, s.shopId);
+      var code = paid ? genCode(s.shopId, mk) : null;
+      var avatarColor = ['#4F46E5','#059669','#D97706','#DC2626','#7C3AED','#0284C7'][idx%6];
+      var initials    = s.name ? s.name.charAt(0) : '?';
+      var sid = _shopSid(s.shopId);
+
+      var payStatusHtml = paid
+        ? '<span class="sc-pay-dot sc-pay-dot--green"></span><span class="sc-pay-label--green">支払済</span>'
+        : '<span class="sc-pay-dot sc-pay-dot--red"></span><span class="sc-pay-label--red">未払い</span>';
+
+      /* 来月分のコード（先行発行） */
+      var nextMk = _nextMonthKey(mk);
+      var nextCode = paid ? genCode(s.shopId, nextMk) : null;
+
+      var codeHtml = paid
+        ? '<div style="background:linear-gradient(135deg,rgba(99,102,241,.15) 0%,rgba(124,58,237,.12) 100%);border:1.5px solid rgba(99,102,241,.4);border-radius:12px;padding:12px 14px;margin-top:10px;">'+
+            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'+
+              '<span style="font-size:10px;font-weight:800;color:#A5B4FC;letter-spacing:.08em;">🔑 '+label+' ライセンスコード</span>'+
+              '<span style="font-size:9px;color:#10B981;font-weight:700;">✓ 発行済</span>'+
+            '</div>'+
+            '<div class="sc-code-row" style="margin-top:0;">'+
+              '<div class="sc-code-val">'+code+'</div>'+
+              '<button class="sc-code-copy" onclick="copyCode(\''+code+'\',\''+s.name+'\')">📋 コピー</button>'+
+            '</div>'+
+            (s.email ? '<button onclick="emailLicense(\''+s.shopId+'\',\''+mk+'\')" style="width:100%;margin-top:8px;padding:9px;border:none;border-radius:8px;background:rgba(99,102,241,.25);color:#C7D2FE;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;">📧 '+s.email+' にメール送信</button>' : '<div style="margin-top:8px;font-size:10px;color:#F87171;">⚠️ メール未登録（店舗編集で追加できます）</div>')+
+            (nextCode ? '<div style="margin-top:10px;padding-top:10px;border-top:1px dashed rgba(99,102,241,.3);font-size:10px;color:var(--slate-5);">来月分: <span style="font-family:monospace;color:#94A3B8;letter-spacing:.15em;">'+nextCode+'</span></div>' : '')+
+          '</div>'
+        : '<div class="sc-code-unpaid">⚠️ 支払確認後にコードが発行されます</div>';
+
+      var payBtnHtml = paid
+        ? '<button class="sc-btn sc-btn--unpay" onclick="togglePay(\''+s.shopId+'\',\''+mk+'\',false)">支払取消</button>'
+        : '<button class="sc-btn sc-btn--pay" onclick="togglePay(\''+s.shopId+'\',\''+mk+'\',true)">✓ 支払確認</button>';
+
+      // 売上データ（既存値をプリセット）
+      var salesData = loadAdminSales(s.shopId, mk);
+      var stVal = salesData.target || '';
+      var saVal = salesData.actual || '';
+
+      var salesPanel =
+        '<button class="sc-sales-toggle" onclick="toggleSalesPanel('+idx+')" id="st-toggle-'+sid+'">'+
+          '<span id="st-arrow-'+sid+'" style="font-size:10px;transition:transform .2s;display:inline-block;">▸</span> 💰 売上入力・確認'+
+        '</button>'+
+        '<div class="sc-sales-panel" id="sc-sales-panel-'+sid+'">'+
+          '<div style="font-size:10px;color:var(--slate-5);padding-top:10px;margin-bottom:10px;">'+label+' の売上を入力</div>'+
+          '<div class="sc-sales-grid">'+
+            '<div class="sc-sales-field">'+
+              '<div class="sc-sales-label">🎯 目標売上</div>'+
+              '<div class="sc-sales-inner">'+
+                '<input class="sc-sales-input" id="st-'+sid+'" type="number" min="0" step="1" placeholder="150" value="'+stVal+'" inputmode="numeric">'+
+                '<span class="sc-sales-unit">万円</span>'+
+              '</div>'+
+            '</div>'+
+            '<div class="sc-sales-field">'+
+              '<div class="sc-sales-label">📈 実績売上</div>'+
+              '<div class="sc-sales-inner">'+
+                '<input class="sc-sales-input" id="sa-'+sid+'" type="number" min="0" step="1" placeholder="—" value="'+saVal+'" inputmode="numeric">'+
+                '<span class="sc-sales-unit">万円</span>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+          '<button class="sc-sales-save" onclick="saveAdminSalesData('+idx+')">💾 保存</button>'+
+          '<div id="sres-'+sid+'"></div>'+
+        '</div>';
+
+      return '<div class="shop-card">'+
+        '<div class="sc-head">'+
+          '<div class="sc-avatar" style="background:'+avatarColor+'">'+initials+'</div>'+
+          '<div class="sc-info">'+
+            '<div class="sc-name">'+esc(s.name)+'</div>'+
+            '<div class="sc-meta">'+esc(s.contact||'')+(s.email?' &nbsp;·&nbsp; '+esc(s.email):'')+'</div>'+
+          '</div>'+
+          '<div class="sc-fee">¥'+Number(s.fee||0).toLocaleString()+'<span style="font-size:9px;color:var(--slate-5)">/月</span></div>'+
+        '</div>'+
+        '<div class="sc-body '+(paid?'paid':'')+'">'+
+          '<div class="sc-payment-row">'+
+            '<div class="sc-pay-status">'+payStatusHtml+'</div>'+
+            '<div style="font-size:10px;color:var(--slate-5);">'+label+'</div>'+
+          '</div>'+
+          codeHtml+
+          '<div class="sc-actions">'+
+            payBtnHtml+
+            '<button class="sc-btn sc-btn--edit" onclick="editShop('+idx+')">編集</button>'+
+            '<button class="sc-btn sc-btn--del" onclick="deleteShop('+idx+')">削除</button>'+
+          '</div>'+
+        '</div>'+
+        /* 店舗URL & PIN管理パネル */
+        '<div style="border-top:1px solid var(--border);padding:12px 16px;background:rgba(255,255,255,.03);">'+
+          '<div style="font-size:9px;font-weight:700;color:var(--slate-5);letter-spacing:.08em;margin-bottom:8px;">🔗 スタッフ用URL</div>'+
+          '<div style="font-size:10px;color:var(--indigo);font-family:monospace;word-break:break-all;background:rgba(99,102,241,.08);padding:6px 8px;border-radius:6px;line-height:1.6;" id="sc-url-'+sid+'">'+
+            esc(window.location.origin+'/shift.html?shop='+encodeURIComponent(s.shopId))+
+          '</div>'+
+          '<div style="display:flex;gap:8px;margin-top:8px;">'+
+            '<button onclick="copyScUrl(\'sc-url-'+sid+'\')" style="flex:1;padding:6px;border:none;border-radius:6px;background:rgba(99,102,241,.15);color:#a5b4fc;font-size:10px;font-weight:700;cursor:pointer;">📋 URLコピー</button>'+
+            '<button onclick="resetShopPin('+idx+')" style="flex:1;padding:6px;border:1px solid rgba(239,68,68,.3);border-radius:6px;background:rgba(239,68,68,.08);color:#f87171;font-size:10px;font-weight:700;cursor:pointer;">🔑 PIN リセット</button>'+
+          '</div>'+
+        '</div>'+
+        salesPanel+
+      '</div>';
+    }).join('');
+
+    // 売上概況を更新
+    renderSalesOverview();
+  }
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  /* ═══════════════════════════════════
+     ACTIONS
+  ═══════════════════════════════════ */
+  /* 店舗URLコピー */
+  function copyScUrl(elId) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    var url = el.textContent.trim();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(function() { showToast('📋 URLをコピーしました'); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = url; document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta); showToast('📋 URLをコピーしました');
+    }
+  }
+
+  /* 店舗PINリセット（RAKURAKUオペレーターが初期化） */
+  function resetShopPin(idx) {
+    var s = _renderedShops[idx]; if (!s) return;
+    var newPin = prompt('新しいPINコード（4桁）を入力してください\n店舗: ' + s.name, '1234');
+    if (!newPin) return;
+    newPin = newPin.replace(/\D/g, '').slice(0, 4);
+    if (newPin.length !== 4) { showToast('⚠️ 4桁で入力してください'); return; }
+    /* shift.html と同じキー形式: {shopId}_noru_mgr_pin */
+    ss(s.shopId + '_noru_mgr_pin', newPin);
+    showToast('🔑 ' + s.name + ' のPINを ' + newPin + ' にリセットしました');
+  }
+
+  function togglePay(shopId, monthKey, paid){
+    setPaid(monthKey, shopId, paid);
+    renderConsole();
+    showToast(paid ? '✅ 支払確認しました' : '↩️ 支払を取り消しました');
+  }
+
+  function copyCode(code, shopName){
+    var msg = '【RAKURAKU ライセンスコード】\n店舗: '+shopName+'\n'+getViewingMonthKey().replace('-','年')+'月 コード: '+code+'\nこのコードをアプリ起動時に入力してください。';
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(msg).then(function(){ showToast('📋 コードをコピーしました'); });
+    } else {
+      showToast('コード: '+code);
+    }
+  }
+
+  /* ── ADD / EDIT SHOP ── */
+  var _editingIdx = -1;
+
+  function openAddModal(){
+    _editingIdx = -1;
+    document.getElementById('modal-title').textContent = '店舗を追加';
+    document.getElementById('modal-save-btn').textContent = '登録する';
+    ['f-shopId','f-name','f-contact','f-email','f-phone'].forEach(function(id){
+      var el = document.getElementById(id); if(el) el.value='';
+    });
+    document.getElementById('f-fee').value = '5000';
+    document.getElementById('f-shopId').removeAttribute('disabled');
+    document.getElementById('add-modal').classList.add('open');
+  }
+
+  function editShop(idx){
+    var shops = loadShops();
+    var s = shops[idx];
+    if(!s) return;
+    _editingIdx = idx;
+    document.getElementById('modal-title').textContent = '店舗を編集';
+    document.getElementById('modal-save-btn').textContent = '保存する';
+    document.getElementById('f-shopId').value   = s.shopId  || '';
+    document.getElementById('f-name').value     = s.name    || '';
+    document.getElementById('f-contact').value  = s.contact || '';
+    document.getElementById('f-fee').value      = s.fee     || '';
+    document.getElementById('f-email').value    = s.email   || '';
+    document.getElementById('f-phone').value    = s.phone   || '';
+    document.getElementById('f-shopId').setAttribute('disabled','disabled');
+    document.getElementById('add-modal').classList.add('open');
+  }
+
+  function closeAddModal(){
+    document.getElementById('add-modal').classList.remove('open');
+  }
+
+  function saveShop(){
+    var shopId  = (document.getElementById('f-shopId').value||'').trim();
+    var name    = (document.getElementById('f-name').value||'').trim();
+    var contact = (document.getElementById('f-contact').value||'').trim();
+    var fee     = (document.getElementById('f-fee').value||'0').trim();
+    var email   = (document.getElementById('f-email').value||'').trim();
+    var phone   = (document.getElementById('f-phone').value||'').trim();
+
+    if(!name){ showToast('⚠️ 店舗名を入力してください'); return; }
+
+    var shops = loadShops();
+    if(_editingIdx >= 0){
+      // 編集
+      shops[_editingIdx] = Object.assign(shops[_editingIdx], { name, contact, fee, email, phone });
+    } else {
+      if(!shopId){ showToast('⚠️ 店舗IDを入力してください'); return; }
+      // 重複チェック
+      if(shops.some(function(s){ return s.shopId===shopId; })){ showToast('⚠️ 同じIDの店舗が既に存在します'); return; }
+      shops.push({ shopId, name, contact, fee, email, phone, joinedAt: new Date().toISOString().slice(0,10) });
+    }
+    saveShops(shops);
+    closeAddModal();
+    renderConsole();
+    showToast(_editingIdx >= 0 ? '✅ 店舗情報を更新しました' : '✅ 店舗を登録しました');
+  }
+
+  function deleteShop(idx){
+    if(!confirm('この店舗を削除しますか？支払い履歴も削除されます。')) return;
+    var shops = loadShops();
+    shops.splice(idx, 1);
+    saveShops(shops);
+    renderConsole();
+    showToast('🗑 削除しました');
+  }
+
+  /* ═══════════════════════════════════
+     TOAST
+  ═══════════════════════════════════ */
+  var _toastTimer;
+  function showToast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+  }
+
+  /* ═══════════════════════════════════
+     INIT
+  ═══════════════════════════════════ */
+  // Enterキーでログイン
+  document.getElementById('admin-pw-input').addEventListener('keydown', function(e){
+    if(e.key==='Enter') adminLogin();
+  });
+  // 初期フォーカス
+  setTimeout(function(){ document.getElementById('admin-pw-input').focus(); }, 300);
+
+  /* ── Service Worker 登録 ── */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js').catch(function() {});
+    });
+  }
+</script>
+</body>
+</html>

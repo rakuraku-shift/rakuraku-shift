@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>BAR EXCHANGE — スタッフ管理</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: #0a0a0f;
+      color: #e0e0e0;
+      font-family: -apple-system, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    header {
+      background: #0d1117;
+      border-bottom: 2px solid #00ff88;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header .title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #00ff88;
+    }
+
+    header .subtitle { font-size: 0.7rem; color: #555; letter-spacing: 1px; }
+
+    #connection-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #ff4444;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    #connection-dot.connected { background: #00ff88; animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* 注文ボタングリッド */
+    .section-title {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      color: #555;
+      padding: 20px 20px 8px;
+    }
+
+    #drink-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 16px;
+    }
+
+    .drink-btn {
+      background: #0d1117;
+      border: 1px solid #1e3a2f;
+      border-radius: 14px;
+      padding: 20px 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .drink-btn:active {
+      transform: scale(0.95);
+      border-color: #00ff88;
+      background: #0d1f17;
+    }
+
+    .drink-btn .btn-emoji { font-size: 2.4rem; }
+    .drink-btn .btn-name { font-size: 0.9rem; letter-spacing: 1px; color: #aaa; }
+
+    .drink-btn .btn-price {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+    }
+
+    .drink-btn .btn-change {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .btn-change.up { color: #00ff88; background: #00ff8820; }
+    .btn-change.down { color: #ff4444; background: #ff444420; }
+    .btn-change.flat { color: #666; }
+
+    /* タップ波紋 */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(0, 255, 136, 0.3);
+      animation: ripple-anim 0.6s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes ripple-anim {
+      0%   { width: 0; height: 0; opacity: 1; }
+      100% { width: 200px; height: 200px; opacity: 0; margin-left: -100px; margin-top: -100px; }
+    }
+
+    /* イベントパネル */
+    #event-panel {
+      margin: 20px 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .event-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .event-btn:active { opacity: 0.7; }
+
+    #btn-crash {
+      background: linear-gradient(90deg, #ff0040, #ff4400);
+      color: white;
+    }
+
+    #btn-reset {
+      background: #1e3a2f;
+      color: #00ff88;
+      border: 1px solid #00ff88;
+    }
+
+    /* ログ */
+    #log-panel {
+      margin: 20px 16px 0;
+      background: #0d1117;
+      border: 1px solid #1e3a2f;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    #log-panel h3 {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    #log-list {
+      list-style: none;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    #log-list li {
+      font-size: 0.82rem;
+      color: #888;
+      padding: 4px 0;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex;
+      gap: 10px;
+    }
+
+    #log-list li .log-time { color: #444; min-width: 60px; }
+    #log-list li .log-drink { color: #ccc; }
+    #log-list li .log-price { color: #00ff88; margin-left: auto; font-family: monospace; }
+
+    /* フラッシュメッセージ */
+    #flash {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #00ff88;
+      color: #000;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 10px 24px;
+      border-radius: 24px;
+      font-size: 0.9rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    #flash.visible { opacity: 1; }
+    #flash.crash { background: #ff0040; color: white; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="title">📱 STAFF PANEL</div>
+    <div class="subtitle">BAR EXCHANGE 管理画面</div>
+  </div>
+  <div>
+    <span id="connection-dot"></span>
+    <span id="connection-status" style="font-size:0.75rem;color:#666;">接続中...</span>
+  </div>
+</header>
+
+<div class="section-title">ORDER — 注文を記録</div>
+<div id="drink-buttons"></div>
+
+<div class="section-title">EVENTS — 特別イベント</div>
+<div id="event-panel">
+  <button class="event-btn" id="btn-crash">💥 MARKET CRASH（暴落イベント）</button>
+  <button class="event-btn" id="btn-reset">🔄 全価格をリセット</button>
+</div>
+
+<div id="log-panel">
+  <h3>ORDER LOG</h3>
+  <ul id="log-list"></ul>
+</div>
+
+<div id="flash"></div>
+
+<script>
+  const socket = io();
+  let drinks = [];
+
+  const dot = document.getElementById('connection-dot');
+  const status = document.getElementById('connection-status');
+
+  socket.on('connect', () => {
+    dot.className = 'connected';
+    status.textContent = '接続済み';
+  });
+
+  socket.on('disconnect', () => {
+    dot.className = '';
+    status.textContent = '切断';
+  });
+
+  socket.on('price_update', (state) => {
+    drinks = state.drinks;
+    renderButtons(state);
+  });
+
+  function renderButtons(state) {
+    const container = document.getElementById('drink-buttons');
+    container.innerHTML = '';
+
+    state.drinks.forEach(drink => {
+      const btn = document.createElement('button');
+      btn.className = 'drink-btn';
+      btn.id = 'dbtn-' + drink.id;
+
+      const changeText = drink.change > 0 ? `▲ +${drink.change}%` : drink.change < 0 ? `▼ ${drink.change}%` : '— 0%';
+      const dir = drink.trend;
+
+      btn.innerHTML = `
+        <div class="btn-emoji">${drink.emoji}</div>
+        <div class="btn-name">${drink.name}</div>
+        <div class="btn-price">${drink.price.toLocaleString()}円</div>
+        <div class="btn-change ${dir}">${changeText}</div>
+      `;
+
+      btn.addEventListener('click', (e) => {
+        addRipple(btn, e);
+        recordOrder(drink.id, drink.name, drink.price);
+      });
+
+      container.appendChild(btn);
+    });
+  }
+
+  function addRipple(btn, e) {
+    const rect = btn.getBoundingClientRect();
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple';
+    ripple.style.left = (e.clientX - rect.left) + 'px';
+    ripple.style.top = (e.clientY - rect.top) + 'px';
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  }
+
+  function recordOrder(drinkId, drinkName, price) {
+    fetch('/api/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ drinkId })
+    })
+    .then(r => r.json())
+    .then(state => {
+      addLog(drinkName, price);
+      showFlash(`✓ ${drinkName} ${price.toLocaleString()}円`, false);
+    })
+    .catch(() => showFlash('⚠️ エラー', false));
+  }
+
+  function addLog(drinkName, price) {
+    const list = document.getElementById('log-list');
+    const li = document.createElement('li');
+    const time = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    li.innerHTML = `
+      <span class="log-time">${time}</span>
+      <span class="log-drink">${drinkName}</span>
+      <span class="log-price">${price.toLocaleString()}円</span>
+    `;
+    list.prepend(li);
+    if (list.children.length > 30) list.lastChild.remove();
+  }
+
+  document.getElementById('btn-crash').addEventListener('click', () => {
+    if (!confirm('💥 MARKET CRASHを発動しますか？\n全ドリンクが暴落します（2分間）')) return;
+    fetch('/api/crash', { method: 'POST' })
+      .then(r => r.json())
+      .then(() => showFlash('💥 MARKET CRASH 発動！', true));
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    if (!confirm('全価格をベースに戻しますか？')) return;
+    fetch('/api/reset', { method: 'POST' })
+      .then(r => r.json())
+      .then(() => showFlash('🔄 価格リセット完了', false));
+  });
+
+  function showFlash(msg, isCrash) {
+    const el = document.getElementById('flash');
+    el.textContent = msg;
+    el.className = 'visible' + (isCrash ? ' crash' : '');
+    setTimeout(() => el.className = '', 2500);
+  }
+
+  // 初期ロード
+  fetch('/api/state')
+    .then(r => r.json())
+    .then(state => renderButtons(state));
+</script>
+</body>
+</html>

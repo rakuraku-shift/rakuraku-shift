@@ -1,0 +1,63 @@
+{
+  "manifest_version": 3,
+  "name": "RAKURAKU 求人自動入力",
+  "version": "0.1.0",
+  "description": "RAKURAKU から不足シフトを Timee／シェアフル／バイトル の求人投稿ページに自動入力します。",
+  "permissions": ["storage", "tabs"],
+  "host_permissions": [
+    "https://*.timee.co.jp/*",
+    "https://*.sharefull.com/*",
+    "https://*.baitoru.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://localhost/*",
+        "http://localhost:*/*",
+        "http://127.0.0.1/*",
+        "http://127.0.0.1:*/*",
+        "https://*.trycloudflare.com/*"
+      ],
+      "js": ["content-rakuraku.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "https://app.timee.co.jp/*",
+        "https://*.timee.co.jp/*"
+      ],
+      "js": ["content-timee.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://business.sharefull.com/*",
+        "https://app.sharefull.com/*",
+        "https://*.sharefull.com/*"
+      ],
+      "js": ["content-sharefull.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.baitoru.com/biz/*",
+        "https://*.baitoru.com/biz/*"
+      ],
+      "js": ["content-baitoru.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "RAKURAKU 求人自動入力"
+  },
+  "icons": {
+    "16":  "icon-128.png",
+    "48":  "icon-128.png",
+    "128": "icon-128.png"
+  }
+}

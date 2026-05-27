@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>テーブル管理 — BAR EXCHANGE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --green:#00ff88; --red:#ff3355; --gold:#ffd700; --blue:#4488ff;
+    --orange:#ff8800; --purple:#aa66ff;
+    --bg:#060608; --card:#0d0f14; --card2:#111420;
+    --border:#1a2030; --text:#e8eaf0; --muted:#4a5270;
+    --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body{ background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; }
+
+  /* ── HEADER ── */
+  #hdr{
+    position:sticky; top:0; z-index:200;
+    background:#08090dee; backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+    padding:12px 16px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .logo{ font-family:var(--mono); font-size:0.88rem; font-weight:700; color:var(--green); letter-spacing:3px; }
+  .hdr-right{ display:flex; align-items:center; gap:10px; }
+  #conn-dot{
+    display:inline-block; width:7px; height:7px; border-radius:50%;
+    background:var(--muted); vertical-align:middle; margin-right:3px;
+  }
+  #conn-dot.live{ background:var(--green); box-shadow:0 0 6px var(--green); }
+  #conn-label{ font-size:0.6rem; color:var(--muted); font-family:var(--mono); }
+  #total-badge{
+    font-size:0.62rem; padding:4px 10px; border-radius:20px;
+    background:#ffd70018; color:var(--gold); border:1px solid #ffd70030;
+    font-family:var(--mono); font-weight:700;
+  }
+
+  /* ── FILTER BAR ── */
+  #filter-bar{
+    display:flex; gap:6px; padding:10px 14px;
+    border-bottom:1px solid var(--border); background:var(--bg);
+    overflow-x:auto; scrollbar-width:none;
+    position:sticky; top:51px; z-index:190;
+  }
+  #filter-bar::-webkit-scrollbar{ display:none; }
+  .flt{
+    flex-shrink:0; padding:5px 14px; border-radius:20px; font-size:0.65rem;
+    font-weight:700; letter-spacing:1px; cursor:pointer; transition:all .15s;
+    border:1px solid var(--border); background:var(--card); color:var(--muted);
+  }
+  .flt.active{ border-color:var(--green); background:#00ff8818; color:var(--green); }
+  .flt.f-active  { border-color:var(--orange); }
+  .flt.f-active.active{ background:#ff880018; color:var(--orange); border-color:var(--orange); }
+  .flt.f-checkout{ border-color:var(--purple); }
+  .flt.f-checkout.active{ background:#aa66ff18; color:var(--purple); border-color:var(--purple); }
+  .flt.f-empty   { border-color:var(--muted); }
+
+  /* ── TABLE GRID ── */
+  #table-grid{
+    padding:12px; display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+    gap:10px;
+  }
+
+  .tbl-card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:16px; overflow:hidden; cursor:pointer;
+    transition:all .15s; position:relative;
+  }
+  .tbl-card:active{ transform:scale(0.97); }
+  .tbl-card.status-active  { border-color:#ff880040; }
+  .tbl-card.status-checkout{ border-color:#aa66ff40; }
+  .tbl-card.status-empty   { opacity:0.6; }
+
+  .tbl-card-top{
+    padding:12px 12px 8px;
+    border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:flex-start;
+  }
+  .tbl-num{ font-family:var(--mono); font-size:1.4rem; font-weight:700; line-height:1; }
+  .tbl-status-badge{
+    font-size:0.52rem; font-weight:700; letter-spacing:1px;
+    padding:2px 7px; border-radius:4px;
+  }
+  .badge-empty   { background:#ffffff08; color:var(--muted); border:1px solid #ffffff15; }
+  .badge-active  { background:#ff880018; color:var(--orange); border:1px solid #ff880030; }
+  .badge-checkout{ background:#aa66ff18; color:var(--purple);  border:1px solid #aa66ff30; }
+
+  .tbl-card-body{ padding:8px 12px 10px; }
+  .tbl-meta{ font-size:0.62rem; color:var(--muted); margin-bottom:5px; }
+  .tbl-total{
+    font-family:var(--mono); font-size:1.1rem; font-weight:700;
+    color:var(--green);
+  }
+  .tbl-total.zero{ color:var(--muted); font-size:0.85rem; }
+  .tbl-items{
+    margin-top:5px; font-size:0.58rem; color:var(--muted);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+
+  /* ── DETAIL PANEL ── */
+  #detail-overlay{
+    display:none; position:fixed; inset:0; z-index:500;
+    background:#000000cc; backdrop-filter:blur(8px);
+  }
+  #detail-overlay.open{ display:flex; justify-content:flex-end; }
+
+  #detail-panel{
+    width:min(420px,100vw); height:100vh;
+    background:var(--card2); border-left:1px solid var(--border);
+    display:flex; flex-direction:column;
+    animation:slideIn .25s ease;
+  }
+  @keyframes slideIn{ from{transform:translateX(100%)} to{transform:translateX(0)} }
+
+  #detail-hdr{
+    padding:16px; border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+    flex-shrink:0;
+  }
+  .detail-title{ font-size:1.2rem; font-weight:700; font-family:var(--mono); }
+  .detail-close{
+    width:32px; height:32px; border-radius:50%; background:#ffffff10;
+    border:none; color:var(--text); font-size:1.1rem;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+
+  #detail-meta{
+    padding:10px 16px; border-bottom:1px solid var(--border);
+    display:flex; gap:12px; flex-shrink:0;
+  }
+  .meta-item{ display:flex; flex-direction:column; gap:2px; }
+  .meta-label{ font-size:0.52rem; color:var(--muted); letter-spacing:2px; }
+  .meta-val{ font-family:var(--mono); font-size:0.88rem; font-weight:700; }
+
+  /* Summary KPIs */
+  #detail-kpi{
+    padding:10px 14px; border-bottom:1px solid var(--border);
+    display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap;
+  }
+  .kpi-chip{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:8px; padding:6px 10px;
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .kpi-chip .kv{ font-family:var(--mono); font-size:0.88rem; font-weight:700; }
+  .kpi-chip .kl{ font-size:0.52rem; color:var(--muted); letter-spacing:1px; }
+
+  /* Order items list */
+  #detail-orders{
+    flex:1; overflow-y:auto; padding:8px 12px;
+  }
+  #detail-orders::-webkit-scrollbar{ width:4px; }
+  #detail-orders::-webkit-scrollbar-thumb{ background:var(--border); border-radius:2px; }
+
+  .order-item{
+    display:flex; align-items:center; gap:10px;
+    padding:9px 10px; border-radius:10px; margin-bottom:5px;
+    background:var(--card); border:1px solid var(--border);
+    transition:all .2s;
+  }
+  .order-item.served{ opacity:0.45; }
+  .oi-emoji{ font-size:1.3rem; flex-shrink:0; }
+  .oi-info{ flex:1; min-width:0; }
+  .oi-name{ font-size:0.8rem; font-weight:600; }
+  .oi-time{ font-size:0.58rem; color:var(--muted); font-family:var(--mono); }
+  .oi-price{ font-family:var(--mono); font-size:0.88rem; font-weight:700; color:var(--green); flex-shrink:0; }
+  .oi-serve{
+    flex-shrink:0; padding:4px 8px; border-radius:6px; font-size:0.6rem;
+    font-weight:700; letter-spacing:1px; cursor:pointer; border:none;
+    font-family:var(--sans); transition:all .15s;
+  }
+  .oi-serve.pending{ background:#00ff8818; color:var(--green); border:1px solid #00ff8830; }
+  .oi-serve.done   { background:#ffffff08; color:var(--muted); border:1px solid #ffffff15; }
+
+  /* Detail footer */
+  #detail-footer{
+    padding:14px 16px; border-top:1px solid var(--border);
+    flex-shrink:0; display:flex; flex-direction:column; gap:8px;
+  }
+  .detail-total-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+  }
+  .detail-total-label{ font-size:0.6rem; color:var(--muted); letter-spacing:2px; }
+  #detail-total{ font-family:var(--mono); font-size:1.4rem; font-weight:700; color:var(--green); }
+  #detail-unserved{ font-size:0.62rem; color:var(--orange); }
+
+  .detail-btns{ display:flex; gap:8px; }
+  .btn-serve-all{
+    flex:1; padding:11px; border-radius:12px; border:none;
+    background:#00ff8818; color:var(--green); border:1px solid #00ff8830;
+    font-size:0.78rem; font-weight:700; cursor:pointer; font-family:var(--sans);
+    transition:all .15s;
+  }
+  .btn-serve-all:active{ background:#00ff8830; }
+  .btn-checkout{
+    flex:1; padding:11px; border-radius:12px; border:none;
+    background:linear-gradient(135deg,#aa66ff,#7744cc);
+    color:#fff; font-size:0.78rem; font-weight:700;
+    cursor:pointer; font-family:var(--sans); transition:all .15s;
+  }
+  .btn-checkout:active{ transform:scale(0.97); }
+  .btn-clear{
+    padding:11px 14px; border-radius:12px;
+    background:#ff335510; color:var(--red); border:1px solid #ff335530;
+    font-size:0.78rem; font-weight:700; cursor:pointer; font-family:var(--sans);
+  }
+  .btn-stripe{
+    width:100%; padding:13px; border-radius:12px; border:none;
+    background:linear-gradient(135deg,#635bff,#4f46e5);
+    color:#fff; font-size:0.82rem; font-weight:700; letter-spacing:1px;
+    cursor:pointer; font-family:var(--sans); transition:all .15s;
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    margin-top:8px; box-shadow:0 2px 20px #635bff30;
+  }
+  .btn-stripe:disabled{ background:#1a2030; color:var(--muted); box-shadow:none; cursor:not-allowed; }
+  .btn-stripe:not(:disabled):active{ transform:scale(0.97); }
+
+  /* ── QR MODAL ── */
+  #qr-overlay{
+    display:none; position:fixed; inset:0; z-index:700;
+    background:#000000e0; backdrop-filter:blur(14px);
+    align-items:center; justify-content:center;
+  }
+  #qr-overlay.open{ display:flex; }
+  #qr-modal{
+    background:var(--card2); border:1px solid var(--border); border-radius:24px;
+    padding:28px 24px; width:min(340px,90vw); text-align:center;
+    animation:popIn .35s cubic-bezier(0.34,1.56,0.64,1);
+    position:relative; overflow:hidden;
+  }
+  #qr-modal::before{
+    content:''; position:absolute; top:0;left:0;right:0; height:2px;
+    background:linear-gradient(90deg,#635bff,#aa66ff,#635bff);
+    background-size:200%; animation:shimmer 2s linear infinite;
+  }
+  @keyframes shimmer{ to{background-position:200%;} }
+  .qm-title{ font-size:1rem; font-weight:700; margin-bottom:4px; }
+  .qm-sub{ font-size:0.7rem; color:var(--muted); margin-bottom:20px; line-height:1.5; }
+  #qr-canvas-wrap{
+    width:200px; height:200px; margin:0 auto 16px;
+    background:#fff; border-radius:12px; padding:10px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #qr-canvas{ width:180px; height:180px; }
+  .qm-amount{
+    font-family:var(--mono); font-size:1.5rem; font-weight:700;
+    color:var(--green); margin-bottom:4px;
+  }
+  .qm-table-label{ font-size:0.62rem; color:var(--muted); margin-bottom:16px; }
+  .qm-link{
+    font-size:0.6rem; color:var(--muted); word-break:break-all;
+    background:#ffffff06; border:1px solid var(--border);
+    border-radius:8px; padding:8px; margin-bottom:14px;
+    cursor:pointer; transition:background .15s;
+  }
+  .qm-link:active{ background:#ffffff10; }
+  .qm-close{
+    width:100%; padding:11px; border-radius:12px;
+    background:#ffffff08; border:1px solid var(--border);
+    color:var(--muted); font-size:0.78rem; font-weight:700; cursor:pointer;
+  }
+  .qm-paid-badge{
+    display:none; background:#00ff8818; border:1px solid #00ff8830;
+    color:var(--green); border-radius:8px; padding:10px;
+    font-size:0.78rem; font-weight:700; margin-bottom:12px;
+  }
+
+  /* ── CHECKOUT CONFIRM ── */
+  #checkout-overlay{
+    display:none; position:fixed; inset:0; z-index:600;
+    background:#000000dd; backdrop-filter:blur(12px);
+    align-items:center; justify-content:center;
+  }
+  #checkout-overlay.open{ display:flex; }
+  #checkout-modal{
+    background:var(--card2); border:1px solid var(--border);
+    border-radius:24px; padding:28px 24px;
+    width:min(340px,90vw); text-align:center;
+    animation:popIn .3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn{ from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+  .co-icon{ font-size:2.5rem; margin-bottom:12px; }
+  .co-title{ font-size:1.1rem; font-weight:700; margin-bottom:6px; }
+  .co-sub{ font-size:0.75rem; color:var(--muted); margin-bottom:20px; line-height:1.5; }
+  .co-total{ font-family:var(--mono); font-size:2rem; font-weight:700; color:var(--green); margin-bottom:20px; }
+  .co-btns{ display:flex; gap:10px; }
+  .co-cancel{
+    flex:1; padding:12px; border-radius:12px;
+    background:#ffffff08; border:1px solid var(--border);
+    color:var(--muted); font-size:0.8rem; font-weight:700; cursor:pointer;
+  }
+  .co-confirm{
+    flex:2; padding:12px; border-radius:12px; border:none;
+    background:linear-gradient(135deg,#aa66ff,#7744cc);
+    color:#fff; font-size:0.8rem; font-weight:700; cursor:pointer;
+  }
+
+  /* ── TOAST ── */
+  #toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:#0d1a10; border:1px solid var(--green); color:var(--green);
+    border-radius:12px; padding:10px 22px; font-size:0.78rem; font-weight:700;
+    font-family:var(--mono); letter-spacing:1px;
+    opacity:0; transition:all .3s; z-index:999; pointer-events:none; white-space:nowrap;
+  }
+  #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ── EMPTY STATE ── */
+  .grid-empty{
+    grid-column:1/-1; text-align:center; padding:60px 20px;
+    color:var(--muted); font-size:0.78rem; line-height:2;
+  }
+  .grid-empty-icon{ font-size:2.5rem; opacity:0.3; margin-bottom:10px; }
+</style>
+</head>
+<body>
+
+<script src="/socket.io/socket.io.js" onerror="window._noSocket=true"></script>
+<script>
+const Transport = (() => {
+  const handlers = {};
+  let _connected = false;
+  const on  = (t,fn) => { handlers[t]=handlers[t]||[]; handlers[t].push(fn); };
+  const emit = (t,d) => { _trigger('_out_'+t,d); };
+  const _trigger = (t,d) => { (handlers[t]||[]).forEach(fn=>fn(d)); };
+  if (!window._noSocket) {
+    try {
+      const s = io({ transports:['websocket','polling'], reconnectionDelay:2000 });
+      s.on('connect',    ()=>{ _connected=true;  _trigger('_conn',true); });
+      s.on('disconnect', ()=>{ _connected=false; _trigger('_conn',false); });
+      ['order','player_order','price_update','market_status','config_updated'].forEach(
+        ev => s.on(ev, d => _trigger(ev,d))
+      );
+      handlers['_out_order'] = [d => s.emit('order',d)];
+    } catch(e){ window._noSocket=true; }
+  }
+  if (window._noSocket) {
+    const bc = new BroadcastChannel('bar-exchange');
+    bc.onmessage = e => _trigger(e.data.type, e.data.data);
+    handlers['_out_order'] = [d => bc.postMessage({type:'order',data:d})];
+  }
+  return { on, emit, isConnected:()=>_connected };
+})();
+</script>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div class="logo">BAR EXCHANGE</div>
+  <div class="hdr-right">
+    <span id="total-badge">合計 ¥0</span>
+    <span><span id="conn-dot"></span><span id="conn-label">OFFLINE</span></span>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div id="filter-bar">
+  <button class="flt active"            data-f="all">すべて</button>
+  <button class="flt f-active"          data-f="active">🍺 注文中</button>
+  <button class="flt f-checkout"        data-f="checkout">💳 精算待ち</button>
+  <button class="flt f-empty"           data-f="empty">空き</button>
+</div>
+
+<!-- TABLE GRID -->
+<div id="table-grid"></div>
+
+<!-- DETAIL PANEL -->
+<div id="detail-overlay">
+  <div id="detail-panel">
+    <div id="detail-hdr">
+      <div class="detail-title" id="detail-title">卓</div>
+      <button class="detail-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div id="detail-meta">
+      <div class="meta-item"><span class="meta-label">ステータス</span><span class="meta-val" id="dm-status">—</span></div>
+      <div class="meta-item"><span class="meta-label">注文数</span><span class="meta-val" id="dm-count">—</span></div>
+      <div class="meta-item"><span class="meta-label">入店時刻</span><span class="meta-val" id="dm-opened">—</span></div>
+    </div>
+    <div id="detail-kpi"></div>
+    <div id="detail-orders"></div>
+    <div id="detail-footer">
+      <div class="detail-total-row">
+        <span class="detail-total-label">TOTAL</span>
+        <span id="detail-total">¥0</span>
+      </div>
+      <div id="detail-unserved"></div>
+      <div class="detail-btns">
+        <button class="btn-serve-all" onclick="serveAll()">全て提供済み</button>
+        <button class="btn-checkout"  onclick="openCheckout()">現金精算</button>
+        <button class="btn-clear"     onclick="clearTable()">クリア</button>
+      </div>
+      <button class="btn-stripe" id="stripe-req-btn" onclick="requestStripePayment()">
+        💳 Stripeで決済リクエスト
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- QR PAYMENT MODAL -->
+<div id="qr-overlay">
+  <div id="qr-modal">
+    <div class="qm-title">💳 決済リクエスト</div>
+    <div class="qm-sub" id="qm-sub">お客様のスマホでQRを読み取ってください</div>
+    <div id="qr-paid-badge" class="qm-paid-badge">✅ お支払い完了！</div>
+    <div id="qr-canvas-wrap">
+    <img id="qr-img" src="" alt="QR" width="180" height="180" style="border-radius:6px">
+  </div>
+    <div class="qm-amount" id="qm-amount">¥0</div>
+    <div class="qm-table-label" id="qm-table-label">—</div>
+    <div class="qm-link" id="qm-link" onclick="copyPayLink()">タップしてURLをコピー</div>
+    <button class="qm-close" onclick="closeQR()">閉じる</button>
+  </div>
+</div>
+
+<!-- CHECKOUT CONFIRM -->
+<div id="checkout-overlay">
+  <div id="checkout-modal">
+    <div class="co-icon">💳</div>
+    <div class="co-title" id="co-title">精算確認</div>
+    <div class="co-sub" id="co-sub">お会計を完了しますか？<br>卓の注文履歴がクリアされます。</div>
+    <div class="co-total" id="co-total">¥0</div>
+    <div class="co-btns">
+      <button class="co-cancel" onclick="closeCheckout()">キャンセル</button>
+      <button class="co-confirm" onclick="confirmCheckout()">精算完了</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const TABLE_COUNT = 20;
+const STORAGE_KEY = 'barexchange_tables_v1';
+
+// ── DATA MODEL ──
+// tables[n] = { status:'empty'|'active'|'checkout', orders:[{...}], openedAt }
+let tables = {};
+let currentFilter = 'all';
+let selectedTable = null;
+
+function emptyTable() {
+  return { status:'empty', orders:[], openedAt:null };
+}
+
+// ── PERSIST ──
+function saveTables() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tables));
+}
+function loadTables() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    tables = saved;
+  } catch(e) { tables = {}; }
+  // Ensure all 1-TABLE_COUNT exist
+  for (let i = 1; i <= TABLE_COUNT; i++) {
+    if (!tables[i]) tables[i] = emptyTable();
+  }
+}
+
+// ── INCOMING ORDERS ──
+function receiveOrder(data) {
+  const tno = data.tableNo;
+  if (!tno) return; // no table number = customer self-order, skip
+  if (!tables[tno]) tables[tno] = emptyTable();
+  const tbl = tables[tno];
+  if (tbl.status === 'empty') {
+    tbl.status = 'active';
+    tbl.openedAt = new Date().toISOString();
+  }
+  tbl.orders.push({
+    id: Date.now() + Math.random(),
+    drinkId: data.drinkId,
+    drinkName: data.drinkName || data.drinkId,
+    emoji: data.emoji || '🍹',
+    price: data.price || 0,
+    time: new Date().toTimeString().slice(0,5),
+    served: false,
+  });
+  saveTables();
+  renderGrid();
+  updateHeader();
+  if (selectedTable === tno) renderDetail(tno);
+}
+
+// ── FILTER ──
+document.querySelectorAll('.flt').forEach(btn => {
+  btn.onclick = () => {
+    currentFilter = btn.dataset.f;
+    document.querySelectorAll('.flt').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGrid();
+  };
+});
+
+// ── GRID ──
+function renderGrid() {
+  const grid = document.getElementById('table-grid');
+  const nums = Array.from({length:TABLE_COUNT},(_,i)=>i+1);
+
+  const filtered = nums.filter(n => {
+    const t = tables[n] || emptyTable();
+    if (currentFilter === 'all') return true;
+    return t.status === currentFilter;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="grid-empty"><div class="grid-empty-icon">🪑</div>該当するテーブルはありません</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(n => {
+    const t = tables[n] || emptyTable();
+    const total = t.orders.reduce((s,o)=>s+o.price,0);
+    const unserved = t.orders.filter(o=>!o.served).length;
+    const statusLabel = { empty:'空き', active:'注文中', checkout:'精算待ち' }[t.status];
+    const badgeClass  = 'badge-'+t.status;
+    const cardClass   = 'tbl-card status-'+t.status;
+    const timeStr = t.openedAt ? new Date(t.openedAt).toTimeString().slice(0,5) : '';
+    const previewItems = t.orders.slice(-3).map(o=>o.emoji+o.drinkName).join(' · ') || '—';
+
+    return `
+      <div class="${cardClass}" onclick="openDetail(${n})">
+        <div class="tbl-card-top">
+          <div class="tbl-num">${n}番</div>
+          <div class="tbl-status-badge ${badgeClass}">${statusLabel}</div>
+        </div>
+        <div class="tbl-card-body">
+          <div class="tbl-meta">
+            ${t.orders.length > 0 ? `${t.orders.length}点${unserved>0?` · 未提供${unserved}点`:''}` : ''}
+            ${timeStr ? ` · 入店 ${timeStr}` : ''}
+          </div>
+          <div class="tbl-total ${total===0?'zero':''}">
+            ${total > 0 ? '¥'+total.toLocaleString() : '— 注文なし'}
+          </div>
+          <div class="tbl-items">${previewItems}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── HEADER TOTAL ──
+function updateHeader() {
+  let total = 0;
+  for (let i=1; i<=TABLE_COUNT; i++) {
+    if (tables[i] && tables[i].status !== 'empty') {
+      total += tables[i].orders.reduce((s,o)=>s+o.price,0);
+    }
+  }
+  document.getElementById('total-badge').textContent = '合計 ¥' + total.toLocaleString();
+}
+
+// ── DETAIL PANEL ──
+function openDetail(n) {
+  selectedTable = n;
+  document.getElementById('detail-overlay').classList.add('open');
+  renderDetail(n);
+}
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+  selectedTable = null;
+}
+// Close on backdrop click
+document.getElementById('detail-overlay').onclick = e => {
+  if (e.target === document.getElementById('detail-overlay')) closeDetail();
+};
+
+function renderDetail(n) {
+  const t = tables[n] || emptyTable();
+  const total = t.orders.reduce((s,o)=>s+o.price,0);
+  const unserved = t.orders.filter(o=>!o.served).length;
+  const served   = t.orders.filter(o=>o.served).length;
+  const statusLabel = { empty:'空き', active:'注文中', checkout:'精算待ち' }[t.status];
+
+  document.getElementById('detail-title').textContent = n + '番卓';
+  document.getElementById('dm-status').textContent  = statusLabel;
+  document.getElementById('dm-count').textContent   = t.orders.length + '点';
+  document.getElementById('dm-opened').textContent  = t.openedAt ? new Date(t.openedAt).toTimeString().slice(0,5) : '—';
+  document.getElementById('detail-total').textContent = '¥' + total.toLocaleString();
+  document.getElementById('detail-unserved').textContent = unserved > 0 ? `⚠️ 未提供 ${unserved}点` : '';
+
+  // KPI chips
+  const drinks = {};
+  t.orders.forEach(o => {
+    drinks[o.drinkName] = (drinks[o.drinkName]||0)+1;
+  });
+  const topDrink = Object.entries(drinks).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('detail-kpi').innerHTML = `
+    <div class="kpi-chip"><div class="kv">¥${total.toLocaleString()}</div><div class="kl">TOTAL</div></div>
+    <div class="kpi-chip"><div class="kv">${t.orders.length}点</div><div class="kl">注文数</div></div>
+    <div class="kpi-chip"><div class="kv">${served}点</div><div class="kl">提供済み</div></div>
+    <div class="kpi-chip"><div class="kv">${topDrink ? topDrink[0] : '—'}</div><div class="kl">人気</div></div>
+  `;
+
+  // Order list (newest first)
+  const ordersEl = document.getElementById('detail-orders');
+  if (t.orders.length === 0) {
+    ordersEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:0.75rem;">注文がありません</div>';
+    return;
+  }
+  ordersEl.innerHTML = [...t.orders].reverse().map((o,revIdx) => {
+    const realIdx = t.orders.length - 1 - revIdx;
+    return `
+      <div class="order-item ${o.served?'served':''}" id="oi-${realIdx}">
+        <div class="oi-emoji">${o.emoji}</div>
+        <div class="oi-info">
+          <div class="oi-name">${o.drinkName}</div>
+          <div class="oi-time">${o.time}</div>
+        </div>
+        <div class="oi-price">¥${o.price.toLocaleString()}</div>
+        <button class="oi-serve ${o.served?'done':'pending'}"
+          onclick="toggleServed(${n},${realIdx})">${o.served?'✓ 提供済':'提供する'}</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleServed(tno, idx) {
+  tables[tno].orders[idx].served = !tables[tno].orders[idx].served;
+  saveTables();
+  renderDetail(tno);
+  renderGrid();
+}
+
+function serveAll() {
+  if (!selectedTable) return;
+  tables[selectedTable].orders.forEach(o => o.served = true);
+  saveTables();
+  renderDetail(selectedTable);
+  renderGrid();
+  showToast('✅ 全て提供済みにしました');
+}
+
+// ── CHECKOUT ──
+function openCheckout() {
+  if (!selectedTable) return;
+  const tbl = tables[selectedTable];
+  const total = tbl.orders.reduce((s,o)=>s+o.price,0);
+  document.getElementById('co-title').textContent = selectedTable + '番卓 — 精算確認';
+  document.getElementById('co-total').textContent = '¥' + total.toLocaleString();
+  document.getElementById('checkout-overlay').classList.add('open');
+}
+function closeCheckout() {
+  document.getElementById('checkout-overlay').classList.remove('open');
+}
+function confirmCheckout() {
+  if (!selectedTable) return;
+  const tbl = tables[selectedTable];
+  const total = tbl.orders.reduce((s,o)=>s+o.price,0);
+  const tno = selectedTable;
+  tables[tno] = emptyTable();
+  saveTables();
+  closeCheckout();
+  closeDetail();
+  renderGrid();
+  updateHeader();
+  showToast(`💳 ${tno}番卓 ¥${total.toLocaleString()} 精算完了`);
+}
+
+// ── CLEAR TABLE ──
+function clearTable() {
+  if (!selectedTable) return;
+  if (!confirm(selectedTable + '番卓の注文をすべてクリアしますか？')) return;
+  tables[selectedTable] = emptyTable();
+  saveTables();
+  closeDetail();
+  renderGrid();
+  updateHeader();
+  showToast(`🗑 ${selectedTable}番卓をクリアしました`);
+}
+
+// ── STATUS TOGGLE (direct from grid) ──
+function setStatus(tno, status) {
+  if (!tables[tno]) tables[tno] = emptyTable();
+  tables[tno].status = status;
+  if (status === 'active' && !tables[tno].openedAt) {
+    tables[tno].openedAt = new Date().toISOString();
+  }
+  saveTables();
+  renderGrid();
+  if (selectedTable === tno) renderDetail(tno);
+}
+
+// ── TRANSPORT ──
+Transport.on('_conn', live => {
+  document.getElementById('conn-dot').className = live ? 'live' : '';
+  document.getElementById('conn-label').textContent = live ? 'LIVE' : 'OFFLINE';
+});
+
+Transport.on('order', data => {
+  if (data && data.tableNo) {
+    // Resolve drink name from config if missing
+    if (!data.drinkName) {
+      try {
+        const cfg = JSON.parse(localStorage.getItem('barexchange_config')||'{}');
+        const d = (cfg.drinks||[]).find(x=>x.id===data.drinkId);
+        if (d) { data.drinkName = d.name; data.emoji = d.emoji; }
+        else   { data.drinkName = data.drinkId; data.emoji = '🍹'; }
+      } catch(e) { data.drinkName = data.drinkId; data.emoji = '🍹'; }
+    }
+    receiveOrder(data);
+  }
+});
+
+// ── STRIPE PAYMENT REQUEST ──
+let currentQRSessionId = null;
+let currentQRTableNo   = null;
+let paymentPollTimer   = null;
+
+async function requestStripePayment() {
+  if (!selectedTable) return;
+  const tbl = tables[selectedTable];
+  if (!tbl || tbl.orders.length === 0) {
+    showToast('❌ 注文がありません');
+    return;
+  }
+
+  const btn = document.getElementById('stripe-req-btn');
+  btn.disabled = true;
+  btn.textContent = '処理中…';
+
+  try {
+    const res = await fetch('/api/checkout/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tableNo: selectedTable, orders: tbl.orders }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'サーバーエラー');
+    }
+
+    const { sessionId, total } = await res.json();
+    currentQRSessionId = sessionId;
+    currentQRTableNo   = selectedTable;
+
+    const payUrl = `${location.origin}/checkout.html?session=${sessionId}`;
+    openQRModal(selectedTable, total, payUrl, sessionId);
+
+    // Poll for payment status every 5 seconds
+    clearInterval(paymentPollTimer);
+    paymentPollTimer = setInterval(() => pollPaymentStatus(sessionId), 5000);
+
+  } catch (e) {
+    showToast('❌ ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '💳 Stripeで決済リクエスト';
+  }
+}
+
+function openQRModal(tableNo, total, payUrl, sessionId) {
+  document.getElementById('qm-amount').textContent    = '¥' + total.toLocaleString();
+  document.getElementById('qm-table-label').textContent = tableNo + '番卓';
+  document.getElementById('qm-link').textContent      = payUrl;
+  document.getElementById('qm-link').dataset.url      = payUrl;
+  document.getElementById('qr-paid-badge').style.display = 'none';
+  document.getElementById('qm-sub').textContent = 'お客様のスマホでQRを読み取ってください';
+
+  const img = document.getElementById('qr-img');
+  img.src = '/api/qr?url=' + encodeURIComponent(payUrl);
+
+  document.getElementById('qr-overlay').classList.add('open');
+}
+
+function closeQR() {
+  document.getElementById('qr-overlay').classList.remove('open');
+  clearInterval(paymentPollTimer);
+}
+
+function copyPayLink() {
+  const url = document.getElementById('qm-link').dataset.url;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => showToast('📋 URLをコピーしました'));
+}
+
+async function pollPaymentStatus(sessionId) {
+  try {
+    const res = await fetch(`/api/checkout/info/${sessionId}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.status === 'paid') {
+      clearInterval(paymentPollTimer);
+      onPaymentCompleted(data.tableNo, sessionId, data.total);
+    }
+  } catch(e) {}
+}
+
+function onPaymentCompleted(tableNo, sessionId, amount) {
+  // Mark table as cleared
+  if (tables[tableNo]) {
+    tables[tableNo] = emptyTable();
+    saveTables();
+    renderGrid();
+    updateHeader();
+  }
+
+  // Update QR modal if open
+  if (document.getElementById('qr-overlay').classList.contains('open')) {
+    document.getElementById('qr-paid-badge').style.display = 'block';
+    document.getElementById('qm-sub').textContent = '決済が完了しました！';
+    setTimeout(closeQR, 3000);
+  }
+
+  showToast(`💳 ${tableNo}番卓 ¥${(amount||'').toLocaleString()} 支払い完了！`);
+
+  if (selectedTable === tableNo) closeDetail();
+}
+
+// ── TRANSPORT: payment_completed ──
+Transport.on('payment_completed', ({ tableNo, sessionId, amount }) => {
+  clearInterval(paymentPollTimer);
+  onPaymentCompleted(tableNo, sessionId, amount);
+});
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// ── INIT ──
+loadTables();
+renderGrid();
+updateHeader();
+</script>
+</body>
+</html>

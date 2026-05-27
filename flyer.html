@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>RAKURAKU — 営業チラシ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indigo:#4F46E5; --indigo-d:#3730A3; --indigo-l:#EEF2FF;
+    --purple:#7C3AED; --emerald:#10B981; --emerald-l:#ECFDF5;
+    --amber:#F59E0B; --red:#EF4444;
+    --slate-900:#0F172A; --slate-700:#334155; --slate-500:#64748B;
+    --slate-300:#CBD5E1; --slate-200:#E2E8F0; --slate-100:#F1F5F9; --slate-50:#F8FAFC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+
+  @page { size: A4 portrait; margin: 0; }
+  @media print {
+    html,body{margin:0;background:#fff;}
+    .toolbar{display:none !important;}
+    .page{box-shadow:none !important;margin:0 !important;page-break-after:always;}
+    .page:last-child{page-break-after:auto;}
+  }
+
+  html,body{font-family:'Noto Sans JP','Inter',-apple-system,sans-serif;color:var(--slate-900);background:#E5E7EB;line-height:1.5;-webkit-font-smoothing:antialiased;}
+
+  /* ────── ツールバー（画面のみ） ────── */
+  .toolbar{position:sticky;top:0;z-index:1000;background:#0F172A;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.3);}
+  .toolbar h1{font-size:14px;font-weight:800;}
+  .toolbar input{padding:6px 10px;border:none;border-radius:6px;font-size:12px;font-family:inherit;width:280px;}
+  .toolbar button{padding:7px 16px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:800;font-size:12px;font-family:inherit;}
+  .toolbar button:hover{opacity:.9;}
+  .toolbar .hint{color:#94A3B8;font-size:11px;margin-left:auto;}
+
+  /* ────── A4 ページ ────── */
+  .page{width:210mm;height:297mm;background:#fff;margin:20px auto;box-shadow:0 8px 32px rgba(0,0,0,.15);position:relative;overflow:hidden;page-break-after:always;}
+  .page:last-child{page-break-after:auto;margin-bottom:80px;}
+
+  /* ============================================
+     FRONT PAGE
+     ============================================ */
+  .front-header{padding:14mm 14mm 8mm;background:linear-gradient(135deg,var(--indigo) 0%,var(--purple) 100%);color:#fff;position:relative;overflow:hidden;}
+  .front-header::before{content:'';position:absolute;top:-30mm;right:-20mm;width:80mm;height:80mm;background:rgba(255,255,255,.08);border-radius:50%;}
+  .fh-row{display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
+  .fh-logo-mark{width:14mm;height:14mm;background:#fff;color:var(--indigo);border-radius:3.5mm;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;letter-spacing:-.02em;box-shadow:0 3px 8px rgba(0,0,0,.15);}
+  .fh-wordmark{font-size:24px;font-weight:900;letter-spacing:-.02em;}
+  .fh-tagline{font-size:11px;color:rgba(255,255,255,.85);font-weight:700;margin-top:1.5mm;letter-spacing:.04em;position:relative;z-index:1;}
+
+  .hero{padding:14mm 14mm 8mm;}
+  .hero-eyebrow{display:inline-block;background:var(--indigo-l);color:var(--indigo);font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:.06em;margin-bottom:5mm;}
+  .hero h2{font-size:34px;font-weight:900;letter-spacing:-.025em;line-height:1.15;margin-bottom:4mm;}
+  .hero h2 .grad{background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero-lead{font-size:14px;color:var(--slate-500);font-weight:600;line-height:1.7;}
+
+  .pain-flow{padding:0 14mm 6mm;}
+  .pain-row{display:grid;grid-template-columns:1fr 8mm 1fr;align-items:center;gap:4mm;padding:4mm 0;border-bottom:1px dashed var(--slate-200);}
+  .pain-row:last-child{border-bottom:none;}
+  .pain-box{background:#FEF2F2;border-left:3px solid var(--red);padding:3mm 4mm;border-radius:0 6px 6px 0;}
+  .pain-box .lbl{font-size:9px;font-weight:800;color:var(--red);letter-spacing:.06em;}
+  .pain-box .txt{font-size:11px;font-weight:700;color:var(--slate-700);margin-top:1mm;line-height:1.4;}
+  .pain-arrow{text-align:center;font-size:18px;color:var(--indigo);font-weight:900;}
+  .sol-box{background:var(--emerald-l);border-left:3px solid var(--emerald);padding:3mm 4mm;border-radius:0 6px 6px 0;}
+  .sol-box .lbl{font-size:9px;font-weight:800;color:#047857;letter-spacing:.06em;}
+  .sol-box .txt{font-size:11px;font-weight:700;color:var(--slate-700);margin-top:1mm;line-height:1.4;}
+
+  .trial-cta{margin:0 14mm;background:linear-gradient(135deg,#ECFDF5,#FFF);border:2px dashed var(--emerald);border-radius:12px;padding:6mm;display:flex;align-items:center;gap:6mm;}
+  .trial-cta-left{flex:1;}
+  .trial-cta-badge{display:inline-block;background:var(--emerald);color:#fff;font-size:10px;font-weight:900;padding:3px 10px;border-radius:20px;letter-spacing:.04em;}
+  .trial-cta-title{font-size:24px;font-weight:900;color:#047857;margin-top:3mm;line-height:1.1;letter-spacing:-.02em;}
+  .trial-cta-sub{font-size:11px;color:#065F46;font-weight:700;margin-top:2mm;line-height:1.6;}
+  .trial-cta-qr{flex-shrink:0;text-align:center;}
+  .trial-cta-qr img{width:30mm;height:30mm;display:block;background:#fff;padding:2mm;border-radius:6px;}
+  .trial-cta-qr-lbl{font-size:9px;color:var(--slate-500);font-weight:700;margin-top:2mm;}
+
+  .front-footer{position:absolute;bottom:0;left:0;right:0;background:var(--slate-900);color:#fff;padding:5mm 14mm;display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;}
+  .front-footer .ff-url{color:#FCD34D;}
+  .front-footer .ff-contact{color:#CBD5E1;}
+
+  /* ============================================
+     BACK PAGE
+     ============================================ */
+  .back-header{padding:12mm 14mm 6mm;background:var(--slate-50);border-bottom:3px solid var(--indigo);}
+  .back-eyebrow{display:inline-block;font-size:10px;font-weight:800;color:var(--indigo);letter-spacing:.08em;margin-bottom:3mm;}
+  .back-h2{font-size:24px;font-weight:900;line-height:1.2;letter-spacing:-.01em;}
+  .back-h2 .hl{background:linear-gradient(180deg,transparent 60%,#FEF3C7 60%);}
+
+  .killer-feature{padding:7mm 14mm 5mm;}
+  .kf-card{background:linear-gradient(135deg,var(--indigo) 0%,var(--purple) 100%);color:#fff;border-radius:12px;padding:6mm 6mm;position:relative;overflow:hidden;}
+  .kf-card::after{content:'⚡';position:absolute;top:-6mm;right:-6mm;font-size:80px;opacity:.12;}
+  .kf-title{font-size:18px;font-weight:900;margin-bottom:4mm;letter-spacing:-.01em;position:relative;z-index:1;}
+  .kf-steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3mm;position:relative;z-index:1;}
+  .kf-step{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:4mm 3mm;backdrop-filter:blur(6px);}
+  .kf-step-num{font-size:14px;font-weight:900;color:#FCD34D;}
+  .kf-step-title{font-size:11px;font-weight:800;margin-top:1mm;line-height:1.4;}
+  .kf-step-desc{font-size:9px;color:rgba(255,255,255,.85);margin-top:2mm;line-height:1.5;font-weight:500;}
+  .kf-bottom{margin-top:4mm;background:rgba(252,211,77,.15);border-left:3px solid #FCD34D;padding:3mm 4mm;border-radius:0 6px 6px 0;font-size:10px;font-weight:700;position:relative;z-index:1;}
+  .kf-bottom strong{color:#FCD34D;}
+
+  .features-grid{padding:5mm 14mm 5mm;display:grid;grid-template-columns:1fr 1fr;gap:3mm 5mm;}
+  .ft{background:var(--slate-50);border-radius:8px;padding:4mm;border:1px solid var(--slate-100);}
+  .ft-icon{font-size:18px;}
+  .ft-title{font-size:11px;font-weight:800;margin-top:1mm;letter-spacing:-.01em;}
+  .ft-desc{font-size:9px;color:var(--slate-500);margin-top:1.5mm;line-height:1.55;font-weight:500;}
+
+  .compare{margin:3mm 14mm;background:#FEF3C7;border:1px solid #FCD34D;border-radius:10px;padding:5mm;}
+  .compare-title{font-size:11px;font-weight:900;color:#92400E;letter-spacing:.02em;margin-bottom:3mm;}
+  .compare-row{display:grid;grid-template-columns:50mm 1fr;gap:3mm;font-size:11px;align-items:center;padding:1.5mm 0;}
+  .compare-row + .compare-row{border-top:1px dashed rgba(146,64,14,.2);}
+  .compare-label{font-weight:700;color:var(--slate-700);}
+  .compare-val{font-weight:900;color:var(--slate-900);}
+  .compare-val .strike{text-decoration:line-through;color:var(--slate-500);font-weight:600;font-size:10px;margin-right:5px;}
+  .compare-val.win{color:#047857;}
+
+  .pricing-strip{margin:4mm 14mm;background:linear-gradient(135deg,var(--slate-900),#1E293B);color:#fff;border-radius:12px;padding:5mm 6mm;display:flex;justify-content:space-between;align-items:center;}
+  .ps-left .ps-plan{font-size:10px;font-weight:800;color:#A78BFA;letter-spacing:.06em;}
+  .ps-left .ps-amount{font-size:30px;font-weight:900;line-height:1;letter-spacing:-.02em;margin-top:1mm;}
+  .ps-left .ps-amount .yen{font-size:16px;vertical-align:top;margin-right:2px;}
+  .ps-left .ps-amount .per{font-size:13px;color:#CBD5E1;margin-left:3px;font-weight:600;}
+  .ps-left .ps-features{font-size:9px;color:#94A3B8;margin-top:2mm;font-weight:600;}
+  .ps-right{text-align:right;}
+  .ps-right-badge{background:var(--emerald);color:#fff;font-size:10px;font-weight:900;padding:3px 10px;border-radius:20px;letter-spacing:.04em;}
+  .ps-right-note{font-size:9px;color:#94A3B8;margin-top:2mm;font-weight:600;line-height:1.5;}
+
+  .back-footer{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:6mm 14mm;display:flex;align-items:center;gap:6mm;}
+  .bf-left{flex:1;}
+  .bf-cta{font-size:16px;font-weight:900;letter-spacing:-.01em;}
+  .bf-contact{font-size:11px;margin-top:2mm;font-weight:700;line-height:1.6;}
+  .bf-contact .ic{display:inline-block;margin-right:4px;}
+  .bf-right{flex-shrink:0;text-align:center;}
+  .bf-right img{width:24mm;height:24mm;display:block;background:#fff;padding:1.5mm;border-radius:5px;}
+  .bf-right-lbl{font-size:8px;color:rgba(255,255,255,.8);margin-top:1.5mm;font-weight:700;}
+</style>
+</head>
+<body>
+
+<!-- ════════ TOOLBAR（画面のみ） ════════ -->
+<div class="toolbar">
+  <h1>📄 RAKURAKU 営業チラシ — A4両面印刷用</h1>
+  <label>QR配信URL: <input type="text" id="url-input" value="https://rakuraku.app" onchange="updateQR()"></label>
+  <button onclick="window.print()">🖨️ 印刷 / PDF保存</button>
+  <span class="hint">Cmd+P → 「両面印刷」設定推奨 / 余白「なし」 / カラー印刷</span>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 1 — FRONT
+     ════════════════════════════════════════════ -->
+<div class="page">
+  <div class="front-header">
+    <div class="fh-row">
+      <div class="fh-logo-mark">R</div>
+      <div class="fh-wordmark">RAKURAKU</div>
+    </div>
+    <div class="fh-tagline">バー・飲食店オーナー専用 シフト管理プラットフォーム</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">🎁 14日間無料 ・ クレカ登録不要</div>
+    <h2>シフト作成、<br><span class="grad">1タップで完璧に。</span></h2>
+    <div class="hero-lead">スタッフはスマホで希望時間を提出するだけ。<br>店長はワンタップでシフト表が完成。深夜割増 ・ 売上管理 ・ スタッフ評価まで全部入り。</div>
+  </div>
+
+  <div class="pain-flow">
+    <div class="pain-row">
+      <div class="pain-box">
+        <div class="lbl">😫 NOW</div>
+        <div class="txt">月末は徹夜でシフト作成。Excelで朝まで…</div>
+      </div>
+      <div class="pain-arrow">→</div>
+      <div class="sol-box">
+        <div class="lbl">✨ RAKURAKU</div>
+        <div class="txt">「シフト作成」ボタン<br>1回で即完成。PDF印刷も。</div>
+      </div>
+    </div>
+    <div class="pain-row">
+      <div class="pain-box">
+        <div class="lbl">📵 NOW</div>
+        <div class="txt">LINEに大量の希望日が届く。<br>誰がいつ入れるか分からない。</div>
+      </div>
+      <div class="pain-arrow">→</div>
+      <div class="sol-box">
+        <div class="lbl">📱 RAKURAKU</div>
+        <div class="txt">QRコード共有でスマホ提出。<br>カレンダーで一覧管理。</div>
+      </div>
+    </div>
+    <div class="pain-row">
+      <div class="pain-box">
+        <div class="lbl">💸 NOW</div>
+        <div class="txt">急な欠勤・人手不足で<br>Timeeに毎月数万円…</div>
+      </div>
+      <div class="pain-arrow">→</div>
+      <div class="sol-box">
+        <div class="lbl">⚡ RAKURAKU</div>
+        <div class="txt">3段階で自動募集。最終的に<br>Timeeに <strong>ワンタップ配信</strong>。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="trial-cta">
+    <div class="trial-cta-left">
+      <span class="trial-cta-badge">🎁 RISK FREE</span>
+      <div class="trial-cta-title">14日間 完全無料<br>で試せます</div>
+      <div class="trial-cta-sub">クレカ登録不要 ・ 自動課金なし<br>いつでも解約OK ・ 違約金なし</div>
+    </div>
+    <div class="trial-cta-qr">
+      <img class="qr-img" src="" alt="QR" />
+      <div class="trial-cta-qr-lbl">スマホでスキャン<br>↑ いますぐ申込</div>
+    </div>
+  </div>
+
+  <div class="front-footer">
+    <div>📨 <span class="ff-contact">koizumishota0323@gmail.com</span></div>
+    <div>🌐 <span class="ff-url" id="url-display-front">rakuraku.app</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 2 — BACK
+     ════════════════════════════════════════════ -->
+<div class="page">
+  <div class="back-header">
+    <div class="back-eyebrow">WHY RAKURAKU</div>
+    <div class="back-h2">他社シフト管理アプリには無い<br><span class="hl">「人員不足の自動解決」</span>機能</div>
+  </div>
+
+  <div class="killer-feature">
+    <div class="kf-card">
+      <div class="kf-title">⚡ 人員不足を <span style="color:#FCD34D;">3段階</span> で自動解決</div>
+      <div class="kf-steps">
+        <div class="kf-step">
+          <div class="kf-step-num">① 既存スタッフ</div>
+          <div class="kf-step-title">時間調整メール</div>
+          <div class="kf-step-desc">提出済みスタッフに「時間調整できない？」を一斉送信。</div>
+        </div>
+        <div class="kf-step">
+          <div class="kf-step-num">② 自社内</div>
+          <div class="kf-step-title">時給インセン<br>ティブ内部募集</div>
+          <div class="kf-step-desc">「時給アップで来てくれない？」を自社スタッフへ。</div>
+        </div>
+        <div class="kf-step">
+          <div class="kf-step-num">③ 外部求人</div>
+          <div class="kf-step-title">Timee/シェアフル<br>ワンタップ配信</div>
+          <div class="kf-step-desc">Chrome拡張で各サイトに自動入力。新規募集コスト最小化。</div>
+        </div>
+      </div>
+      <div class="kf-bottom">💡 新規募集の前にできることを全部自動でやるので、<strong>外部求人コストが大幅削減</strong>できます。</div>
+    </div>
+  </div>
+
+  <div class="features-grid">
+    <div class="ft">
+      <div class="ft-icon">💴</div>
+      <div class="ft-title">深夜割増 自動計算</div>
+      <div class="ft-desc">22:00〜翌5:00 +25%を労基法準拠で自動計算。給与トラブルゼロ。</div>
+    </div>
+    <div class="ft">
+      <div class="ft-icon">📊</div>
+      <div class="ft-title">売上 × 人件費率 可視化</div>
+      <div class="ft-desc">月次売上目標と達成率、人件費率(25-35%目安)を一画面で。</div>
+    </div>
+    <div class="ft">
+      <div class="ft-icon">⭐</div>
+      <div class="ft-title">スタッフ評価機能</div>
+      <div class="ft-desc">ポジションごと5段階評価。シフト編成の最適化に直結。</div>
+    </div>
+    <div class="ft">
+      <div class="ft-icon">📱</div>
+      <div class="ft-title">PWA対応・インストール不要</div>
+      <div class="ft-desc">スマホ・PCのブラウザで完結。ホーム画面追加可能。</div>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="compare-title">💰 RAKURAKU 導入で、こんなにコスト削減</div>
+    <div class="compare-row">
+      <div class="compare-label">Timee 紹介手数料</div>
+      <div class="compare-val"><span class="strike">月 ¥30,000〜¥50,000</span></div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-label">RAKURAKU 月額</div>
+      <div class="compare-val win">月 ¥9,800（税込）すべて込み</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-label">想定削減額</div>
+      <div class="compare-val win">▲ ¥20,000〜¥40,000 / 月</div>
+    </div>
+  </div>
+
+  <div class="pricing-strip">
+    <div class="ps-left">
+      <div class="ps-plan">⭐ スタンダードプラン</div>
+      <div class="ps-amount"><span class="yen">¥</span>9,800<span class="per">/月（税込）</span></div>
+      <div class="ps-features">スタッフ数無制限 ・ 全機能込み ・ 月次バージョンアップ無料</div>
+    </div>
+    <div class="ps-right">
+      <span class="ps-right-badge">14日間 無料</span>
+      <div class="ps-right-note">初期費用 ¥0<br>契約縛りなし<br>違約金なし</div>
+    </div>
+  </div>
+
+  <div class="back-footer">
+    <div class="bf-left">
+      <div class="bf-cta">🎁 いますぐ 14日間 無料で試す</div>
+      <div class="bf-contact">
+        <div><span class="ic">📨</span>koizumishota0323@gmail.com</div>
+        <div><span class="ic">🌐</span><span id="url-display-back">rakuraku.app</span></div>
+      </div>
+    </div>
+    <div class="bf-right">
+      <img class="qr-img" src="" alt="QR" />
+      <div class="bf-right-lbl">スマホでスキャン</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* QR コード生成（qrserver.com API 経由） */
+  function updateQR() {
+    const url = document.getElementById('url-input').value.trim() || 'https://rakuraku.app';
+    const qrFront = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}&margin=0&color=4F46E5`;
+    document.querySelectorAll('.qr-img').forEach(img => { img.src = qrFront; });
+    document.getElementById('url-display-front').textContent = url.replace(/^https?:\/\//, '');
+    document.getElementById('url-display-back').textContent  = url.replace(/^https?:\/\//, '');
+  }
+
+  /* URL パラメータから初期 URL を取得（?url=https://... で指定可能） */
+  (function() {
+    const params = new URLSearchParams(location.search);
+    const u = params.get('url');
+    if (u) document.getElementById('url-input').value = u;
+    updateQR();
+  })();
+</script>
+</body>
+</html>

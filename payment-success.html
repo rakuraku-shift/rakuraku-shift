@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>お支払い完了 — BAR EXCHANGE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+  :root{
+    --green:#00ff88; --gold:#ffd700;
+    --bg:#060608; --card:#0d0f14; --border:#1a2030; --text:#e8eaf0; --muted:#4a5270;
+    --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--sans);
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; padding:24px; text-align:center; overflow:hidden;
+  }
+
+  /* ── CONFETTI ── */
+  .confetti{
+    position:fixed; width:8px; height:8px; border-radius:2px;
+    animation:fall linear forwards;
+    pointer-events:none;
+  }
+  @keyframes fall{
+    0%  { transform:translateY(-10px) rotate(0deg);   opacity:1; }
+    100%{ transform:translateY(110vh) rotate(720deg); opacity:0; }
+  }
+
+  /* ── CARD ── */
+  .card{
+    width:min(360px,100%); background:var(--card);
+    border:1px solid var(--border); border-radius:24px; padding:36px 28px;
+    position:relative; overflow:hidden;
+    animation:popIn .5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn{ from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+  .card::before{
+    content:''; position:absolute; top:0;left:0;right:0; height:3px;
+    background:linear-gradient(90deg,var(--green),var(--gold),var(--green));
+    background-size:200%; animation:shimmer 2s linear infinite;
+  }
+  @keyframes shimmer{ to{background-position:200%;} }
+
+  .check-icon{
+    font-size:4rem; display:block; margin-bottom:16px;
+    animation:bounce 1s cubic-bezier(0.34,1.56,0.64,1) .3s both;
+  }
+  @keyframes bounce{ from{transform:scale(0)} to{transform:scale(1)} }
+
+  h1{
+    font-size:1.4rem; font-weight:700; margin-bottom:8px;
+    background:linear-gradient(135deg,#fff,#b0c8ff);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .sub{ font-size:0.8rem; color:var(--muted); line-height:1.6; margin-bottom:24px; }
+
+  .info-row{
+    background:#ffffff06; border:1px solid var(--border); border-radius:12px;
+    padding:14px 18px; margin-bottom:12px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .info-label{ font-size:0.62rem; color:var(--muted); letter-spacing:2px; }
+  .info-val{ font-family:var(--mono); font-size:0.95rem; font-weight:700; }
+  .info-val.green{ color:var(--green); }
+
+  .divider{
+    border:none; border-top:1px solid var(--border); margin:20px 0;
+  }
+
+  .msg{
+    font-size:0.8rem; color:var(--muted); line-height:1.7; margin-bottom:20px;
+  }
+
+  .back-btn{
+    display:inline-block; padding:12px 28px; border-radius:12px;
+    background:#ffffff10; border:1px solid var(--border);
+    color:var(--text); font-size:0.8rem; font-weight:600;
+    text-decoration:none; transition:all .15s; cursor:pointer;
+  }
+  .back-btn:active{ background:#ffffff18; }
+
+  .stripe-note{
+    margin-top:20px; font-size:0.58rem; color:var(--muted); opacity:0.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <span class="check-icon">✅</span>
+  <h1>お支払い完了！</h1>
+  <div class="sub">ありがとうございました。<br>お支払いが正常に処理されました。</div>
+
+  <div class="info-row">
+    <span class="info-label">テーブル</span>
+    <span class="info-val" id="info-table">—</span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">お支払い金額</span>
+    <span class="info-val green" id="info-amount">—</span>
+  </div>
+
+  <hr class="divider">
+  <div class="msg">
+    素敵な夜をお過ごしください 🍻<br>
+    またのご来店をお待ちしております。
+  </div>
+
+  <a href="/customer.html" class="back-btn">ドリンクメニューへ戻る</a>
+  <div class="stripe-note">Powered by Stripe · 安全な決済</div>
+</div>
+
+<script>
+// Populate info from URL params
+const params = new URLSearchParams(location.search);
+const table  = params.get('table');
+if (table) document.getElementById('info-table').textContent = table + '番卓';
+
+// Fetch session info to get amount
+const sessionId = params.get('session_id');
+if (sessionId) {
+  fetch(`/api/checkout/info/${sessionId}`)
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (data?.total) {
+        document.getElementById('info-amount').textContent = '¥' + data.total.toLocaleString();
+      }
+    })
+    .catch(() => {});
+}
+
+// Confetti
+const COLORS = ['#00ff88','#ffd700','#4488ff','#aa66ff','#ff8800','#ff3355'];
+for (let i = 0; i < 60; i++) {
+  const el = document.createElement('div');
+  el.className = 'confetti';
+  el.style.cssText = `
+    left:${Math.random()*100}%;
+    background:${COLORS[Math.floor(Math.random()*COLORS.length)]};
+    width:${6+Math.random()*8}px;
+    height:${6+Math.random()*8}px;
+    animation-duration:${2+Math.random()*3}s;
+    animation-delay:${Math.random()*1.5}s;
+    border-radius:${Math.random()>0.5?'50%':'2px'};
+  `;
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+</script>
+</body>
+</html>

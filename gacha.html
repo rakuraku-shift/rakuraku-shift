@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>BAR EXCHANGE — ガチャ</title>
+<script src="/socket.io/socket.io.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@700&display=swap');
+
+  :root {
+    --green:#00ff88; --gold:#ffd700; --red:#ff3355; --blue:#4488ff;
+    --bg:#060608; --card:#0d0f14; --border:#1a2030; --text:#e8eaf0; --muted:#4a5270;
+    --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;}
+
+  /* ─── HEADER ─── */
+  #hdr{
+    width:100%;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 20px;background:#0a0c10;border-bottom:1px solid var(--border);
+  }
+  .logo{font-family:var(--mono);font-size:0.9rem;font-weight:700;color:var(--green);letter-spacing:3px;}
+  #back-btn{
+    font-size:0.75rem;color:var(--muted);background:none;border:1px solid var(--border);
+    padding:5px 12px;border-radius:6px;cursor:pointer;
+  }
+
+  /* ─── MAIN ─── */
+  main{
+    width:100%;max-width:420px;padding:32px 20px 60px;
+    display:flex;flex-direction:column;align-items:center;gap:28px;
+  }
+
+  /* ─── TITLE ─── */
+  .gacha-title{text-align:center;}
+  .gacha-title h1{font-size:1.6rem;font-weight:900;letter-spacing:2px;margin-bottom:4px;}
+  .gacha-title p{font-size:0.78rem;color:var(--muted);}
+
+  /* ─── MACHINE ─── */
+  .machine{
+    background:#0d0f14;border:2px solid #2a3050;border-radius:20px;
+    padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:20px;
+    width:100%;position:relative;overflow:hidden;
+  }
+  .machine::before{
+    content:'🎰 1日1回 FREE';
+    position:absolute;top:12px;right:16px;
+    font-size:0.62rem;font-weight:700;letter-spacing:1px;color:var(--gold);
+  }
+
+  /* ─── REEL ─── */
+  .reel-outer{
+    width:140px;height:140px;border-radius:50%;overflow:hidden;
+    border:4px solid var(--gold);box-shadow:0 0 24px #ffd70040;
+    position:relative;background:#080a0e;flex-shrink:0;
+  }
+  .reel-outer::after{
+    content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+    border-radius:50%;
+    background:radial-gradient(ellipse at 30% 30%, #ffffff18 0%, transparent 60%);
+    pointer-events:none;
+  }
+  #reel{
+    display:flex;flex-direction:column;align-items:center;
+    will-change:transform;
+  }
+  .reel-item{
+    width:140px;height:140px;display:flex;align-items:center;justify-content:center;
+    font-size:3.5rem;flex-shrink:0;
+  }
+
+  /* ─── PULL BTN ─── */
+  #pull-btn{
+    width:100%;padding:18px;border-radius:14px;border:none;cursor:pointer;
+    font-size:1.1rem;font-weight:900;letter-spacing:2px;
+    background:linear-gradient(135deg,#ffd700,#ff8800);
+    color:#000;transition:all 0.2s;
+    box-shadow:0 4px 20px #ffd70040;
+  }
+  #pull-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px #ffd70060;}
+  #pull-btn:active{transform:translateY(0);}
+  #pull-btn:disabled{background:#1a2030;color:var(--muted);cursor:not-allowed;
+    box-shadow:none;transform:none;}
+
+  /* ─── RESULT ─── */
+  #result-section{display:none;width:100%;animation:slideUp 0.5s ease;}
+  @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+
+  .result-card{
+    border-radius:16px;padding:28px 24px;text-align:center;
+    border:2px solid;position:relative;overflow:hidden;
+  }
+  .result-card.win{border-color:var(--gold);background:#ffd70010;}
+  .result-card.miss{border-color:var(--border);background:var(--card);}
+  .result-emoji-big{font-size:4rem;margin-bottom:12px;display:block;
+    animation:bounceIn 0.6s cubic-bezier(0.34,1.56,0.64,1);}
+  @keyframes bounceIn{from{opacity:0;transform:scale(0.3)}to{opacity:1;transform:scale(1)}}
+  .result-name{font-size:1.4rem;font-weight:900;margin-bottom:6px;}
+  .result-sub{font-size:0.78rem;color:var(--muted);margin-bottom:20px;}
+  .result-staff{
+    background:#ffffff10;border:1px solid var(--border);border-radius:8px;
+    padding:10px 16px;font-size:0.78rem;color:var(--muted);margin-bottom:16px;
+  }
+
+  /* ─── SHARE BTN ─── */
+  #share-btn{
+    width:100%;padding:14px;border-radius:12px;border:none;cursor:pointer;
+    font-size:0.9rem;font-weight:700;
+    background:#00ff8820;border:1px solid #00ff88;color:#00ff88;
+    transition:all 0.2s;
+  }
+  #share-btn:hover{background:#00ff8830;}
+
+  /* ─── PLAYED MESSAGE ─── */
+  #played-section{display:none;width:100%;animation:slideUp 0.4s ease;}
+  .played-card{
+    background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:24px;text-align:center;
+  }
+  .played-emoji{font-size:3rem;margin-bottom:12px;}
+  .played-title{font-size:1rem;font-weight:700;margin-bottom:6px;}
+  .played-sub{font-size:0.78rem;color:var(--muted);}
+  .played-result{
+    margin-top:16px;padding:14px;border-radius:10px;
+    background:#ffd70010;border:1px solid #ffd70040;
+  }
+  .played-result-emoji{font-size:2rem;}
+  .played-result-name{font-weight:700;margin-top:4px;}
+
+  /* ─── PRIZE TABLE ─── */
+  .prize-section{width:100%;}
+  .prize-section h3{
+    font-size:0.68rem;font-weight:700;letter-spacing:2px;color:var(--muted);
+    text-transform:uppercase;margin-bottom:12px;
+  }
+  .prize-list{display:flex;flex-direction:column;gap:8px;}
+  .prize-row{
+    display:flex;align-items:center;gap:12px;padding:10px 14px;
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+  }
+  .prize-emoji{font-size:1.4rem;width:32px;text-align:center;}
+  .prize-info{flex:1;}
+  .prize-name{font-size:0.85rem;font-weight:600;}
+  .prize-prob{font-size:0.7rem;color:var(--muted);}
+  .prize-stock{font-size:0.72rem;font-family:var(--mono);}
+  .prize-stock.low{color:var(--red);}
+  .prize-stock.ok{color:var(--muted);}
+
+  /* ─── CONFETTI ─── */
+  .confetti-piece{
+    position:fixed;width:10px;height:10px;border-radius:2px;
+    pointer-events:none;z-index:9999;
+    animation:confettiFall linear forwards;
+  }
+  @keyframes confettiFall{
+    to{transform:translateY(100vh) rotate(720deg);opacity:0;}
+  }
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div class="logo">BAR EXCHANGE</div>
+  <button id="back-btn" onclick="history.back()">← 戻る</button>
+</div>
+
+<main>
+  <div class="gacha-title">
+    <h1>🎰 TODAY'S GACHA</h1>
+    <p id="gacha-date">—</p>
+  </div>
+
+  <!-- ガチャマシン -->
+  <div class="machine" id="machine-section">
+    <div class="reel-outer">
+      <div id="reel">
+        <div class="reel-item">🎰</div>
+      </div>
+    </div>
+    <button id="pull-btn">🎰 ガチャを回す！</button>
+  </div>
+
+  <!-- 結果 -->
+  <div id="result-section">
+    <div class="result-card" id="result-card">
+      <span class="result-emoji-big" id="result-emoji">🎟</span>
+      <div class="result-name" id="result-name">—</div>
+      <div class="result-sub" id="result-sub"></div>
+      <div class="result-staff" id="result-staff" style="display:none">
+        📋 スタッフにこの画面を見せてください
+      </div>
+      <button id="share-btn">📤 結果をシェアする</button>
+    </div>
+  </div>
+
+  <!-- 本日済み -->
+  <div id="played-section">
+    <div class="played-card">
+      <div class="played-emoji">✅</div>
+      <div class="played-title">今日はもう引きました！</div>
+      <div class="played-sub">また明日来てね 🍺</div>
+      <div class="played-result" id="played-result" style="display:none">
+        <div class="played-result-emoji" id="played-emoji">—</div>
+        <div class="played-result-name" id="played-result-name">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 景品一覧 -->
+  <div class="prize-section" id="prize-section">
+    <h3>景品ラインナップ</h3>
+    <div class="prize-list" id="prize-list"></div>
+  </div>
+</main>
+
+<script>
+// ══════════════════════════════════════════
+//  TRANSPORT
+// ══════════════════════════════════════════
+const Transport = (() => {
+  const channel = new BroadcastChannel('barexchange');
+  let socket = null, connected = false;
+  const _ls = {};
+  function on(type, fn) { (_ls[type] || (_ls[type] = [])).push(fn); }
+  function emit(type, data = {}) {
+    if (connected) socket.emit(type, data);
+    else channel.postMessage({ type, ...data });
+  }
+  function _dispatch(type, data) { (_ls[type] ?? []).forEach(fn => fn(data)); }
+  if (typeof io !== 'undefined') {
+    socket = io({ reconnectionAttempts: 3, timeout: 3000 });
+    socket.on('connect',    () => { connected = true; });
+    socket.on('disconnect', () => { connected = false; });
+    socket.onAny((event, data) => _dispatch(event, data));
+  }
+  channel.onmessage = ev => { if (!connected) _dispatch(ev.data.type, ev.data); };
+  return { on, emit, isConnected: () => connected };
+})();
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+const GACHA_KEY      = 'barexchange_gacha';
+const GACHA_DATE_KEY = 'barexchange_gacha_date';
+const NAME_KEY       = 'barexchange_player_name';
+
+const DEFAULT_PRIZES = [
+  { id:'drink_free', name:'ドリンク1杯無料',   emoji:'🍺', probability:5,  stock:10, color:'#00ff88' },
+  { id:'snack_free', name:'おつまみプレゼント', emoji:'🍟', probability:10, stock:20, color:'#ffd700' },
+  { id:'discount',   name:'次回10%割引',       emoji:'🎟', probability:15, stock:-1, color:'#4488ff' },
+  { id:'miss',       name:'ハズレ…また来てね', emoji:'😢', probability:70, stock:-1, color:'#4a5270' },
+];
+
+let prizes = DEFAULT_PRIZES;
+let myName = localStorage.getItem(NAME_KEY) ?? '匿名';
+
+function todayStr() { return new Date().toDateString(); }
+
+function hasPlayedToday() {
+  return localStorage.getItem(GACHA_DATE_KEY) === todayStr();
+}
+function getTodayResult() {
+  try { return JSON.parse(localStorage.getItem(GACHA_KEY)); } catch { return null; }
+}
+function saveTodayResult(prize) {
+  localStorage.setItem(GACHA_DATE_KEY, todayStr());
+  localStorage.setItem(GACHA_KEY, JSON.stringify(prize));
+}
+
+// ══════════════════════════════════════════
+//  LOAD PRIZES
+// ══════════════════════════════════════════
+async function loadPrizes() {
+  if (Transport.isConnected()) {
+    try {
+      const res = await fetch('/api/gacha/config');
+      if (res.ok) {
+        const cfg = await res.json();
+        prizes = cfg.prizes ?? DEFAULT_PRIZES;
+        renderPrizeList();
+        return;
+      }
+    } catch {}
+  }
+  // localStorageフォールバック
+  try {
+    const raw = localStorage.getItem('barexchange_gacha_config');
+    if (raw) prizes = JSON.parse(raw).prizes ?? DEFAULT_PRIZES;
+  } catch {}
+  renderPrizeList();
+}
+
+Transport.on('gacha_config_updated', cfg => {
+  prizes = cfg.prizes ?? prizes;
+  if (cfg.prizes) localStorage.setItem('barexchange_gacha_config', JSON.stringify(cfg));
+  renderPrizeList();
+});
+
+// ══════════════════════════════════════════
+//  GACHA LOGIC
+// ══════════════════════════════════════════
+function drawPrize() {
+  // 在庫0の景品を除外
+  const available = prizes.filter(p => p.stock !== 0);
+  const total = available.reduce((s, p) => s + p.probability, 0);
+  let r = Math.random() * total;
+  for (const p of available) {
+    r -= p.probability;
+    if (r <= 0) return p;
+  }
+  return available[available.length - 1];
+}
+
+// ══════════════════════════════════════════
+//  ANIMATION
+// ══════════════════════════════════════════
+const ITEM_H = 140;
+
+function runAnimation(winner, onDone) {
+  const reel = document.getElementById('reel');
+
+  // 40個のランダム景品 + 当選景品 を並べる
+  const items = [];
+  for (let i = 0; i < 40; i++) {
+    items.push(prizes[Math.floor(Math.random() * prizes.length)]);
+  }
+  items.push(winner);
+
+  reel.innerHTML = items.map(p =>
+    `<div class="reel-item">${p.emoji}</div>`
+  ).join('');
+
+  reel.style.transition = 'none';
+  reel.style.transform  = 'translateY(0)';
+
+  // 2フレーム後にアニメーション開始（リフロー確保）
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    reel.style.transition = 'transform 3s cubic-bezier(0.08, 0, 0.04, 1)';
+    reel.style.transform  = `translateY(-${40 * ITEM_H}px)`;
+  }));
+
+  setTimeout(() => onDone(), 3200);
+}
+
+function spawnConfetti(color) {
+  for (let i = 0; i < 40; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left:${Math.random() * 100}vw;
+      top:-20px;
+      background:${['#ffd700','#00ff88','#4488ff','#ff3355','#ff8800'][Math.floor(Math.random()*5)]};
+      width:${6+Math.random()*8}px;
+      height:${6+Math.random()*8}px;
+      animation-duration:${1.5+Math.random()*1.5}s;
+      animation-delay:${Math.random()*0.5}s;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+}
+
+// ══════════════════════════════════════════
+//  PULL
+// ══════════════════════════════════════════
+document.getElementById('pull-btn').addEventListener('click', async () => {
+  if (hasPlayedToday()) return;
+
+  const btn = document.getElementById('pull-btn');
+  btn.disabled = true;
+  btn.textContent = '🎰 回転中...';
+
+  const winner = drawPrize();
+
+  runAnimation(winner, async () => {
+    // 結果を保存
+    saveTodayResult(winner);
+
+    // サーバーに記録
+    if (Transport.isConnected()) {
+      try {
+        await fetch('/api/gacha/pull', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: myName, prizeId: winner.id }),
+        });
+      } catch {}
+    }
+
+    // BCで管理者に通知
+    Transport.emit('gacha_pulled', { name: myName, prizeId: winner.id, prizeName: winner.name, prizeEmoji: winner.emoji, ts: Date.now() });
+
+    // コンフェッティ
+    const isWin = winner.id !== 'miss';
+    if (isWin) spawnConfetti(winner.color);
+
+    showResult(winner);
+  });
+});
+
+function showResult(prize) {
+  const isWin = prize.id !== 'miss';
+
+  document.getElementById('result-emoji').textContent = prize.emoji;
+  document.getElementById('result-name').textContent  = prize.name;
+  document.getElementById('result-sub').textContent   = isWin ? '🎉 おめでとうございます！' : 'また挑戦してね！';
+
+  const staffEl = document.getElementById('result-staff');
+  staffEl.style.display = isWin ? 'block' : 'none';
+
+  const card = document.getElementById('result-card');
+  card.className = `result-card ${isWin ? 'win' : 'miss'}`;
+
+  document.getElementById('machine-section').style.display = 'none';
+  document.getElementById('result-section').style.display  = 'block';
+
+  // シェアボタン
+  const shareBtn = document.getElementById('share-btn');
+  shareBtn.onclick = () => shareResult(prize);
+}
+
+// ══════════════════════════════════════════
+//  SHARE
+// ══════════════════════════════════════════
+function shareResult(prize) {
+  const isWin = prize.id !== 'miss';
+  const text = isWin
+    ? `🎰 BAR EXCHANGE ガチャで「${prize.name}」が当たった！${prize.emoji} #BAR_EXCHANGE #当たった`
+    : `🎰 BAR EXCHANGE ガチャ… 今日は${prize.emoji}でした😢 また明日！ #BAR_EXCHANGE`;
+
+  if (navigator.share) {
+    navigator.share({ title: 'BAR EXCHANGE ガチャ', text }).catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(text).catch(() => {});
+    const btn = document.getElementById('share-btn');
+    btn.textContent = '✅ コピーしました';
+    setTimeout(() => { btn.textContent = '📤 結果をシェアする'; }, 2000);
+  }
+}
+
+// ══════════════════════════════════════════
+//  PRIZE LIST
+// ══════════════════════════════════════════
+function renderPrizeList() {
+  const list = document.getElementById('prize-list');
+  const showPrizes = prizes.filter(p => p.id !== 'miss');
+
+  list.innerHTML = showPrizes.map(p => {
+    const stockText = p.stock < 0 ? '在庫: ∞' : p.stock === 0 ? '🚫 在庫切れ' : `在庫: 残${p.stock}個`;
+    const stockClass = p.stock === 0 ? 'low' : 'ok';
+    return `
+      <div class="prize-row" style="${p.stock === 0 ? 'opacity:0.4' : ''}">
+        <span class="prize-emoji">${p.emoji}</span>
+        <div class="prize-info">
+          <div class="prize-name" style="color:${p.color}">${p.name}</div>
+          <div class="prize-prob">当選確率: ${p.probability}%</div>
+        </div>
+        <span class="prize-stock ${stockClass}">${stockText}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+document.getElementById('gacha-date').textContent =
+  new Date().toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' });
+
+if (hasPlayedToday()) {
+  // 本日済み
+  document.getElementById('machine-section').style.display = 'none';
+  document.getElementById('played-section').style.display  = 'block';
+  const result = getTodayResult();
+  if (result) {
+    document.getElementById('played-result').style.display      = 'block';
+    document.getElementById('played-emoji').textContent         = result.emoji;
+    document.getElementById('played-result-name').textContent   = result.name;
+  }
+}
+
+// Socket接続後にprizes読み込み（少し待つ）
+setTimeout(loadPrizes, 500);
+loadPrizes();
+
+renderPrizeList();
+</script>
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>スタッフハンディ — BAR EXCHANGE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --green:#00ff88; --red:#ff3355; --gold:#ffd700; --blue:#4488ff;
+    --orange:#ff8800;
+    --bg:#060608; --card:#0d0f14; --card2:#111420;
+    --border:#1a2030; --text:#e8eaf0; --muted:#4a5270;
+    --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body{ background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; }
+
+  /* ── HEADER ── */
+  #hdr{
+    position:sticky; top:0; z-index:200;
+    background:#08090dee; backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border); padding:10px 14px 8px;
+  }
+  .hdr-row{ display:flex; justify-content:space-between; align-items:center; }
+  .logo{ font-family:var(--mono); font-size:0.82rem; font-weight:700; color:var(--green); letter-spacing:3px; }
+  .hdr-tag{
+    font-size:0.58rem; padding:3px 8px; border-radius:4px; letter-spacing:2px;
+    background:#ff880018; color:var(--orange); border:1px solid #ff880030;
+  }
+  #conn-dot{
+    display:inline-block; width:6px; height:6px; border-radius:50%;
+    background:var(--muted); margin-right:4px; vertical-align:middle;
+  }
+  #conn-dot.live{ background:var(--green); box-shadow:0 0 6px var(--green); }
+
+  /* ── TABLE SELECTOR ── */
+  #table-bar{
+    display:flex; gap:6px; padding:10px 14px 8px;
+    overflow-x:auto; scrollbar-width:none; background:var(--bg);
+    border-bottom:1px solid var(--border);
+    position:sticky; top:50px; z-index:190;
+  }
+  #table-bar::-webkit-scrollbar{ display:none; }
+  .tbl-btn{
+    flex-shrink:0; min-width:46px; height:38px; border-radius:10px;
+    border:1px solid var(--border); background:var(--card);
+    color:var(--muted); font-size:0.72rem; font-weight:700;
+    font-family:var(--mono); cursor:pointer; transition:all .15s;
+  }
+  .tbl-btn.active{
+    background:#00ff8818; border-color:var(--green);
+    color:var(--green); box-shadow:0 0 12px #00ff8820;
+  }
+  #tbl-clear{
+    flex-shrink:0; height:38px; padding:0 12px; border-radius:10px;
+    border:1px solid #ff335530; background:#ff335510;
+    color:var(--red); font-size:0.7rem; font-weight:700; cursor:pointer;
+  }
+
+  /* ── CRASH / CLOSED BANNER ── */
+  #crash-banner{
+    display:none; text-align:center; padding:8px;
+    font-size:0.78rem; font-weight:700; letter-spacing:2px;
+    background:linear-gradient(90deg,#ff0040,#ff4400,#ff0040);
+    background-size:200%; animation:crash-scroll 1s linear infinite; color:#fff;
+  }
+  @keyframes crash-scroll{ to{background-position:200%;} }
+  #closed-banner{
+    display:none; text-align:center; padding:7px;
+    font-size:0.7rem; letter-spacing:2px; color:var(--muted);
+    background:#111318; border-bottom:1px solid var(--border);
+  }
+
+  /* ── LAYOUT ── */
+  #main{ display:flex; gap:0; height:calc(100vh - 106px); }
+
+  /* ── DRINK GRID (left) ── */
+  #drink-grid{
+    flex:1 1 0; overflow-y:auto; padding:10px;
+    display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    align-content:start;
+  }
+  #drink-grid::-webkit-scrollbar{ display:none; }
+
+  .dc{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:14px; padding:10px 11px;
+    position:relative; overflow:hidden;
+    display:flex; flex-direction:column; gap:4px;
+    cursor:pointer; transition:all .15s; user-select:none;
+  }
+  .dc::before{
+    content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  }
+  .dc.up  { border-color:#00ff8828; }
+  .dc.up::before  { background:linear-gradient(90deg,transparent,var(--green),transparent); }
+  .dc.down{ border-color:#ff335528; }
+  .dc.down::before{ background:linear-gradient(90deg,transparent,var(--red),transparent); }
+  .dc.spotlight{ border-color:#ffd70045!important; }
+  .dc.spotlight::before{ background:linear-gradient(90deg,transparent,var(--gold),transparent)!important; }
+  .dc.sold-out{ opacity:0.45; filter:grayscale(0.6); pointer-events:none; }
+  .dc.tap{ transform:scale(0.95); background:#00ff8812; }
+
+  .dc-emoji{ font-size:1.6rem; text-align:center; }
+  .dc-name{ font-size:0.75rem; font-weight:700; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .dc-price{
+    font-family:var(--mono); font-size:1.35rem; font-weight:700;
+    text-align:center; line-height:1;
+  }
+  .dc-price.up  { color:var(--red); }
+  .dc-price.down{ color:var(--green); }
+  .dc-price.flat{ color:var(--text); }
+  .dc-badge{
+    text-align:center; font-size:0.55rem; font-weight:700;
+    font-family:var(--mono); letter-spacing:1px;
+    padding:2px 0; border-radius:4px;
+  }
+  .badge-deal{ background:#ffd70015; color:var(--gold); border:1px solid #ffd70030; }
+  .badge-hot { background:#ff335515; color:var(--red);  border:1px solid #ff335530; }
+  .badge-low { background:#ff880015; color:var(--orange);border:1px solid #ff880030; }
+  .badge-out { background:#ffffff08; color:var(--muted); border:1px solid #ffffff15; }
+
+  /* ── ORDER CART (right panel) ── */
+  #cart-panel{
+    width:190px; flex-shrink:0;
+    border-left:1px solid var(--border);
+    background:var(--card2);
+    display:flex; flex-direction:column;
+  }
+
+  #cart-header{
+    padding:12px 12px 8px;
+    border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .cart-title{ font-size:0.65rem; letter-spacing:3px; color:var(--muted); }
+  #cart-count{
+    font-size:0.6rem; font-weight:700; font-family:var(--mono);
+    background:#00ff8818; color:var(--green);
+    border:1px solid #00ff8830; border-radius:20px;
+    padding:2px 8px;
+  }
+
+  #cart-list{
+    flex:1; overflow-y:auto; padding:8px;
+    display:flex; flex-direction:column; gap:5px;
+  }
+  #cart-list::-webkit-scrollbar{ display:none; }
+
+  .cart-item{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:10px; padding:7px 9px;
+    display:flex; justify-content:space-between; align-items:center;
+    gap:6px;
+  }
+  .ci-left{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+  .ci-name{ font-size:0.68rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ci-price{ font-family:var(--mono); font-size:0.7rem; color:var(--green); }
+  .ci-del{
+    flex-shrink:0; background:none; border:none; color:var(--muted);
+    font-size:1rem; cursor:pointer; line-height:1; padding:2px;
+  }
+  .ci-del:active{ color:var(--red); }
+
+  .cart-empty{
+    flex:1; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    color:var(--muted); font-size:0.7rem; gap:8px;
+    text-align:center; padding:20px;
+  }
+  .cart-empty-icon{ font-size:2rem; opacity:0.4; }
+
+  /* ── CART FOOTER ── */
+  #cart-footer{ border-top:1px solid var(--border); padding:10px; }
+  #cart-total-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:8px;
+  }
+  .total-label{ font-size:0.6rem; color:var(--muted); letter-spacing:2px; }
+  #cart-total{
+    font-family:var(--mono); font-size:1.2rem; font-weight:700;
+    color:var(--green);
+  }
+  #send-btn{
+    width:100%; padding:12px; border-radius:12px; border:none;
+    background:linear-gradient(135deg,var(--green),#00cc66);
+    color:#000; font-size:0.85rem; font-weight:700;
+    letter-spacing:1px; cursor:pointer; font-family:var(--sans);
+    transition:all .15s;
+  }
+  #send-btn:disabled{
+    background:#1a2030; color:var(--muted); cursor:not-allowed;
+  }
+  #send-btn:not(:disabled):active{ transform:scale(0.97); }
+  #cart-note{
+    font-size:0.55rem; color:var(--muted); text-align:center;
+    margin-top:6px; line-height:1.4;
+  }
+
+  /* ── TOAST ── */
+  #toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:#0d1a10; border:1px solid var(--green); color:var(--green);
+    border-radius:12px; padding:10px 20px; font-size:0.78rem; font-weight:700;
+    font-family:var(--mono); letter-spacing:1px;
+    opacity:0; transition:all .3s; z-index:999; pointer-events:none; white-space:nowrap;
+  }
+  #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ── ORDER LOG (bottom sheet) ── */
+  #log-toggle{
+    position:fixed; bottom:0; left:0; right:190px;
+    background:#0a0c10; border-top:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 14px; cursor:pointer; z-index:150;
+  }
+  .log-toggle-label{ font-size:0.62rem; letter-spacing:2px; color:var(--muted); }
+  #log-count-badge{
+    font-family:var(--mono); font-size:0.6rem; font-weight:700;
+    background:#4488ff18; color:var(--blue);
+    border:1px solid #4488ff30; border-radius:20px; padding:2px 8px;
+  }
+
+  #log-sheet{
+    position:fixed; bottom:36px; left:0; right:190px;
+    max-height:0; overflow:hidden;
+    background:#0a0c10; border-top:1px solid var(--border);
+    transition:max-height .3s ease; z-index:149;
+  }
+  #log-sheet.open{ max-height:260px; }
+  #log-inner{ padding:8px 12px; overflow-y:auto; max-height:250px; }
+  #log-inner::-webkit-scrollbar{ display:none; }
+
+  .log-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:6px 0; border-bottom:1px solid var(--border); gap:8px;
+  }
+  .log-row:last-child{ border-bottom:none; }
+  .log-tbl{ font-size:0.62rem; color:var(--orange); font-family:var(--mono); flex-shrink:0; }
+  .log-name{ font-size:0.7rem; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .log-price{ font-family:var(--mono); font-size:0.68rem; color:var(--green); flex-shrink:0; }
+  .log-time{ font-size:0.55rem; color:var(--muted); flex-shrink:0; }
+
+  .log-empty{ text-align:center; color:var(--muted); font-size:0.68rem; padding:20px 0; }
+</style>
+</head>
+<body>
+
+<!-- Transport layer -->
+<script src="/socket.io/socket.io.js" onerror="window._noSocket=true"></script>
+<script>
+const Transport = (() => {
+  const handlers = {};
+  let _connected = false;
+  const on  = (t,fn) => { handlers[t] = handlers[t]||[]; handlers[t].push(fn); };
+  const emit = (t,d)  => { _trigger('_out_'+t, d); };
+  const _trigger = (t,d) => { (handlers[t]||[]).forEach(fn=>fn(d)); };
+
+  if (!window._noSocket) {
+    try {
+      const s = io({ transports:['websocket','polling'], reconnectionDelay:2000 });
+      s.on('connect',    () => { _connected=true;  _trigger('_conn',true); });
+      s.on('disconnect', () => { _connected=false; _trigger('_conn',false); });
+      ['price_update','order','player_order','config_updated','market_status',
+       'crash_event','gacha_pulled'].forEach(ev => s.on(ev, d => _trigger(ev,d)));
+      handlers['_out_order']         = [d => s.emit('order',d)];
+      handlers['_out_player_order']  = [d => s.emit('player_order',d)];
+      handlers['_out_config_update'] = [d => s.emit('config_update',d)];
+      handlers['_out_market_status'] = [d => s.emit('market_status',d)];
+    } catch(e){ window._noSocket=true; }
+  }
+
+  if (window._noSocket) {
+    const bc = new BroadcastChannel('bar-exchange');
+    bc.onmessage = e => _trigger(e.data.type, e.data.data);
+    handlers['_out_order']        = [d => bc.postMessage({type:'order',data:d})];
+    handlers['_out_player_order'] = [d => bc.postMessage({type:'player_order',data:d})];
+  }
+
+  return { on, emit, isConnected:()=>_connected };
+})();
+</script>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div class="hdr-row">
+    <div class="logo">BAR EXCHANGE</div>
+    <span class="hdr-tag">STAFF</span>
+    <span style="font-size:0.62rem;color:var(--muted)">
+      <span id="conn-dot"></span><span id="conn-label">OFFLINE</span>
+    </span>
+  </div>
+</div>
+
+<!-- BANNERS -->
+<div id="crash-banner">⚡ MARKET CRASH ⚡ 全商品が最安値に！</div>
+<div id="closed-banner">🔒 現在閉店中です</div>
+
+<!-- TABLE SELECTOR -->
+<div id="table-bar">
+  <span style="font-size:0.6rem;color:var(--muted);letter-spacing:2px;white-space:nowrap;align-self:center;padding-right:2px;">卓</span>
+  <button id="tbl-clear">解除</button>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div id="main">
+  <!-- Drink grid -->
+  <div id="drink-grid"></div>
+
+  <!-- Cart panel -->
+  <div id="cart-panel">
+    <div id="cart-header">
+      <div class="cart-title">CART</div>
+      <div id="cart-count">0点</div>
+    </div>
+    <div id="cart-list">
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <div>ドリンクを<br>タップして追加</div>
+      </div>
+    </div>
+    <div id="cart-footer">
+      <div id="cart-total-row">
+        <div class="total-label">TOTAL</div>
+        <div id="cart-total">¥0</div>
+      </div>
+      <button id="send-btn" disabled>注文を送信</button>
+      <div id="cart-note" id="cart-note"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Log toggle bar -->
+<div id="log-toggle">
+  <span class="log-toggle-label">▲ 本日の注文履歴</span>
+  <span id="log-count-badge">0件</span>
+</div>
+<div id="log-sheet">
+  <div id="log-inner"><div class="log-empty">まだ注文はありません</div></div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ── STATE ──
+let drinks = [];
+let cart   = [];       // { drink, price }
+let selectedTable = null;
+let orderLog = [];     // { tableNo, drinkName, price, time }
+let marketOpen = true;
+let logOpen = false;
+
+const TABLE_COUNT = 20;
+
+// ── DOM refs ──
+const drinkGrid  = document.getElementById('drink-grid');
+const cartList   = document.getElementById('cart-list');
+const cartCount  = document.getElementById('cart-count');
+const cartTotal  = document.getElementById('cart-total');
+const sendBtn    = document.getElementById('send-btn');
+const cartNote   = document.getElementById('cart-note');
+const connDot    = document.getElementById('conn-dot');
+const connLabel  = document.getElementById('conn-label');
+const logInner   = document.getElementById('log-inner');
+const logBadge   = document.getElementById('log-count-badge');
+const logSheet   = document.getElementById('log-sheet');
+const tableBar   = document.getElementById('table-bar');
+
+// ── LOAD DEFAULT DRINKS ──
+const DEFAULT_DRINKS = [
+  { id:'beer',    name:'生ビール',     emoji:'🍺', base:600,  min:400,  max:900  },
+  { id:'highball',name:'ハイボール',   emoji:'🥃', base:500,  min:350,  max:750  },
+  { id:'sake',    name:'日本酒',       emoji:'🍶', base:700,  min:500,  max:1000 },
+  { id:'wine',    name:'ワイン',       emoji:'🍷', base:650,  min:450,  max:950  },
+  { id:'lemon',   name:'レモンサワー', emoji:'🍋', base:480,  min:330,  max:700  },
+  { id:'rum',     name:'ラムコーク',   emoji:'🥤', base:550,  min:380,  max:800  },
+  { id:'gin',     name:'ジントニック', emoji:'🍸', base:580,  min:400,  max:850  },
+  { id:'umeshu',  name:'梅酒',         emoji:'🍑', base:520,  min:360,  max:750  },
+  { id:'energy',  name:'エナジー割',   emoji:'⚡', base:680,  min:480,  max:980  },
+  { id:'tequila', name:'テキーラ',     emoji:'🌵', base:600,  min:420,  max:880  },
+  { id:'orange',  name:'オレンジ',     emoji:'🍊', base:450,  min:300,  max:650  },
+  { id:'water',   name:'水',           emoji:'💧', base:200,  min:100,  max:300  },
+];
+
+function initDrinks(state) {
+  if (state && state.drinks) {
+    drinks = state.drinks;
+  } else {
+    // Try to load from localStorage config
+    try {
+      const cfg = JSON.parse(localStorage.getItem('barexchange_config') || '{}');
+      if (cfg.drinks && cfg.drinks.length) {
+        drinks = cfg.drinks.map(d => ({
+          ...d,
+          price: d.base,
+          change: 0,
+          pctChange: 0,
+        }));
+      } else {
+        drinks = DEFAULT_DRINKS.map(d => ({ ...d, price:d.base, change:0, pctChange:0 }));
+      }
+    } catch(e) {
+      drinks = DEFAULT_DRINKS.map(d => ({ ...d, price:d.base, change:0, pctChange:0 }));
+    }
+  }
+  renderGrid();
+}
+
+// ── TABLE BUTTONS ──
+function buildTableBar() {
+  // Keep tbl-clear btn, add table buttons
+  const frag = document.createDocumentFragment();
+  for (let i = 1; i <= TABLE_COUNT; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'tbl-btn';
+    btn.textContent = i + '番';
+    btn.dataset.tbl = i;
+    btn.onclick = () => selectTable(i);
+    frag.appendChild(btn);
+  }
+  tableBar.insertBefore(frag, document.getElementById('tbl-clear'));
+}
+
+function selectTable(n) {
+  selectedTable = n;
+  document.querySelectorAll('.tbl-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.tbl) === n);
+  });
+  updateCartUI();
+}
+
+document.getElementById('tbl-clear').onclick = () => {
+  selectedTable = null;
+  document.querySelectorAll('.tbl-btn').forEach(b => b.classList.remove('active'));
+  updateCartUI();
+};
+
+// ── DRINK GRID ──
+function renderGrid() {
+  drinkGrid.innerHTML = '';
+  drinks.forEach(d => {
+    const dir = d.change > 0 ? 'up' : d.change < 0 ? 'down' : 'flat';
+    const classes = ['dc', dir, d.spotlight ? 'spotlight' : '', d.soldOut ? 'sold-out' : ''].filter(Boolean).join(' ');
+    const pct = typeof d.pctChange === 'number' ? d.pctChange : 0;
+    const isDeal = d.price <= d.base * 0.95;
+    const isHot  = pct > 10;
+
+    let badge = '';
+    if (d.soldOut) {
+      badge = `<div class="dc-badge badge-out">🚫 SOLD OUT</div>`;
+    } else if (d.stockLow) {
+      badge = `<div class="dc-badge badge-low">⚠️ 残りわずか</div>`;
+    } else if (isDeal) {
+      badge = `<div class="dc-badge badge-deal">💰 お得！</div>`;
+    } else if (isHot) {
+      badge = `<div class="dc-badge badge-hot">🔥 人気</div>`;
+    }
+
+    const el = document.createElement('div');
+    el.className = classes;
+    el.innerHTML = `
+      <div class="dc-emoji">${d.emoji||'🍹'}</div>
+      <div class="dc-name">${d.name}</div>
+      <div class="dc-price ${dir}">¥${(d.price||d.base).toLocaleString()}</div>
+      ${badge}
+    `;
+    el.onclick = () => {
+      if (d.soldOut) return;
+      addToCart(d);
+      el.classList.add('tap');
+      setTimeout(() => el.classList.remove('tap'), 150);
+    };
+    drinkGrid.appendChild(el);
+  });
+}
+
+// ── CART ──
+function addToCart(drink) {
+  cart.push({ drink, price: drink.price || drink.base });
+  updateCartUI();
+}
+
+function removeFromCart(idx) {
+  cart.splice(idx, 1);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const total = cart.reduce((s, i) => s + i.price, 0);
+  cartCount.textContent = cart.length + '点';
+  cartTotal.textContent = '¥' + total.toLocaleString();
+
+  if (cart.length === 0) {
+    cartList.innerHTML = `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <div>ドリンクを<br>タップして追加</div>
+      </div>`;
+  } else {
+    cartList.innerHTML = cart.map((item, i) => `
+      <div class="cart-item">
+        <div class="ci-left">
+          <div class="ci-name">${item.drink.emoji} ${item.drink.name}</div>
+          <div class="ci-price">¥${item.price.toLocaleString()}</div>
+        </div>
+        <button class="ci-del" onclick="removeFromCart(${i})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  const canSend = cart.length > 0 && selectedTable !== null && marketOpen;
+  sendBtn.disabled = !canSend;
+
+  if (!selectedTable) {
+    cartNote.textContent = '↑ 卓番号を選択してください';
+  } else if (!marketOpen) {
+    cartNote.textContent = '現在閉店中です';
+  } else if (cart.length > 0) {
+    cartNote.textContent = `${selectedTable}番卓 · ${cart.length}点 ¥${total.toLocaleString()}`;
+  } else {
+    cartNote.textContent = `${selectedTable}番卓が選択中`;
+  }
+}
+
+// ── SEND ORDER ──
+sendBtn.onclick = () => {
+  if (cart.length === 0 || selectedTable === null) return;
+
+  const now = new Date();
+  const timeStr = now.toTimeString().slice(0,5);
+
+  cart.forEach(item => {
+    const entry = {
+      drinkId: item.drink.id,
+      drinkName: item.drink.name,
+      emoji: item.drink.emoji || '🍹',
+      price: item.price,
+      tableNo: selectedTable,
+      staffOrder: true,
+      ts: now.toISOString(),
+    };
+    Transport.emit('order', entry);
+
+    // Also post to server if connected
+    if (Transport.isConnected()) {
+      fetch('/api/order', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(entry),
+      }).catch(()=>{});
+    }
+
+    // Log it locally
+    orderLog.unshift({
+      tableNo: selectedTable,
+      drinkName: item.drink.name,
+      emoji: item.drink.emoji,
+      price: item.price,
+      time: timeStr,
+    });
+  });
+
+  const count = cart.length;
+  const tableNo = selectedTable;
+
+  // Save today's log to localStorage
+  saveLog();
+
+  // Clear cart
+  cart = [];
+  updateCartUI();
+  renderLog();
+
+  showToast(`✅ ${tableNo}番卓 · ${count}点 送信しました`);
+};
+
+// ── LOG ──
+function saveLog() {
+  const key = 'barexchange_staff_log_' + new Date().toISOString().slice(0,10);
+  localStorage.setItem(key, JSON.stringify(orderLog));
+}
+
+function loadLog() {
+  const key = 'barexchange_staff_log_' + new Date().toISOString().slice(0,10);
+  try {
+    orderLog = JSON.parse(localStorage.getItem(key) || '[]');
+  } catch(e) { orderLog = []; }
+}
+
+function renderLog() {
+  logBadge.textContent = orderLog.length + '件';
+  if (orderLog.length === 0) {
+    logInner.innerHTML = '<div class="log-empty">まだ注文はありません</div>';
+    return;
+  }
+  logInner.innerHTML = orderLog.slice(0, 60).map(r => `
+    <div class="log-row">
+      <span class="log-tbl">${r.tableNo}番</span>
+      <span class="log-name">${r.emoji} ${r.drinkName}</span>
+      <span class="log-price">¥${r.price.toLocaleString()}</span>
+      <span class="log-time">${r.time}</span>
+    </div>
+  `).join('');
+}
+
+// ── LOG SHEET TOGGLE ──
+document.getElementById('log-toggle').onclick = () => {
+  logOpen = !logOpen;
+  logSheet.classList.toggle('open', logOpen);
+  document.querySelector('.log-toggle-label').textContent =
+    (logOpen ? '▼' : '▲') + ' 本日の注文履歴';
+};
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── CONNECTIVITY ──
+Transport.on('_conn', live => {
+  connDot.className   = 'conn-dot' + (live ? ' live' : '');
+  connLabel.textContent = live ? 'LIVE' : 'OFFLINE';
+});
+
+// ── REAL-TIME UPDATES ──
+Transport.on('price_update', state => {
+  if (state && state.drinks) {
+    drinks = state.drinks;
+    renderGrid();
+  }
+});
+
+Transport.on('config_updated', cfg => {
+  if (cfg && cfg.drinks) {
+    drinks = cfg.drinks.map(d => ({
+      ...d, price:d.base, change:0, pctChange:0,
+    }));
+    renderGrid();
+  }
+});
+
+Transport.on('market_status', data => {
+  marketOpen = data.open;
+  document.getElementById('closed-banner').style.display = marketOpen ? 'none' : 'block';
+  updateCartUI();
+});
+
+Transport.on('crash_event', data => {
+  const banner = document.getElementById('crash-banner');
+  banner.style.display = 'block';
+  setTimeout(() => { banner.style.display = 'none'; }, 8000);
+  // Refresh prices after crash
+  if (data && data.state) {
+    drinks = data.state.drinks || drinks;
+    renderGrid();
+  }
+});
+
+// ── INIT ──
+buildTableBar();
+loadLog();
+renderLog();
+initDrinks(null);
+updateCartUI();
+
+// Try to fetch current server state
+if (!window._noSocket) {
+  fetch('/api/dashboard')
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (data && data.drinks) {
+        drinks = data.drinks;
+        renderGrid();
+      }
+      if (data && typeof data.marketOpen === 'boolean') {
+        marketOpen = data.marketOpen;
+        document.getElementById('closed-banner').style.display = marketOpen ? 'none' : 'block';
+        updateCartUI();
+      }
+    })
+    .catch(()=>{});
+}
+</script>
+</body>
+</html>

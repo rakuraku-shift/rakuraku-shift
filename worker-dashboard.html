@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>ワーカーダッシュボード — BAR EXCHANGE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --indigo:   #4F46E5;
+      --indigo-d: #3730A3;
+      --indigo-l: #EEF2FF;
+      --slate-900:#0F172A;
+      --slate-700:#334155;
+      --slate-500:#64748B;
+      --slate-300:#CBD5E1;
+      --slate-200:#E2E8F0;
+      --slate-100:#F1F5F9;
+      --slate-50: #F8FAFC;
+      --white:    #FFFFFF;
+      --emerald:  #10B981;
+      --emerald-l:#ECFDF5;
+      --amber:    #F59E0B;
+      --amber-l:  #FFFBEB;
+      --red:      #EF4444;
+      --red-l:    #FEF2F2;
+      --orange:   #F97316;
+      --blue:     #3B82F6;
+      --blue-l:   #EFF6FF;
+      --pink:     #EC4899;
+      --pink-l:   #FDF2F8;
+      --purple:   #8B5CF6;
+      --purple-l: #F5F3FF;
+      --radius-sm:8px;
+      --radius:   12px;
+      --radius-lg:16px;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+      --shadow:   0 4px 12px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.06);
+      --shadow-lg:0 10px 30px rgba(0,0,0,.10),0 4px 8px rgba(0,0,0,.06);
+    }
+
+    * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+    body {
+      font-family:'Inter',sans-serif;
+      background:var(--slate-50);
+      color:var(--slate-900);
+      min-height:100vh;
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    /* ── App Header ── */
+    .app-header {
+      background:linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);
+      padding:20px 16px 16px;
+      color:#fff;
+      position:sticky; top:0; z-index:200;
+    }
+    .app-header h1 { font-size:17px; font-weight:800; letter-spacing:-.02em; }
+    .app-header p  { font-size:11px; opacity:.75; margin-top:2px; }
+
+    /* ── Tab bar ── */
+    .tab-bar {
+      display:flex;
+      background:var(--white);
+      border-bottom:1px solid var(--slate-200);
+      position:sticky; top:69px; z-index:190;
+      box-shadow:var(--shadow-sm);
+      overflow-x:auto;
+    }
+    .tab-btn {
+      flex:1; min-width:80px; padding:12px 8px 10px;
+      border:none; background:transparent;
+      font-family:inherit; font-size:11px; font-weight:600;
+      color:var(--slate-500); cursor:pointer;
+      display:flex; flex-direction:column; align-items:center; gap:3px;
+      border-bottom:2px solid transparent;
+      transition:all .2s; white-space:nowrap;
+    }
+    .tab-btn .icon { font-size:18px; }
+    .tab-btn.active { color:var(--indigo); border-bottom-color:var(--indigo); }
+
+    /* ── Screens ── */
+    .screen { display:none; padding:16px; max-width:540px; margin:0 auto; }
+    .screen.active { display:block; }
+
+    /* ── Cards ── */
+    .card {
+      background:var(--white);
+      border-radius:var(--radius-lg);
+      padding:20px;
+      margin-bottom:14px;
+      box-shadow:var(--shadow-sm);
+      border:1px solid var(--slate-200);
+    }
+    .card-sm { padding:14px 16px; }
+
+    .section-title {
+      font-size:13px; font-weight:700; color:var(--slate-900);
+      display:flex; align-items:center; gap:6px;
+      margin-bottom:14px;
+    }
+
+    /* ── Fields ── */
+    .field { margin-bottom:14px; }
+    .field:last-child { margin-bottom:0; }
+    .field label {
+      display:block; font-size:11px; font-weight:700;
+      color:var(--slate-500); letter-spacing:.05em;
+      text-transform:uppercase; margin-bottom:6px;
+    }
+    .field input, .field select, .field textarea {
+      width:100%; padding:11px 14px;
+      border:1.5px solid var(--slate-200);
+      border-radius:var(--radius-sm);
+      font-size:14px; font-family:inherit;
+      color:var(--slate-900);
+      background:var(--slate-50);
+      outline:none; transition:all .2s;
+      appearance:none;
+    }
+    .field textarea { resize:vertical; min-height:88px; }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color:var(--indigo);
+      background:var(--white);
+      box-shadow:0 0 0 3px rgba(79,70,229,.12);
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      width:100%; padding:14px;
+      border:none; border-radius:var(--radius);
+      font-size:14px; font-weight:700; font-family:inherit;
+      cursor:pointer; transition:all .18s;
+      display:flex; align-items:center; justify-content:center; gap:7px;
+    }
+    .btn-primary { background:var(--indigo); color:#fff; box-shadow:0 2px 12px rgba(79,70,229,.35); }
+    .btn-primary:hover  { background:var(--indigo-d); }
+    .btn-primary:active { transform:scale(.98); }
+    .btn-success { background:var(--emerald); color:#fff; }
+    .btn-success:active { transform:scale(.98); }
+    .btn-ghost {
+      background:transparent; color:var(--slate-500);
+      border:1.5px solid var(--slate-200);
+      width:auto; padding:8px 14px; font-size:12px;
+    }
+    .btn-ghost:hover { border-color:var(--indigo); color:var(--indigo); }
+
+    /* ── Toast ── */
+    #toast {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
+      background:var(--slate-900); color:#fff;
+      padding:11px 20px; border-radius:30px;
+      font-size:13px; font-weight:600;
+      box-shadow:var(--shadow-lg);
+      transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+      z-index:9999; white-space:nowrap;
+    }
+    #toast.show { transform:translateX(-50%) translateY(0); }
+
+    /* ═══════════════════════════════════════
+       SCREEN 1: 職場を探す
+    ═══════════════════════════════════════ */
+    .search-bar {
+      display:flex; gap:8px; margin-bottom:16px;
+    }
+    .search-bar input {
+      flex:1; padding:11px 14px;
+      border:1.5px solid var(--slate-200);
+      border-radius:var(--radius-sm);
+      font-size:14px; font-family:inherit;
+      background:var(--white); outline:none; transition:border .2s;
+    }
+    .search-bar input:focus { border-color:var(--indigo); }
+    .search-bar button {
+      padding:11px 16px;
+      background:var(--indigo); color:#fff;
+      border:none; border-radius:var(--radius-sm);
+      font-size:14px; cursor:pointer; font-weight:700;
+      transition:background .18s;
+    }
+    .search-bar button:hover { background:var(--indigo-d); }
+
+    /* Shop card */
+    .shop-card {
+      background:var(--white); border-radius:var(--radius-lg);
+      padding:16px; margin-bottom:12px;
+      box-shadow:var(--shadow-sm); border:1px solid var(--slate-200);
+      cursor:pointer; transition:all .18s;
+    }
+    .shop-card:hover { border-color:var(--indigo); box-shadow:0 4px 16px rgba(79,70,229,.12); }
+    .shop-card-row { display:flex; align-items:center; gap:12px; }
+    .shop-avatar {
+      width:48px; height:48px; border-radius:var(--radius);
+      background:linear-gradient(135deg,#4F46E5,#7C3AED);
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px; flex-shrink:0;
+    }
+    .shop-info { flex:1; min-width:0; }
+    .shop-name { font-size:15px; font-weight:700; color:var(--slate-900); }
+    .shop-meta { font-size:11px; color:var(--slate-500); margin-top:2px; }
+    .shop-rating-row { display:flex; align-items:center; gap:6px; margin-top:6px; }
+    .stars-display { color:#F59E0B; font-size:14px; letter-spacing:1px; }
+    .rating-num { font-size:14px; font-weight:700; color:var(--slate-900); }
+    .review-count { font-size:11px; color:var(--slate-500); }
+
+    /* ── Detail view ── */
+    .detail-back {
+      display:flex; align-items:center; gap:6px;
+      color:var(--indigo); font-size:13px; font-weight:600;
+      cursor:pointer; margin-bottom:16px; width:fit-content;
+    }
+    .detail-back:hover { opacity:.8; }
+
+    .rating-overview {
+      display:flex; align-items:center; gap:20px;
+      padding:20px 0; border-bottom:1px solid var(--slate-100);
+      margin-bottom:16px;
+    }
+    .big-score {
+      font-size:52px; font-weight:900; color:var(--indigo);
+      line-height:1;
+    }
+    .big-score-sub { font-size:12px; color:var(--slate-500); margin-top:4px; }
+
+    /* Category bars */
+    .cat-row {
+      display:flex; align-items:center; gap:8px; margin-bottom:8px;
+    }
+    .cat-label { font-size:12px; color:var(--slate-700); width:96px; flex-shrink:0; }
+    .cat-bar-bg {
+      flex:1; height:7px; background:var(--slate-100); border-radius:99px; overflow:hidden;
+    }
+    .cat-bar-fill { height:100%; border-radius:99px; background:var(--indigo); transition:width .6s; }
+    .cat-score { font-size:12px; font-weight:700; color:var(--slate-700); width:24px; text-align:right; }
+
+    /* Demographics */
+    .demo-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .demo-card { background:var(--slate-50); border-radius:var(--radius); padding:14px; }
+    .demo-title { font-size:11px; font-weight:700; color:var(--slate-500); margin-bottom:10px; letter-spacing:.05em; text-transform:uppercase; }
+
+    /* Donut chart (CSS) */
+    .donut-wrap { position:relative; width:80px; height:80px; margin:0 auto 10px; }
+    .donut-svg { width:80px; height:80px; transform:rotate(-90deg); }
+    .donut-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .donut-center .big { font-size:16px; font-weight:800; color:var(--slate-900); }
+    .donut-center .small { font-size:9px; color:var(--slate-500); }
+
+    /* Bar chart (horizontal) */
+    .hbar-row { display:flex; align-items:center; gap:6px; margin-bottom:5px; }
+    .hbar-label { font-size:11px; color:var(--slate-600); width:56px; flex-shrink:0; }
+    .hbar-bg { flex:1; height:6px; background:var(--slate-100); border-radius:99px; overflow:hidden; }
+    .hbar-fill { height:100%; border-radius:99px; background:var(--purple); transition:width .6s; }
+    .hbar-val { font-size:11px; color:var(--slate-500); width:22px; text-align:right; }
+
+    /* Legend dot */
+    .legend-row { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--slate-600); margin-bottom:4px; }
+    .legend-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+
+    /* Recommend badge */
+    .recommend-badge {
+      display:inline-flex; align-items:center; gap:4px;
+      background:var(--emerald-l); color:var(--emerald);
+      border-radius:99px; padding:5px 12px;
+      font-size:12px; font-weight:700;
+    }
+
+    /* Comments */
+    .comment-item {
+      background:var(--slate-50); border-radius:var(--radius);
+      padding:12px 14px; margin-bottom:8px;
+      border-left:3px solid var(--indigo-l);
+    }
+    .comment-text { font-size:13px; color:var(--slate-700); line-height:1.55; }
+    .comment-meta { font-size:10px; color:var(--slate-400); margin-top:5px; }
+
+    .empty-state {
+      text-align:center; padding:40px 20px;
+      color:var(--slate-400); font-size:13px;
+    }
+    .empty-state .emoji { font-size:40px; margin-bottom:10px; }
+
+    /* ═══════════════════════════════════════
+       SCREEN 2: アンケート
+    ═══════════════════════════════════════ */
+
+    /* Star rating input */
+    .star-rating { display:flex; gap:6px; flex-direction:row-reverse; justify-content:flex-end; }
+    .star-rating input { display:none; }
+    .star-rating label {
+      font-size:28px; cursor:pointer; color:var(--slate-200);
+      transition:color .1s;
+    }
+    .star-rating label:hover,
+    .star-rating label:hover ~ label,
+    .star-rating input:checked ~ label { color:#F59E0B; }
+
+    .rating-block { margin-bottom:18px; }
+    .rating-block .r-label {
+      font-size:13px; font-weight:600; color:var(--slate-700);
+      margin-bottom:6px; display:flex; align-items:center; gap:5px;
+    }
+
+    .radio-group { display:flex; flex-wrap:wrap; gap:8px; }
+    .radio-pill {
+      padding:7px 14px; border-radius:99px;
+      border:1.5px solid var(--slate-200);
+      font-size:12px; font-weight:600; cursor:pointer;
+      color:var(--slate-600); transition:all .15s;
+    }
+    .radio-pill.selected {
+      background:var(--indigo); color:#fff; border-color:var(--indigo);
+    }
+
+    .anon-notice {
+      display:flex; align-items:flex-start; gap:8px;
+      background:var(--indigo-l); border-radius:var(--radius);
+      padding:12px 14px; margin-bottom:16px;
+      font-size:12px; color:var(--indigo-d);
+    }
+
+    /* ═══════════════════════════════════════
+       SCREEN 3: マイプロフィール
+    ═══════════════════════════════════════ */
+    .profile-hero {
+      background:linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);
+      border-radius:var(--radius-lg); padding:24px 20px;
+      color:#fff; margin-bottom:14px; position:relative;
+      overflow:hidden;
+    }
+    .profile-hero::after {
+      content:''; position:absolute; right:-20px; bottom:-20px;
+      width:120px; height:120px; border-radius:50%;
+      background:rgba(255,255,255,.08);
+    }
+    .avatar-circle {
+      width:68px; height:68px; border-radius:50%;
+      background:rgba(255,255,255,.25);
+      display:flex; align-items:center; justify-content:center;
+      font-size:30px; margin-bottom:12px;
+      border:2px solid rgba(255,255,255,.4);
+    }
+    .profile-name { font-size:20px; font-weight:800; }
+    .profile-sub { font-size:12px; opacity:.8; margin-top:3px; }
+    .profile-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+    .ptag {
+      background:rgba(255,255,255,.2); border-radius:99px;
+      padding:4px 10px; font-size:11px; font-weight:600;
+    }
+
+    /* Skills */
+    .skill-list { display:flex; flex-direction:column; gap:10px; }
+    .skill-item { }
+    .skill-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+    .skill-name { font-size:13px; font-weight:600; color:var(--slate-700); }
+    .skill-endorsements { font-size:11px; color:var(--indigo); font-weight:600; }
+    .skill-bar { height:5px; background:var(--slate-100); border-radius:99px; overflow:hidden; }
+    .skill-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--indigo),var(--purple)); }
+
+    /* Work history */
+    .history-list { display:flex; flex-direction:column; gap:12px; }
+    .history-item { display:flex; gap:12px; }
+    .history-dot-col { display:flex; flex-direction:column; align-items:center; }
+    .history-dot { width:10px; height:10px; border-radius:50%; background:var(--indigo); margin-top:4px; flex-shrink:0; }
+    .history-line { flex:1; width:2px; background:var(--slate-100); margin-top:4px; }
+    .history-body { flex:1; padding-bottom:12px; }
+    .history-role { font-size:13px; font-weight:700; color:var(--slate-900); }
+    .history-shop { font-size:12px; color:var(--indigo); font-weight:600; }
+    .history-period { font-size:11px; color:var(--slate-400); margin-top:2px; }
+    .history-desc { font-size:12px; color:var(--slate-500); margin-top:4px; }
+
+    /* Edit panel */
+    .edit-toggle {
+      font-size:12px; color:var(--indigo); font-weight:600;
+      cursor:pointer; margin-left:auto; padding:4px 0;
+    }
+    .edit-toggle:hover { opacity:.7; }
+    .collapsible { display:none; margin-top:14px; }
+    .collapsible.open { display:block; }
+
+    /* ═══════════════════════════════════════
+       SCREEN 4: 管理 (送信管理)
+    ═══════════════════════════════════════ */
+    .staff-row-admin {
+      display:flex; align-items:center; gap:10px;
+      padding:10px 0; border-bottom:1px solid var(--slate-100);
+    }
+    .staff-row-admin:last-child { border-bottom:none; }
+    .staff-status-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .status-sent    { background:var(--emerald); }
+    .status-pending { background:var(--amber); }
+    .staff-admin-name { flex:1; font-size:13px; font-weight:600; }
+    .staff-admin-email { font-size:11px; color:var(--slate-400); }
+
+    .invite-badge {
+      font-size:11px; padding:3px 8px; border-radius:99px;
+      font-weight:600;
+    }
+    .invite-badge.sent { background:var(--emerald-l); color:var(--emerald); }
+    .invite-badge.pending { background:var(--amber-l); color:#92400E; }
+
+    /* ── Manager inline section ── */
+    .mgr-section { margin-top:20px; padding-top:20px; border-top:1px solid var(--slate-100); }
+    .mgr-label { font-size:11px; font-weight:700; color:var(--slate-500); text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px; }
+
+    /* ── Responsive ── */
+    @media(max-width:420px) {
+      .demo-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>⭐ ワーカーダッシュボード</h1>
+  <p>職場評価 · アンケート · プロフィール</p>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('browse')" id="tab-browse">
+    <span class="icon">🔍</span>職場を探す
+  </button>
+  <button class="tab-btn" onclick="switchTab('survey')" id="tab-survey">
+    <span class="icon">📋</span>評価を書く
+  </button>
+  <button class="tab-btn" onclick="switchTab('profile')" id="tab-profile">
+    <span class="icon">👤</span>プロフィール
+  </button>
+  <button class="tab-btn" onclick="switchTab('admin')" id="tab-admin">
+    <span class="icon">⚙️</span>管理
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 1: 職場を探す
+═══════════════════════════════════════════ -->
+<div class="screen active" id="screen-browse">
+
+  <!-- Shop list -->
+  <div id="browse-list-view">
+    <div class="search-bar">
+      <input type="text" id="shop-search" placeholder="店名で検索..." oninput="filterShops()" />
+      <button onclick="loadShops()">🔄</button>
+    </div>
+    <div id="shop-list-container">
+      <div class="empty-state"><div class="emoji">⏳</div>読み込み中...</div>
+    </div>
+  </div>
+
+  <!-- Shop detail -->
+  <div id="browse-detail-view" style="display:none;">
+    <div class="detail-back" onclick="backToList()">← 一覧に戻る</div>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 2: アンケート
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-survey">
+
+  <div class="anon-notice">
+    🔒 回答は完全匿名です。個人が特定されることはありません。
+  </div>
+
+  <div class="card">
+    <div class="section-title">📍 勤務先情報</div>
+
+    <div class="field">
+      <label>店舗ID / 店名 *</label>
+      <input type="text" id="sv-shop-id" placeholder="例: bar-exchange" />
+    </div>
+    <div class="field">
+      <label>店舗名（表示用）</label>
+      <input type="text" id="sv-shop-name" placeholder="例: BAR EXCHANGE 渋谷店" />
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">👤 あなたについて（任意）</div>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:14px;">統計に使用します。個人特定には使用しません。</p>
+
+    <div class="field">
+      <label>年齢層</label>
+      <div class="radio-group" id="rg-age">
+        <span class="radio-pill" data-group="age" data-val="18-19" onclick="selectPill(this)">18〜19歳</span>
+        <span class="radio-pill" data-group="age" data-val="20-24" onclick="selectPill(this)">20〜24歳</span>
+        <span class="radio-pill" data-group="age" data-val="25-29" onclick="selectPill(this)">25〜29歳</span>
+        <span class="radio-pill" data-group="age" data-val="30-34" onclick="selectPill(this)">30〜34歳</span>
+        <span class="radio-pill" data-group="age" data-val="35+"  onclick="selectPill(this)">35歳以上</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>性別</label>
+      <div class="radio-group" id="rg-gender">
+        <span class="radio-pill" data-group="gender" data-val="male"      onclick="selectPill(this)">男性</span>
+        <span class="radio-pill" data-group="gender" data-val="female"    onclick="selectPill(this)">女性</span>
+        <span class="radio-pill" data-group="gender" data-val="other"     onclick="selectPill(this)">その他</span>
+        <span class="radio-pill" data-group="gender" data-val="no-answer" onclick="selectPill(this)">回答しない</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>勤務歴</label>
+      <div class="radio-group" id="rg-tenure">
+        <span class="radio-pill" data-group="tenure" data-val="under1month"    onclick="selectPill(this)">1ヶ月未満</span>
+        <span class="radio-pill" data-group="tenure" data-val="1-3months"      onclick="selectPill(this)">1〜3ヶ月</span>
+        <span class="radio-pill" data-group="tenure" data-val="3-6months"      onclick="selectPill(this)">3〜6ヶ月</span>
+        <span class="radio-pill" data-group="tenure" data-val="6months-1year"  onclick="selectPill(this)">6ヶ月〜1年</span>
+        <span class="radio-pill" data-group="tenure" data-val="over1year"      onclick="selectPill(this)">1年以上</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">⭐ 職場評価</div>
+
+    <div class="rating-block">
+      <div class="r-label">🌟 総合評価</div>
+      <div class="star-rating" id="sr-overall">
+        <input type="radio" name="sr-overall" id="so5" value="5"><label for="so5">★</label>
+        <input type="radio" name="sr-overall" id="so4" value="4"><label for="so4">★</label>
+        <input type="radio" name="sr-overall" id="so3" value="3"><label for="so3">★</label>
+        <input type="radio" name="sr-overall" id="so2" value="2"><label for="so2">★</label>
+        <input type="radio" name="sr-overall" id="so1" value="1"><label for="so1">★</label>
+      </div>
+    </div>
+
+    <div class="rating-block">
+      <div class="r-label">😊 職場の雰囲気</div>
+      <div class="star-rating" id="sr-atmosphere">
+        <input type="radio" name="sr-atm" id="sa5" value="5"><label for="sa5">★</label>
+        <input type="radio" name="sr-atm" id="sa4" value="4"><label for="sa4">★</label>
+        <input type="radio" name="sr-atm" id="sa3" value="3"><label for="sa3">★</label>
+        <input type="radio" name="sr-atm" id="sa2" value="2"><label for="sa2">★</label>
+        <input type="radio" name="sr-atm" id="sa1" value="1"><label for="sa1">★</label>
+      </div>
+    </div>
+
+    <div class="rating-block">
+      <div class="r-label">👔 店長・マネージャー</div>
+      <div class="star-rating" id="sr-management">
+        <input type="radio" name="sr-mgmt" id="sm5" value="5"><label for="sm5">★</label>
+        <input type="radio" name="sr-mgmt" id="sm4" value="4"><label for="sm4">★</label>
+        <input type="radio" name="sr-mgmt" id="sm3" value="3"><label for="sm3">★</label>
+        <input type="radio" name="sr-mgmt" id="sm2" value="2"><label for="sm2">★</label>
+        <input type="radio" name="sr-mgmt" id="sm1" value="1"><label for="sm1">★</label>
+      </div>
+    </div>
+
+    <div class="rating-block">
+      <div class="r-label">💰 給与・待遇</div>
+      <div class="star-rating" id="sr-salary">
+        <input type="radio" name="sr-sal" id="ss5" value="5"><label for="ss5">★</label>
+        <input type="radio" name="sr-sal" id="ss4" value="4"><label for="ss4">★</label>
+        <input type="radio" name="sr-sal" id="ss3" value="3"><label for="ss3">★</label>
+        <input type="radio" name="sr-sal" id="ss2" value="2"><label for="ss2">★</label>
+        <input type="radio" name="sr-sal" id="ss1" value="1"><label for="ss1">★</label>
+      </div>
+    </div>
+
+    <div class="rating-block">
+      <div class="r-label">📅 シフトの柔軟性</div>
+      <div class="star-rating" id="sr-schedule">
+        <input type="radio" name="sr-sch" id="sc5" value="5"><label for="sc5">★</label>
+        <input type="radio" name="sr-sch" id="sc4" value="4"><label for="sc4">★</label>
+        <input type="radio" name="sr-sch" id="sc3" value="3"><label for="sc3">★</label>
+        <input type="radio" name="sr-sch" id="sc2" value="2"><label for="sc2">★</label>
+        <input type="radio" name="sr-sch" id="sc1" value="1"><label for="sc1">★</label>
+      </div>
+    </div>
+
+    <div class="rating-block">
+      <div class="r-label">📈 成長・スキルアップ</div>
+      <div class="star-rating" id="sr-growth">
+        <input type="radio" name="sr-grw" id="sg5" value="5"><label for="sg5">★</label>
+        <input type="radio" name="sr-grw" id="sg4" value="4"><label for="sg4">★</label>
+        <input type="radio" name="sr-grw" id="sg3" value="3"><label for="sg3">★</label>
+        <input type="radio" name="sr-grw" id="sg2" value="2"><label for="sg2">★</label>
+        <input type="radio" name="sr-grw" id="sg1" value="1"><label for="sg1">★</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">💬 自由コメント</div>
+    <div class="field">
+      <textarea id="sv-comment" placeholder="職場の良いところ、改善してほしいところ、働いてみての感想など...（任意）" maxlength="500"></textarea>
+    </div>
+
+    <div class="field">
+      <label>この職場を友人に勧めますか？</label>
+      <div class="radio-group" id="rg-recommend">
+        <span class="radio-pill" data-group="recommend" data-val="yes" onclick="selectPill(this)">👍 勧める</span>
+        <span class="radio-pill" data-group="recommend" data-val="no"  onclick="selectPill(this)">👎 勧めない</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-primary" onclick="submitSurvey()" style="margin-bottom:30px;">
+    ✅ 匿名で送信する
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 3: マイプロフィール
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-profile">
+
+  <!-- Hero -->
+  <div class="profile-hero" id="profile-hero">
+    <div class="avatar-circle" id="prof-avatar">👤</div>
+    <div class="profile-name" id="prof-name">名前を設定してください</div>
+    <div class="profile-sub" id="prof-sub">プロフィールを作成しましょう</div>
+    <div class="profile-tags" id="prof-tags"></div>
+  </div>
+
+  <!-- Edit profile -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="section-title" style="margin-bottom:0;">基本情報</div>
+      <span class="edit-toggle" onclick="toggleEdit('edit-basic')">✏️ 編集</span>
+    </div>
+    <div id="prof-summary" style="margin-top:12px;font-size:13px;color:var(--slate-600);"></div>
+    <div class="collapsible" id="edit-basic">
+      <div class="field"><label>名前</label><input type="text" id="pi-name" placeholder="山田 太郎" /></div>
+      <div class="field"><label>一言自己紹介</label><input type="text" id="pi-bio" placeholder="バーテンダー3年。カクテル好き" /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="field"><label>年齢</label><input type="number" id="pi-age" placeholder="22" min="16" max="70"/></div>
+        <div class="field">
+          <label>性別</label>
+          <select id="pi-gender">
+            <option value="">選択</option>
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
+            <option value="その他">その他</option>
+            <option value="回答しない">回答しない</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>対応ポジション（カンマ区切り）</label><input type="text" id="pi-positions" placeholder="バーテンダー, ホール, レジ" /></div>
+      <button class="btn btn-primary" onclick="saveProfile()" style="margin-top:4px;">保存</button>
+    </div>
+  </div>
+
+  <!-- Skills -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="section-title" style="margin-bottom:0;">🛠 スキル</div>
+      <span class="edit-toggle" onclick="toggleEdit('edit-skills')">＋ 追加</span>
+    </div>
+    <div class="skill-list" id="skill-list" style="margin-top:12px;"></div>
+    <div class="collapsible" id="edit-skills" style="margin-top:12px;">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;">
+        <div class="field" style="margin-bottom:0;">
+          <label>スキル名</label>
+          <input type="text" id="skill-inp" placeholder="例: カクテル調合" />
+        </div>
+        <button class="btn btn-ghost" onclick="addSkill()" style="height:42px;">追加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Work history -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="section-title" style="margin-bottom:0;">📋 勤務経歴</div>
+      <span class="edit-toggle" onclick="toggleEdit('edit-history')">＋ 追加</span>
+    </div>
+    <div class="history-list" id="history-list" style="margin-top:14px;"></div>
+    <div class="collapsible" id="edit-history">
+      <div style="border-top:1px solid var(--slate-100);margin:14px 0 14px;"></div>
+      <div class="field"><label>役割 / ポジション</label><input type="text" id="h-role" placeholder="バーテンダー" /></div>
+      <div class="field"><label>店舗名</label><input type="text" id="h-shop" placeholder="BAR EXCHANGE 渋谷店" /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="field"><label>開始月</label><input type="month" id="h-start" /></div>
+        <div class="field"><label>終了月（在職中なら空欄）</label><input type="month" id="h-end" /></div>
+      </div>
+      <div class="field"><label>業務内容（任意）</label><input type="text" id="h-desc" placeholder="カクテル調合・在庫管理など" /></div>
+      <button class="btn btn-primary" onclick="addHistory()">追加する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 4: 管理（アンケート送信管理）
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-admin">
+
+  <div class="card">
+    <div class="section-title">📧 アンケート一括送信</div>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:16px;">
+      スタッフのメールアドレスを登録してアンケートリンクを送信します。月1回などの定期送信に活用してください。
+    </p>
+
+    <div class="field">
+      <label>店舗ID</label>
+      <input type="text" id="adm-shopid" placeholder="bar-exchange" />
+    </div>
+    <div class="field">
+      <label>店舗名</label>
+      <input type="text" id="adm-shopname" placeholder="BAR EXCHANGE 渋谷店" />
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:10px;">
+      <div class="field" style="margin-bottom:0;">
+        <label>名前</label><input type="text" id="adm-sname" placeholder="田中 花子" />
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label>メール</label><input type="email" id="adm-semail" placeholder="hanako@example.com" />
+      </div>
+      <button class="btn btn-ghost" onclick="addAdminStaff()" style="height:42px;padding:0 12px;">追加</button>
+    </div>
+
+    <div id="admin-staff-list" style="margin-bottom:14px;"></div>
+
+    <button class="btn btn-primary" onclick="sendSurveyInvites()">
+      📨 アンケートメールを送信
+    </button>
+  </div>
+
+  <div class="card" style="margin-top:0;">
+    <div class="section-title">📊 送信履歴</div>
+    <div id="invite-history"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let currentTab = 'browse';
+let allShops   = [];         // shop list from API
+let adminStaff = [];         // email list for sending
+let surveyPills = {};        // { group: value }
+
+// Profile from localStorage
+function loadProfile() {
+  try { return JSON.parse(localStorage.getItem('worker_profile') || '{}'); } catch { return {}; }
+}
+function saveProfileData(p) { localStorage.setItem('worker_profile', JSON.stringify(p)); }
+
+function loadSkills() {
+  try { return JSON.parse(localStorage.getItem('worker_skills') || '[]'); } catch { return []; }
+}
+function saveSkillsData(s) { localStorage.setItem('worker_skills', JSON.stringify(s)); }
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem('worker_history') || '[]'); } catch { return []; }
+}
+function saveHistoryData(h) { localStorage.setItem('worker_history', JSON.stringify(h)); }
+
+function loadAdminStaff() {
+  try { return JSON.parse(localStorage.getItem('survey_admin_staff') || '[]'); } catch { return []; }
+}
+function saveAdminStaff(s) { localStorage.setItem('survey_admin_staff', JSON.stringify(s)); }
+
+function loadInviteHistory() {
+  try { return JSON.parse(localStorage.getItem('survey_invite_history') || '[]'); } catch { return []; }
+}
+function saveInviteHistory(h) { localStorage.setItem('survey_invite_history', JSON.stringify(h)); }
+
+// ══════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('screen-' + tab).classList.add('active');
+  if (tab === 'browse') loadShops();
+  if (tab === 'profile') renderProfile();
+  if (tab === 'admin') renderAdminTab();
+}
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ══════════════════════════════════════════
+//  BROWSE — 職場を探す
+// ══════════════════════════════════════════
+async function loadShops() {
+  try {
+    const r = await fetch('/api/survey/shops');
+    const shops = await r.json();
+    allShops = shops;
+    renderShopList(shops);
+  } catch {
+    // Fallback: show demo data when server not running
+    allShops = getDemoShops();
+    renderShopList(allShops);
+  }
+}
+
+function getDemoShops() {
+  return [
+    { shopId:'bar-exchange', shopName:'BAR EXCHANGE 渋谷店', count:12 },
+    { shopId:'night-lounge', shopName:'NIGHT LOUNGE 六本木',  count:7  },
+    { shopId:'craft-bar',    shopName:'CRAFT BAR 新宿',       count:5  },
+  ];
+}
+
+function filterShops() {
+  const q = document.getElementById('shop-search').value.toLowerCase();
+  renderShopList(allShops.filter(s => s.shopName.toLowerCase().includes(q) || s.shopId.includes(q)));
+}
+
+function renderShopList(shops) {
+  const el = document.getElementById('shop-list-container');
+  if (!shops.length) {
+    el.innerHTML = `<div class="empty-state"><div class="emoji">🏪</div>まだ職場の評価がありません。<br>最初に評価を書いてみましょう！</div>`;
+    return;
+  }
+  el.innerHTML = shops.map(s => `
+    <div class="shop-card" onclick="openShopDetail('${s.shopId}')">
+      <div class="shop-card-row">
+        <div class="shop-avatar">🍺</div>
+        <div class="shop-info">
+          <div class="shop-name">${s.shopName}</div>
+          <div class="shop-meta">${s.count}件の評価</div>
+          <div class="shop-rating-row">
+            <span class="stars-display" id="stars-${s.shopId}">★★★★☆</span>
+            <span class="rating-num" id="rnum-${s.shopId}">—</span>
+            <span class="review-count">(${s.count})</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Load ratings for each shop
+  shops.forEach(s => loadShopRating(s.shopId));
+}
+
+async function loadShopRating(shopId) {
+  try {
+    const r = await fetch(`/api/survey/results?shopId=${shopId}`);
+    const data = await r.json();
+    const shop = data.shops[shopId];
+    if (!shop) return;
+    const score = shop.ratings.overall || 0;
+    const el = document.getElementById('rnum-' + shopId);
+    const stEl = document.getElementById('stars-' + shopId);
+    if (el) el.textContent = score.toFixed(1);
+    if (stEl) stEl.textContent = starsHTML(score);
+  } catch {}
+}
+
+function starsHTML(score) {
+  const full  = Math.floor(score);
+  const half  = score - full >= 0.5;
+  let s = '';
+  for (let i = 0; i < 5; i++) {
+    if (i < full) s += '★';
+    else if (i === full && half) s += '⭐';
+    else s += '☆';
+  }
+  return s;
+}
+
+async function openShopDetail(shopId) {
+  document.getElementById('browse-list-view').style.display = 'none';
+  document.getElementById('browse-detail-view').style.display = 'block';
+  document.getElementById('detail-content').innerHTML = '<div class="empty-state"><div class="emoji">⏳</div>読み込み中...</div>';
+
+  try {
+    const r = await fetch(`/api/survey/results?shopId=${shopId}`);
+    const data = await r.json();
+    const shop = data.shops[shopId];
+    if (!shop) {
+      document.getElementById('detail-content').innerHTML = '<div class="empty-state"><div class="emoji">😕</div>データがありません</div>';
+      return;
+    }
+    renderShopDetail(shop);
+  } catch {
+    // Demo fallback
+    renderShopDetail(getDemoShopDetail(shopId));
+  }
+}
+
+function getDemoShopDetail(shopId) {
+  return {
+    shopId, shopName: shopId === 'bar-exchange' ? 'BAR EXCHANGE 渋谷店' : shopId,
+    count: 12,
+    ratings: { overall:4.2, atmosphere:4.5, management:3.8, salary:3.9, schedule:4.6, growth:4.0 },
+    demographics: {
+      age:    { '18-19':1, '20-24':6, '25-29':3, '30-34':1, '35+':1 },
+      gender: { male:7, female:4, other:1 },
+      tenure: { 'under1month':1, '1-3months':3, '3-6months':4, '6months-1year':2, 'over1year':2 },
+    },
+    comments: [
+      { text:'雰囲気が明るく、先輩スタッフが丁寧に教えてくれる。シフトの融通もきいて働きやすい。', date:'2026-05-20' },
+      { text:'お酒の知識が増えてスキルアップできる。繁忙期はきついが時給が上がる。', date:'2026-05-15' },
+      { text:'店長がフェアで、頑張りを評価してくれる。おすすめ！', date:'2026-05-10' },
+      { text:'まかない飯がおいしい笑。深夜手当もちゃんと出る。', date:'2026-04-28' },
+    ],
+    recommends: 10,
+  };
+}
+
+function renderShopDetail(shop) {
+  const score = shop.ratings.overall || 0;
+  const recPct = shop.count ? Math.round(shop.recommends / shop.count * 100) : 0;
+
+  const catLabels = {
+    atmosphere:  '😊 雰囲気',
+    management:  '👔 マネジメント',
+    salary:      '💰 給与・待遇',
+    schedule:    '📅 シフト柔軟性',
+    growth:      '📈 成長機会',
+  };
+
+  const catBars = Object.entries(catLabels).map(([k, label]) => {
+    const v = shop.ratings[k] || 0;
+    const pct = (v / 5 * 100).toFixed(0);
+    return `<div class="cat-row">
+      <span class="cat-label">${label}</span>
+      <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${pct}%"></div></div>
+      <span class="cat-score">${v}</span>
+    </div>`;
+  }).join('');
+
+  // Demographics
+  const ageLabels  = { '18-19':'18〜19', '20-24':'20〜24', '25-29':'25〜29', '30-34':'30〜34', '35+':'35+' };
+  const genderColors = { male:'#3B82F6', female:'#EC4899', other:'#8B5CF6', unknown:'#CBD5E1', 'no-answer':'#CBD5E1' };
+  const tenureLabels = { 'under1month':'1ヶ月未満', '1-3months':'1〜3ヶ月', '3-6months':'3〜6ヶ月', '6months-1year':'〜1年', 'over1year':'1年+' };
+
+  // Age bars
+  const ageTotal = Object.values(shop.demographics.age).reduce((a,b)=>a+b,0) || 1;
+  const ageBars = Object.entries(ageLabels).map(([k, lbl]) => {
+    const v = shop.demographics.age[k] || 0;
+    const pct = (v / ageTotal * 100).toFixed(0);
+    return `<div class="hbar-row">
+      <span class="hbar-label">${lbl}歳</span>
+      <div class="hbar-bg"><div class="hbar-fill" style="width:${pct}%"></div></div>
+      <span class="hbar-val">${v}人</span>
+    </div>`;
+  }).join('');
+
+  // Gender donut
+  const gTotal = Object.values(shop.demographics.gender).reduce((a,b)=>a+b,0) || 1;
+  const gEntries = Object.entries(shop.demographics.gender).filter(([,v])=>v>0);
+  let genderDonut = buildDonut(gEntries, gTotal, genderColors);
+  const gLegend = gEntries.map(([k, v]) => {
+    const lbl = { male:'男性', female:'女性', other:'その他', 'no-answer':'未回答', unknown:'未回答' }[k] || k;
+    return `<div class="legend-row"><div class="legend-dot" style="background:${genderColors[k]||'#CBD5E1'}"></div>${lbl}: ${Math.round(v/gTotal*100)}%</div>`;
+  }).join('');
+
+  // Tenure bars
+  const tenureTotal = Object.values(shop.demographics.tenure).reduce((a,b)=>a+b,0) || 1;
+  const tenureBars = Object.entries(tenureLabels).map(([k, lbl]) => {
+    const v = shop.demographics.tenure[k] || 0;
+    const pct = (v / tenureTotal * 100).toFixed(0);
+    return `<div class="hbar-row">
+      <span class="hbar-label" style="width:68px">${lbl}</span>
+      <div class="hbar-bg"><div class="hbar-fill" style="width:${pct}%;background:var(--emerald)"></div></div>
+      <span class="hbar-val">${v}人</span>
+    </div>`;
+  }).join('');
+
+  // Comments
+  const comments = (shop.comments || []).slice(0, 10).map(c => `
+    <div class="comment-item">
+      <div class="comment-text">「${c.text}」</div>
+      <div class="comment-meta">🕐 ${c.date} · 匿名</div>
+    </div>
+  `).join('') || '<div style="color:var(--slate-400);font-size:13px;">まだコメントはありません。</div>';
+
+  document.getElementById('detail-content').innerHTML = `
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div class="shop-avatar">🍺</div>
+        <div>
+          <div class="shop-name">${shop.shopName}</div>
+          <div class="shop-meta">${shop.count}件の評価</div>
+        </div>
+      </div>
+
+      <div class="rating-overview">
+        <div>
+          <div class="big-score">${score.toFixed(1)}</div>
+          <div style="color:#F59E0B;font-size:20px;margin-top:4px;">${starsHTML(score)}</div>
+          <div class="big-score-sub">${shop.count}人が回答</div>
+        </div>
+        <div style="flex:1;">
+          ${catBars}
+        </div>
+      </div>
+
+      <div style="margin-top:6px;">
+        <span class="recommend-badge">👍 ${recPct}% が友人に勧める</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">👥 働く人のデモグラフィック</div>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="demo-title">性別比率</div>
+          <div class="donut-wrap">${genderDonut.svg}</div>
+          ${gLegend}
+        </div>
+        <div class="demo-card">
+          <div class="demo-title">年齢分布</div>
+          ${ageBars}
+        </div>
+        <div class="demo-card" style="grid-column:1/-1;">
+          <div class="demo-title">勤務歴</div>
+          ${tenureBars}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">💬 リアルな声（匿名）</div>
+      ${comments}
+    </div>
+
+    <button class="btn btn-primary" onclick="prefillSurvey('${shop.shopId}','${shop.shopName.replace(/'/g,"\\'")}')">
+      ✍️ この店舗の評価を書く
+    </button>
+  `;
+}
+
+function buildDonut(entries, total, colorMap) {
+  const r = 28, cx = 40, cy = 40, circ = 2 * Math.PI * r;
+  let offset = 0;
+  let paths = '';
+  entries.forEach(([k, v]) => {
+    const pct = v / total;
+    const dash = pct * circ;
+    const color = colorMap[k] || '#CBD5E1';
+    paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}"
+      stroke-width="12" stroke-dasharray="${dash} ${circ - dash}"
+      stroke-dashoffset="${-offset}" />`;
+    offset += dash;
+  });
+  const svg = `<svg class="donut-svg" viewBox="0 0 80 80">${paths}</svg>`;
+  return { svg };
+}
+
+function backToList() {
+  document.getElementById('browse-list-view').style.display = 'block';
+  document.getElementById('browse-detail-view').style.display = 'none';
+}
+
+function prefillSurvey(shopId, shopName) {
+  document.getElementById('sv-shop-id').value = shopId;
+  document.getElementById('sv-shop-name').value = shopName;
+  switchTab('survey');
+}
+
+// ══════════════════════════════════════════
+//  SURVEY — アンケート
+// ══════════════════════════════════════════
+function selectPill(el) {
+  const group = el.dataset.group;
+  surveyPills[group] = el.dataset.val;
+  document.querySelectorAll(`.radio-pill[data-group="${group}"]`).forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function getStarValue(name) {
+  const checked = document.querySelector(`input[name="${name}"]:checked`);
+  return checked ? parseInt(checked.value) : 0;
+}
+
+async function submitSurvey() {
+  const shopId   = document.getElementById('sv-shop-id').value.trim();
+  const shopName = document.getElementById('sv-shop-name').value.trim() || shopId;
+  if (!shopId) { showToast('⚠️ 店舗IDを入力してください'); return; }
+
+  const overall     = getStarValue('sr-overall');
+  const atmosphere  = getStarValue('sr-atm');
+  const management  = getStarValue('sr-mgmt');
+  const salary      = getStarValue('sr-sal');
+  const schedule    = getStarValue('sr-sch');
+  const growth      = getStarValue('sr-grw');
+
+  if (!overall) { showToast('⚠️ 総合評価を選択してください'); return; }
+
+  const payload = {
+    shopId, shopName,
+    respondent: {
+      ageGroup: surveyPills['age']    || null,
+      gender:   surveyPills['gender'] || null,
+      tenure:   surveyPills['tenure'] || null,
+    },
+    ratings: { overall, atmosphere, management, salary, schedule, growth },
+    comment:   document.getElementById('sv-comment').value.trim(),
+    recommend: surveyPills['recommend'] === 'yes',
+  };
+
+  try {
+    const r = await fetch('/api/survey/submit', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload),
+    });
+    if (r.ok) {
+      showToast('✅ 送信しました！ありがとうございます');
+      resetSurveyForm();
+      setTimeout(() => switchTab('browse'), 1200);
+    } else {
+      showToast('⚠️ 送信に失敗しました');
+    }
+  } catch {
+    // Offline / server not running — save locally
+    saveSurveyLocally(payload);
+    showToast('✅ 送信しました（オフラインモード）');
+    resetSurveyForm();
+    setTimeout(() => switchTab('browse'), 1200);
+  }
+}
+
+function saveSurveyLocally(payload) {
+  const local = JSON.parse(localStorage.getItem('local_surveys') || '[]');
+  local.push({ ...payload, submittedAt: new Date().toISOString() });
+  localStorage.setItem('local_surveys', JSON.stringify(local));
+}
+
+function resetSurveyForm() {
+  document.getElementById('sv-shop-id').value = '';
+  document.getElementById('sv-shop-name').value = '';
+  document.getElementById('sv-comment').value = '';
+  document.querySelectorAll('.radio-pill').forEach(p => p.classList.remove('selected'));
+  document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+  surveyPills = {};
+}
+
+// ══════════════════════════════════════════
+//  PROFILE
+// ══════════════════════════════════════════
+function toggleEdit(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+function renderProfile() {
+  const p = loadProfile();
+  const skills = loadSkills();
+  const history = loadHistory();
+
+  // Hero
+  document.getElementById('prof-avatar').textContent = p.name ? p.name[0] + (p.name[1] || '') : '👤';
+  document.getElementById('prof-name').textContent = p.name || '名前を設定してください';
+  document.getElementById('prof-sub').textContent = p.bio || 'プロフィールを作成しましょう';
+
+  // Tags
+  const positions = (p.positions || '').split(',').map(s=>s.trim()).filter(Boolean);
+  document.getElementById('prof-tags').innerHTML = positions.map(pos =>
+    `<span class="ptag">${pos}</span>`
+  ).join('');
+
+  // Summary
+  const parts = [];
+  if (p.age) parts.push(`${p.age}歳`);
+  if (p.gender) parts.push(p.gender);
+  document.getElementById('prof-summary').textContent = parts.length ? parts.join(' · ') : '基本情報を追加してください';
+
+  // Pre-fill fields
+  document.getElementById('pi-name').value      = p.name      || '';
+  document.getElementById('pi-bio').value        = p.bio       || '';
+  document.getElementById('pi-age').value        = p.age       || '';
+  document.getElementById('pi-gender').value     = p.gender    || '';
+  document.getElementById('pi-positions').value  = p.positions || '';
+
+  // Skills
+  renderSkills(skills);
+
+  // History
+  renderHistory(history);
+}
+
+function saveProfile() {
+  const p = {
+    name:      document.getElementById('pi-name').value.trim(),
+    bio:       document.getElementById('pi-bio').value.trim(),
+    age:       document.getElementById('pi-age').value,
+    gender:    document.getElementById('pi-gender').value,
+    positions: document.getElementById('pi-positions').value,
+  };
+  saveProfileData(p);
+  renderProfile();
+  document.getElementById('edit-basic').classList.remove('open');
+  showToast('✅ プロフィールを保存しました');
+}
+
+function renderSkills(skills) {
+  const el = document.getElementById('skill-list');
+  if (!skills.length) {
+    el.innerHTML = '<div style="color:var(--slate-400);font-size:13px;">スキルをまだ追加していません</div>';
+    return;
+  }
+  el.innerHTML = skills.map((s, i) => {
+    const pct = Math.min(100, 20 + s.endorsements * 16);
+    return `<div class="skill-item">
+      <div class="skill-row">
+        <span class="skill-name">${s.name}</span>
+        <span class="skill-endorsements">👍 ${s.endorsements}</span>
+      </div>
+      <div class="skill-bar"><div class="skill-bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function addSkill() {
+  const name = document.getElementById('skill-inp').value.trim();
+  if (!name) { showToast('⚠️ スキル名を入力してください'); return; }
+  const skills = loadSkills();
+  if (skills.find(s => s.name === name)) { showToast('⚠️ すでに追加されています'); return; }
+  skills.push({ name, endorsements: 0 });
+  saveSkillsData(skills);
+  document.getElementById('skill-inp').value = '';
+  renderSkills(skills);
+  showToast(`✅ ${name} を追加しました`);
+}
+
+function renderHistory(history) {
+  const el = document.getElementById('history-list');
+  if (!history.length) {
+    el.innerHTML = '<div style="color:var(--slate-400);font-size:13px;padding-bottom:8px;">勤務経歴をまだ追加していません</div>';
+    return;
+  }
+  el.innerHTML = history.map((h, i) => {
+    const endStr = h.end ? formatMonth(h.end) : '現在';
+    return `<div class="history-item">
+      <div class="history-dot-col">
+        <div class="history-dot"></div>
+        ${i < history.length - 1 ? '<div class="history-line"></div>' : ''}
+      </div>
+      <div class="history-body">
+        <div class="history-role">${h.role}</div>
+        <div class="history-shop">${h.shop}</div>
+        <div class="history-period">${formatMonth(h.start)} 〜 ${endStr}</div>
+        ${h.desc ? `<div class="history-desc">${h.desc}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function formatMonth(ym) {
+  if (!ym) return '';
+  const [y, m] = ym.split('-');
+  return `${y}年${parseInt(m)}月`;
+}
+
+function addHistory() {
+  const role  = document.getElementById('h-role').value.trim();
+  const shop  = document.getElementById('h-shop').value.trim();
+  const start = document.getElementById('h-start').value;
+  const end   = document.getElementById('h-end').value;
+  const desc  = document.getElementById('h-desc').value.trim();
+  if (!role || !shop || !start) { showToast('⚠️ 役割・店舗名・開始月は必須です'); return; }
+  const history = loadHistory();
+  history.unshift({ role, shop, start, end, desc });
+  saveHistoryData(history);
+  ['h-role','h-shop','h-start','h-end','h-desc'].forEach(id => document.getElementById(id).value = '');
+  renderHistory(history);
+  document.getElementById('edit-history').classList.remove('open');
+  showToast('✅ 経歴を追加しました');
+}
+
+// ══════════════════════════════════════════
+//  ADMIN — アンケート送信管理
+// ══════════════════════════════════════════
+function renderAdminTab() {
+  adminStaff = loadAdminStaff();
+  renderAdminStaffList();
+  renderInviteHistory();
+}
+
+function addAdminStaff() {
+  const name  = document.getElementById('adm-sname').value.trim();
+  const email = document.getElementById('adm-semail').value.trim();
+  if (!name || !email) { showToast('⚠️ 名前とメールを入力してください'); return; }
+  if (!email.includes('@')) { showToast('⚠️ 正しいメールアドレスを入力してください'); return; }
+  if (adminStaff.find(s => s.email === email)) { showToast('⚠️ すでに追加されています'); return; }
+  adminStaff.push({ name, email, sentAt: null });
+  saveAdminStaff(adminStaff);
+  document.getElementById('adm-sname').value = '';
+  document.getElementById('adm-semail').value = '';
+  renderAdminStaffList();
+  showToast(`✅ ${name} を追加しました`);
+}
+
+function removeAdminStaff(email) {
+  adminStaff = adminStaff.filter(s => s.email !== email);
+  saveAdminStaff(adminStaff);
+  renderAdminStaffList();
+}
+
+function renderAdminStaffList() {
+  const el = document.getElementById('admin-staff-list');
+  if (!adminStaff.length) {
+    el.innerHTML = '<div style="color:var(--slate-400);font-size:12px;margin-bottom:8px;">スタッフを追加してください</div>';
+    return;
+  }
+  el.innerHTML = adminStaff.map(s => `
+    <div class="staff-row-admin">
+      <div class="staff-status-dot ${s.sentAt ? 'status-sent' : 'status-pending'}"></div>
+      <div style="flex:1;">
+        <div class="staff-admin-name">${s.name}</div>
+        <div class="staff-admin-email">${s.email}</div>
+      </div>
+      <span class="invite-badge ${s.sentAt ? 'sent' : 'pending'}">${s.sentAt ? '送信済' : '未送信'}</span>
+      <button onclick="removeAdminStaff('${s.email}')" style="border:none;background:none;cursor:pointer;color:var(--slate-400);font-size:14px;padding:4px;">✕</button>
+    </div>
+  `).join('');
+}
+
+async function sendSurveyInvites() {
+  const shopId   = document.getElementById('adm-shopid').value.trim();
+  const shopName = document.getElementById('adm-shopname').value.trim();
+  if (!shopId) { showToast('⚠️ 店舗IDを入力してください'); return; }
+  if (!adminStaff.length) { showToast('⚠️ スタッフを追加してください'); return; }
+
+  const btn = event.target;
+  btn.textContent = '⏳ 送信中...';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch('/api/survey/send-invite', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ staff: adminStaff, shopId, shopName }),
+    });
+    const data = await r.json();
+    if (data.ok) {
+      const now = new Date().toISOString();
+      adminStaff.forEach(s => s.sentAt = now);
+      saveAdminStaff(adminStaff);
+      const hist = loadInviteHistory();
+      hist.push({ date: now.slice(0,10), shopName: shopName || shopId, count: adminStaff.length });
+      saveInviteHistory(hist);
+      renderAdminStaffList();
+      renderInviteHistory();
+      showToast(`✅ ${adminStaff.length}人にメールを送信しました`);
+    } else {
+      showToast('⚠️ ' + (data.error || '送信エラー'));
+    }
+  } catch {
+    showToast('⚠️ サーバーに接続できません。メール設定を確認してください。');
+  } finally {
+    btn.textContent = '📨 アンケートメールを送信';
+    btn.disabled = false;
+  }
+}
+
+function renderInviteHistory() {
+  const hist = loadInviteHistory();
+  const el   = document.getElementById('invite-history');
+  if (!hist.length) {
+    el.innerHTML = '<div style="color:var(--slate-400);font-size:12px;">まだ送信履歴はありません</div>';
+    return;
+  }
+  el.innerHTML = hist.slice().reverse().map(h => `
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--slate-100);font-size:13px;">
+      <span>${h.shopName}</span>
+      <span style="color:var(--slate-500)">${h.date} · ${h.count}人</span>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  // URL params
+  const params = new URLSearchParams(location.search);
+  const surveyShop = params.get('survey');
+  const adminShop  = params.get('adminShop');
+  if (surveyShop) {
+    document.getElementById('sv-shop-id').value = surveyShop;
+    switchTab('survey');
+  } else if (adminShop) {
+    document.getElementById('adm-shopid').value   = adminShop;
+    document.getElementById('adm-shopname').value = adminShop;
+    switchTab('admin');
+    renderAdminTab();
+  } else {
+    loadShops();
+  }
+});
+</script>
+</body>
+</html>

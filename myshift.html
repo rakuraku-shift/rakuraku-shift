@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>シフト管理</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f0f4f8; color: #2d3748; min-height: 100vh; }
+
+    /* Tab bar */
+    .tab-bar {
+      display: flex;
+      background: #fff;
+      border-bottom: 2px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 14px 8px;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      color: #a0aec0;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .tab-btn .icon { font-size: 20px; }
+    .tab-btn.active { color: #4c6ef5; border-bottom: 3px solid #4c6ef5; }
+
+    /* Screens */
+    .screen { display: none; padding: 16px; max-width: 480px; margin: 0 auto; }
+    .screen.active { display: block; }
+
+    /* Cards */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .card h2 { font-size: 16px; font-weight: 700; margin-bottom: 14px; color: #2d3748; }
+
+    /* Inputs */
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.2s;
+      background: #f7fafc;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+      border-color: #4c6ef5;
+      background: #fff;
+    }
+    label { font-size: 13px; color: #718096; margin-bottom: 6px; display: block; font-weight: 600; }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #4c6ef5; color: #fff; }
+    .btn-primary:active { background: #3b5bdb; transform: scale(0.98); }
+    .btn-success { background: #38a169; color: #fff; }
+    .btn-success:active { background: #2f855a; transform: scale(0.98); }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid #e2e8f0;
+      color: #4a5568;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      width: auto;
+    }
+
+    /* Calendar */
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .calendar-header span { font-weight: 700; font-size: 15px; }
+    .calendar-nav {
+      background: #f0f4f8;
+      border: none;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .cal-day-name {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #a0aec0;
+      padding: 4px 0;
+    }
+    .cal-day-name.sun { color: #fc8181; }
+    .cal-day-name.sat { color: #63b3ed; }
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all 0.15s;
+      color: #2d3748;
+    }
+    .cal-day.empty { cursor: default; }
+    .cal-day.past { color: #cbd5e0; cursor: default; }
+    .cal-day.selected { background: #4c6ef5; color: #fff; }
+    .cal-day:not(.empty):not(.past):hover { background: #ebf4ff; border-color: #4c6ef5; }
+    .cal-day.sun:not(.empty):not(.past):not(.selected) { color: #fc8181; }
+    .cal-day.sat:not(.empty):not(.past):not(.selected) { color: #63b3ed; }
+
+    /* Time slots */
+    .time-slots { display: flex; gap: 8px; flex-wrap: wrap; }
+    .time-chip {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1.5px solid #e2e8f0;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #4a5568;
+      transition: all 0.15s;
+      background: #f7fafc;
+    }
+    .time-chip.selected { background: #4c6ef5; color: #fff; border-color: #4c6ef5; }
+
+    /* Selected dates list */
+    .selected-list { display: flex; flex-wrap: wrap; gap: 6px; min-height: 32px; }
+    .date-tag {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #ebf4ff;
+      color: #4c6ef5;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .date-tag .remove {
+      cursor: pointer;
+      color: #a0aec0;
+      font-size: 14px;
+      line-height: 1;
+    }
+    .date-tag .remove:hover { color: #e53e3e; }
+
+    /* Success toast */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #2d3748;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Manager: submissions */
+    .submission-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f4f8;
+    }
+    .submission-item:last-child { border-bottom: none; }
+    .sub-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+    .role-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .role-hall { background: #feebc8; color: #c05621; }
+    .role-kitchen { background: #c6f6d5; color: #276749; }
+    .role-cashier { background: #bee3f8; color: #2b6cb0; }
+    .sub-dates { font-size: 12px; color: #718096; margin-top: 4px; }
+
+    /* Generated shift table */
+    .shift-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .shift-table th {
+      background: #f0f4f8;
+      padding: 8px 10px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 12px;
+      color: #718096;
+    }
+    .shift-table td { padding: 10px; border-bottom: 1px solid #f0f4f8; vertical-align: top; }
+    .shift-table tr:last-child td { border-bottom: none; }
+    .assigned-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #f0f4f8;
+      border-radius: 6px;
+      padding: 3px 8px;
+      margin: 2px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Rule config */
+    .rule-row {
+      display: grid;
+      grid-template-columns: 1fr 80px 80px;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .rule-row select, .rule-row input { font-size: 13px; padding: 8px 10px; }
+    .rule-label { font-size: 12px; color: #718096; font-weight: 600; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 32px 16px;
+      color: #a0aec0;
+    }
+    .empty-state .emoji { font-size: 40px; margin-bottom: 8px; }
+    .empty-state p { font-size: 14px; }
+
+    /* Stats row */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+    .stat-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 10px;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .stat-num { font-size: 24px; font-weight: 800; color: #4c6ef5; }
+    .stat-lbl { font-size: 11px; color: #a0aec0; font-weight: 600; margin-top: 2px; }
+
+    /* Bottom safe area */
+    .screen-bottom { height: 24px; }
+
+    /* Print button */
+    .btn-print {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px;
+      margin-top: 14px;
+      border: 2px solid #4c6ef5;
+      border-radius: 12px;
+      background: #fff;
+      color: #4c6ef5;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-print:active { background: #ebf4ff; }
+
+    /* ===== 印刷スタイル ===== */
+    @media print {
+      body { background: #fff; }
+
+      /* 印刷不要な要素を非表示 */
+      .tab-bar,
+      #screen-staff,
+      .stats,
+      #submissions-list,
+      .card:has(#rule-hall-min),
+      .btn-success,
+      .btn-print,
+      .toast,
+      .screen-bottom { display: none !important; }
+
+      /* 生成シフトだけ全画面表示 */
+      #screen-manager { display: block !important; padding: 0; }
+      #generated-card {
+        display: block !important;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      /* 印刷ヘッダー */
+      #print-header { display: block !important; }
+
+      /* テーブルを印刷しやすく */
+      .shift-table { width: 100%; font-size: 11pt; }
+      .shift-table th { background: #f0f4f8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .shift-table td { padding: 8px; }
+      .assigned-name { background: #f0f4f8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      @page { margin: 15mm; size: A4; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Tab bar -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('staff')" id="tab-staff">
+    <span class="icon">👤</span>
+    <span>シフト提出</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('manager')" id="tab-manager">
+    <span class="icon">📋</span>
+    <span>店長ビュー</span>
+  </button>
+</div>
+
+<!-- ========== STAFF SCREEN ========== -->
+<div class="screen active" id="screen-staff">
+
+  <!-- Name -->
+  <div class="card" style="margin-top:16px;">
+    <h2>👋 あなたの情報</h2>
+    <div style="margin-bottom:12px;">
+      <label>名前</label>
+      <input type="text" id="staff-name" placeholder="例: 山田 太郎" />
+    </div>
+    <div>
+      <label>役職</label>
+      <select id="staff-role">
+        <option value="hall">ホール</option>
+        <option value="kitchen">キッチン</option>
+        <option value="cashier">レジ</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="card">
+    <h2>📅 希望日を選択</h2>
+    <div class="calendar-header">
+      <button class="calendar-nav" onclick="changeMonth(-1)">‹</button>
+      <span id="cal-title"></span>
+      <button class="calendar-nav" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="calendar-grid" id="cal-grid"></div>
+  </div>
+
+  <!-- Time preference -->
+  <div class="card">
+    <h2>⏰ 希望時間帯</h2>
+    <div class="time-slots" id="time-slots">
+      <div class="time-chip" data-slot="morning" onclick="toggleTime(this)">🌅 朝 (9〜13時)</div>
+      <div class="time-chip" data-slot="lunch" onclick="toggleTime(this)">☀️ 昼 (11〜15時)</div>
+      <div class="time-chip" data-slot="afternoon" onclick="toggleTime(this)">🌤 夕方 (15〜19時)</div>
+      <div class="time-chip" data-slot="evening" onclick="toggleTime(this)">🌙 夜 (18〜22時)</div>
+      <div class="time-chip" data-slot="full" onclick="toggleTime(this)">🕐 フルタイム</div>
+    </div>
+    <div style="margin-top:14px;">
+      <label>✏️ 自由入力（例: 10:00〜14:30）</label>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="custom-time-input" placeholder="例: 10 14 → 10:00〜14:00" style="flex:1;" onkeydown="if(event.key==='Enter')addCustomTime()" />
+        <button onclick="addCustomTime()" style="padding:12px 16px;background:#4c6ef5;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;">追加</button>
+      </div>
+      <div class="time-slots" id="custom-time-list" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <!-- Selected summary -->
+  <div class="card">
+    <h2>📌 選択中の日付</h2>
+    <div class="selected-list" id="selected-dates-list">
+      <span style="color:#a0aec0;font-size:13px;">カレンダーから日付を選んでください</span>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <button class="btn btn-primary" onclick="submitShift()">シフトを提出する</button>
+  <div class="screen-bottom"></div>
+</div>
+
+<!-- ========== MANAGER SCREEN ========== -->
+<div class="screen" id="screen-manager">
+
+  <!-- Stats -->
+  <div class="stats" style="margin-top:16px;">
+    <div class="stat-card">
+      <div class="stat-num" id="stat-staff">0</div>
+      <div class="stat-lbl">提出人数</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-dates">0</div>
+      <div class="stat-lbl">対象日数</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-shifts">0</div>
+      <div class="stat-lbl">配置済み</div>
+    </div>
+  </div>
+
+  <!-- Submissions -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <h2 style="margin:0;">📥 提出一覧</h2>
+      <button class="btn-outline" onclick="clearAll()">リセット</button>
+    </div>
+    <div id="submissions-list">
+      <div class="empty-state">
+        <div class="emoji">📭</div>
+        <p>まだ提出がありません</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rule config -->
+  <div class="card">
+    <h2>⚙️ シフトルール設定</h2>
+    <div style="margin-bottom:8px;">
+      <div class="rule-row">
+        <span class="rule-label">役職</span>
+        <span class="rule-label">最低人数</span>
+        <span class="rule-label">最大人数</span>
+      </div>
+      <div class="rule-row">
+        <span style="font-size:13px;font-weight:600;">🏃 ホール</span>
+        <input type="number" id="rule-hall-min" value="1" min="0" max="10" />
+        <input type="number" id="rule-hall-max" value="3" min="0" max="10" />
+      </div>
+      <div class="rule-row">
+        <span style="font-size:13px;font-weight:600;">🍳 キッチン</span>
+        <input type="number" id="rule-kitchen-min" value="1" min="0" max="10" />
+        <input type="number" id="rule-kitchen-max" value="2" min="0" max="10" />
+      </div>
+      <div class="rule-row">
+        <span style="font-size:13px;font-weight:600;">🧾 レジ</span>
+        <input type="number" id="rule-cashier-min" value="1" min="0" max="10" />
+        <input type="number" id="rule-cashier-max" value="2" min="0" max="10" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate -->
+  <button class="btn btn-success" onclick="generateShift()" style="margin-bottom:16px;">
+    ✨ シフトを自動生成
+  </button>
+
+  <!-- Generated shift -->
+  <div class="card" id="generated-card" style="display:none;">
+    <!-- 印刷時だけ表示されるヘッダー -->
+    <div id="print-header" style="display:none; margin-bottom:16px; border-bottom:2px solid #2d3748; padding-bottom:12px;">
+      <div style="font-size:18pt; font-weight:800;" id="print-title">シフト表</div>
+      <div style="font-size:10pt; color:#718096; margin-top:4px;" id="print-date"></div>
+    </div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+      <h2 style="margin:0;">📆 生成されたシフト</h2>
+    </div>
+    <div id="generated-content"></div>
+
+    <button class="btn-print" onclick="printShift()">🖨️ 印刷する</button>
+  </div>
+
+  <div class="screen-bottom"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ---- State ----
+  const DAY_NAMES = ['日','月','火','水','木','金','土'];
+  const ROLE_LABELS = { hall: 'ホール', kitchen: 'キッチン', cashier: 'レジ' };
+
+  let currentYear, currentMonth;
+  let selectedDates = new Set();
+  let selectedTimes = new Set();
+  let customTimes = [];
+
+  function loadState() {
+    return JSON.parse(localStorage.getItem('shift_submissions') || '[]');
+  }
+  function saveState(data) {
+    localStorage.setItem('shift_submissions', JSON.stringify(data));
+  }
+
+  // ---- Tabs ----
+  function switchTab(tab) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('screen-' + tab).classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'manager') renderManagerView();
+  }
+
+  // ---- Calendar ----
+  function initCalendar() {
+    const now = new Date();
+    currentYear = now.getFullYear();
+    currentMonth = now.getMonth();
+    renderCalendar();
+  }
+
+  function changeMonth(dir) {
+    currentMonth += dir;
+    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+    if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    const title = document.getElementById('cal-title');
+    title.textContent = `${currentYear}年 ${currentMonth + 1}月`;
+
+    const grid = document.getElementById('cal-grid');
+    grid.innerHTML = '';
+
+    const dayNames = ['日','月','火','水','木','金','土'];
+    const classes = ['sun','','','','','','sat'];
+    dayNames.forEach((d, i) => {
+      const el = document.createElement('div');
+      el.className = 'cal-day-name ' + classes[i];
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const today = new Date(); today.setHours(0,0,0,0);
+
+    for (let i = 0; i < firstDay; i++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day empty';
+      grid.appendChild(el);
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(currentYear, currentMonth, d);
+      const dateStr = formatDate(currentYear, currentMonth + 1, d);
+      const dow = date.getDay();
+
+      const el = document.createElement('div');
+      el.textContent = d;
+      let cls = 'cal-day';
+      if (dow === 0) cls += ' sun';
+      if (dow === 6) cls += ' sat';
+      if (date < today) {
+        cls += ' past';
+      } else {
+        if (selectedDates.has(dateStr)) cls += ' selected';
+        el.onclick = () => toggleDate(dateStr, el);
+      }
+      el.className = cls;
+      grid.appendChild(el);
+    }
+  }
+
+  function formatDate(y, m, d) {
+    return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  }
+
+  function toggleDate(dateStr, el) {
+    if (selectedDates.has(dateStr)) {
+      selectedDates.delete(dateStr);
+      el.classList.remove('selected');
+    } else {
+      selectedDates.add(dateStr);
+      el.classList.add('selected');
+    }
+    renderSelectedList();
+  }
+
+  function renderSelectedList() {
+    const container = document.getElementById('selected-dates-list');
+    if (selectedDates.size === 0) {
+      container.innerHTML = '<span style="color:#a0aec0;font-size:13px;">カレンダーから日付を選んでください</span>';
+      return;
+    }
+    const sorted = [...selectedDates].sort();
+    container.innerHTML = sorted.map(d => {
+      const [y, m, day] = d.split('-').map(Number);
+      const dow = new Date(y, m-1, day).getDay();
+      return `<div class="date-tag">
+        ${m}/${day}(${DAY_NAMES[dow]})
+        <span class="remove" onclick="removeDate('${d}')">×</span>
+      </div>`;
+    }).join('');
+  }
+
+  function removeDate(dateStr) {
+    selectedDates.delete(dateStr);
+    renderCalendar();
+    renderSelectedList();
+  }
+
+  // ---- Time chips ----
+  function toggleTime(el) {
+    const slot = el.dataset.slot;
+    if (selectedTimes.has(slot)) {
+      selectedTimes.delete(slot);
+      el.classList.remove('selected');
+    } else {
+      selectedTimes.add(slot);
+      el.classList.add('selected');
+    }
+  }
+
+  // ---- Custom time ----
+  function parseTimeInput(raw) {
+    // 数字だけ取り出す
+    const nums = raw.trim().replace(/[^\d\s:〜~\-\/]/g, '').trim();
+
+    // スペース・〜・~・-・/ で分割して2つの時刻を取得
+    const parts = nums.split(/[\s〜~\-\/]+/).filter(Boolean);
+
+    function parseOne(s) {
+      if (!s) return null;
+      // 4桁: 1430 → 14:30
+      if (/^\d{3,4}$/.test(s)) {
+        const h = s.length === 4 ? parseInt(s.slice(0,2)) : parseInt(s.slice(0,1));
+        const m = s.length === 4 ? parseInt(s.slice(2))   : parseInt(s.slice(1));
+        if (h > 23 || m > 59) return null;
+        return `${h}:${String(m).padStart(2,'0')}`;
+      }
+      // コロン付き: 10:30
+      if (/^\d{1,2}:\d{2}$/.test(s)) return s;
+      // 1〜2桁: 10 → 10:00
+      if (/^\d{1,2}$/.test(s)) {
+        const h = parseInt(s);
+        if (h > 23) return null;
+        return `${h}:00`;
+      }
+      return null;
+    }
+
+    if (parts.length >= 2) {
+      const from = parseOne(parts[0]);
+      const to   = parseOne(parts[1]);
+      if (from && to) return `${from}〜${to}`;
+    }
+    if (parts.length === 1) {
+      const from = parseOne(parts[0]);
+      if (from) return `${from}〜`;
+    }
+    return raw.trim(); // パースできなければそのまま
+  }
+
+  function addCustomTime() {
+    const input = document.getElementById('custom-time-input');
+    const raw = input.value.trim();
+    if (!raw) return;
+    const val = parseTimeInput(raw);
+    if (customTimes.includes(val)) { showToast('⚠️ すでに追加されています'); return; }
+    customTimes.push(val);
+    input.value = '';
+    renderCustomTimes();
+  }
+
+  function removeCustomTime(idx) {
+    customTimes.splice(idx, 1);
+    renderCustomTimes();
+  }
+
+  function renderCustomTimes() {
+    const container = document.getElementById('custom-time-list');
+    container.innerHTML = customTimes.map((t, i) => `
+      <div class="time-chip selected" style="display:flex;align-items:center;gap:6px;">
+        ${t}
+        <span onclick="removeCustomTime(${i})" style="cursor:pointer;font-size:14px;opacity:0.7;">×</span>
+      </div>`).join('');
+  }
+
+  // ---- Submit shift ----
+  function submitShift() {
+    const name = document.getElementById('staff-name').value.trim();
+    const role = document.getElementById('staff-role').value;
+    if (!name) { showToast('⚠️ 名前を入力してください'); return; }
+    if (selectedDates.size === 0) { showToast('⚠️ 希望日を選んでください'); return; }
+    if (selectedTimes.size === 0 && customTimes.length === 0) { showToast('⚠️ 希望時間帯を選んでください'); return; }
+
+    const submissions = loadState();
+    const existing = submissions.findIndex(s => s.name === name);
+    const entry = {
+      name,
+      role,
+      dates: [...selectedDates].sort(),
+      times: [...selectedTimes],
+      customTimes: [...customTimes],
+      submittedAt: new Date().toISOString()
+    };
+
+    if (existing >= 0) {
+      submissions[existing] = entry;
+    } else {
+      submissions.push(entry);
+    }
+    saveState(submissions);
+
+    showToast('✅ シフトを提出しました！');
+    selectedDates.clear();
+    selectedTimes.forEach(s => {
+      const el = document.querySelector(`.time-chip[data-slot="${s}"]`);
+      if (el) el.classList.remove('selected');
+    });
+    selectedTimes.clear();
+    customTimes = [];
+    renderCustomTimes();
+    renderCalendar();
+    renderSelectedList();
+    document.getElementById('staff-name').value = '';
+  }
+
+  // ---- Manager view ----
+  function renderManagerView() {
+    const submissions = loadState();
+    const allDates = new Set(submissions.flatMap(s => s.dates));
+
+    document.getElementById('stat-staff').textContent = submissions.length;
+    document.getElementById('stat-dates').textContent = allDates.size;
+
+    const list = document.getElementById('submissions-list');
+    if (submissions.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><p>まだ提出がありません</p></div>`;
+      document.getElementById('stat-shifts').textContent = '0';
+      return;
+    }
+
+    const TIME_LABELS = { morning: '朝', lunch: '昼', afternoon: '夕方', evening: '夜', full: 'フルタイム' };
+    list.innerHTML = submissions.map(s => {
+      const badgeCls = `role-badge role-${s.role}`;
+      const presetStr = s.times.map(t => TIME_LABELS[t] || t).join(' / ');
+      const customStr = (s.customTimes || []).join(' / ');
+      const timesStr = [presetStr, customStr].filter(Boolean).join(' / ');
+      const datesStr = s.dates.map(d => {
+        const [y,m,day] = d.split('-').map(Number);
+        return `${m}/${day}`;
+      }).join(', ');
+      return `<div class="submission-item">
+        <div class="sub-name">
+          ${s.name}
+          <span class="${badgeCls}">${ROLE_LABELS[s.role]}</span>
+        </div>
+        <div class="sub-dates">⏰ ${timesStr}</div>
+        <div class="sub-dates">📅 ${datesStr}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function clearAll() {
+    if (!confirm('全ての提出データをリセットしますか？')) return;
+    localStorage.removeItem('shift_submissions');
+    document.getElementById('generated-card').style.display = 'none';
+    renderManagerView();
+    showToast('🗑 リセットしました');
+  }
+
+  // ---- Auto generate ----
+  function generateShift() {
+    const submissions = loadState();
+    if (submissions.length === 0) {
+      showToast('⚠️ 提出データがありません');
+      return;
+    }
+
+    const rules = {
+      hall:    { min: +document.getElementById('rule-hall-min').value, max: +document.getElementById('rule-hall-max').value },
+      kitchen: { min: +document.getElementById('rule-kitchen-min').value, max: +document.getElementById('rule-kitchen-max').value },
+      cashier: { min: +document.getElementById('rule-cashier-min').value, max: +document.getElementById('rule-cashier-max').value },
+    };
+
+    // Collect all unique dates from submissions
+    const allDates = [...new Set(submissions.flatMap(s => s.dates))].sort();
+
+    // Build date -> staff mapping
+    const schedule = {};
+    let totalAssigned = 0;
+
+    allDates.forEach(date => {
+      const available = submissions.filter(s => s.dates.includes(date));
+      const assigned = { hall: [], kitchen: [], cashier: [] };
+
+      // Assign by role respecting max
+      ['hall', 'kitchen', 'cashier'].forEach(role => {
+        const pool = available.filter(s => s.role === role);
+        // Shuffle lightly (by name hash for consistency)
+        pool.sort((a, b) => a.name.localeCompare(b.name));
+        const count = Math.min(pool.length, rules[role].max);
+        assigned[role] = pool.slice(0, count).map(s => s.name);
+        totalAssigned += assigned[role].length;
+      });
+
+      schedule[date] = assigned;
+    });
+
+    document.getElementById('stat-shifts').textContent = totalAssigned;
+
+    // Render table
+    const content = document.getElementById('generated-content');
+    const rows = allDates.map(date => {
+      const [y, m, d] = date.split('-').map(Number);
+      const dow = new Date(y, m-1, d).getDay();
+      const dateLabel = `${m}/${d}(${DAY_NAMES[dow]})`;
+      const s = schedule[date];
+
+      const hallWarn = s.hall.length < rules.hall.min ? '⚠️' : '';
+      const kitchenWarn = s.kitchen.length < rules.kitchen.min ? '⚠️' : '';
+      const cashierWarn = s.cashier.length < rules.cashier.min ? '⚠️' : '';
+
+      return `<tr>
+        <td style="font-weight:700;font-size:13px;">${dateLabel}</td>
+        <td>${hallWarn}${s.hall.map(n => `<span class="assigned-name">${n}</span>`).join('') || '<span style="color:#a0aec0;font-size:12px;">未配置</span>'}</td>
+        <td>${kitchenWarn}${s.kitchen.map(n => `<span class="assigned-name">${n}</span>`).join('') || '<span style="color:#a0aec0;font-size:12px;">未配置</span>'}</td>
+        <td>${cashierWarn}${s.cashier.map(n => `<span class="assigned-name">${n}</span>`).join('') || '<span style="color:#a0aec0;font-size:12px;">未配置</span>'}</td>
+      </tr>`;
+    }).join('');
+
+    content.innerHTML = `
+      <p style="font-size:12px;color:#a0aec0;margin-bottom:12px;">⚠️ は最低人数不足</p>
+      <div style="overflow-x:auto;">
+        <table class="shift-table">
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>🏃ホール</th>
+              <th>🍳キッチン</th>
+              <th>🧾レジ</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+
+    document.getElementById('generated-card').style.display = 'block';
+    document.getElementById('generated-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast('✨ シフトを生成しました！');
+  }
+
+  // ---- Print ----
+  function printShift() {
+    // 印刷ヘッダーにタイトルと日付をセット
+    const allDates = [...document.querySelectorAll('.shift-table tbody tr')]
+      .map(r => r.cells[0].textContent).filter(Boolean);
+    const now = new Date();
+    const titleEl = document.getElementById('print-title');
+    const dateEl  = document.getElementById('print-date');
+    titleEl.textContent = 'シフト表';
+    dateEl.textContent  = `作成日: ${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
+    window.print();
+  }
+
+  // ---- Toast ----
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2500);
+  }
+
+  // ---- Init ----
+  initCalendar();
+</script>
+</body>
+</html>

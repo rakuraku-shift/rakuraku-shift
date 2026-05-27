@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BAR EXCHANGE</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0f;
+      color: #e0e0e0;
+      font-family: 'Courier New', 'Menlo', monospace;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ヘッダー */
+    #header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      background: linear-gradient(90deg, #0d1117, #1a1a2e);
+      border-bottom: 2px solid #00ff88;
+    }
+
+    #header .logo {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: #00ff88;
+      text-shadow: 0 0 20px #00ff8866;
+    }
+
+    #header .subtitle {
+      font-size: 0.75rem;
+      color: #888;
+      letter-spacing: 3px;
+    }
+
+    #clock {
+      font-size: 1.8rem;
+      color: #00ff88;
+      letter-spacing: 2px;
+    }
+
+    /* クラッシュバナー */
+    #crash-banner {
+      display: none;
+      background: linear-gradient(90deg, #ff0040, #ff4400);
+      color: white;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      padding: 12px;
+      animation: flash 0.5s infinite;
+    }
+
+    @keyframes flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* ドリンクグリッド */
+    #grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 16px;
+      padding: 20px 24px;
+    }
+
+    .drink-card {
+      background: #0d1117;
+      border: 1px solid #1e3a2f;
+      border-radius: 12px;
+      padding: 20px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .drink-card.up { border-color: #00ff88; }
+    .drink-card.down { border-color: #ff4444; }
+    .drink-card.flat { border-color: #1e3a2f; }
+
+    .drink-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .drink-card.up::before { background: #00ff88; }
+    .drink-card.down::before { background: #ff4444; }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .drink-name {
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      color: #aaa;
+    }
+
+    .drink-emoji {
+      font-size: 2.2rem;
+    }
+
+    .price-area {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin: 8px 0;
+    }
+
+    .price {
+      font-size: 3rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 2px;
+      transition: color 0.4s;
+    }
+
+    .price-unit { font-size: 1.2rem; color: #666; }
+
+    .change-badge {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .change-badge.up { background: #00ff8822; color: #00ff88; border: 1px solid #00ff88; }
+    .change-badge.down { background: #ff444422; color: #ff4444; border: 1px solid #ff4444; }
+    .change-badge.flat { background: #ffffff11; color: #888; border: 1px solid #444; }
+
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .sparkline-wrap { flex: 1; margin-right: 16px; }
+
+    canvas.sparkline {
+      width: 100%;
+      height: 50px;
+    }
+
+    .orders-label {
+      font-size: 0.7rem;
+      color: #555;
+      text-align: right;
+      letter-spacing: 1px;
+    }
+
+    .orders-count {
+      font-size: 1.1rem;
+      color: #888;
+      text-align: right;
+    }
+
+    /* ティッカー */
+    #ticker {
+      height: 36px;
+      background: #050508;
+      border-top: 1px solid #1e3a2f;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    #ticker-inner {
+      display: flex;
+      gap: 48px;
+      white-space: nowrap;
+      animation: scroll-left 20s linear infinite;
+    }
+
+    @keyframes scroll-left {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .ticker-item {
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .ticker-item .t-name { color: #666; }
+    .ticker-item .t-price { color: #ddd; }
+    .ticker-item .t-change.up { color: #00ff88; }
+    .ticker-item .t-change.down { color: #ff4444; }
+    .ticker-item .t-change.flat { color: #555; }
+
+    /* 価格変動アニメーション */
+    @keyframes price-up {
+      0%   { color: #00ff88; transform: scale(1.1); }
+      100% { color: #fff; transform: scale(1); }
+    }
+    @keyframes price-down {
+      0%   { color: #ff4444; transform: scale(1.1); }
+      100% { color: #fff; transform: scale(1); }
+    }
+
+    .price.animating-up   { animation: price-up 0.8s ease; }
+    .price.animating-down { animation: price-down 0.8s ease; }
+  </style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <div class="logo">BAR EXCHANGE</div>
+    <div class="subtitle">DYNAMIC PRICING SYSTEM</div>
+  </div>
+  <div id="clock">--:--:--</div>
+</div>
+
+<div id="crash-banner">💥 MARKET CRASH！ 全品目が暴落中！今すぐ注文！ 💥</div>
+
+<div id="grid"></div>
+
+<div id="ticker">
+  <div id="ticker-inner"></div>
+</div>
+
+<script>
+  const socket = io();
+  let prevPrices = {};
+  let sparklineData = {};
+
+  // 時計
+  setInterval(() => {
+    document.getElementById('clock').textContent = new Date().toLocaleTimeString('ja-JP');
+  }, 1000);
+
+  socket.on('price_update', (state) => {
+    renderGrid(state);
+    renderTicker(state);
+    if (state.isCrash) {
+      document.getElementById('crash-banner').style.display = 'block';
+    } else {
+      document.getElementById('crash-banner').style.display = 'none';
+    }
+    state.drinks.forEach(d => {
+      sparklineData[d.id] = d.history;
+    });
+  });
+
+  socket.on('crash_event', (ev) => {
+    document.getElementById('crash-banner').style.display = 'block';
+    document.getElementById('crash-banner').textContent = ev.message;
+  });
+
+  function renderGrid(state) {
+    const grid = document.getElementById('grid');
+
+    state.drinks.forEach(drink => {
+      let card = document.getElementById('card-' + drink.id);
+      if (!card) {
+        card = document.createElement('div');
+        card.id = 'card-' + drink.id;
+        card.className = 'drink-card';
+        card.innerHTML = buildCard(drink);
+        grid.appendChild(card);
+      } else {
+        updateCard(card, drink);
+      }
+    });
+  }
+
+  function buildCard(drink) {
+    const dir = drink.trend;
+    const changeText = formatChange(drink.change);
+    return `
+      <div class="card-top">
+        <div>
+          <div class="drink-name">${drink.name}</div>
+          <div class="price-area">
+            <span class="price" id="price-${drink.id}">${drink.price.toLocaleString()}</span>
+            <span class="price-unit">円</span>
+            <span class="change-badge ${dir}" id="badge-${drink.id}">${changeText}</span>
+          </div>
+        </div>
+        <div class="drink-emoji">${drink.emoji}</div>
+      </div>
+      <div class="card-bottom">
+        <div class="sparkline-wrap">
+          <canvas class="sparkline" id="spark-${drink.id}"></canvas>
+        </div>
+        <div>
+          <div class="orders-label">直近1分</div>
+          <div class="orders-count" id="orders-${drink.id}">${drink.recentOrders}件</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function updateCard(card, drink) {
+    const dir = drink.trend;
+    const prev = prevPrices[drink.id];
+
+    card.className = `drink-card ${dir}`;
+
+    const priceEl = document.getElementById('price-' + drink.id);
+    if (priceEl) {
+      if (prev && prev !== drink.price) {
+        const animClass = drink.price > prev ? 'animating-up' : 'animating-down';
+        priceEl.classList.remove('animating-up', 'animating-down');
+        void priceEl.offsetWidth; // reflow
+        priceEl.classList.add(animClass);
+        setTimeout(() => priceEl.classList.remove(animClass), 800);
+      }
+      priceEl.textContent = drink.price.toLocaleString();
+    }
+
+    const badge = document.getElementById('badge-' + drink.id);
+    if (badge) {
+      badge.className = `change-badge ${dir}`;
+      badge.textContent = formatChange(drink.change);
+    }
+
+    const ordersEl = document.getElementById('orders-' + drink.id);
+    if (ordersEl) ordersEl.textContent = drink.recentOrders + '件';
+
+    drawSparkline(drink.id, drink.history, dir);
+    prevPrices[drink.id] = drink.price;
+  }
+
+  function formatChange(pct) {
+    if (pct > 0) return `▲ +${pct}%`;
+    if (pct < 0) return `▼ ${pct}%`;
+    return '— 0%';
+  }
+
+  function drawSparkline(id, data, trend) {
+    const canvas = document.getElementById('spark-' + id);
+    if (!canvas || !data || data.length < 2) return;
+
+    const ctx = canvas.getContext('2d');
+    const W = canvas.offsetWidth || 200;
+    const H = canvas.offsetHeight || 50;
+    canvas.width = W;
+    canvas.height = H;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const min = Math.min(...data) * 0.98;
+    const max = Math.max(...data) * 1.02;
+    const range = max - min || 1;
+
+    const color = trend === 'up' ? '#00ff88' : trend === 'down' ? '#ff4444' : '#555';
+
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 4;
+
+    data.forEach((val, i) => {
+      const x = (i / (data.length - 1)) * W;
+      const y = H - ((val - min) / range) * H;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // 塗りつぶし
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.closePath();
+    ctx.fillStyle = color + '18';
+    ctx.fill();
+  }
+
+  function renderTicker(state) {
+    const items = state.drinks.map(d => {
+      const dir = d.trend;
+      const changeText = formatChange(d.change);
+      return `<span class="ticker-item">
+        <span class="t-name">${d.emoji} ${d.name}</span>
+        <span class="t-price">${d.price.toLocaleString()}円</span>
+        <span class="t-change ${dir}">${changeText}</span>
+      </span>`;
+    }).join('');
+
+    // ループ用に2倍
+    const inner = document.getElementById('ticker-inner');
+    inner.innerHTML = items + items;
+  }
+
+  // 初期データ取得
+  fetch('/api/state')
+    .then(r => r.json())
+    .then(state => {
+      state.drinks.forEach(d => prevPrices[d.id] = d.price);
+      renderGrid(state);
+      renderTicker(state);
+    });
+</script>
+</body>
+</html>

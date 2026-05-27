@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAR EXCHANGE — 管理者</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --green:  #00ff88;
+    --red:    #ff3355;
+    --gold:   #ffd700;
+    --blue:   #4488ff;
+    --bg:     #060608;
+    --surface:#0d0f14;
+    --card:   #111318;
+    --border: #1e2535;
+    --border2:#2a3348;
+    --text:   #e8eaf0;
+    --muted:  #5a6380;
+    --mono:   'JetBrains Mono', monospace;
+    --sans:   'Inter', sans-serif;
+    --sidebar:220px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ══════════ SIDEBAR ══════════ */
+  #sidebar {
+    width: var(--sidebar);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .sb-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sb-logo .logo {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 3px;
+  }
+
+  .sb-logo .sub {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-top: 3px;
+  }
+
+  .sb-nav {
+    flex: 1;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .nav-section {
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+    padding: 14px 10px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--muted);
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+
+  .nav-item:hover { background: #ffffff08; color: var(--text); }
+
+  .nav-item.active {
+    background: #00ff8810;
+    color: var(--green);
+    border-color: #00ff8820;
+  }
+
+  .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  .sb-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  #market-toggle {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: none;
+    font-family: var(--sans);
+    transition: all 0.2s;
+  }
+
+  #market-toggle.open  { background: #00ff8820; color: var(--green); border: 1px solid #00ff8840; }
+  #market-toggle.close { background: #ff335520; color: var(--red);   border: 1px solid #ff335540; }
+
+  /* ══════════ MAIN ══════════ */
+  #main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  #topbar {
+    height: 60px;
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  #page-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+
+  #topbar-right { display: flex; align-items: center; gap: 12px; }
+
+  .tb-badge {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .tb-badge.open  { background: #00ff8818; color: var(--green); border: 1px solid #00ff8830; }
+  .tb-badge.close { background: #ff335518; color: var(--red);   border: 1px solid #ff335530; }
+
+  #save-btn {
+    background: var(--green);
+    color: #000;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    display: none;
+    transition: opacity 0.2s;
+  }
+  #save-btn:hover { opacity: 0.85; }
+  #save-btn.visible { display: block; }
+
+  #content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+  }
+
+  /* ══════════ PAGES ══════════ */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ══════════ DASHBOARD ══════════ */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .stat-label {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-sub {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .stat-card.green .stat-value { color: var(--green); }
+  .stat-card.blue  .stat-value { color: var(--blue); }
+  .stat-card.gold  .stat-value { color: var(--gold); }
+
+  .section-title {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  /* ranking table */
+  .rank-table {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .rank-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .rank-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: #0d0f14;
+  }
+
+  .rank-table td {
+    padding: 13px 16px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #0d0f14;
+  }
+
+  .rank-table tr:last-child td { border-bottom: none; }
+  .rank-table tr:hover td { background: #ffffff04; }
+
+  .rank-no { font-family: var(--mono); color: var(--muted); width: 40px; }
+  .rank-drink { display: flex; align-items: center; gap: 10px; }
+  .rank-orders { font-family: var(--mono); color: var(--green); }
+  .rank-revenue { font-family: var(--mono); color: var(--blue); }
+
+  /* ══════════ DRINKS PAGE ══════════ */
+  .page-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+
+  .btn-primary {
+    background: var(--green);
+    color: #000;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: var(--sans);
+  }
+  .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--red);
+    border: 1px solid #ff335530;
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: var(--sans);
+  }
+  .btn-danger:hover { background: #ff335510; }
+
+  .drinks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .drink-row {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 48px 1fr auto auto auto;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .drink-row:hover { border-color: var(--border2); }
+  .drink-row.spotlight { border-color: #ffd70040; background: #ffd70006; }
+
+  .dr-emoji { font-size: 1.6rem; text-align: center; }
+
+  .dr-info .dr-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .dr-info .dr-meta {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 3px;
+    font-family: var(--mono);
+  }
+
+  .dr-rivals {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .rival-chip {
+    font-size: 0.6rem;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: #ff335515;
+    color: #ff335580;
+    border: 1px solid #ff335525;
+    font-family: var(--mono);
+  }
+
+  .dr-prices {
+    text-align: right;
+  }
+
+  .dr-prices .base-price {
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .dr-prices .price-range {
+    font-size: 0.65rem;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-top: 2px;
+  }
+
+  .spotlight-badge {
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    background: #ffd70018;
+    color: var(--gold);
+    border: 1px solid #ffd70030;
+    border-radius: 3px;
+    letter-spacing: 1px;
+  }
+
+  .dr-actions { display: flex; gap: 6px; }
+
+  /* ══════════ ALGORITHM PAGE ══════════ */
+  .settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .setting-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+  }
+
+  .setting-card h3 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .setting-card .desc {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  .slider-wrap { margin-bottom: 8px; }
+
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .slider-label span { font-size: 0.75rem; color: var(--muted); }
+
+  .slider-val {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  input[type=range] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 4px;
+    background: var(--border2);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--green);
+    cursor: pointer;
+    box-shadow: 0 0 8px #00ff8840;
+  }
+
+  .effect-preview {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #00ff8808;
+    border: 1px solid #00ff8818;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .effect-preview span { color: var(--green); }
+
+  /* ══════════ SPOTLIGHT PAGE ══════════ */
+  .spotlight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .sp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .sp-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  .sp-card.selected {
+    border-color: var(--gold);
+    background: #ffd70008;
+    box-shadow: 0 0 20px #ffd70015;
+  }
+
+  .sp-card.none-card { border-style: dashed; }
+  .sp-card.none-card:hover { border-color: var(--muted); }
+
+  .sp-emoji { font-size: 2rem; margin-bottom: 8px; }
+  .sp-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+  .sp-price { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+
+  .sp-selected-mark {
+    position: absolute;
+    top: 10px; right: 10px;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    background: #ffd70020;
+    color: var(--gold);
+    border-radius: 3px;
+    letter-spacing: 1px;
+  }
+
+  /* ══════════ MODAL ══════════ */
+  #modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: #00000090;
+    backdrop-filter: blur(4px);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #modal-overlay.open { display: flex; }
+
+  #modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 60px #00000080;
+  }
+
+  .modal-hdr {
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-hdr h2 { font-size: 1rem; font-weight: 600; }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: #ffffff10; color: var(--text); }
+
+  .modal-body { padding: 24px; }
+
+  .form-row { margin-bottom: 18px; }
+
+  .form-row label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  .form-row input[type=text],
+  .form-row input[type=number] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: var(--sans);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-row input:focus { border-color: var(--green); }
+
+  .form-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .form-2col { display: grid; grid-template-columns: 80px 1fr; gap: 10px; }
+
+  .emoji-preview {
+    font-size: 2rem;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rivals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .rival-check {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: all 0.15s;
+  }
+
+  .rival-check:hover { border-color: var(--border2); }
+
+  .rival-check input[type=checkbox] { accent-color: var(--green); }
+
+  .modal-footer {
+    padding: 18px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  /* ══════════ TOAST ══════════ */
+  #toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--green);
+    color: #000;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.error { background: var(--red); color: #fff; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+<script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<div id="sidebar">
+  <div class="sb-logo">
+    <div class="logo">BAR EXCHANGE</div>
+    <div class="sub">ADMIN PANEL</div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="nav-section">メイン</div>
+    <div class="nav-item active" data-page="dashboard">
+      <span class="icon">📊</span> ダッシュボード
+    </div>
+
+    <div class="nav-section">設定</div>
+    <div class="nav-item" data-page="drinks">
+      <span class="icon">🍺</span> ドリンク管理
+    </div>
+    <div class="nav-item" data-page="algorithm">
+      <span class="icon">⚙️</span> アルゴリズム
+    </div>
+    <div class="nav-item" data-page="spotlight">
+      <span class="icon">⭐</span> スポットライト
+    </div>
+    <div class="nav-item" data-page="qr">
+      <span class="icon">📱</span> QRコード
+    </div>
+    <div class="nav-item" data-page="gacha">
+      <span class="icon">🎰</span> ガチャ管理
+    </div>
+    <a href="sales.html" target="_blank" style="display:flex;align-items:center;gap:12px;padding:12px 20px;color:var(--muted);font-size:0.85rem;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">
+      <span style="font-size:1rem;width:20px;text-align:center;">💰</span> 売上管理
+    </a>
+  </nav>
+
+  <div class="sb-footer">
+    <button id="market-toggle" class="open">● 営業中</button>
+  </div>
+</div>
+
+<!-- ══════════ MAIN ══════════ -->
+<div id="main">
+  <div id="topbar">
+    <div id="page-title">ダッシュボード</div>
+    <div id="topbar-right">
+      <span id="market-badge" class="tb-badge open">MARKET OPEN</span>
+      <button id="save-btn">保存する</button>
+    </div>
+  </div>
+
+  <div id="content">
+
+    <!-- ── DASHBOARD ── -->
+    <div id="page-dashboard" class="page active">
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">TODAY ORDERS</div>
+          <div class="stat-value" id="stat-orders">0</div>
+          <div class="stat-sub">本日の注文数</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">EST. REVENUE</div>
+          <div class="stat-value" id="stat-revenue">¥0</div>
+          <div class="stat-sub">売上概算（ドリンクのみ）</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">DRINKS</div>
+          <div class="stat-value" id="stat-drinks">0</div>
+          <div class="stat-sub">登録ドリンク数</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-label">TOP DRINK</div>
+          <div class="stat-value" id="stat-top" style="font-size:1.5rem;">—</div>
+          <div class="stat-sub">今夜一番売れてる酒</div>
+        </div>
+      </div>
+
+      <div class="section-title">ORDER RANKING</div>
+      <div class="rank-table">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ドリンク</th>
+              <th>注文数</th>
+              <th>売上概算</th>
+            </tr>
+          </thead>
+          <tbody id="rank-body">
+            <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px;font-size:0.8rem;">注文データなし — demo.html を開いて注文を記録してください</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── DRINKS ── -->
+    <div id="page-drinks" class="page">
+      <div class="page-actions">
+        <button class="btn-primary" id="add-drink-btn">＋ ドリンクを追加</button>
+      </div>
+      <div class="drinks-list" id="drinks-list"></div>
+    </div>
+
+    <!-- ── ALGORITHM ── -->
+    <div id="page-algorithm" class="page">
+      <div class="settings-grid">
+
+        <div class="setting-card">
+          <h3>価格上昇率</h3>
+          <p class="desc">1注文ごとにベース価格の何%上昇するか。高いほど価格が激しく動く。</p>
+          <div class="slider-wrap">
+            <div class="slider-label">
+              <span>1% (おだやか)</span>
+              <span class="slider-val" id="val-step">8%</span>
+              <span>20% (激しい)</span>
+            </div>
+            <input type="range" id="sl-step" min="1" max="20" value="8">
+          </div>
+          <div class="effect-preview" id="preview-step">
+            ベース¥500 → 1注文で → <span>¥540</span>
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <h3>ライバルペナルティ</h3>
+          <p class="desc">ライバル商品が1注文されるごとに価格が下がる率。高いほどシーソー効果が強い。</p>
+          <div class="slider-wrap">
+            <div class="slider-label">
+              <span>1% (弱い)</span>
+              <span class="slider-val" id="val-rival">5%</span>
+              <span>15% (強い)</span>
+            </div>
+            <input type="range" id="sl-rival" min="1" max="15" value="5">
+          </div>
+          <div class="effect-preview" id="preview-rival">
+            ハイボール1注文 → ビールが <span>-¥30</span> 下落
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <h3>価格計算ウィンドウ</h3>
+          <p class="desc">何分以内の注文を価格計算に使うか。短いほど価格変動がリアルタイムに。</p>
+          <div class="slider-wrap">
+            <div class="slider-label">
+              <span>1分</span>
+              <span class="slider-val" id="val-window">5分</span>
+              <span>30分</span>
+            </div>
+            <input type="range" id="sl-window" min="1" max="30" value="5">
+          </div>
+          <div class="effect-preview" id="preview-window">
+            直近 <span>5分</span> の注文のみ反映。古い注文は自動で効果消滅。
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <h3>価格変動しきい値</h3>
+          <p class="desc">スパークラインの「上昇・下落」判定。この円以上動いたらトレンドが変わる。</p>
+          <div class="slider-wrap">
+            <div class="slider-label">
+              <span>¥5</span>
+              <span class="slider-val" id="val-thresh">¥10</span>
+              <span>¥100</span>
+            </div>
+            <input type="range" id="sl-thresh" min="5" max="100" value="10">
+          </div>
+          <div class="effect-preview" id="preview-thresh">
+            <span>¥10</span> 以上の変動で▲▼マークが切り替わる
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── QR ── -->
+    <div id="page-qr" class="page">
+      <div class="settings-grid" style="grid-template-columns:1fr 1fr;">
+
+        <div class="setting-card">
+          <h3>📺 TV表示ボード</h3>
+          <p class="desc">大画面モニターに映す用。価格変動・スパークライン・ティッカーが表示されます。</p>
+          <div style="margin-bottom:12px;">
+            <label style="font-size:0.65rem;letter-spacing:2px;color:var(--muted);display:block;margin-bottom:6px;">URL（サーバー起動後に変更）</label>
+            <input type="text" id="url-demo" value="http://localhost:3000/" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);padding:8px 12px;border-radius:7px;font-family:var(--mono);font-size:0.78rem;outline:none;">
+          </div>
+          <div id="qr-demo" style="background:#fff;padding:12px;border-radius:10px;display:inline-block;margin-bottom:12px;"></div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-ghost" onclick="genQR('demo')">QR生成</button>
+            <button class="btn-ghost" onclick="printQR('demo')">印刷</button>
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <h3>📱 お客様スマホ画面</h3>
+          <p class="desc">テーブルに置くQR。お客様がスマホで読み取るとリアルタイム価格・ランキングが見られます。</p>
+          <div style="margin-bottom:12px;">
+            <label style="font-size:0.65rem;letter-spacing:2px;color:var(--muted);display:block;margin-bottom:6px;">URL（サーバー起動後に変更）</label>
+            <input type="text" id="url-customer" value="http://localhost:3000/customer.html" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);padding:8px 12px;border-radius:7px;font-family:var(--mono);font-size:0.78rem;outline:none;">
+          </div>
+          <div id="qr-customer" style="background:#fff;padding:12px;border-radius:10px;display:inline-block;margin-bottom:12px;"></div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-ghost" onclick="genQR('customer')">QR生成</button>
+            <button class="btn-ghost" onclick="printQR('customer')">印刷</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="setting-card" style="margin-top:16px;">
+        <h3>🌐 ローカルネットワーク設定ガイド</h3>
+        <p class="desc">バーのWi-Fiに接続したスマホからアクセスできるようにする手順です。</p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+          <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:0.78rem;line-height:1.8;font-family:var(--mono);color:#8090b0;">
+            <span style="color:var(--muted);">① </span>Node.jsをインストール後、ターミナルで:<br>
+            <span style="color:var(--green);">cd ~/bar-exchange && npm install && npm start</span><br><br>
+            <span style="color:var(--muted);">② </span>Macのローカルネットワーク IPを確認:<br>
+            <span style="color:var(--green);">ipconfig getifaddr en0</span><br><br>
+            <span style="color:var(--muted);">③ </span>上のURLを <span style="color:var(--green);">http://[IPアドレス]:3000/customer.html</span> に変更してQR生成<br>
+            <span style="color:var(--muted);">例: http://192.168.1.5:3000/customer.html</span>
+          </div>
+          <div id="local-ip-hint" style="font-size:0.72rem;color:var(--muted);padding:8px 0;">
+            💡 同じWi-Fiに接続していればお客様のスマホからもアクセスできます
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SPOTLIGHT ── -->
+    <div id="page-spotlight" class="page">
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:20px;line-height:1.7;">
+        スポットライト商品はTV表示ボードで✨マーク付きでハイライト表示されます。<br>
+        在庫が多い商品や、今夜売りたい商品を指定してください。
+      </p>
+      <div class="spotlight-grid" id="spotlight-grid"></div>
+    </div>
+
+    <!-- ── GACHA ── -->
+    <div id="page-gacha" class="page">
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:20px;line-height:1.7;">
+        お客様スマホから1日1回無料で引けるガチャを管理します。<br>
+        景品の当選確率・在庫を自由に設定できます。確率の合計が100%になるよう調整してください。
+      </p>
+
+      <!-- 確率メーター -->
+      <div style="background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:16px;margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:0.72rem;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;">確率の合計</span>
+          <span id="prob-total" style="font-family:var(--mono);font-weight:700;">100%</span>
+        </div>
+        <div style="height:8px;background:#1a2030;border-radius:4px;overflow:hidden;">
+          <div id="prob-bar" style="height:100%;background:var(--green);border-radius:4px;transition:width 0.3s;width:100%;"></div>
+        </div>
+      </div>
+
+      <!-- 景品リスト -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span style="font-size:0.72rem;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;">景品リスト</span>
+        <button class="btn-primary" id="add-prize-btn" style="font-size:0.78rem;padding:7px 16px;">+ 景品を追加</button>
+      </div>
+      <div id="prizes-list"></div>
+
+      <!-- 当選履歴 -->
+      <div style="margin-top:28px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span style="font-size:0.72rem;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;">本日の当選履歴</span>
+          <button class="btn-ghost" onclick="loadGachaHistory()" style="font-size:0.72rem;padding:5px 12px;">🔄 更新</button>
+        </div>
+        <div id="gacha-history-list" style="display:flex;flex-direction:column;gap:6px;">
+          <div style="text-align:center;color:var(--muted);font-size:0.8rem;padding:20px;">読み込み中...</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ PRIZE MODAL ══════════ -->
+<div id="prize-modal-overlay" style="display:none;position:fixed;inset:0;background:#00000090;z-index:200;display:none;align-items:center;justify-content:center;">
+  <div style="background:#0d0f14;border:1px solid #1a2030;border-radius:16px;padding:28px;width:360px;max-width:90vw;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h2 id="prize-modal-title" style="font-size:1rem;font-weight:700;">景品を追加</h2>
+      <button onclick="closePrizeModal()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <input type="hidden" id="prize-edit-idx">
+    <div class="form-row form-2col">
+      <div>
+        <label>絵文字</label>
+        <div class="emoji-preview" id="prize-emoji-preview">🎟</div>
+      </div>
+      <div>
+        <label>絵文字を入力</label>
+        <input type="text" id="prize-edit-emoji" placeholder="🎟" maxlength="2">
+      </div>
+    </div>
+    <div class="form-row">
+      <label>景品名</label>
+      <input type="text" id="prize-edit-name" placeholder="例：ドリンク1杯無料">
+    </div>
+    <div class="form-row form-2col">
+      <div>
+        <label>当選確率 (%)</label>
+        <input type="number" id="prize-edit-prob" min="1" max="99" value="10">
+      </div>
+      <div>
+        <label>在庫数（-1=無制限）</label>
+        <input type="number" id="prize-edit-stock" min="-1" max="9999" value="-1">
+      </div>
+    </div>
+    <div class="form-row">
+      <label>カラー</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;" id="prize-color-picker">
+        <div class="color-opt" data-color="#00ff88" style="background:#00ff88;width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;"></div>
+        <div class="color-opt" data-color="#ffd700" style="background:#ffd700;width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;"></div>
+        <div class="color-opt" data-color="#4488ff" style="background:#4488ff;width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;"></div>
+        <div class="color-opt" data-color="#aa66ff" style="background:#aa66ff;width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;"></div>
+        <div class="color-opt" data-color="#ff3355" style="background:#ff3355;width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;"></div>
+        <div class="color-opt" data-color="#ff8800" style="background:#ff8800;width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;"></div>
+        <div class="color-opt" data-color="#4a5270" style="background:#4a5270;width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;"></div>
+      </div>
+      <input type="hidden" id="prize-edit-color" value="#00ff88">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button class="btn-ghost" onclick="closePrizeModal()" style="flex:1;">キャンセル</button>
+      <button class="btn-primary" onclick="savePrize()" style="flex:1;">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL ══════════ -->
+<div id="modal-overlay">
+  <div id="modal">
+    <div class="modal-hdr">
+      <h2 id="modal-title">ドリンクを追加</h2>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id">
+
+      <div class="form-row form-2col">
+        <div>
+          <label>絵文字</label>
+          <div class="emoji-preview" id="emoji-preview">🍺</div>
+        </div>
+        <div>
+          <label>絵文字を入力</label>
+          <input type="text" id="edit-emoji" placeholder="🍺" maxlength="2">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>ドリンク名</label>
+        <input type="text" id="edit-name" placeholder="例：レモンサワー">
+      </div>
+
+      <div class="form-row">
+        <label>ID（英数字・ハイフンのみ）</label>
+        <input type="text" id="edit-slug" placeholder="例：lemon_sour" style="font-family:var(--mono)">
+      </div>
+
+      <div class="form-row form-3col">
+        <div>
+          <label>ベース価格 (¥)</label>
+          <input type="number" id="edit-base" min="100" max="5000" value="500">
+        </div>
+        <div>
+          <label>最低価格 (¥)</label>
+          <input type="number" id="edit-min" min="50" max="4000" value="300">
+        </div>
+        <div>
+          <label>最高価格 (¥)</label>
+          <input type="number" id="edit-max" min="200" max="9000" value="1000">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>在庫数（空白・-1 = 無制限）</label>
+        <input type="number" id="edit-stock" min="-1" max="9999" placeholder="空白で無制限">
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">在庫が少なくなると自動で価格が上がります（在庫連動）</div>
+      </div>
+      <div class="form-row">
+        <label>ライバル商品（売れると価格が下がる）</label>
+        <div class="rivals-grid" id="rivals-grid"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" id="modal-cancel">キャンセル</button>
+      <button class="btn-primary" id="modal-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  DEFAULT CONFIG
+// ══════════════════════════════════════════
+const DEFAULTS = {
+  drinks: [
+    { id:'highball',   name:'ハイボール',   emoji:'🥃', base:500,  min:280, max:980,  rivals:['beer','lemon_sour'], spotlight:false },
+    { id:'beer',       name:'ビール',       emoji:'🍺', base:600,  min:350, max:1100, rivals:['highball'],          spotlight:false },
+    { id:'wine',       name:'ワイン',       emoji:'🍷', base:700,  min:420, max:1300, rivals:['cocktail'],          spotlight:false },
+    { id:'cocktail',   name:'カクテル',     emoji:'🍸', base:800,  min:500, max:1500, rivals:['wine'],              spotlight:false },
+    { id:'sake',       name:'日本酒',       emoji:'🍶', base:650,  min:400, max:1200, rivals:['shochu'],            spotlight:false },
+    { id:'shochu',     name:'焼酎',         emoji:'🥂', base:550,  min:320, max:1000, rivals:['sake'],              spotlight:false },
+    { id:'lemon_sour', name:'レモンサワー', emoji:'🍋', base:480,  min:280, max:900,  rivals:['highball'],          spotlight:false },
+    { id:'whisky',     name:'ウイスキー',   emoji:'🥃', base:900,  min:600, max:1600, rivals:['brandy'],            spotlight:false },
+    { id:'brandy',     name:'ブランデー',   emoji:'🫗', base:950,  min:600, max:1700, rivals:['whisky'],            spotlight:false },
+    { id:'gin_tonic',  name:'ジントニック', emoji:'🍹', base:750,  min:450, max:1400, rivals:['cocktail'],          spotlight:false },
+    { id:'champagne',  name:'シャンパン',   emoji:'🥂', base:1200, min:800, max:2200, rivals:['wine'],              spotlight:false },
+    { id:'matcha',     name:'抹茶ラテ(NA)', emoji:'🍵', base:400,  min:250, max:750,  rivals:[],                    spotlight:false },
+  ],
+  settings: {
+    priceStep:   8,
+    rivalStep:   5,
+    windowMin:   5,
+    trendThresh: 10,
+    isOpen:      true,
+    spotlightId: null,
+  },
+};
+
+// ══════════════════════════════════════════
+//  STORAGE
+// ══════════════════════════════════════════
+const STORE_KEY   = 'barexchange_config';
+const ORDERS_KEY  = 'barexchange_orders';
+
+const Transport = (() => {
+  const channel = new BroadcastChannel('barexchange');
+  let socket = null, connected = false;
+  const _ls = {};
+
+  function on(type, fn) { (_ls[type] || (_ls[type] = [])).push(fn); }
+  function emit(type, data = {}) {
+    if (connected) socket.emit(type, data);
+    else channel.postMessage({ type, ...data });
+  }
+  function _dispatch(type, data) { (_ls[type] ?? []).forEach(fn => fn(data)); }
+
+  if (typeof io !== 'undefined') {
+    socket = io({ reconnectionAttempts: 3, timeout: 3000 });
+    socket.on('connect',    () => { connected = true; });
+    socket.on('disconnect', () => { connected = false; });
+    socket.onAny((event, data) => _dispatch(event, data));
+  }
+  channel.onmessage = ev => { if (!connected) _dispatch(ev.data.type, ev.data); };
+
+  return { on, emit, isConnected: () => connected };
+})();
+
+function loadConfig() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return JSON.parse(JSON.stringify(DEFAULTS));
+    const saved = JSON.parse(raw);
+    // merge in case new default fields were added
+    return {
+      drinks:   saved.drinks   ?? DEFAULTS.drinks,
+      settings: { ...DEFAULTS.settings, ...(saved.settings ?? {}) },
+    };
+  } catch { return JSON.parse(JSON.stringify(DEFAULTS)); }
+}
+
+function saveConfig(cfg) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(cfg));
+  Transport.emit('config_update', cfg);
+  syncStockToServer();
+  showToast('✅ 設定を保存しました');
+}
+
+function loadOrders() {
+  try { return JSON.parse(localStorage.getItem(ORDERS_KEY) ?? '[]'); }
+  catch { return []; }
+}
+
+let config = loadConfig();
+let pendingChanges = false;
+
+function markDirty() {
+  pendingChanges = true;
+  document.getElementById('save-btn').classList.add('visible');
+}
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+const pages = { dashboard:'ダッシュボード', drinks:'ドリンク管理', algorithm:'アルゴリズム設定', spotlight:'スポットライト', qr:'QRコード生成', gacha:'ガチャ管理' };
+
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+    el.classList.add('active');
+    const p = el.dataset.page;
+    document.getElementById('page-' + p).classList.add('active');
+    document.getElementById('page-title').textContent = pages[p];
+
+    if (p === 'drinks')    renderDrinks();
+    if (p === 'spotlight') renderSpotlight();
+    if (p === 'dashboard') renderDashboard();
+    if (p === 'gacha')     { renderGachaPrizes(); loadGachaHistory(); }
+  });
+});
+
+// ══════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════
+let sessionOrders = []; // { drinkId, price, ts }
+
+Transport.on('order', data => {
+  sessionOrders.push(data);
+  renderDashboard();
+});
+
+// サーバーモード: price_update で totalOrders を同期
+Transport.on('price_update', state => {
+  if (!Transport.isConnected()) return;
+  document.getElementById('stat-orders').textContent  = state.totalOrders;
+  document.getElementById('stat-drinks').textContent  = state.drinks.length;
+});
+
+function renderDashboard() {
+  const orders = sessionOrders;
+  const total  = orders.length;
+  const rev    = orders.reduce((s, o) => s + (o.price ?? 0), 0);
+
+  document.getElementById('stat-orders').textContent  = total;
+  document.getElementById('stat-revenue').textContent = '¥' + rev.toLocaleString();
+  document.getElementById('stat-drinks').textContent  = config.drinks.length;
+
+  // counts per drink
+  const counts = {};
+  config.drinks.forEach(d => counts[d.id] = 0);
+  orders.forEach(o => { if (counts[o.drinkId] !== undefined) counts[o.drinkId]++; });
+
+  const sorted = config.drinks
+    .map(d => ({ ...d, count: counts[d.id] ?? 0, rev: (counts[d.id] ?? 0) * d.base }))
+    .sort((a, b) => b.count - a.count);
+
+  const top = sorted[0];
+  document.getElementById('stat-top').textContent = top && top.count > 0
+    ? `${top.emoji} ${top.name}` : '—';
+
+  const tbody = document.getElementById('rank-body');
+  if (sorted.every(d => d.count === 0)) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px;font-size:0.8rem;">注文データなし — demo.html を開いて注文を記録してください</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = sorted.map((d, i) => `
+    <tr>
+      <td class="rank-no">${i + 1}</td>
+      <td><div class="rank-drink"><span>${d.emoji}</span><span>${d.name}</span></div></td>
+      <td class="rank-orders">${d.count}件</td>
+      <td class="rank-revenue">¥${d.rev.toLocaleString()}</td>
+    </tr>
+  `).join('');
+}
+
+// ══════════════════════════════════════════
+//  DRINKS LIST
+// ══════════════════════════════════════════
+function renderDrinks() {
+  const list = document.getElementById('drinks-list');
+  const spotId = config.settings.spotlightId;
+
+  list.innerHTML = config.drinks.map((d, idx) => {
+    const isSpot = d.id === spotId;
+    const rivalNames = d.rivals.map(rid => {
+      const found = config.drinks.find(x => x.id === rid);
+      return found ? `<span class="rival-chip">${found.emoji} ${found.name}</span>` : '';
+    }).join('');
+
+    return `
+      <div class="drink-row ${isSpot ? 'spotlight' : ''}" data-idx="${idx}">
+        <div class="dr-emoji">${d.emoji}</div>
+        <div class="dr-info">
+          <div class="dr-name">${d.name}</div>
+          <div class="dr-meta">ID: ${d.id}</div>
+        </div>
+        <div class="dr-rivals">${rivalNames || '<span style="font-size:0.7rem;color:var(--muted)">ライバルなし</span>'}</div>
+        <div class="dr-prices">
+          <div class="base-price">¥${d.base.toLocaleString()}</div>
+          <div class="price-range">¥${d.min} 〜 ¥${d.max}</div>
+        </div>
+        ${isSpot ? '<span class="spotlight-badge">⭐ SPOTLIGHT</span>' : '<span></span>'}
+        <div class="dr-actions">
+          <button class="btn-ghost" onclick="openEdit(${idx})">編集</button>
+          <button class="btn-danger" onclick="deleteDrink(${idx})">削除</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function deleteDrink(idx) {
+  const d = config.drinks[idx];
+  if (!confirm(`「${d.name}」を削除しますか？`)) return;
+  config.drinks.splice(idx, 1);
+  // ライバルリストからも削除
+  config.drinks.forEach(x => {
+    x.rivals = x.rivals.filter(r => r !== d.id);
+  });
+  if (config.settings.spotlightId === d.id) config.settings.spotlightId = null;
+  markDirty();
+  renderDrinks();
+  showToast(`🗑 ${d.name} を削除しました`);
+}
+
+// ══════════════════════════════════════════
+//  MODAL (ADD / EDIT)
+// ══════════════════════════════════════════
+let editingIdx = null;
+
+document.getElementById('add-drink-btn').addEventListener('click', () => openEdit(null));
+
+function openEdit(idx) {
+  editingIdx = idx;
+  const isNew = idx === null;
+  document.getElementById('modal-title').textContent = isNew ? 'ドリンクを追加' : 'ドリンクを編集';
+
+  const d = isNew
+    ? { id:'', name:'', emoji:'🍺', base:500, min:300, max:1000, rivals:[], stock:null }
+    : { ...config.drinks[idx] };
+
+  document.getElementById('edit-id').value    = d.id;
+  document.getElementById('edit-name').value  = d.name;
+  document.getElementById('edit-emoji').value = d.emoji;
+  document.getElementById('edit-slug').value  = d.id;
+  document.getElementById('edit-base').value  = d.base;
+  document.getElementById('edit-min').value   = d.min;
+  document.getElementById('edit-max').value   = d.max;
+  document.getElementById('emoji-preview').textContent = d.emoji;
+  document.getElementById('edit-slug').readOnly = !isNew;
+  document.getElementById('edit-stock').value = (d.stock == null || d.stock < 0) ? '' : d.stock;
+
+  // rivals チェックボックス
+  const grid = document.getElementById('rivals-grid');
+  const others = config.drinks.filter((_, i) => i !== idx);
+  grid.innerHTML = others.map(o => `
+    <label class="rival-check">
+      <input type="checkbox" value="${o.id}" ${d.rivals.includes(o.id) ? 'checked' : ''}>
+      ${o.emoji} ${o.name}
+    </label>
+  `).join('') || '<span style="color:var(--muted);font-size:0.78rem;">他のドリンクがありません</span>';
+
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  editingIdx = null;
+}
+
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
+
+document.getElementById('edit-emoji').addEventListener('input', e => {
+  document.getElementById('emoji-preview').textContent = e.target.value || '?';
+});
+
+document.getElementById('modal-save').addEventListener('click', () => {
+  const name  = document.getElementById('edit-name').value.trim();
+  const emoji = document.getElementById('edit-emoji').value.trim();
+  const slug  = document.getElementById('edit-slug').value.trim().replace(/\s+/g,'_');
+  const base  = parseInt(document.getElementById('edit-base').value);
+  const min   = parseInt(document.getElementById('edit-min').value);
+  const max   = parseInt(document.getElementById('edit-max').value);
+
+  if (!name)  { showToast('ドリンク名を入力してください', true); return; }
+  if (!emoji) { showToast('絵文字を入力してください', true); return; }
+  if (!slug)  { showToast('IDを入力してください', true); return; }
+  if (min >= max) { showToast('最高価格 > 最低価格にしてください', true); return; }
+  if (base < min || base > max) { showToast('ベース価格は最低〜最高の範囲内にしてください', true); return; }
+
+  const rivals = Array.from(document.querySelectorAll('#rivals-grid input:checked')).map(el => el.value);
+
+  const stockVal = document.getElementById('edit-stock').value;
+  const stock = stockVal === '' ? null : Math.max(-1, parseInt(stockVal) || -1);
+
+  if (editingIdx === null) {
+    if (config.drinks.find(d => d.id === slug)) {
+      showToast('そのIDはすでに使われています', true); return;
+    }
+    config.drinks.push({ id:slug, name, emoji, base, min, max, rivals, stock, spotlight:false });
+  } else {
+    config.drinks[editingIdx] = { ...config.drinks[editingIdx], name, emoji, base, min, max, rivals, stock };
+  }
+
+  markDirty();
+  closeModal();
+  renderDrinks();
+  showToast(editingIdx === null ? `✅ ${name} を追加しました` : `✅ ${name} を更新しました`);
+});
+
+// ══════════════════════════════════════════
+//  ALGORITHM SLIDERS
+// ══════════════════════════════════════════
+function initSliders() {
+  const s = config.settings;
+
+  const slStep   = document.getElementById('sl-step');
+  const slRival  = document.getElementById('sl-rival');
+  const slWindow = document.getElementById('sl-window');
+  const slThresh = document.getElementById('sl-thresh');
+
+  slStep.value   = s.priceStep;
+  slRival.value  = s.rivalStep;
+  slWindow.value = s.windowMin;
+  slThresh.value = s.trendThresh;
+
+  function update() {
+    const step   = +slStep.value;
+    const rival  = +slRival.value;
+    const window_ = +slWindow.value;
+    const thresh = +slThresh.value;
+
+    document.getElementById('val-step').textContent   = step + '%';
+    document.getElementById('val-rival').textContent  = rival + '%';
+    document.getElementById('val-window').textContent = window_ + '分';
+    document.getElementById('val-thresh').textContent = '¥' + thresh;
+
+    const exBase = 500;
+    document.getElementById('preview-step').innerHTML =
+      `ベース¥${exBase} → 1注文で → <span>¥${Math.round(exBase * (1 + step/100))}</span>`;
+    document.getElementById('preview-rival').innerHTML =
+      `ハイボール1注文 → ビールが <span>-¥${Math.round(600 * rival/100)}</span> 下落`;
+    document.getElementById('preview-window').innerHTML =
+      `直近 <span>${window_}分</span> の注文のみ反映。古い注文は自動で効果消滅。`;
+    document.getElementById('preview-thresh').innerHTML =
+      `<span>¥${thresh}</span> 以上の変動で▲▼マークが切り替わる`;
+
+    config.settings.priceStep   = step;
+    config.settings.rivalStep   = rival;
+    config.settings.windowMin   = window_;
+    config.settings.trendThresh = thresh;
+    markDirty();
+  }
+
+  [slStep, slRival, slWindow, slThresh].forEach(el => el.addEventListener('input', update));
+  update();
+}
+
+// ══════════════════════════════════════════
+//  SPOTLIGHT
+// ══════════════════════════════════════════
+function renderSpotlight() {
+  const grid = document.getElementById('spotlight-grid');
+  const spotId = config.settings.spotlightId;
+
+  const noneCard = `
+    <div class="sp-card none-card ${spotId === null ? 'selected' : ''}" data-id="__none__">
+      <div class="sp-emoji">🚫</div>
+      <div class="sp-name">なし</div>
+      <div class="sp-price">スポットライトOFF</div>
+      ${spotId === null ? '<span class="sp-selected-mark">選択中</span>' : ''}
+    </div>
+  `;
+
+  const cards = config.drinks.map(d => `
+    <div class="sp-card ${d.id === spotId ? 'selected' : ''}" data-id="${d.id}">
+      ${d.id === spotId ? '<span class="sp-selected-mark">⭐ 選択中</span>' : ''}
+      <div class="sp-emoji">${d.emoji}</div>
+      <div class="sp-name">${d.name}</div>
+      <div class="sp-price">ベース ¥${d.base.toLocaleString()}</div>
+    </div>
+  `).join('');
+
+  grid.innerHTML = noneCard + cards;
+
+  grid.querySelectorAll('.sp-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const id = card.dataset.id;
+      config.settings.spotlightId = id === '__none__' ? null : id;
+      markDirty();
+      renderSpotlight();
+      renderDrinks();
+    });
+  });
+}
+
+// ══════════════════════════════════════════
+//  MARKET TOGGLE
+// ══════════════════════════════════════════
+function updateMarketUI() {
+  const isOpen = config.settings.isOpen;
+  const btn    = document.getElementById('market-toggle');
+  const badge  = document.getElementById('market-badge');
+  btn.textContent  = isOpen ? '● 営業中' : '○ 営業終了';
+  btn.className    = isOpen ? 'open' : 'close';
+  badge.textContent = isOpen ? 'MARKET OPEN' : 'MARKET CLOSED';
+  badge.className   = 'tb-badge ' + (isOpen ? 'open' : 'close');
+}
+
+document.getElementById('market-toggle').addEventListener('click', () => {
+  config.settings.isOpen = !config.settings.isOpen;
+  updateMarketUI();
+  markDirty();
+  Transport.emit('market_status', { isOpen: config.settings.isOpen });
+});
+
+// ══════════════════════════════════════════
+//  SAVE BUTTON
+// ══════════════════════════════════════════
+document.getElementById('save-btn').addEventListener('click', () => {
+  saveConfig(config);
+  pendingChanges = false;
+  document.getElementById('save-btn').classList.remove('visible');
+});
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+let toastTimer;
+function showToast(msg, isError = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (isError ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = '', 2800);
+}
+
+// ══════════════════════════════════════════
+//  QR CODE
+// ══════════════════════════════════════════
+const qrInstances = {};
+
+function genQR(type) {
+  const urlEl = document.getElementById('url-' + type);
+  const container = document.getElementById('qr-' + type);
+  const url = urlEl.value.trim();
+  if (!url) { showToast('URLを入力してください', true); return; }
+
+  container.innerHTML = '';
+  if (qrInstances[type]) {
+    qrInstances[type].clear();
+  }
+  qrInstances[type] = new QRCode(container, {
+    text: url,
+    width: 160,
+    height: 160,
+    colorDark: '#000000',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M,
+  });
+  showToast('✅ QRコードを生成しました');
+}
+
+function printQR(type) {
+  const url = document.getElementById('url-' + type).value.trim();
+  const label = type === 'demo' ? 'TV表示ボード' : 'お客様スマホ画面';
+  const container = document.getElementById('qr-' + type);
+  const img = container.querySelector('img');
+  if (!img) { showToast('先にQRを生成してください', true); return; }
+
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html><head><title>BAR EXCHANGE QR — ${label}</title>
+    <style>
+      body { font-family: sans-serif; text-align: center; padding: 40px; background: #fff; }
+      h1 { font-size: 1.4rem; letter-spacing: 4px; margin-bottom: 8px; }
+      p  { font-size: 0.8rem; color: #666; margin-bottom: 24px; letter-spacing: 1px; }
+      img { width: 200px; height: 200px; }
+      .url { font-size: 0.7rem; color: #999; margin-top: 16px; font-family: monospace; }
+    </style></head>
+    <body>
+      <h1>BAR EXCHANGE</h1>
+      <p>${label}</p>
+      <img src="${img.src}">
+      <div class="url">${url}</div>
+      <script>window.onload=()=>window.print();<\/script>
+    </body></html>
+  `);
+  win.document.close();
+}
+
+// URLフィールドでEnterを押したら即生成
+['demo','customer'].forEach(type => {
+  document.getElementById('url-' + type)?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') genQR(type);
+  });
+});
+
+// ══════════════════════════════════════════
+//  GACHA MANAGEMENT
+// ══════════════════════════════════════════
+const DEFAULT_GACHA_CONFIG = {
+  enabled: true,
+  prizes: [
+    { id:'drink_free', name:'ドリンク1杯無料',   emoji:'🍺', probability:5,  stock:10, color:'#00ff88' },
+    { id:'snack_free', name:'おつまみプレゼント', emoji:'🍟', probability:10, stock:20, color:'#ffd700' },
+    { id:'discount',   name:'次回10%割引',       emoji:'🎟', probability:15, stock:-1, color:'#4488ff' },
+    { id:'miss',       name:'ハズレ…また来てね', emoji:'😢', probability:70, stock:-1, color:'#4a5270' },
+  ],
+};
+
+function loadGachaConfigLocal() {
+  try {
+    const raw = localStorage.getItem('barexchange_gacha_config');
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return JSON.parse(JSON.stringify(DEFAULT_GACHA_CONFIG));
+}
+
+function saveGachaConfigLocal(cfg) {
+  localStorage.setItem('barexchange_gacha_config', JSON.stringify(cfg));
+  // サーバーにも送信
+  if (Transport.isConnected()) {
+    fetch('/api/gacha/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cfg),
+    }).catch(() => {});
+  }
+  Transport.emit('gacha_config_updated', cfg);
+}
+
+let gachaConfig = loadGachaConfigLocal();
+
+function renderGachaPrizes() {
+  const list = document.getElementById('prizes-list');
+  const total = gachaConfig.prizes.reduce((s, p) => s + p.probability, 0);
+
+  // 確率メーター更新
+  const pct = Math.min(100, total);
+  const bar = document.getElementById('prob-bar');
+  const tot = document.getElementById('prob-total');
+  if (bar) bar.style.width = pct + '%';
+  if (bar) bar.style.background = Math.abs(total - 100) < 1 ? 'var(--green)' : 'var(--red)';
+  if (tot) {
+    tot.textContent = total + '%';
+    tot.style.color = Math.abs(total - 100) < 1 ? 'var(--green)' : 'var(--red)';
+  }
+
+  list.innerHTML = gachaConfig.prizes.map((p, i) => {
+    const stockText = p.stock < 0 ? '∞ 無制限' : p.stock === 0 ? '🚫 在庫切れ' : `残 ${p.stock} 個`;
+    return `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;
+        background:var(--card2);border:1px solid var(--border2);border-radius:10px;margin-bottom:8px;">
+        <span style="font-size:1.4rem;width:32px;text-align:center;">${p.emoji}</span>
+        <div style="flex:1;">
+          <div style="font-size:0.88rem;font-weight:700;color:${p.color};">${p.name}</div>
+          <div style="font-size:0.72rem;color:var(--muted);">確率: ${p.probability}% ／ ${stockText}</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-ghost" onclick="openPrizeEdit(${i})" style="font-size:0.72rem;padding:5px 10px;">編集</button>
+          <button class="btn-danger" onclick="deletePrize(${i})" style="font-size:0.72rem;padding:5px 10px;">削除</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function loadGachaHistory() {
+  const el = document.getElementById('gacha-history-list');
+  let history = [];
+
+  if (Transport.isConnected()) {
+    try {
+      const res = await fetch('/api/gacha/history');
+      if (res.ok) history = await res.json();
+    } catch {}
+  } else {
+    // localStorageフォールバック（当日分のみ）
+    try {
+      const raw = localStorage.getItem('barexchange_gacha_history_' + new Date().toISOString().slice(0,10));
+      if (raw) history = JSON.parse(raw);
+    } catch {}
+  }
+
+  if (history.length === 0) {
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:0.8rem;padding:20px;">本日の履歴はありません</div>';
+    return;
+  }
+
+  // 景品別集計
+  const tally = {};
+  history.forEach(h => {
+    const k = h.prizeId;
+    if (!tally[k]) tally[k] = { name: h.prizeName ?? k, emoji: h.prizeEmoji ?? '?', count: 0 };
+    tally[k].count++;
+  });
+
+  el.innerHTML = `
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+      ${Object.values(tally).map(t => `
+        <div style="background:var(--card2);border:1px solid var(--border2);border-radius:8px;
+          padding:8px 14px;font-size:0.82rem;">
+          ${t.emoji} ${t.name}: <strong>${t.count}件</strong>
+        </div>
+      `).join('')}
+    </div>
+    ${history.slice().reverse().slice(0,20).map(h => {
+      const time = new Date(h.ts).toLocaleTimeString('ja-JP', {hour:'2-digit',minute:'2-digit'});
+      return `<div style="display:flex;gap:8px;align-items:center;padding:7px 10px;
+        background:#080a0e;border-radius:7px;font-size:0.78rem;margin-bottom:4px;">
+        <span style="font-family:var(--mono);color:var(--muted);font-size:0.7rem;">${time}</span>
+        <span>${h.prizeEmoji ?? '?'}</span>
+        <span style="flex:1;">${h.prizeName ?? h.prizeId}</span>
+        <span style="color:var(--muted);">${h.name ?? '匿名'}</span>
+      </div>`;
+    }).join('')}
+  `;
+}
+
+// ── Prize Modal ──
+let editingPrizeIdx = null;
+let selectedPrizeColor = '#00ff88';
+
+document.getElementById('add-prize-btn').addEventListener('click', () => openPrizeEdit(null));
+
+function openPrizeEdit(idx) {
+  editingPrizeIdx = idx;
+  const isNew = idx === null;
+  document.getElementById('prize-modal-title').textContent = isNew ? '景品を追加' : '景品を編集';
+
+  const p = isNew
+    ? { emoji:'🎟', name:'', probability:10, stock:-1, color:'#00ff88' }
+    : { ...gachaConfig.prizes[idx] };
+
+  document.getElementById('prize-edit-emoji').value = p.emoji;
+  document.getElementById('prize-emoji-preview').textContent = p.emoji;
+  document.getElementById('prize-edit-name').value  = p.name;
+  document.getElementById('prize-edit-prob').value  = p.probability;
+  document.getElementById('prize-edit-stock').value = p.stock;
+  document.getElementById('prize-edit-color').value = p.color;
+  selectedPrizeColor = p.color;
+
+  document.querySelectorAll('.color-opt').forEach(el => {
+    el.style.border = el.dataset.color === p.color ? '2px solid white' : '2px solid transparent';
+  });
+
+  const overlay = document.getElementById('prize-modal-overlay');
+  overlay.style.display = 'flex';
+}
+
+function closePrizeModal() {
+  document.getElementById('prize-modal-overlay').style.display = 'none';
+  editingPrizeIdx = null;
+}
+
+document.getElementById('prize-edit-emoji').addEventListener('input', e => {
+  document.getElementById('prize-emoji-preview').textContent = e.target.value || '?';
+});
+
+document.querySelectorAll('.color-opt').forEach(el => {
+  el.addEventListener('click', () => {
+    selectedPrizeColor = el.dataset.color;
+    document.getElementById('prize-edit-color').value = selectedPrizeColor;
+    document.querySelectorAll('.color-opt').forEach(x => {
+      x.style.border = x.dataset.color === selectedPrizeColor ? '2px solid white' : '2px solid transparent';
+    });
+  });
+});
+
+function savePrize() {
+  const emoji = document.getElementById('prize-edit-emoji').value.trim();
+  const name  = document.getElementById('prize-edit-name').value.trim();
+  const prob  = parseInt(document.getElementById('prize-edit-prob').value) || 10;
+  const stock = parseInt(document.getElementById('prize-edit-stock').value) ?? -1;
+  const color = document.getElementById('prize-edit-color').value;
+
+  if (!name)  { showToast('景品名を入力してください', true); return; }
+  if (!emoji) { showToast('絵文字を入力してください', true); return; }
+
+  const prize = {
+    id:          editingPrizeIdx === null ? 'prize_' + Date.now() : gachaConfig.prizes[editingPrizeIdx].id,
+    name, emoji, probability: prob, stock, color,
+  };
+
+  if (editingPrizeIdx === null) {
+    gachaConfig.prizes.push(prize);
+  } else {
+    gachaConfig.prizes[editingPrizeIdx] = prize;
+  }
+
+  saveGachaConfigLocal(gachaConfig);
+  closePrizeModal();
+  renderGachaPrizes();
+  showToast('✅ 景品を保存しました');
+}
+
+function deletePrize(idx) {
+  if (!confirm(`「${gachaConfig.prizes[idx].name}」を削除しますか？`)) return;
+  gachaConfig.prizes.splice(idx, 1);
+  saveGachaConfigLocal(gachaConfig);
+  renderGachaPrizes();
+  showToast('🗑 削除しました');
+}
+
+// ガチャ当選通知を受信して履歴更新
+Transport.on('gacha_pulled', () => {
+  const page = document.querySelector('.nav-item.active[data-page="gacha"]');
+  if (page) loadGachaHistory();
+});
+
+// ══════════════════════════════════════════
+//  STOCK MANAGEMENT
+// ══════════════════════════════════════════
+function syncStockToServer() {
+  const levels = {};
+  config.drinks.forEach(d => {
+    if (d.stock != null && d.stock >= 0) levels[d.id] = d.stock;
+  });
+  if (Transport.isConnected()) {
+    fetch('/api/stock', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(levels),
+    }).catch(() => {});
+  }
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+initSliders();
+updateMarketUI();
+renderDashboard();
+</script>
+</body>
+</html>

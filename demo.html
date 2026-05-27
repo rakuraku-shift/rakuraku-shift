@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAR EXCHANGE — DEMO</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --green: #00ff88;
+    --red: #ff3355;
+    --gold: #ffd700;
+    --bg: #060608;
+    --card: #0d0f14;
+    --border: #1a2030;
+    --text: #e8eaf0;
+    --muted: #4a5270;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+    --font: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ═══════════════ HEADER ═══════════════ */
+  #hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 64px;
+    background: linear-gradient(180deg, #0a0c10 0%, var(--bg) 100%);
+    border-bottom: 1px solid #1a2030;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  #hdr::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0.5;
+  }
+
+  .logo-wrap { display: flex; align-items: center; gap: 16px; }
+
+  .logo {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: var(--green);
+    text-shadow: 0 0 24px #00ff8840;
+  }
+
+  .demo-badge {
+    background: #ff335520;
+    border: 1px solid #ff3355;
+    color: #ff3355;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    animation: badge-pulse 2s infinite;
+  }
+
+  @keyframes badge-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  #hdr-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+
+  #market-status {
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    color: var(--green);
+    opacity: 0.7;
+  }
+
+  #total-orders {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  .hdr-right { display: flex; align-items: center; gap: 24px; }
+
+  #clock {
+    font-family: var(--font-mono);
+    font-size: 1.4rem;
+    color: var(--text);
+    letter-spacing: 2px;
+  }
+
+  #sim-toggle {
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    transition: all 0.2s;
+  }
+
+  #sim-toggle:hover, #sim-toggle.active {
+    background: var(--green);
+    color: #000;
+  }
+
+  /* ═══════════════ CRASH BANNER ═══════════════ */
+  #crash-banner {
+    display: none;
+    text-align: center;
+    padding: 10px;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    background: linear-gradient(90deg, #ff0040, #ff4400, #ff0040);
+    background-size: 200%;
+    animation: crash-scroll 1s linear infinite, flash-bg 0.4s infinite;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  @keyframes crash-scroll { to { background-position: 200%; } }
+  @keyframes flash-bg { 50% { opacity: 0.7; } }
+
+  /* ═══════════════ GRID ═══════════════ */
+  #grid {
+    flex: 1;
+    display: grid;
+    gap: 14px;
+    padding: 16px 20px;
+    min-height: 0;
+    overflow-y: auto;
+    align-content: start;
+  }
+
+  /* ═══════════════ CARD ═══════════════ */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.4s, box-shadow 0.4s;
+    cursor: pointer;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    border-radius: 16px 16px 0 0;
+    transition: background 0.4s;
+  }
+
+  .card.up { border-color: #00ff8830; box-shadow: 0 0 24px #00ff8808; }
+  .card.up::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+
+  .card.down { border-color: #ff335530; box-shadow: 0 0 24px #ff335508; }
+  .card.down::before { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+
+  .card.flat::before { background: linear-gradient(90deg, transparent, #333, transparent); }
+
+  .card.spotlight { border-color: #ffd70050 !important; box-shadow: 0 0 32px #ffd70012 !important; }
+  .card.spotlight::before { background: linear-gradient(90deg, transparent, var(--gold), transparent) !important; }
+
+  .warn-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.62rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+  .warn-tag.up   { background:#ff335512; color:var(--red);   border:1px solid #ff335530; }
+  .warn-tag.deal { background:#ffd70012; color:var(--gold);  border:1px solid #ffd70030; }
+  .warn-tag.next { background:#ffffff08; color:var(--muted); border:1px solid #ffffff14; }
+
+  #closed-banner {
+    display: none;
+    text-align: center;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    background: #111318;
+    color: #4a5270;
+    border-bottom: 1px solid #1a2030;
+    flex-shrink: 0;
+  }
+
+  .card:hover { transform: translateY(-2px); transition: transform 0.2s; }
+
+  .card-glow {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+  }
+
+  .card.up .card-glow { background: radial-gradient(ellipse at top, #00ff8808, transparent 70%); opacity: 1; }
+  .card.down .card-glow { background: radial-gradient(ellipse at top, #ff335508, transparent 70%); opacity: 1; }
+
+  /* card top row */
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+
+  .drink-id {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+  }
+
+  .drink-emoji { font-size: 2rem; line-height: 1; }
+
+  .drink-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #8090b0;
+    margin-top: 2px;
+  }
+
+  /* price row */
+  .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 8px 0 4px;
+    flex-wrap: wrap;
+  }
+
+  .price {
+    font-family: var(--font-mono);
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    transition: color 0.3s;
+    letter-spacing: -1px;
+  }
+
+  .price-yen { font-size: 1rem; color: var(--muted); font-family: var(--font-mono); }
+
+  .change-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+  }
+
+  .change-pill.up { background: #00ff8818; color: var(--green); border: 1px solid #00ff8840; }
+  .change-pill.down { background: #ff335518; color: var(--red); border: 1px solid #ff335540; }
+  .change-pill.flat { background: #ffffff08; color: var(--muted); border: 1px solid #ffffff10; }
+
+  /* meta row */
+  .meta-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .meta-item { }
+  .meta-label { font-size: 0.55rem; letter-spacing: 2px; color: var(--muted); }
+  .meta-val { font-family: var(--font-mono); font-size: 0.75rem; color: #6080a0; }
+
+  /* sparkline */
+  .spark-wrap { flex: 1; position: relative; min-height: 44px; }
+  canvas.spark { width: 100%; height: 44px; display: block; }
+
+  /* rival tag */
+  .rival-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .rival-label { font-size: 0.55rem; letter-spacing: 2px; color: var(--muted); }
+  .rival-tag {
+    font-size: 0.6rem;
+    color: #ff335580;
+    border: 1px solid #ff335530;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: var(--font-mono);
+  }
+
+  /* click feedback */
+  .card.ordered {
+    animation: order-flash 0.5s ease;
+  }
+  @keyframes order-flash {
+    0%   { border-color: var(--gold); box-shadow: 0 0 30px #ffd70030; }
+    100% { }
+  }
+
+  /* ═══════════════ TICKER ═══════════════ */
+  #ticker-wrap {
+    height: 32px;
+    background: #08090c;
+    border-top: 1px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  #ticker {
+    display: flex;
+    gap: 0;
+    white-space: nowrap;
+    will-change: transform;
+  }
+
+  .tick {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 28px 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .tick-sep { color: #1a2030; margin-right: 28px; }
+  .tick-name { color: var(--muted); }
+  .tick-price { color: var(--text); }
+  .tick-ch.up { color: var(--green); }
+  .tick-ch.down { color: var(--red); }
+  .tick-ch.flat { color: var(--muted); }
+
+  /* ═══════════════ SIDE PANEL ═══════════════ */
+  #panel-btn {
+    position: fixed;
+    bottom: 48px;
+    right: 20px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #000;
+    font-size: 1.4rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 24px #00ff8840;
+    z-index: 200;
+    transition: transform 0.2s;
+  }
+  #panel-btn:hover { transform: scale(1.1); }
+
+  #side-panel {
+    position: fixed;
+    top: 0; right: 0;
+    width: 280px; height: 100%;
+    background: #0a0c10;
+    border-left: 1px solid var(--border);
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: -8px 0 40px #00000060;
+  }
+
+  #side-panel.open { transform: translateX(0); }
+
+  .panel-hdr {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .panel-hdr h2 {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    color: var(--green);
+  }
+
+  #panel-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .panel-section { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .panel-section h3 {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .order-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .ob {
+    background: #0d0f14;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 6px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s;
+    font-family: var(--font);
+  }
+
+  .ob:hover { border-color: var(--green); background: #0d1f17; }
+  .ob:active { transform: scale(0.95); }
+  .ob .ob-emoji { font-size: 1.4rem; }
+  .ob .ob-name { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; }
+  .ob .ob-price { font-family: var(--font-mono); font-size: 0.8rem; color: #fff; }
+
+  .ev-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border: none;
+    margin-bottom: 8px;
+    transition: opacity 0.2s;
+    font-family: var(--font-mono);
+  }
+  .ev-btn:hover { opacity: 0.85; }
+  .ev-btn:last-child { margin-bottom: 0; }
+
+  #ev-crash { background: linear-gradient(90deg, #ff0040, #ff4400); color: #fff; }
+  #ev-reset { background: #1a2030; color: var(--green); border: 1px solid #00ff8840; }
+
+  #panel-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 20px;
+  }
+
+  #panel-log h3 {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .log-entry {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #0d0f14;
+    font-size: 0.72rem;
+  }
+
+  .log-entry .le-time { color: var(--muted); font-family: var(--font-mono); min-width: 48px; }
+  .log-entry .le-emoji { font-size: 0.9rem; }
+  .log-entry .le-name { color: #8090b0; flex: 1; }
+  .log-entry .le-price { font-family: var(--font-mono); color: var(--green); }
+
+  /* price flash animations */
+  @keyframes flash-up {
+    0%  { color: var(--green); text-shadow: 0 0 12px var(--green); }
+    100%{ color: #fff; text-shadow: none; }
+  }
+  @keyframes flash-down {
+    0%  { color: var(--red); text-shadow: 0 0 12px var(--red); }
+    100%{ color: #fff; text-shadow: none; }
+  }
+
+  .price.flash-up   { animation: flash-up 0.8s ease; }
+  .price.flash-down { animation: flash-down 0.8s ease; }
+
+  /* ランキングボタン */
+  #rank-btn {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: #ffd700;
+    color: #000;
+    font-size: 1.3rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 24px #ffd70040;
+    z-index: 200;
+    transition: transform 0.2s;
+  }
+  #rank-btn:hover { transform: scale(1.1); }
+
+  /* ランキングオーバーレイ */
+  #rank-overlay {
+    position: fixed;
+    inset: 0;
+    background: #00000085;
+    backdrop-filter: blur(8px);
+    z-index: 400;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  #rank-overlay.open { display: flex; }
+
+  #rank-box {
+    background: #0d0f14;
+    border: 1px solid #2a3348;
+    border-radius: 20px;
+    width: 680px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 80px #00000090;
+    animation: fade-in 0.3s ease;
+  }
+  @keyframes fade-in { from { opacity:0; transform:scale(0.96); } to { opacity:1; transform:scale(1); } }
+
+  #rank-box-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #1e2535;
+  }
+  .rank-box-title {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 3px;
+  }
+  #rank-close {
+    background: none; border: none;
+    color: var(--muted); font-size: 1.2rem; cursor: pointer;
+    padding: 4px 8px; border-radius: 6px;
+    transition: background 0.15s;
+  }
+  #rank-close:hover { background: #ffffff10; }
+
+  #rank-box-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .rb-section {
+    padding: 20px 22px;
+    border-right: 1px solid #1e2535;
+  }
+  .rb-section:last-child { border-right: none; }
+  .rb-section:nth-child(3), .rb-section:nth-child(4) {
+    border-top: 1px solid #1e2535;
+  }
+
+  .rb-section h3 {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .rb-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid #0d0f14;
+    font-size: 0.85rem;
+  }
+  .rb-row:last-child { border-bottom: none; }
+
+  .rb-no { font-family: var(--font-mono); color: var(--muted); min-width: 20px; font-size: 0.78rem; }
+  .rb-no.g { color: #ffd700; font-weight: 700; }
+  .rb-no.s { color: #c0c0c0; font-weight: 700; }
+  .rb-no.b { color: #cd7f32; font-weight: 700; }
+  .rb-emoji { font-size: 1.1rem; }
+  .rb-name  { flex: 1; font-size: 0.82rem; color: var(--text); }
+  .rb-val   { font-family: var(--font-mono); font-size: 0.78rem; }
+  .rb-val.g { color: var(--green); }
+  .rb-val.gold { color: var(--gold); }
+
+  /* scan line overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, #00000008 2px, #00000008 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+</style>
+<script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div class="logo-wrap">
+    <div class="logo">BAR EXCHANGE</div>
+    <div class="demo-badge">DEMO</div>
+  </div>
+  <div id="hdr-center">
+    <div id="market-status">● MARKET OPEN</div>
+    <div id="total-orders">ORDERS: <span id="order-count">0</span></div>
+  </div>
+  <div class="hdr-right">
+    <button id="sim-toggle" class="active">⚡ AUTO SIM ON</button>
+    <div id="clock">--:--:--</div>
+  </div>
+</div>
+
+<!-- CRASH BANNER -->
+<div id="crash-banner">💥 &nbsp; MARKET CRASH &nbsp; — &nbsp; 全品目が暴落中！今すぐ注文せよ！ &nbsp; 💥</div>
+<div id="closed-banner">○ &nbsp; MARKET CLOSED &nbsp; — &nbsp; 本日の営業は終了しました</div>
+
+<!-- MAIN GRID -->
+<div id="grid"></div>
+
+<!-- TICKER -->
+<div id="ticker-wrap">
+  <div id="ticker"></div>
+</div>
+
+<!-- FAB -->
+<button id="panel-btn" title="スタッフパネル">📋</button>
+<button id="rank-btn" title="ランキング表示">🏆</button>
+
+<!-- RANKING OVERLAY (TV用) -->
+<div id="rank-overlay">
+  <div id="rank-box">
+    <div id="rank-box-hdr">
+      <div class="rank-box-title">🏆 TONIGHT'S RANKING</div>
+      <button id="rank-close">✕</button>
+    </div>
+    <div id="rank-box-body"></div>
+  </div>
+</div>
+
+<!-- SIDE PANEL -->
+<div id="side-panel">
+  <div class="panel-hdr">
+    <h2>STAFF PANEL</h2>
+    <button id="panel-close">✕</button>
+  </div>
+
+  <div class="panel-section">
+    <h3>ORDER — 注文を記録</h3>
+    <div class="order-btns" id="order-btns"></div>
+  </div>
+
+  <div class="panel-section">
+    <h3>EVENTS</h3>
+    <button class="ev-btn" id="ev-crash">💥 MARKET CRASH</button>
+    <button class="ev-btn" id="ev-reset">🔄 全価格リセット</button>
+  </div>
+
+  <div id="panel-log">
+    <h3>ORDER LOG</h3>
+    <div id="log-entries"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  PRICE ENGINE (standalone, no server)
+// ══════════════════════════════════════════════
+const DEFAULT_DRINKS = [
+  { id:'highball',  name:'ハイボール',     emoji:'🥃', base:500,  min:280, max:980,  rivals:['beer','lemon_sour'] },
+  { id:'beer',      name:'ビール',         emoji:'🍺', base:600,  min:350, max:1100, rivals:['highball']          },
+  { id:'wine',      name:'ワイン',         emoji:'🍷', base:700,  min:420, max:1300, rivals:['cocktail']          },
+  { id:'cocktail',  name:'カクテル',       emoji:'🍸', base:800,  min:500, max:1500, rivals:['wine']              },
+  { id:'sake',      name:'日本酒',         emoji:'🍶', base:650,  min:400, max:1200, rivals:['shochu']            },
+  { id:'shochu',    name:'焼酎',           emoji:'🥂', base:550,  min:320, max:1000, rivals:['sake']              },
+  { id:'lemon_sour',name:'レモンサワー',   emoji:'🍋', base:480,  min:280, max:900,  rivals:['highball']          },
+  { id:'whisky',    name:'ウイスキー',     emoji:'🥃', base:900,  min:600, max:1600, rivals:['brandy']            },
+  { id:'brandy',    name:'ブランデー',     emoji:'🫗', base:950,  min:600, max:1700, rivals:['whisky']            },
+  { id:'gin_tonic', name:'ジントニック',   emoji:'🍹', base:750,  min:450, max:1400, rivals:['cocktail']          },
+  { id:'champagne', name:'シャンパン',     emoji:'🥂', base:1200, min:800, max:2200, rivals:['wine']             },
+  { id:'matcha',    name:'抹茶ラテ (NA)', emoji:'🍵', base:400,  min:250, max:750,  rivals:[]                    },
+];
+
+// 管理者画面の設定を読み込む（なければデフォルト）
+function loadAdminConfig() {
+  try {
+    const raw = localStorage.getItem('barexchange_config');
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return null;
+}
+
+function buildState(cfg) {
+  const c = cfg?.settings ?? {};
+  return {
+    drinks:      cfg?.drinks      ?? DEFAULT_DRINKS,
+    WINDOW_MS:   (c.windowMin  ?? 5)  * 60000,
+    PRICE_STEP:  (c.priceStep  ?? 8)  / 100,
+    RIVAL_STEP:  (c.rivalStep  ?? 5)  / 100,
+    TREND_THRESH: c.trendThresh ?? 10,
+    SPOTLIGHT_ID: c.spotlightId ?? null,
+    IS_OPEN:      c.isOpen      ?? true,
+  };
+}
+
+let S = buildState(loadAdminConfig());
+let drinks      = S.drinks;
+let WINDOW_MS   = S.WINDOW_MS;
+let PRICE_STEP  = S.PRICE_STEP;
+let RIVAL_STEP  = S.RIVAL_STEP;
+let TREND_THRESH = S.TREND_THRESH;
+let SPOTLIGHT_ID = S.SPOTLIGHT_ID;
+let IS_OPEN      = S.IS_OPEN;
+
+class Engine {
+  constructor() {
+    this.prices  = {};
+    this.history = {};
+    this.orders  = [];
+    this.isCrash = false;
+    this.totalOrders = 0;
+    this._initDrinks(drinks);
+  }
+
+  _initDrinks(list) {
+    list.forEach(d => {
+      if (!this.prices[d.id])  this.prices[d.id]  = d.base;
+      if (!this.history[d.id]) this.history[d.id] = Array(20).fill(d.base);
+    });
+  }
+
+  applyNewDrinks(list) {
+    this._initDrinks(list);
+    this.calc();
+  }
+
+  order(id) {
+    const price = this.prices[id];
+    this.orders.push({ id, t: Date.now() });
+    this.totalOrders++;
+    this.calc();
+    Transport.emit('order', { drinkId: id, price: this.prices[id] });
+  }
+
+  crash() {
+    if (Transport.isConnected()) { Transport.emit('crash', {}); return; }
+    this.isCrash = true;
+    drinks.forEach(d => { this.prices[d.id] = Math.round(d.min * 1.05); });
+    this._pushHist();
+    setTimeout(() => { this.isCrash = false; this.calc(); }, 120000);
+  }
+
+  reset() {
+    if (Transport.isConnected()) { Transport.emit('reset', {}); return; }
+    this.orders = [];
+    drinks.forEach(d => { this.prices[d.id] = d.base; });
+    this._pushHist();
+  }
+
+  calc() {
+    if (this.isCrash) return;
+    const cutoff = Date.now() - WINDOW_MS;
+    const recent = this.orders.filter(o => o.t > cutoff);
+
+    drinks.forEach(drink => {
+      const own   = recent.filter(o => o.id === drink.id).length;
+      const rival = recent.filter(o => drink.rivals.includes(o.id)).length;
+      let mult = 1 + own * PRICE_STEP - rival * RIVAL_STEP;
+      let p = Math.round(drink.base * mult);
+      p = Math.max(drink.min, Math.min(drink.max, p));
+      this.prices[drink.id] = p;
+    });
+    this._pushHist();
+  }
+
+  _pushHist() {
+    drinks.forEach(d => {
+      this.history[d.id].push(this.prices[d.id]);
+      if (this.history[d.id].length > 60) this.history[d.id].shift();
+    });
+  }
+
+  state() {
+    const cutoff = Date.now() - 60000;
+    return {
+      drinks: drinks.map(d => {
+        const price  = this.prices[d.id] ?? d.base;
+        const change = Math.round((price - d.base) / d.base * 100);
+        const hist   = this.history[d.id] ?? [d.base];
+        const prev   = hist[hist.length - 2] ?? d.base;
+        const trend  = price > prev + TREND_THRESH ? 'up' : price < prev - TREND_THRESH ? 'down' : 'flat';
+        const recent = this.orders.filter(o => o.id === d.id && o.t > cutoff).length;
+        const spotlight = d.id === SPOTLIGHT_ID;
+        return { ...d, price, change, trend, history: hist.slice(-24), recentOrders: recent, spotlight };
+      }),
+      isCrash: this.isCrash,
+      isOpen:  IS_OPEN,
+      totalOrders: this.totalOrders,
+    };
+  }
+}
+
+// ══════════════════════════════════════════════
+//  TRANSPORT（Socket.io ↔ BroadcastChannel 自動切替）
+// ══════════════════════════════════════════════
+const Transport = (() => {
+  const channel = new BroadcastChannel('barexchange');
+  let socket = null, connected = false;
+  const _ls = {};
+
+  function on(type, fn) { (_ls[type] || (_ls[type] = [])).push(fn); }
+  function emit(type, data = {}) {
+    if (connected) socket.emit(type, data);
+    else channel.postMessage({ type, ...data });
+  }
+  function _dispatch(type, data) { (_ls[type] ?? []).forEach(fn => fn(data)); }
+
+  if (typeof io !== 'undefined') {
+    socket = io({ reconnectionAttempts: 3, timeout: 3000 });
+    socket.on('connect',    () => { connected = true; });
+    socket.on('disconnect', () => { connected = false; });
+    socket.onAny((event, data) => _dispatch(event, data));
+  }
+  channel.onmessage = ev => { if (!connected) _dispatch(ev.data.type, ev.data); };
+
+  return { on, emit, isConnected: () => connected };
+})();
+
+Transport.on('config_updated', data => {
+  const cfg = data.config;
+  S = buildState(cfg);
+  drinks       = S.drinks;
+  WINDOW_MS    = S.WINDOW_MS;
+  PRICE_STEP   = S.PRICE_STEP;
+  RIVAL_STEP   = S.RIVAL_STEP;
+  TREND_THRESH = S.TREND_THRESH;
+  SPOTLIGHT_ID = S.SPOTLIGHT_ID;
+  IS_OPEN      = S.IS_OPEN;
+  engine.applyNewDrinks(drinks);
+  document.getElementById('grid').innerHTML = '';
+  prevPrices = {};
+  lastServerState = null;
+  render();
+});
+
+Transport.on('market_status', data => {
+  IS_OPEN = data.isOpen;
+  render();
+});
+
+Transport.on('player_order', () => {
+  const overlay = document.getElementById('rank-overlay');
+  if (overlay.classList.contains('open')) renderRankOverlay();
+});
+
+Transport.on('price_update', state => {
+  lastServerState = state;
+  // サーバーモードでは IS_OPEN をサーバー状態に同期
+  IS_OPEN = state.isOpen ?? IS_OPEN;
+  render();
+});
+
+Transport.on('crash_event', () => {
+  if (!Transport.isConnected()) {
+    engine.crash();
+    render();
+  }
+});
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+const engine = new Engine();
+let prevPrices = {};
+let lastServerState = null;
+let simOn = true;
+let simTimer;
+let tickerOffset = 0;
+let lastTickerRender = 0;
+
+// ══════════════════════════════════════════════
+//  AUTO SIMULATOR
+// ══════════════════════════════════════════════
+function runSim() {
+  if (!simOn) return;
+  // ランダムドリンクに注文を入れる（先頭ほど人気が高い想定）
+  const weights = drinks.map((_, i) => Math.max(0.5, 3 - i * 0.3));
+  const total   = weights.reduce((a,b) => a+b);
+  let r = Math.random() * total;
+  let idx = drinks.length - 1;
+  for (let i = 0; i < weights.length; i++) {
+    r -= weights[i];
+    if (r <= 0) { idx = i; break; }
+  }
+  engine.order(drinks[idx].id);
+  render();
+
+  // 次の注文まで3〜12秒
+  simTimer = setTimeout(runSim, 3000 + Math.random() * 9000);
+}
+
+function toggleSim() {
+  simOn = !simOn;
+  const btn = document.getElementById('sim-toggle');
+  if (simOn) {
+    btn.textContent = '⚡ AUTO SIM ON';
+    btn.classList.add('active');
+    runSim();
+  } else {
+    btn.textContent = '⏸ AUTO SIM OFF';
+    btn.classList.remove('active');
+    clearTimeout(simTimer);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════
+function gridCols(n) {
+  if (n <= 3) return n;
+  if (n <= 6) return 3;
+  if (n <= 8) return 4;
+  if (n <= 12) return 4;
+  return 5;
+}
+
+function render() {
+  const st = (Transport.isConnected() && lastServerState) ? lastServerState : engine.state();
+
+  const cols = gridCols(st.drinks.length);
+  document.getElementById('grid').style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+  document.getElementById('crash-banner').style.display = st.isCrash ? 'block' : 'none';
+  document.getElementById('closed-banner').style.display = !IS_OPEN ? 'block' : 'none';
+  document.getElementById('order-count').textContent = st.totalOrders;
+
+  renderGrid(st);
+  renderPanel(st);
+  renderTicker(st);
+}
+
+function renderGrid(st) {
+  const grid = document.getElementById('grid');
+
+  st.drinks.forEach(d => {
+    let card = document.getElementById('c-' + d.id);
+    if (!card) {
+      card = document.createElement('div');
+      card.id = 'c-' + d.id;
+      card.className = 'card';
+      card.innerHTML = cardHTML(d);
+      card.addEventListener('click', () => {
+        engine.order(d.id);
+        addLog(d, engine.prices[d.id]);
+        render();
+        card.classList.add('ordered');
+        setTimeout(() => card.classList.remove('ordered'), 500);
+      });
+      grid.appendChild(card);
+    } else {
+      updateCard(card, d);
+    }
+    prevPrices[d.id] = d.price;
+  });
+}
+
+function cardHTML(d) {
+  const chText = fmtChange(d.change);
+  const dir = d.trend;
+  const spotBadge = d.spotlight
+    ? `<span style="font-size:0.6rem;padding:2px 7px;background:#ffd70018;color:#ffd700;border:1px solid #ffd70040;border-radius:3px;letter-spacing:1px;">⭐ PICK</span>`
+    : '';
+  return `
+    <div class="card-glow"></div>
+    <div class="card-head">
+      <div>
+        <div class="drink-id" style="display:flex;align-items:center;gap:6px;">
+          ${d.id.toUpperCase()} ${spotBadge}
+        </div>
+        <div class="drink-name">${d.name}</div>
+      </div>
+      <div class="drink-emoji">${d.emoji}</div>
+    </div>
+    <div class="price-row">
+      <span class="price" id="p-${d.id}">${d.price.toLocaleString()}</span>
+      <span class="price-yen">¥</span>
+      <span class="change-pill ${dir}" id="ch-${d.id}">${chText}</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">BASE</div>
+        <div class="meta-val">¥${d.base.toLocaleString()}</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">1MIN ORDERS</div>
+        <div class="meta-val" id="rc-${d.id}">${d.recentOrders}件</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">RANGE</div>
+        <div class="meta-val">¥${d.min}–${d.max}</div>
+      </div>
+    </div>
+    <div class="spark-wrap">
+      <canvas class="spark" id="sp-${d.id}"></canvas>
+    </div>
+    <div class="rival-row">
+      <span class="rival-label">RIVAL</span>
+      ${d.rivals.map(r => `<span class="rival-tag">${drinks.find(x=>x.id===r)?.name ?? r}</span>`).join('')}
+    </div>
+    <div style="margin-top:6px;" id="warn-${d.id}"></div>
+  `;
+}
+
+function renderWarnTag(d) {
+  const el = document.getElementById('warn-' + d.id);
+  if (!el) return;
+  if (d.soldOut) {
+    el.innerHTML = `<span class="warn-tag up">🚫 SOLD OUT — 売り切れ</span>`;
+    return;
+  }
+  if (d.stockLow) {
+    el.innerHTML = `<span class="warn-tag up">⚠️ 残りわずか！在庫が少なくなっています</span>`;
+    return;
+  }
+  const nextUp = Math.round(d.base * PRICE_STEP);
+  const isDeal = d.price <= d.base * 0.95;
+  const isHigh = d.price >= d.base * 1.20;
+  if (isDeal) {
+    el.innerHTML = `<span class="warn-tag deal">🎯 お得！ベースより¥${d.base - d.price}安い</span>`;
+  } else if (isHigh) {
+    el.innerHTML = `<span class="warn-tag up">⚠️ 値上がり中 — 次の注文でさらに+¥${nextUp}</span>`;
+  } else {
+    el.innerHTML = `<span class="warn-tag next">次の注文で +¥${nextUp}</span>`;
+  }
+}
+
+function updateCardSpotlight(card, d) {
+  const idEl = card.querySelector('.drink-id');
+  if (!idEl) return;
+  const spotBadge = d.spotlight
+    ? `<span style="font-size:0.6rem;padding:2px 7px;background:#ffd70018;color:#ffd700;border:1px solid #ffd70040;border-radius:3px;letter-spacing:1px;">⭐ PICK</span>`
+    : '';
+  idEl.innerHTML = `${d.id.toUpperCase()} ${spotBadge}`;
+}
+
+function updateCard(card, d) {
+  card.className = `card ${d.trend}${d.spotlight ? ' spotlight' : ''}`;
+  updateCardSpotlight(card, d);
+
+  const priceEl = document.getElementById('p-' + d.id);
+  const prev = prevPrices[d.id];
+  if (priceEl && prev !== undefined && prev !== d.price) {
+    priceEl.classList.remove('flash-up','flash-down');
+    void priceEl.offsetWidth;
+    priceEl.classList.add(d.price > prev ? 'flash-up' : 'flash-down');
+  }
+  if (priceEl) priceEl.textContent = d.price.toLocaleString();
+
+  const chEl = document.getElementById('ch-' + d.id);
+  if (chEl) {
+    chEl.className = `change-pill ${d.trend}`;
+    chEl.textContent = fmtChange(d.change);
+  }
+
+  const rcEl = document.getElementById('rc-' + d.id);
+  if (rcEl) rcEl.textContent = d.recentOrders + '件';
+
+  renderWarnTag(d);
+  drawSpark(d);
+}
+
+function drawSpark(d) {
+  const canvas = document.getElementById('sp-' + d.id);
+  if (!canvas) return;
+  const W = canvas.offsetWidth || 220;
+  const H = 44;
+  canvas.width = W;
+  canvas.height = H;
+
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+
+  const data = d.history;
+  if (data.length < 2) return;
+
+  const mn = Math.min(...data) * 0.995;
+  const mx = Math.max(...data) * 1.005;
+  const rng = mx - mn || 1;
+
+  const color = d.trend === 'up' ? '#00ff88' : d.trend === 'down' ? '#ff3355' : '#4a5270';
+
+  const pts = data.map((v,i) => ({
+    x: (i / (data.length - 1)) * W,
+    y: H - ((v - mn) / rng) * (H - 4) - 2,
+  }));
+
+  // fill
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(W, H);
+  ctx.lineTo(0, H);
+  ctx.closePath();
+  ctx.fillStyle = color + '14';
+  ctx.fill();
+
+  // line
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+
+  // smooth curve
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx2 = (pts[i].x + pts[i+1].x) / 2;
+    const my2 = (pts[i].y + pts[i+1].y) / 2;
+    ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx2, my2);
+  }
+  ctx.lineTo(pts[pts.length-1].x, pts[pts.length-1].y);
+
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.8;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 6;
+  ctx.stroke();
+
+  // endpoint dot
+  const last = pts[pts.length-1];
+  ctx.beginPath();
+  ctx.arc(last.x, last.y, 3, 0, Math.PI*2);
+  ctx.fillStyle = color;
+  ctx.shadowBlur = 10;
+  ctx.fill();
+}
+
+function renderPanel(st) {
+  const container = document.getElementById('order-btns');
+  container.innerHTML = '';
+  st.drinks.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'ob';
+    btn.innerHTML = `
+      <span class="ob-emoji">${d.emoji}</span>
+      <span class="ob-name">${d.name}</span>
+      <span class="ob-price">¥${d.price.toLocaleString()}</span>
+    `;
+    btn.addEventListener('click', () => {
+      engine.order(d.id);
+      addLog(d, engine.prices[d.id]);
+      render();
+    });
+    container.appendChild(btn);
+  });
+}
+
+// ══════════════════════════════════════════════
+//  TICKER
+// ══════════════════════════════════════════════
+let tickerItems = '';
+
+function renderTicker(st) {
+  const inner = st.drinks.map(d => {
+    const ch = fmtChange(d.change);
+    const dir = d.trend;
+    return `<span class="tick">
+      <span class="tick-name">${d.emoji} ${d.name.toUpperCase()}</span>
+      <span class="tick-price">¥${d.price.toLocaleString()}</span>
+      <span class="tick-ch ${dir}">${ch}</span>
+      <span class="tick-sep">|</span>
+    </span>`;
+  }).join('');
+
+  tickerItems = inner;
+  const el = document.getElementById('ticker');
+  // 3ループ分並べてシームレスにスクロール
+  el.innerHTML = inner + inner + inner;
+}
+
+function animateTicker(ts) {
+  if (ts - lastTickerRender > 16) {
+    const el = document.getElementById('ticker');
+    tickerOffset -= 0.6;
+    const fullW = el.scrollWidth / 3;
+    if (Math.abs(tickerOffset) >= fullW) tickerOffset = 0;
+    el.style.transform = `translateX(${tickerOffset}px)`;
+    lastTickerRender = ts;
+  }
+  requestAnimationFrame(animateTicker);
+}
+
+// ══════════════════════════════════════════════
+//  LOG
+// ══════════════════════════════════════════════
+function addLog(d, price) {
+  const container = document.getElementById('log-entries');
+  const div = document.createElement('div');
+  div.className = 'log-entry';
+  const time = new Date().toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  div.innerHTML = `
+    <span class="le-time">${time}</span>
+    <span class="le-emoji">${d.emoji}</span>
+    <span class="le-name">${d.name}</span>
+    <span class="le-price">¥${price.toLocaleString()}</span>
+  `;
+  container.prepend(div);
+  if (container.children.length > 40) container.lastChild.remove();
+}
+
+// ══════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════
+function fmtChange(pct) {
+  if (pct > 0) return `▲ +${pct}%`;
+  if (pct < 0) return `▼ ${pct}%`;
+  return '— 0%';
+}
+
+// ══════════════════════════════════════════════
+//  EVENTS
+// ══════════════════════════════════════════════
+document.getElementById('sim-toggle').addEventListener('click', toggleSim);
+
+document.getElementById('panel-btn').addEventListener('click', () => {
+  document.getElementById('side-panel').classList.add('open');
+});
+
+document.getElementById('panel-close').addEventListener('click', () => {
+  document.getElementById('side-panel').classList.remove('open');
+});
+
+document.getElementById('ev-crash').addEventListener('click', () => {
+  engine.crash();
+  render();
+  document.getElementById('side-panel').classList.remove('open');
+});
+
+document.getElementById('ev-reset').addEventListener('click', () => {
+  engine.reset();
+  render();
+});
+
+// ══════════════════════════════════════════════
+//  RANKING OVERLAY (TV用)
+// ══════════════════════════════════════════════
+const RANK_KEY = 'barexchange_rankings';
+
+function loadRankLog() {
+  try { return JSON.parse(localStorage.getItem(RANK_KEY) ?? '[]'); } catch { return []; }
+}
+
+// customer.html の player_order を受け取って rankLog を更新
+
+function renderRankOverlay() {
+  const log = loadRankLog();
+  const body = document.getElementById('rank-box-body');
+  const medals = ['🥇','🥈','🥉'];
+  const nc = ['g','s','b'];
+
+  if (log.length === 0) {
+    body.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);font-size:0.85rem;">
+      まだランキングデータがありません<br>お客様がスマホから注文するとここに表示されます
+    </div>`;
+    return;
+  }
+
+  // 杯数ランキング
+  const countMap = {};
+  log.forEach(o => { const k = o.name||'匿名'; countMap[k] = (countMap[k]??0)+1; });
+  const countRank = Object.entries(countMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  // 節約額ランキング
+  const savingMap = {};
+  log.forEach(o => {
+    const k = o.name||'匿名';
+    const s = o.base - o.price;
+    if (!savingMap[k] || s > savingMap[k].saving) savingMap[k] = { saving:s, drinkId:o.drinkId };
+  });
+  const savingRank = Object.entries(savingMap).sort((a,b)=>b[1].saving-a[1].saving).slice(0,5);
+
+  // 人気ドリンク
+  const drinkMap = {};
+  log.forEach(o => { drinkMap[o.drinkId] = (drinkMap[o.drinkId]??0)+1; });
+  const drinkRank = drinks.map(d=>({...d,count:drinkMap[d.id]??0}))
+    .filter(d=>d.count>0).sort((a,b)=>b.count-a.count).slice(0,5);
+
+  // 最安値注文
+  const cheapest = [...log].sort((a,b)=>(a.price/a.base)-(b.price/b.base)).slice(0,5);
+
+  const rowHtml = (name, sub, val, valClass, i) => `
+    <div class="rb-row">
+      <span class="rb-no ${nc[i]??''}">${medals[i]??i+1}</span>
+      <div style="flex:1"><div class="rb-name">${name}</div>${sub?`<div style="font-size:0.62rem;color:var(--muted)">${sub}</div>`:''}</div>
+      <span class="rb-val ${valClass}">${val}</span>
+    </div>`;
+
+  body.innerHTML = `
+    <div class="rb-section">
+      <h3>🍺 今夜の杯数ランキング</h3>
+      ${countRank.map(([name,cnt],i) => rowHtml(name,'',cnt+'杯','g',i)).join('')}
+    </div>
+    <div class="rb-section">
+      <h3>💰 最大節約額ランキング</h3>
+      ${savingRank.map(([name,{saving,drinkId}],i) => {
+        const d = drinks.find(x=>x.id===drinkId);
+        const label = saving>0 ? `▼¥${saving}` : saving<0 ? `▲¥${Math.abs(saving)}` : '±¥0';
+        const cls   = saving>0 ? 'g' : '';
+        return rowHtml(name, d?.name??'', label, cls, i);
+      }).join('')}
+    </div>
+    <div class="rb-section">
+      <h3>📊 人気ドリンク TOP${drinkRank.length}</h3>
+      ${drinkRank.map((d,i) => rowHtml(d.emoji+' '+d.name,'',d.count+'杯','g',i)).join('')}
+    </div>
+    <div class="rb-section">
+      <h3>⚡ 最安値注文ランキング</h3>
+      ${cheapest.map((o,i) => {
+        const d = drinks.find(x=>x.id===o.drinkId);
+        const pct = Math.round((1-(o.price/o.base))*100);
+        return rowHtml(o.name||'匿名', d?.name??'', `¥${o.price} (-${pct}%)`, 'gold', i);
+      }).join('')}
+    </div>
+  `;
+}
+
+document.getElementById('rank-btn').addEventListener('click', () => {
+  renderRankOverlay();
+  document.getElementById('rank-overlay').classList.add('open');
+});
+document.getElementById('rank-close').addEventListener('click', () => {
+  document.getElementById('rank-overlay').classList.remove('open');
+});
+document.getElementById('rank-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('rank-overlay'))
+    document.getElementById('rank-overlay').classList.remove('open');
+});
+
+// 10秒ごとに自然減衰を反映
+setInterval(() => {
+  engine.calc();
+  render();
+}, 10000);
+
+// 時計
+setInterval(() => {
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString('ja-JP');
+}, 1000);
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+render();
+requestAnimationFrame(animateTicker);
+runSim();
+</script>
+</body>
+</html>
