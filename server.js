@@ -923,6 +923,47 @@ app.post('/api/send-mail', async (req, res) => {
   res.json({ ok: true, sent, failed });
 });
 
+// ── お知らせ API ────────────────────
+app.post('/api/announcements', (req, res) => {
+  const data = req.body || {};
+  if (!data.title || !data.body) return res.status(400).json({ error: 'title, body 必須' });
+  const safeId = _safeShopId(data.shopId || 'default');
+  const file = path.join(DATA_DIR, `announcements-${safeId}.json`);
+  const all = readJSON(file, []);
+  all.unshift({ ...data, savedAt: Date.now() });
+  writeJSON(file, all.slice(0, 200)); // 200件まで保持
+  const room = 'shop:' + safeId;
+  io.to(room).emit('announcement_published', data);
+  console.log(`[announcements] ${safeId} — ${data.title}`);
+  res.json({ ok: true });
+});
+
+app.get('/api/announcements/:shopId', (req, res) => {
+  const safeId = _safeShopId(req.params.shopId);
+  const file = path.join(DATA_DIR, `announcements-${safeId}.json`);
+  const all = readJSON(file, []);
+  /* 有効なお知らせのみ返す (toが過ぎていない) */
+  const now = new Date().toISOString().slice(0,10);
+  res.json(all.filter(a => !a.to || a.to >= now));
+});
+
+app.delete('/api/announcements/:id', (req, res) => {
+  const { id } = req.params;
+  /* 全店舗ファイルから探して削除 */
+  const files = require('fs').readdirSync(DATA_DIR).filter(f => f.startsWith('announcements-') && f.endsWith('.json'));
+  let removed = 0;
+  files.forEach(fn => {
+    const fp = path.join(DATA_DIR, fn);
+    const all = readJSON(fp, []);
+    const filtered = all.filter(a => a.id !== id);
+    if (filtered.length !== all.length) {
+      writeJSON(fp, filtered);
+      removed++;
+    }
+  });
+  res.json({ ok: true, removed });
+});
+
 // ── 売上データ API ────────────────────
 app.post('/api/sales/daily', (req, res) => {
   const { date, sales, customers, cost, memo, shopId } = req.body || {};

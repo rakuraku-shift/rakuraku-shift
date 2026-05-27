@@ -132,6 +132,12 @@
       <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--slate-100);"></span><span data-i18n="my.legend_off">非出勤</span></span>
     </div>
   </div>
+  <!-- 店長からのお知らせ -->
+  <div class="list-card" id="announce-card" style="display:none;">
+    <div class="list-title">📢 店長からのお知らせ</div>
+    <div id="announce-list-area"></div>
+  </div>
+
   <div class="list-card">
     <div class="list-title" data-i18n="my.upcoming">📋 これからの出勤予定</div>
     <div id="upcoming-list">
@@ -307,7 +313,45 @@
       return '<div class="list-row"><div class="day">' + m + '/' + d + '(' + dow + ')<div style="font-size:10px;color:var(--slate-500);font-weight:600;">' + (r.reason || '') + '</div></div>' + status + '</div>';
     }).join('');
   }
-  function render() { renderCalendar(); renderTodayCard(); renderUpcoming(); renderChangeList(); }
+  /* 店長からのお知らせを取得・表示 */
+  async function renderAnnouncements() {
+    const root = document.getElementById('announce-list-area');
+    const card = document.getElementById('announce-card');
+    let announcements = [];
+    /* server優先、なければlocalStorage */
+    try {
+      const shopId = (typeof getShopId === 'function') ? getShopId() : 'default';
+      const res = await fetch('/api/announcements/' + shopId);
+      if (res.ok) announcements = await res.json();
+    } catch(e) { /* fallback */ }
+    if (!announcements.length) {
+      try { announcements = JSON.parse(localStorage.getItem('rakuraku-announcements') || '[]'); } catch(e) {}
+    }
+    if (!announcements.length) { card.style.display = 'none'; return; }
+    /* showフラグがtrueのもののみ */
+    const visible = announcements.filter(a => a.show !== false);
+    if (!visible.length) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    root.innerHTML = visible.slice(0, 5).map(a => {
+      const priClr = a.priority === 'urgent' ? '#EF4444' : a.priority === 'important' ? '#F59E0B' : '#4F46E5';
+      const priIc = a.priority === 'urgent' ? '🔴' : a.priority === 'important' ? '⚠' : '📌';
+      const dt = a.publishedAt ? new Date(a.publishedAt).toLocaleDateString('ja-JP', { month:'numeric', day:'numeric' }) : '';
+      return `<div style="padding:11px 12px;border-left:3px solid ${priClr};background:linear-gradient(90deg,${priClr}11,#fff);border-radius:6px;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px;">
+          <div style="font-size:12px;font-weight:800;color:${priClr};">${priIc} ${escapeHtml(a.title)}</div>
+          <div style="font-size:10px;color:var(--slate-500);font-weight:700;white-space:nowrap;">${dt}</div>
+        </div>
+        <div style="font-size:11px;color:var(--slate-700);line-height:1.7;white-space:pre-wrap;">${escapeHtml(a.body)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function escapeHtml(s) {
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+  }
+
+  function render() { renderCalendar(); renderTodayCard(); renderUpcoming(); renderChangeList(); renderAnnouncements(); }
   function openChangeModal() {
     const name = document.getElementById('staff-name').value.trim();
     if (!name) { showToast('まず名前を入力してください', 'error'); document.getElementById('staff-name').focus(); return; }

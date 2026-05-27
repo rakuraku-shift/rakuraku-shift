@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>お知らせ管理 — RAKURAKU</title>
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;--blue:#3B82F6;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:var(--slate-50);min-height:100vh;line-height:1.6;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:920px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:920px;margin:0 auto;padding:24px;}
+  .page-header{margin-bottom:22px;}
+  .page-header h1{font-size:26px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px;}
+  .page-header .sub{font-size:13px;color:var(--slate-500);font-weight:600;}
+
+  .card{background:#fff;border-radius:14px;padding:22px;border:1.5px solid var(--slate-100);box-shadow:0 4px 20px rgba(0,0,0,.04);margin-bottom:16px;}
+  .card h2{font-size:16px;font-weight:900;margin-bottom:14px;}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:11px;font-weight:800;color:var(--slate-700);margin-bottom:5px;}
+  .field input, .field select, .field textarea{
+    width:100%;padding:11px 13px;border:1.5px solid var(--slate-200);border-radius:8px;
+    font-size:13px;font-family:inherit;outline:none;background:var(--slate-50);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--indigo);background:#fff;}
+  textarea{min-height:120px;resize:vertical;line-height:1.7;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:680px){.grid-2{grid-template-columns:1fr;}}
+
+  .priority-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:14px;font-size:11px;font-weight:800;cursor:pointer;border:1.5px solid var(--slate-200);background:#fff;color:var(--slate-700);margin-right:6px;font-family:inherit;}
+  .priority-pill.active.normal{background:var(--indigo-l);color:var(--indigo);border-color:var(--indigo);}
+  .priority-pill.active.important{background:#FEF3C7;color:#B45309;border-color:#FBBF24;}
+  .priority-pill.active.urgent{background:#FEE2E2;color:var(--rose);border-color:var(--rose);}
+
+  .btn{padding:11px 18px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;border:none;}
+  .btn-primary{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;box-shadow:0 4px 12px rgba(79,70,229,.25);}
+  .btn-line{background:#06C755;color:#fff;}
+  .btn-ghost{background:var(--slate-100);color:var(--slate-700);}
+  .btn-block{display:block;width:100%;}
+
+  .announce-list{}
+  .announce-item{padding:14px;border:1.5px solid var(--slate-100);border-radius:10px;margin-bottom:10px;background:#fff;}
+  .announce-item.normal{border-left:4px solid var(--indigo);}
+  .announce-item.important{border-left:4px solid #FBBF24;background:#FFFCEC;}
+  .announce-item.urgent{border-left:4px solid var(--rose);background:#FEF7F7;}
+  .ai-header{display:flex;justify-content:space-between;margin-bottom:6px;align-items:flex-start;}
+  .ai-title{font-size:14px;font-weight:900;flex:1;}
+  .ai-meta{font-size:10px;color:var(--slate-500);font-weight:700;display:flex;gap:8px;flex-shrink:0;}
+  .ai-body{font-size:12px;color:var(--slate-700);line-height:1.7;white-space:pre-wrap;margin-bottom:10px;}
+  .ai-stats{display:flex;gap:14px;font-size:10px;color:var(--slate-500);font-weight:700;}
+  .ai-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:6px;}
+
+  .empty{text-align:center;padding:40px 20px;color:var(--slate-500);font-size:13px;}
+  .empty .ic{font-size:38px;display:block;margin-bottom:6px;}
+
+  .send-options{padding:14px;background:linear-gradient(135deg,var(--slate-50),#fff);border-radius:10px;border:1.5px solid var(--slate-100);margin-bottom:14px;}
+  .send-options .opt{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--slate-100);}
+  .send-options .opt:last-child{border-bottom:none;}
+  .send-options .opt .l{font-size:12px;font-weight:700;color:var(--slate-700);}
+  .toggle{position:relative;width:38px;height:22px;background:var(--slate-200);border-radius:11px;cursor:pointer;}
+  .toggle.on{background:var(--indigo);}
+  .toggle::after{content:'';position:absolute;left:2px;top:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:left .2s;}
+  .toggle.on::after{left:18px;}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;padding:12px 22px;border-radius:24px;font-size:13px;font-weight:700;display:none;z-index:1000;}
+  .toast.show{display:block;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU お知らせ</span></a>
+    <a href="/shift.html" style="font-size:12px;color:var(--slate-500);font-weight:700;">← シフト画面</a>
+  </div>
+</header>
+
+<div class="container">
+
+<div class="page-header">
+  <h1>📢 お知らせ管理</h1>
+  <p class="sub">店長からスタッフへの告知。マイシフト画面と通知センターに表示されます。</p>
+</div>
+
+<!-- 新規お知らせ作成 -->
+<div class="card">
+  <h2>✏️ 新しいお知らせを作成</h2>
+
+  <div class="field">
+    <label>タイトル <span style="color:#EF4444;">*</span></label>
+    <input type="text" id="a-title" placeholder="例) 6月のシフト希望提出 締切は5/25まで" />
+  </div>
+
+  <div class="field">
+    <label>本文 <span style="color:#EF4444;">*</span></label>
+    <textarea id="a-body" placeholder="例) 6月分のシフト希望を5月25日(金)23:59までに提出してください。&#10;急なシフト変更の可能性がある方は、できるだけ早めに提出をお願いします。"></textarea>
+  </div>
+
+  <div class="field">
+    <label>重要度</label>
+    <div>
+      <button class="priority-pill active normal" data-pri="normal" onclick="setPriority('normal')">📌 通常</button>
+      <button class="priority-pill" data-pri="important" onclick="setPriority('important')">⚠ 重要</button>
+      <button class="priority-pill" data-pri="urgent" onclick="setPriority('urgent')">🔴 緊急</button>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="field">
+      <label>表示開始日 (任意)</label>
+      <input type="date" id="a-from" />
+    </div>
+    <div class="field">
+      <label>表示終了日 (任意)</label>
+      <input type="date" id="a-to" />
+    </div>
+  </div>
+
+  <div class="send-options">
+    <div class="opt">
+      <span class="l">📱 マイシフト画面に表示</span>
+      <div class="toggle on" id="opt-show" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="opt">
+      <span class="l">📧 メール送信 (登録スタッフ全員)</span>
+      <div class="toggle" id="opt-mail" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="opt">
+      <span class="l">💬 LINE公式アカウント broadcast</span>
+      <div class="toggle" id="opt-line" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="opt">
+      <span class="l">🔔 プッシュ通知 (PWA)</span>
+      <div class="toggle" id="opt-push" onclick="this.classList.toggle('on')"></div>
+    </div>
+  </div>
+
+  <button class="btn btn-primary btn-block" onclick="publishAnnouncement()">📢 お知らせを公開</button>
+</div>
+
+<!-- 既存お知らせ一覧 -->
+<div class="card">
+  <h2>📚 公開中・過去のお知らせ</h2>
+  <div class="announce-list" id="announce-list">
+    <div class="empty"><span class="ic">📭</span>まだお知らせはありません<br><small style="color:var(--slate-300);">上のフォームから初回のお知らせを公開しましょう</small></div>
+  </div>
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'rakuraku-announcements';
+let _currentPriority = 'normal';
+
+function loadAnnouncements() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+function saveAnnouncements(arr) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); } catch(e) {}
+}
+
+function setPriority(p) {
+  _currentPriority = p;
+  document.querySelectorAll('.priority-pill').forEach(el => {
+    el.className = 'priority-pill' + (el.dataset.pri === p ? ' active ' + p : '');
+  });
+}
+
+async function publishAnnouncement() {
+  const title = document.getElementById('a-title').value.trim();
+  const body = document.getElementById('a-body').value.trim();
+  const from = document.getElementById('a-from').value;
+  const to = document.getElementById('a-to').value;
+  const optShow = document.getElementById('opt-show').classList.contains('on');
+  const optMail = document.getElementById('opt-mail').classList.contains('on');
+  const optLine = document.getElementById('opt-line').classList.contains('on');
+  const optPush = document.getElementById('opt-push').classList.contains('on');
+
+  if (!title || !body) { showToast('⚠ タイトルと本文は必須です'); return; }
+
+  const announcement = {
+    id: 'an' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    title,
+    body,
+    priority: _currentPriority,
+    from: from || new Date().toISOString().slice(0,10),
+    to: to || null,
+    show: optShow,
+    publishedAt: Date.now(),
+    sentEmail: false,
+    sentLine: false,
+    sentPush: false,
+    viewCount: 0,
+  };
+
+  const list = loadAnnouncements();
+  list.unshift(announcement);
+  saveAnnouncements(list);
+
+  /* サーバー保存 */
+  try {
+    await fetch('/api/announcements', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(announcement)
+    });
+  } catch(e) {}
+
+  /* メール送信 */
+  if (optMail) {
+    try {
+      /* myshift側のスタッフを取得 */
+      const shiftData = JSON.parse(localStorage.getItem('rakuraku-shift-data') || '{}');
+      const staffs = shiftData.staffs || shiftData.staff || [];
+      const emails = staffs.map(s => s.email).filter(Boolean);
+      if (emails.length > 0) {
+        await fetch('/api/send-mail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: emails,
+            subject: `【RAKURAKU お知らせ】${title}`,
+            text: `${body}\n\n— ${new Date().toLocaleString('ja-JP')}`,
+          })
+        });
+        announcement.sentEmail = true;
+      }
+    } catch(e) { console.warn('mail failed:', e); }
+  }
+
+  /* LINE broadcast */
+  if (optLine) {
+    try {
+      await fetch('/api/notification/line/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: `📢 ${title}\n\n${body}` })
+      });
+      announcement.sentLine = true;
+    } catch(e) { console.warn('line failed:', e); }
+  }
+
+  /* PWA Push (ローカル発火) */
+  if (optPush && 'Notification' in window && Notification.permission === 'granted') {
+    try {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg) {
+        reg.showNotification(title, {
+          body: body.slice(0, 100),
+          icon: '/icon-192.png',
+          tag: announcement.id,
+        });
+        announcement.sentPush = true;
+      }
+    } catch(e) { console.warn('push failed:', e); }
+  }
+
+  /* フォームクリア */
+  document.getElementById('a-title').value = '';
+  document.getElementById('a-body').value = '';
+  document.getElementById('a-from').value = '';
+  document.getElementById('a-to').value = '';
+  setPriority('normal');
+
+  saveAnnouncements(list);
+  showToast(`📢 お知らせを公開しました${optMail ? ' (📧送信)' : ''}${optLine ? ' (💬LINE)' : ''}${optPush ? ' (🔔Push)' : ''}`);
+  renderAnnouncements();
+}
+
+function renderAnnouncements() {
+  const list = loadAnnouncements();
+  const root = document.getElementById('announce-list');
+  if (!list.length) {
+    root.innerHTML = `<div class="empty"><span class="ic">📭</span>まだお知らせはありません</div>`;
+    return;
+  }
+  root.innerHTML = list.map(a => {
+    const priIc = a.priority === 'urgent' ? '🔴' : a.priority === 'important' ? '⚠' : '📌';
+    const priLbl = a.priority === 'urgent' ? '緊急' : a.priority === 'important' ? '重要' : '通常';
+    const dateStr = new Date(a.publishedAt).toLocaleString('ja-JP', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    const sentBadges = [];
+    if (a.sentEmail) sentBadges.push('📧');
+    if (a.sentLine) sentBadges.push('💬');
+    if (a.sentPush) sentBadges.push('🔔');
+    return `<div class="announce-item ${a.priority}">
+      <div class="ai-header">
+        <div class="ai-title">${priIc} ${escapeHtml(a.title)}</div>
+        <div class="ai-meta">${dateStr}<span>${sentBadges.join(' ')}</span></div>
+      </div>
+      <div class="ai-body">${escapeHtml(a.body)}</div>
+      <div class="ai-stats">
+        <span>👁 表示回数: ${a.viewCount || 0}</span>
+        <span>📊 重要度: ${priLbl}</span>
+        ${a.to ? `<span>📅 〜${a.to}</span>` : '<span>📅 期限なし</span>'}
+      </div>
+      <div class="ai-actions">
+        <button class="btn btn-ghost" style="padding:6px 10px;font-size:10px;" onclick="copyAnnouncement('${a.id}')">📋 コピー</button>
+        <button class="btn btn-ghost" style="padding:6px 10px;font-size:10px;color:var(--rose);" onclick="deleteAnnouncement('${a.id}')">🗑 削除</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteAnnouncement(id) {
+  if (!confirm('このお知らせを削除しますか？')) return;
+  const list = loadAnnouncements();
+  const filtered = list.filter(a => a.id !== id);
+  saveAnnouncements(filtered);
+  /* サーバー側も削除 */
+  fetch('/api/announcements/' + id, { method: 'DELETE' }).catch(()=>{});
+  renderAnnouncements();
+  showToast('🗑 削除しました');
+}
+
+function copyAnnouncement(id) {
+  const list = loadAnnouncements();
+  const a = list.find(x => x.id === id);
+  if (!a) return;
+  navigator.clipboard.writeText(`【${a.title}】\n\n${a.body}`).then(() => {
+    showToast('📋 クリップボードにコピーしました');
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+document.addEventListener('DOMContentLoaded', renderAnnouncements);
+</script>
+</body>
+</html>
