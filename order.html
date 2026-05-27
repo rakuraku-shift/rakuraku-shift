@@ -193,8 +193,22 @@
   const tableNo = params.get('table') || '1';
   document.getElementById('table-badge').textContent = `テーブル ${tableNo}`;
 
+  // クライアント識別子（自分のスマホ判定用）— ブラウザに永続化
+  const CLIENT_ID_KEY = 'rakuraku_order_client_id';
+  function getClientId() {
+    let id = localStorage.getItem(CLIENT_ID_KEY);
+    if (!id) {
+      id = (window.crypto?.randomUUID?.() || ('cid_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8)));
+      localStorage.setItem(CLIENT_ID_KEY, id);
+    }
+    return id;
+  }
+  const clientId = getClientId();
+
   let menu = null;
   const cart = new Map(); // itemId -> { qty, def }
+  // 「新しく注文を始める」を押した直後フラグ（前の会計済み表示を抑制）
+  let freshSessionRequested = false;
 
   function showToast(msg, ms=2200) {
     const t = document.getElementById('toast');
@@ -319,11 +333,12 @@
       const r = await fetch('/api/restaurant/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tableNo: Number(tableNo), items }),
+        body: JSON.stringify({ tableNo: Number(tableNo), items, clientId }),
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || '注文に失敗しました');
       cart.clear();
+      freshSessionRequested = false;
       showToast('✓ ご注文を受け付けました');
       renderMenu();
       document.querySelector('[data-tab="history"]').click();
@@ -338,12 +353,36 @@
   async function loadHistory() {
     const root = document.getElementById('history');
     root.innerHTML = '<div class="empty">読み込み中...</div>';
-    const r = await fetch(`/api/restaurant/table/${encodeURIComponent(tableNo)}/session`);
-    const { session, orders, total } = await r.json();
-    if (!session || !orders.length) {
+    const r = await fetch(`/api/restaurant/table/${encodeURIComponent(tableNo)}/session?clientId=${encodeURIComponent(clientId)}`);
+    const { session, orders, total, state } = await r.json();
+
+    // 「新しく注文を始める」直後は前の会計済み表示を抑制
+    if (freshSessionRequested && state !== 'open') {
+      root.innerHTML = '<div class="empty"><div class="empty-emoji">🍽️</div>メニュータブから新しいご注文をどうぞ</div>';
+      return;
+    }
+
+    // ── 何もない（初回 or リセット直後） ──
+    if (state === 'no-session' || !session) {
       root.innerHTML = '<div class="empty"><div class="empty-emoji">🧾</div>まだ注文がありません</div>';
       return;
     }
+
+    // ── 他の人が会計済み（サプライズ保護：内容を見せない） ──
+    if (state === 'paid-by-other') {
+      root.innerHTML = `
+        <div id="checkout-section" style="padding:36px 24px;">
+          <div style="font-size:3rem; margin-bottom:10px;">✨</div>
+          <div style="font-size:1.25rem; font-weight:800; margin-bottom:6px;">お会計はお済みです</div>
+          <div class="pay-note" style="margin-bottom:22px;">引き続きお楽しみください</div>
+          <button class="btn-pay" id="btn-new-order">新しいご注文を始める</button>
+        </div>
+      `;
+      bindNewOrderBtn();
+      return;
+    }
+
+    // ── open または paid-by-me：注文履歴を表示 ──
     let html = '';
     for (const o of orders.slice().sort((a,b) => b.createdAt.localeCompare(a.createdAt))) {
       const time = new Date(o.createdAt).toLocaleTimeString('ja-JP', { hour:'2-digit', minute:'2-digit' });
@@ -365,21 +404,40 @@
       `;
     }
 
-    const isPaid = session.status === 'paid';
-    html += `
-      <div id="checkout-section">
-        <div class="total-label">${isPaid ? '会計済み' : 'お会計合計'}</div>
-        <div class="total-val">¥${total.toLocaleString()}</div>
-        ${isPaid
-          ? '<div class="pay-note">✓ 会計が完了しています</div>'
-          : `<button class="btn-pay" id="btn-pay">スマホで決済する</button>
-             <div class="pay-note">クレジット・Apple Pay・Google Pay対応<br>現金の場合は店員にお声がけください</div>`}
-      </div>
-    `;
+    if (state === 'paid-by-me') {
+      html += `
+        <div id="checkout-section">
+          <div class="total-label">会計済み</div>
+          <div class="total-val">¥${total.toLocaleString()}</div>
+          <div class="pay-note" style="margin-bottom:18px;">✓ お支払いいただきありがとうございました</div>
+          <button class="btn-pay" id="btn-new-order">もう一度注文する</button>
+        </div>
+      `;
+    } else {
+      // state === 'open'
+      html += `
+        <div id="checkout-section">
+          <div class="total-label">お会計合計</div>
+          <div class="total-val">¥${total.toLocaleString()}</div>
+          <button class="btn-pay" id="btn-pay">スマホで決済する</button>
+          <div class="pay-note">クレジット・Apple Pay・Google Pay対応<br>現金の場合は店員にお声がけください</div>
+        </div>
+      `;
+    }
     root.innerHTML = html;
 
     const payBtn = document.getElementById('btn-pay');
     if (payBtn) payBtn.onclick = () => startCheckout(session.id);
+    bindNewOrderBtn();
+  }
+
+  function bindNewOrderBtn() {
+    const btn = document.getElementById('btn-new-order');
+    if (!btn) return;
+    btn.onclick = () => {
+      freshSessionRequested = true;
+      document.querySelector('[data-tab="menu"]').click();
+    };
   }
 
   async function startCheckout(sessionId) {
@@ -389,7 +447,7 @@
       const r = await fetch('/api/restaurant/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId }),
+        body: JSON.stringify({ sessionId, clientId }),
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || '決済の開始に失敗しました');

@@ -1205,18 +1205,52 @@ app.put('/api/restaurant/order/:id/status', (req, res) => {
 // テーブルセッション取得（お客様の「今までの注文」表示用）
 app.get('/api/restaurant/table/:tableNo/session', (req, res) => {
   const data = loadRestaurantData();
-  const session = data.sessions
-    .filter(s => s.tableNo === Number(req.params.tableNo) && s.status === 'open')
+  const tableNo = Number(req.params.tableNo);
+  const clientId = req.query.clientId || '';
+
+  // 1) open セッションがあればそれを返す（state: open）
+  const openSession = data.sessions
+    .filter(s => s.tableNo === tableNo && s.status === 'open')
     .sort((a, b) => b.openedAt.localeCompare(a.openedAt))[0];
-  if (!session) return res.json({ session: null, orders: [], total: 0 });
-  const orders = sessionOrders(data, session.id);
-  res.json({ session, orders, total: sessionTotal(data, session.id) });
+  if (openSession) {
+    const orders = sessionOrders(data, openSession.id);
+    return res.json({
+      session: openSession, orders,
+      total: sessionTotal(data, openSession.id),
+      state: 'open',
+    });
+  }
+
+  // 2) 当日の最新 paid セッション → 自分か他人かで分岐
+  const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+  const latestPaid = data.sessions
+    .filter(s => s.tableNo === tableNo && s.status === 'paid' && s.paidAt && new Date(s.paidAt) >= todayStart)
+    .sort((a, b) => b.paidAt.localeCompare(a.paidAt))[0];
+  if (latestPaid) {
+    const isMine = clientId && latestPaid.paidByClientId === clientId;
+    if (isMine) {
+      const orders = sessionOrders(data, latestPaid.id);
+      return res.json({
+        session: latestPaid, orders,
+        total: sessionTotal(data, latestPaid.id),
+        state: 'paid-by-me',
+      });
+    }
+    // サプライズ保護：他人には注文履歴・金額を返さない
+    return res.json({
+      session: { id: latestPaid.id, tableNo: latestPaid.tableNo, status: 'paid', paidAt: latestPaid.paidAt },
+      orders: [], total: 0,
+      state: 'paid-by-other',
+    });
+  }
+
+  res.json({ session: null, orders: [], total: 0, state: 'no-session' });
 });
 
 // ── 会計：Stripe Checkout（スマホ決済） ────────
 app.post('/api/restaurant/checkout', async (req, res) => {
   if (!stripe) return res.status(503).json({ error: 'Stripe未設定です' });
-  const { sessionId, tableNo } = req.body;
+  const { sessionId, tableNo, clientId } = req.body;
 
   const data = loadRestaurantData();
   let session;
@@ -1260,11 +1294,14 @@ app.post('/api/restaurant/checkout', async (req, res) => {
         type: 'restaurant',
         sessionId: session.id,
         tableNo: String(session.tableNo),
+        clientId: clientId || '',
       },
       locale: 'ja',
     });
 
     session.stripeSessionId = checkout.id;
+    // 楽観的に paidByClientId を仮設定（webhook で確定）
+    if (clientId) session.paidByClientId = clientId;
     saveRestaurantData(data);
 
     io.emit('restaurant_payment_requested', { sessionId: session.id, tableNo: session.tableNo });
@@ -1277,6 +1314,7 @@ app.post('/api/restaurant/checkout', async (req, res) => {
 
 // 店舗側：現金会計（手動でセッションを paid に）
 app.post('/api/restaurant/session/:id/cash-paid', (req, res) => {
+  const { clientId } = req.body || {};
   const data = loadRestaurantData();
   const session = data.sessions.find(s => s.id === req.params.id);
   if (!session) return res.status(404).json({ error: 'session not found' });
@@ -1287,6 +1325,7 @@ app.post('/api/restaurant/session/:id/cash-paid', (req, res) => {
   session.paymentMethod = 'cash';
   session.paidAt = new Date().toISOString();
   session.paidAmount = total;
+  if (clientId) session.paidByClientId = clientId;
   saveRestaurantData(data);
 
   io.emit('restaurant_session_paid', { sessionId: session.id, tableNo: session.tableNo, total, method: 'cash' });
@@ -1320,6 +1359,7 @@ function handleRestaurantPaymentCompleted(checkout) {
   session.paidAt = new Date().toISOString();
   session.paidAmount = checkout.amount_total;
   session.stripeSessionId = checkout.id;
+  if (checkout.metadata?.clientId) session.paidByClientId = checkout.metadata.clientId;
   saveRestaurantData(data);
 
   io.emit('restaurant_session_paid', {

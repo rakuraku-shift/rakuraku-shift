@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fde68a"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="beer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <g transform="translate(110, 100)">
+    <ellipse cx="90" cy="40" rx="80" ry="20" fill="#ffffff"/>
+    <ellipse cx="60" cy="20" rx="30" ry="14" fill="#ffffff" opacity="0.85"/>
+    <ellipse cx="120" cy="22" rx="22" ry="10" fill="#ffffff" opacity="0.85"/>
+    <rect x="10" y="40" width="160" height="180" rx="6" fill="url(#beer)" stroke="#92400e" stroke-width="4"/>
+    <rect x="170" y="80" width="34" height="80" rx="4" fill="none" stroke="#92400e" stroke-width="8"/>
+    <line x1="40" y1="80" x2="40" y2="200" stroke="#ffffff" stroke-width="3" opacity="0.4"/>
+    <line x1="140" y1="80" x2="140" y2="200" stroke="#ffffff" stroke-width="3" opacity="0.4"/>
+  </g>
+</svg>

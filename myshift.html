@@ -99,23 +99,24 @@
 <div class="header">
   <div class="h-top">
     <div class="h-logo">R</div>
-    <div class="h-name">マイシフト · <strong id="shop-name">読込中…</strong></div>
+    <div class="h-name" style="flex:1;">My Shift · <strong id="shop-name" data-i18n="common.loading">読込中…</strong></div>
+    <div id="lang-switcher"></div>
   </div>
-  <div class="h-title">📅 私の確定シフト</div>
-  <div class="h-sub">確定したシフト・休み変更届・出退勤打刻</div>
+  <div class="h-title" data-i18n="my.title">📅 私の確定シフト</div>
+  <div class="h-sub" data-i18n="my.sub">確定したシフト・休み変更届・出退勤打刻</div>
 </div>
 <div class="quick-actions">
-  <a href="#" class="qa-btn qa-clock" id="qa-clock-link">⏰ 出退勤打刻</a>
-  <button class="qa-btn qa-change" onclick="openChangeModal()">🆘 休み変更届</button>
+  <a href="#" class="qa-btn qa-clock" id="qa-clock-link" data-i18n="my.qa_clock">⏰ 出退勤打刻</a>
+  <button class="qa-btn qa-change" onclick="openChangeModal()" data-i18n="my.qa_change">🆘 休み変更届</button>
 </div>
 <div class="container">
   <div class="name-card">
-    <label>👤 名前</label>
-    <input type="text" id="staff-name" placeholder="山田 太郎" autocomplete="name" />
+    <label data-i18n="common.name">👤 名前</label>
+    <input type="text" id="staff-name" data-i18n-placeholder="att.name_ph" placeholder="山田 太郎" autocomplete="name" />
   </div>
   <div class="today-card" id="today-card">
-    <div class="today-eyebrow">本日のシフト</div>
-    <div class="today-date" id="today-date">読込中…</div>
+    <div class="today-eyebrow" data-i18n="my.today_label">本日のシフト</div>
+    <div class="today-date" id="today-date" data-i18n="common.loading">読込中…</div>
     <div class="today-time" id="today-time">--:-- 〜 --:--</div>
   </div>
   <div class="cal-card">
@@ -126,37 +127,44 @@
     </div>
     <div class="cal-grid" id="cal-grid"></div>
     <div style="display:flex;gap:14px;justify-content:center;font-size:10px;color:var(--slate-500);margin-top:12px;font-weight:700;flex-wrap:wrap;">
-      <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--indigo-l);border:1px solid var(--indigo);"></span>出勤日</span>
-      <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--amber-l);border:1px solid var(--amber);"></span>休み変更申請中</span>
-      <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--slate-100);"></span>非出勤</span>
+      <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--indigo-l);border:1px solid var(--indigo);"></span><span data-i18n="my.legend_work">出勤日</span></span>
+      <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--amber-l);border:1px solid var(--amber);"></span><span data-i18n="my.legend_request">休み変更申請中</span></span>
+      <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--slate-100);"></span><span data-i18n="my.legend_off">非出勤</span></span>
     </div>
   </div>
   <div class="list-card">
-    <div class="list-title">📋 これからの出勤予定</div>
+    <div class="list-title" data-i18n="my.upcoming">📋 これからの出勤予定</div>
     <div id="upcoming-list">
-      <div class="list-empty">名前を入力するとシフトが表示されます</div>
+      <div class="list-empty" data-i18n="my.upcoming_empty_noname">名前を入力するとシフトが表示されます</div>
     </div>
   </div>
   <div class="list-card">
-    <div class="list-title">📨 変更届の履歴</div>
+    <div class="list-title" data-i18n="my.change_history">📨 変更届の履歴</div>
     <div id="change-list">
-      <div class="list-empty">変更届の履歴はまだありません</div>
+      <div class="list-empty" data-i18n="my.change_empty">変更届の履歴はまだありません</div>
     </div>
   </div>
 </div>
 <div class="modal" id="change-modal" onclick="if(event.target===this)closeChangeModal()">
   <div class="modal-card">
     <div class="modal-handle"></div>
-    <div class="modal-title">🆘 休み変更届</div>
-    <div class="modal-sub">出勤予定日を急遽休みたい場合に提出</div>
-    <div class="modal-warn">⚠️ なるべく早めの申請をお願いします。代替スタッフの手配が必要なため、店長判断で承認/却下されます。</div>
-    <div class="modal-field"><label>休みたい日</label><input type="date" id="ch-date" /></div>
-    <div class="modal-field"><label>理由</label>
-      <select id="ch-reason"><option value="">選択してください</option><option value="体調不良">体調不良</option><option value="家庭の事情">家庭の事情</option><option value="学校の予定">学校の予定</option><option value="冠婚葬祭">冠婚葬祭</option><option value="その他">その他</option></select>
+    <div class="modal-title" data-i18n="my.modal_title">🆘 休み変更届</div>
+    <div class="modal-sub" data-i18n="my.modal_sub">出勤予定日を急遽休みたい場合に提出</div>
+    <div class="modal-warn" data-i18n="my.modal_warn">⚠️ なるべく早めの申請をお願いします。代替スタッフの手配が必要なため、店長判断で承認/却下されます。</div>
+    <div class="modal-field"><label data-i18n="my.field_date">休みたい日</label><input type="date" id="ch-date" /></div>
+    <div class="modal-field"><label data-i18n="my.field_reason">理由</label>
+      <select id="ch-reason">
+        <option value="" data-i18n="my.reason_choose">選択してください</option>
+        <option value="体調不良" data-i18n="my.reason_sick">体調不良</option>
+        <option value="家庭の事情" data-i18n="my.reason_family">家庭の事情</option>
+        <option value="学校の予定" data-i18n="my.reason_school">学校の予定</option>
+        <option value="冠婚葬祭" data-i18n="my.reason_ceremony">冠婚葬祭</option>
+        <option value="その他" data-i18n="my.reason_other">その他</option>
+      </select>
     </div>
-    <div class="modal-field"><label>詳細・補足（任意）</label><textarea id="ch-note" placeholder="例) 朝から発熱しているので休みたいです。"></textarea></div>
-    <button class="modal-btn submit" onclick="submitChangeRequest()">📨 変更届を提出する</button>
-    <button class="modal-btn cancel" onclick="closeChangeModal()">キャンセル</button>
+    <div class="modal-field"><label data-i18n="my.field_note">詳細・補足（任意）</label><textarea id="ch-note" placeholder="..."></textarea></div>
+    <button class="modal-btn submit" onclick="submitChangeRequest()" data-i18n="my.modal_submit">📨 変更届を提出する</button>
+    <button class="modal-btn cancel" onclick="closeChangeModal()" data-i18n="common.cancel">キャンセル</button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -346,6 +354,11 @@
     el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2600);
   }
   (async function init() { await Promise.all([loadShopMeta(), loadShiftData(), loadChangeRequests()]); render(); })();
+  window.addEventListener('rakuraku-lang-changed', function() { render(); });
+</script>
+<script src="/i18n.js"></script>
+<script>
+  if (window.RakuI18n) RakuI18n.buildSwitcher('lang-switcher');
 </script>
 </body>
 </html>

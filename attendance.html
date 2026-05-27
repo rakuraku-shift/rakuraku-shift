@@ -100,42 +100,45 @@
   <div class="h-left">
     <div class="h-logo">R</div>
     <div>
-      <div class="h-title">出退勤打刻</div>
-      <div class="h-shop" id="shop-name">読込中…</div>
+      <div class="h-title" data-i18n="att.title">出退勤打刻</div>
+      <div class="h-shop" id="shop-name" data-i18n="common.loading">読込中…</div>
     </div>
   </div>
-  <div class="h-clock" id="now-clock">--:--</div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div id="lang-switcher"></div>
+    <div class="h-clock" id="now-clock">--:--</div>
+  </div>
 </div>
 
 <div class="container">
 
-  <div class="hint">
+  <div class="hint" data-i18n="att.hint">
     💡 出勤・退勤・休憩はこの画面から打刻してください。GPS位置情報で店舗にいることが確認されます。
   </div>
 
   <!-- Name input -->
   <div class="name-card">
-    <div class="label">👤 お名前</div>
-    <input type="text" class="name-input" id="staff-name" placeholder="例) 山田 太郎" autocomplete="name" />
+    <div class="label" data-i18n="att.name_label">👤 お名前</div>
+    <input type="text" class="name-input" id="staff-name" data-i18n-placeholder="att.name_ph" placeholder="例) 山田 太郎" autocomplete="name" />
   </div>
 
   <!-- GPS status -->
   <div class="gps-card">
     <div class="gps-icon loading" id="gps-icon">📍</div>
     <div class="gps-text">
-      <div class="gps-status" id="gps-status">位置情報を取得中...</div>
-      <div class="gps-detail" id="gps-detail">GPS を有効にしてください</div>
+      <div class="gps-status" id="gps-status" data-i18n="att.gps_loading">位置情報を取得中...</div>
+      <div class="gps-detail" id="gps-detail" data-i18n="att.gps_loading_sub">GPS を有効にしてください</div>
     </div>
   </div>
 
   <!-- Status -->
   <div class="status-card" id="status-card">
-    <div class="status-label">現在のステータス</div>
-    <div class="status-text" id="status-text">⏸ 未出勤</div>
+    <div class="status-label" data-i18n="att.status">現在のステータス</div>
+    <div class="status-text" id="status-text" data-i18n="att.st_off">⏸ 未出勤</div>
     <div class="status-time" id="status-time"></div>
     <div class="status-summary" id="status-summary" style="display:none;">
-      <div>勤務時間<br><span class="v" id="sum-work">0時間0分</span></div>
-      <div>休憩時間<br><span class="v" id="sum-break">0分</span></div>
+      <div><span data-i18n="att.work_time">勤務時間</span><br><span class="v" id="sum-work">0h 0m</span></div>
+      <div><span data-i18n="att.break_time">休憩時間</span><br><span class="v" id="sum-break">0m</span></div>
     </div>
   </div>
 
@@ -143,30 +146,30 @@
   <div class="actions">
     <button class="btn-act btn-clockin" id="btn-clockin" onclick="clockAction('in')">
       <div class="ic">⏰</div>
-      出勤
+      <span data-i18n="att.btn_in">出勤</span>
     </button>
     <button class="btn-act btn-clockout" id="btn-clockout" onclick="clockAction('out')" disabled>
       <div class="ic">🏁</div>
-      退勤
+      <span data-i18n="att.btn_out">退勤</span>
     </button>
     <button class="btn-act btn-break-start" id="btn-break-start" onclick="clockAction('break_start')" disabled>
       <div class="ic">☕</div>
-      休憩開始
+      <span data-i18n="att.btn_break_start">休憩開始</span>
     </button>
     <button class="btn-act btn-break-end" id="btn-break-end" onclick="clockAction('break_end')" disabled>
       <div class="ic">▶️</div>
-      休憩終了
+      <span data-i18n="att.btn_break_end">休憩終了</span>
     </button>
   </div>
 
   <!-- Today's history -->
   <div class="history-card">
     <div class="history-title">
-      <span>📋 本日の打刻履歴</span>
+      <span data-i18n="att.history">📋 本日の打刻履歴</span>
       <span style="font-size:10px;color:var(--slate-500);font-weight:700;" id="today-date">--/--</span>
     </div>
     <div class="history-list" id="history-list">
-      <div class="history-empty">打刻履歴はまだありません</div>
+      <div class="history-empty" data-i18n="att.history_empty">打刻履歴はまだありません</div>
     </div>
   </div>
 
@@ -174,7 +177,13 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="/i18n.js"></script>
 <script src="/socket.io/socket.io.js"></script>
+<script>
+  /* 言語切替UI生成 */
+  if (window.RakuI18n) RakuI18n.buildSwitcher('lang-switcher');
+  function _t(k) { return window.RakuI18n ? RakuI18n.t(k) : k; }
+</script>
 <script>
   /* ══════════════════════════════════════════
      設定・状態
@@ -263,38 +272,40 @@
     if (_gpsError) {
       icon.className = 'gps-icon error';
       icon.textContent = '⚠️';
-      status.textContent = 'GPS エラー';
-      detail.textContent = _gpsError + ' / 位置情報の許可をしてください';
+      status.textContent = _t('att.gps_error');
+      detail.textContent = _gpsError;
       return;
     }
     if (!_currentPosition) {
       icon.className = 'gps-icon loading';
       icon.textContent = '📍';
-      status.textContent = '位置情報を取得中...';
-      detail.textContent = 'しばらくお待ちください';
+      status.textContent = _t('att.gps_loading');
+      detail.textContent = _t('att.gps_loading_sub');
       return;
     }
     const dist = getDistanceToShop();
     if (dist === null) {
       icon.className = 'gps-icon ok';
       icon.textContent = '📍';
-      status.textContent = '位置情報 取得済み';
-      detail.textContent = `精度: ±${Math.round(_currentPosition.accuracy)}m（店舗位置未設定）`;
+      status.textContent = _t('att.gps_ready');
+      detail.textContent = `±${Math.round(_currentPosition.accuracy)}m`;
       return;
     }
     const allowedRadius = (_shopMeta && _shopMeta.allowedRadiusMeters) || ALLOWED_RADIUS_METERS;
     if (dist <= allowedRadius) {
       icon.className = 'gps-icon ok';
       icon.textContent = '✅';
-      status.textContent = '店舗範囲内です';
-      detail.textContent = `店舗から ${Math.round(dist)}m（許容 ${allowedRadius}m）`;
+      status.textContent = _t('att.gps_in_range');
+      detail.textContent = `${Math.round(dist)}m / ${allowedRadius}m`;
     } else {
       icon.className = 'gps-icon error';
       icon.textContent = '🚫';
-      status.textContent = '店舗から離れています';
-      detail.textContent = `店舗から ${Math.round(dist)}m（許容 ${allowedRadius}m）— 打刻時に警告されます`;
+      status.textContent = _t('att.gps_out_range');
+      detail.textContent = `${Math.round(dist)}m / ${allowedRadius}m`;
     }
   }
+  /* 言語切替に反応してGPS表示も再描画 */
+  window.addEventListener('rakuraku-lang-changed', updateGPSStatus);
 
   /* ══════════════════════════════════════════
      打刻アクション
@@ -302,7 +313,7 @@
   async function clockAction(type) {
     const name = document.getElementById('staff-name').value.trim();
     if (!name) {
-      showToast('お名前を入力してください', 'error');
+      showToast(_t('att.name_required'), 'error');
       document.getElementById('staff-name').focus();
       return;
     }
@@ -312,7 +323,7 @@
     let warnDist = false;
     if (dist !== null && dist > allowedRadius) {
       warnDist = true;
-      if (!confirm(`店舗から ${Math.round(dist)}m 離れています（許容 ${allowedRadius}m）。\n本当に打刻しますか？\n\n※不正打刻として記録され、店長に警告が届きます。`)) {
+      if (!confirm(`${Math.round(dist)}m / ${allowedRadius}m\n${_t('att.out_range_confirm')}`)) {
         return;
       }
     }
@@ -339,8 +350,8 @@
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || 'サーバーエラー');
       }
-      const labels = { in: '出勤', out: '退勤', break_start: '休憩開始', break_end: '休憩終了' };
-      showToast('✅ ' + labels[type] + ' を記録しました', 'success');
+      const labels = { in: _t('att.btn_in'), out: _t('att.btn_out'), break_start: _t('att.btn_break_start'), break_end: _t('att.btn_break_end') };
+      showToast('✅ ' + labels[type] + ' — ' + _t('att.recorded'), 'success');
       await loadHistory();
     } catch(e) {
       showToast('⚠ ' + e.message, 'error');
@@ -366,7 +377,7 @@
   }
 
   function renderEmpty() {
-    document.getElementById('history-list').innerHTML = '<div class="history-empty">打刻履歴はまだありません</div>';
+    document.getElementById('history-list').innerHTML = '<div class="history-empty">' + _t('att.history_empty') + '</div>';
     updateStatus(null);
   }
 
@@ -376,7 +387,7 @@
     list.innerHTML = _todayRecords.map(r => {
       const d = new Date(r.ts);
       const time = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
-      const labels = { in: '出勤', out: '退勤', break_start: '休憩開始', break_end: '休憩終了' };
+      const labels = { in: _t('att.btn_in'), out: _t('att.btn_out'), break_start: _t('att.btn_break_start'), break_end: _t('att.btn_break_end') };
       const warn = r.outsideAllowed ? ' ⚠️' : '';
       return '<div class="history-item">' +
         '<span class="h-type ' + r.type.replace('_','-') + '">' + (labels[r.type] || r.type) + warn + '</span>' +
@@ -385,6 +396,8 @@
     }).join('');
     updateStatus(currentStatus());
   }
+  /* 言語切替時に履歴再描画 */
+  window.addEventListener('rakuraku-lang-changed', function() { renderHistory(); });
 
   function currentStatus() {
     // 最新の打刻から現状を判定
@@ -425,23 +438,26 @@
 
     if (st === 'working') {
       card.classList.add('working');
-      text.textContent = '🟢 勤務中';
+      text.textContent = _t('att.st_working');
     } else if (st === 'break') {
       card.classList.add('break');
-      text.textContent = '☕ 休憩中';
+      text.textContent = _t('att.st_break');
     } else if (st === 'off' && _todayRecords.length) {
-      text.textContent = '🏁 退勤済';
+      text.textContent = _t('att.st_clocked_out');
     } else {
-      text.textContent = '⏸ 未出勤';
+      text.textContent = _t('att.st_off');
     }
 
     if (_todayRecords.length) {
       const last = [..._todayRecords].sort((a,b) => b.ts - a.ts)[0];
       const d = new Date(last.ts);
-      time.textContent = '最終打刻: ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+      time.textContent = _t('att.last_punch') + ': ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
       const { work, brk } = calcWorkBreakMinutes();
-      document.getElementById('sum-work').textContent = Math.floor(work/60) + '時間' + (work%60) + '分';
-      document.getElementById('sum-break').textContent = brk + '分';
+      const lang = window.RakuI18n ? RakuI18n.getLang() : 'ja';
+      const wHrLbl = lang === 'ja' ? '時間' : lang === 'en' ? 'h ' : lang === 'zh' ? '小时' : '시간 ';
+      const wMinLbl = lang === 'ja' ? '分' : lang === 'en' ? 'm' : lang === 'zh' ? '分钟' : '분';
+      document.getElementById('sum-work').textContent = Math.floor(work/60) + wHrLbl + (work%60) + wMinLbl;
+      document.getElementById('sum-break').textContent = brk + wMinLbl;
       summary.style.display = 'flex';
     } else {
       time.textContent = '';
