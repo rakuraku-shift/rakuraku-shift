@@ -135,6 +135,59 @@
                           en:'📅 My Shifts & Time-off Request',
                           zh:'📅 我的班次·请假',
                           ko:'📅 내 시프트·휴가 신청' },
+
+    /* ─── shift.html タブバー (タブ3つ) ─── */
+    'tab.staff': { ja:'シフト提出', en:'Submit', zh:'提交', ko:'시프트 제출' },
+    'tab.survey': { ja:'アンケート', en:'Survey', zh:'问卷', ko:'설문' },
+    'tab.manager': { ja:'シフト管理', en:'Manage', zh:'班次管理', ko:'시프트 관리' },
+
+    /* ─── shift.html 管理画面ヘッダー + 主要ボタン ─── */
+    'mgr.eyebrow': { ja:'RAKURAKU · シフト管理コンソール',
+                     en:'RAKURAKU · Manager Console',
+                     zh:'RAKURAKU · 管理控制台',
+                     ko:'RAKURAKU · 관리자 콘솔' },
+    'mgr.title': { ja:'シフト管理', en:'Shift Management', zh:'班次管理', ko:'시프트 관리' },
+    'mgr.badge_sync': { ja:'データ同期中', en:'Syncing', zh:'数据同步', ko:'데이터 동기화' },
+    'mgr.badge_auto': { ja:'自動生成対応', en:'Auto-generate', zh:'自动生成', ko:'자동 생성' },
+    'mgr.badge_mail': { ja:'メール通知', en:'Email Alerts', zh:'邮件通知', ko:'이메일 알림' },
+    'mgr.realtime_attendance': { ja:'⏰ 本日の出退勤（リアルタイム）',
+                                  en:'⏰ Today\'s Attendance (live)',
+                                  zh:'⏰ 今日出勤（实时）',
+                                  ko:'⏰ 오늘의 출퇴근 (실시간)' },
+    'mgr.payroll': { ja:'📋 給与明細', en:'📋 Payroll', zh:'📋 工资单', ko:'📋 급여 명세' },
+    'mgr.monthly_report': { ja:'📊 月次レポート', en:'📊 Monthly Report', zh:'📊 月度报告', ko:'📊 월간 리포트' },
+    'mgr.no_records': { ja:'本日まだ打刻なし', en:'No punches today', zh:'今日尚无打卡', ko:'오늘 타각 없음' },
+
+    /* ─── 締切・リマインド ─── */
+    'rem.title': { ja:'⏰ 締切・リマインド管理', en:'⏰ Deadline & Reminders', zh:'⏰ 截止·提醒', ko:'⏰ 마감·리마인드' },
+    'rem.deadline': { ja:'提出期限', en:'Submission Deadline', zh:'提交截止', ko:'제출 기한' },
+    'rem.set': { ja:'✅ 設定', en:'✅ Set', zh:'✅ 设置', ko:'✅ 설정' },
+    'rem.clear': { ja:'クリア', en:'Clear', zh:'清除', ko:'초기화' },
+    'rem.staff_list': { ja:'スタッフリスト（リマインド用）', en:'Staff List (for reminders)', zh:'员工列表（提醒用）', ko:'스태프 목록(리마인드)' },
+    'rem.add_staff': { ja:'＋ 追加', en:'+ Add', zh:'+ 添加', ko:'+ 추가' },
+    'rem.send_reminder': { ja:'📢 未提出スタッフにリマインドを送る',
+                            en:'📢 Send Reminder to Pending Staff',
+                            zh:'📢 给未提交员工发送提醒',
+                            ko:'📢 미제출 직원에게 리마인드 전송' },
+    'rem.stat_total': { ja:'登録スタッフ', en:'Total Staff', zh:'登记员工', ko:'등록 직원' },
+    'rem.stat_submitted': { ja:'提出済み', en:'Submitted', zh:'已提交', ko:'제출 완료' },
+    'rem.stat_pending': { ja:'未提出', en:'Pending', zh:'未提交', ko:'미제출' },
+    'rem.submitted_badge': { ja:'✅ 提出済み', en:'✅ Submitted', zh:'✅ 已提交', ko:'✅ 제출 완료' },
+    'rem.pending_badge': { ja:'⏳ 未提出', en:'⏳ Pending', zh:'⏳ 未提交', ko:'⏳ 미제출' },
+    'rem.role_badge': { ja:'役職', en:'Manager', zh:'管理', ko:'관리' },
+
+    /* ─── 主要ボタン ─── */
+    'btn.generate': { ja:'✨ シフト作成', en:'✨ Generate', zh:'✨ 生成班次', ko:'✨ 시프트 생성' },
+    'btn.print': { ja:'🖨️ 印刷', en:'🖨️ Print', zh:'🖨️ 打印', ko:'🖨️ 인쇄' },
+    'btn.export': { ja:'💾 エクスポート', en:'💾 Export', zh:'💾 导出', ko:'💾 내보내기' },
+    'btn.submit': { ja:'📤 提出する', en:'📤 Submit', zh:'📤 提交', ko:'📤 제출하기' },
+    'btn.lock': { ja:'🔒 ロック', en:'🔒 Lock', zh:'🔒 锁定', ko:'🔒 잠금' },
+    'btn.unlock': { ja:'🔓 解除', en:'🔓 Unlock', zh:'🔓 解锁', ko:'🔓 잠금 해제' },
+
+    /* ─── 警告バナー ─── */
+    'warn.shortage': { ja:'人手不足の日程があります', en:'There are days with insufficient staff', zh:'有人手不足的日期', ko:'인력 부족인 날짜가 있습니다' },
+    'warn.recruit_internal': { ja:'👥 自社スタッフに声がけ', en:'👥 Call Internal Staff', zh:'👥 内部招募', ko:'👥 자사 직원 호출' },
+    'warn.recruit_external': { ja:'⚡ 外部求人', en:'⚡ External Recruit', zh:'⚡ 外部招聘', ko:'⚡ 외부 구인' },
   };
 
   const SUPPORTED_LANGS = ['ja', 'en', 'zh', 'ko'];

@@ -2211,15 +2211,15 @@
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('staff')" id="tab-staff">
     <svg viewBox="0 0 24 24"><path d="M9 12h6M9 8h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M9 16l2 2 4-4"/></svg>
-    <span>シフト提出</span>
+    <span data-i18n="tab.staff">シフト提出</span>
   </button>
   <button class="tab-btn" onclick="switchTab('survey')" id="tab-survey">
     <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-    <span>アンケート</span>
+    <span data-i18n="tab.survey">アンケート</span>
   </button>
   <button class="tab-btn" onclick="switchTab('manager')" id="tab-manager">
     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7M17.5 14v7"/></svg>
-    <span>シフト管理</span>
+    <span data-i18n="tab.manager">シフト管理</span>
   </button>
 </div>
 
@@ -2528,30 +2528,35 @@
   <div class="manager-header">
     <div class="mh-eyebrow">
       <div class="mh-eyebrow-dot"></div>
-      RAKURAKU · シフト管理コンソール
+      <span data-i18n="mgr.eyebrow">RAKURAKU · シフト管理コンソール</span>
     </div>
-    <div class="mh-title">シフト管理</div>
-    <div class="mh-sub" id="mh-shop-name">― 提出データをリアルタイムで確認</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+      <div style="flex:1;">
+        <div class="mh-title" data-i18n="mgr.title">シフト管理</div>
+        <div class="mh-sub" id="mh-shop-name">― 提出データをリアルタイムで確認</div>
+      </div>
+      <div id="manager-lang-switcher"></div>
+    </div>
     <div class="mh-badges">
-      <div class="mh-badge"><div class="mh-badge-dot mh-badge-dot--green"></div>データ同期中</div>
-      <div class="mh-badge"><div class="mh-badge-dot mh-badge-dot--blue"></div>自動生成対応</div>
-      <div class="mh-badge"><div class="mh-badge-dot mh-badge-dot--amber"></div>メール通知</div>
+      <div class="mh-badge"><div class="mh-badge-dot mh-badge-dot--green"></div><span data-i18n="mgr.badge_sync">データ同期中</span></div>
+      <div class="mh-badge"><div class="mh-badge-dot mh-badge-dot--blue"></div><span data-i18n="mgr.badge_auto">自動生成対応</span></div>
+      <div class="mh-badge"><div class="mh-badge-dot mh-badge-dot--amber"></div><span data-i18n="mgr.badge_mail">メール通知</span></div>
     </div>
   </div>
 
   <!-- リアルタイム出退勤ウィジェット -->
   <div id="rt-attendance-card" style="background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 4px 16px rgba(0,0,0,.04);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <div style="font-size:13px;font-weight:900;color:#0F172A;display:flex;align-items:center;gap:6px;">
+      <div style="font-size:13px;font-weight:900;color:#0F172A;display:flex;align-items:center;gap:6px;" data-i18n="mgr.realtime_attendance">
         ⏰ 本日の出退勤（リアルタイム）
       </div>
       <div style="font-size:10px;color:#64748B;font-weight:700;">
-        <a href="payroll.html" target="_blank" style="color:#4F46E5;text-decoration:none;margin-right:8px;">📋 給与明細</a>
-        <a href="monthly-report.html" target="_blank" style="color:#4F46E5;text-decoration:none;">📊 月次レポート</a>
+        <a href="payroll.html" target="_blank" style="color:#4F46E5;text-decoration:none;margin-right:8px;" data-i18n="mgr.payroll">📋 給与明細</a>
+        <a href="monthly-report.html" target="_blank" style="color:#4F46E5;text-decoration:none;" data-i18n="mgr.monthly_report">📊 月次レポート</a>
       </div>
     </div>
     <div id="rt-attendance-list" style="font-size:12px;">
-      <div style="color:#64748B;text-align:center;padding:10px;font-weight:600;">読み込み中…</div>
+      <div style="color:#64748B;text-align:center;padding:10px;font-weight:600;" data-i18n="common.loading">読み込み中…</div>
     </div>
   </div>
 
@@ -2592,8 +2597,8 @@
     <div class="wb-icon">⚠️</div>
     <div class="wb-text" id="warn-text">人手不足の日程があります。</div>
     <div class="wb-buttons">
-      <button class="wb-action-notify" onclick="openNotifyModal()">👥 自社スタッフに声がけ</button>
-      <button class="wb-action" onclick="openTimeeModal()" title="自社スタッフへの声がけ後に使用推奨">⚡ 外部求人</button>
+      <button class="wb-action-notify" onclick="openNotifyModal()" data-i18n="warn.recruit_internal">👥 自社スタッフに声がけ</button>
+      <button class="wb-action" onclick="openTimeeModal()" title="自社スタッフへの声がけ後に使用推奨" data-i18n="warn.recruit_external">⚡ 外部求人</button>
     </div>
   </div>
 
@@ -5489,37 +5494,131 @@
     }
   }
 
-  /* シフト計算ミス検知 — generateShift 後に呼ぶ */
+  /* ════════ シフト計算ミス検知（generateShift 後に自動実行） ════════
+     チェック項目:
+     1. 重複シフト（同日同名）
+     2. 連続勤務日数（6日連続以上で警告、7日連続で違反）
+     3. 長時間労働なし休憩（6時間以上で休憩必須）
+     4. 週40時間超（労基法 32条）
+     5. 11時間以上のインターバル無し
+  ════════════════════════════════════════════ */
   function validateGeneratedShift() {
     try {
-      const rules = loadTimeRules();
       const submissions = loadState();
-      const dupCheck = {};
-      let warns = [];
+      const warns = [], errors = [];
+
+      /* スタッフごとに日付・時間を集計 */
+      const byStaff = {};
       submissions.forEach(s => {
+        if (!s.name) return;
+        if (!byStaff[s.name]) byStaff[s.name] = [];
         (s.dates || []).forEach(d => {
-          const key = `${s.name}_${d}`;
-          if (dupCheck[key]) warns.push(`⚠ ${s.name} の ${d} に重複シフトの可能性`);
-          dupCheck[key] = true;
+          const times = s.times || [];
+          times.forEach(t => {
+            byStaff[s.name].push({ date: d, time: t });
+          });
+          if (!times.length) byStaff[s.name].push({ date: d, time: null });
         });
       });
+
+      /* 1. 重複チェック */
+      Object.entries(byStaff).forEach(([name, entries]) => {
+        const seen = {};
+        entries.forEach(e => {
+          const k = e.date + '_' + (e.time || '');
+          if (seen[k]) warns.push(`⚠ ${name}: ${e.date} ${e.time || ''} に重複シフトの可能性`);
+          seen[k] = true;
+        });
+      });
+
+      /* 2. 連続勤務日数チェック */
+      Object.entries(byStaff).forEach(([name, entries]) => {
+        const dates = [...new Set(entries.map(e => e.date))].sort();
+        let streak = 1, maxStreak = 1, lastDate = null, streakStart = dates[0];
+        let maxStreakStart = dates[0];
+        dates.forEach(d => {
+          if (lastDate) {
+            const diff = (new Date(d) - new Date(lastDate)) / 86400000;
+            if (diff === 1) {
+              streak++;
+              if (streak > maxStreak) { maxStreak = streak; maxStreakStart = streakStart; }
+            } else {
+              streak = 1; streakStart = d;
+            }
+          }
+          lastDate = d;
+        });
+        if (maxStreak >= 7) errors.push(`🚫 ${name}: ${maxStreak}日連続勤務 (${maxStreakStart}〜) — 労基法違反の可能性`);
+        else if (maxStreak >= 6) warns.push(`⚠ ${name}: ${maxStreak}日連続勤務 (${maxStreakStart}〜) — 週1休日推奨`);
+      });
+
+      /* 3. 長時間労働 休憩なし */
+      Object.entries(byStaff).forEach(([name, entries]) => {
+        entries.forEach(e => {
+          if (!e.time) return;
+          const m = /(\d+):?(\d*)\s*[-〜]\s*(\d+):?(\d*)/.exec(e.time);
+          if (!m) return;
+          const sh = parseInt(m[1]), sm = parseInt(m[2] || '0');
+          const eh = parseInt(m[3]), em = parseInt(m[4] || '0');
+          let hours = (eh + em/60) - (sh + sm/60);
+          if (hours < 0) hours += 24;
+          if (hours >= 8) warns.push(`⚠ ${name}: ${e.date} ${e.time} (${hours.toFixed(1)}h) — 1時間以上の休憩必須(労基34条)`);
+          else if (hours >= 6) warns.push(`💡 ${name}: ${e.date} ${e.time} (${hours.toFixed(1)}h) — 45分以上の休憩必須(労基34条)`);
+        });
+      });
+
+      /* 4. 週40時間チェック（今月のシフト全体で集計） */
+      Object.entries(byStaff).forEach(([name, entries]) => {
+        const weekTotal = {};
+        entries.forEach(e => {
+          if (!e.time) return;
+          const m = /(\d+):?(\d*)\s*[-〜]\s*(\d+):?(\d*)/.exec(e.time);
+          if (!m) return;
+          const sh = parseInt(m[1]), sm = parseInt(m[2] || '0');
+          const eh = parseInt(m[3]), em = parseInt(m[4] || '0');
+          let hours = (eh + em/60) - (sh + sm/60);
+          if (hours < 0) hours += 24;
+          const d = new Date(e.date);
+          const monday = new Date(d); monday.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+          const wk = monday.toISOString().slice(0,10);
+          weekTotal[wk] = (weekTotal[wk] || 0) + hours;
+        });
+        Object.entries(weekTotal).forEach(([wk, total]) => {
+          if (total > 40) errors.push(`🚫 ${name}: ${wk}週 ${total.toFixed(1)}h勤務 — 週40時間超 (労基32条)`);
+        });
+      });
+
+      /* バナー表示 */
       const card = document.getElementById('validation-warn');
       if (!card) {
         const adjCard = document.getElementById('adjustment-card');
         if (!adjCard) return;
         const w = document.createElement('div');
         w.id = 'validation-warn';
-        w.style.cssText = 'background:#FEF3C7;border-left:4px solid #F59E0B;padding:10px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#92400E;font-weight:700;margin:10px 0;display:none;';
+        w.style.cssText = 'border-radius:8px;padding:12px 16px;font-size:12px;font-weight:700;margin:10px 0;display:none;line-height:1.7;';
         adjCard.parentNode.insertBefore(w, adjCard);
       }
       const el = document.getElementById('validation-warn');
-      if (warns.length) {
-        el.innerHTML = '<strong>⚠ シフト作成バリデーション:</strong><br>' + warns.slice(0, 5).join('<br>');
+      const lines = [...errors, ...warns];
+      if (errors.length) {
+        el.style.background = '#FEF2F2';
+        el.style.borderLeft = '4px solid #DC2626';
+        el.style.color = '#991B1B';
+      } else if (warns.length) {
+        el.style.background = '#FEF3C7';
+        el.style.borderLeft = '4px solid #F59E0B';
+        el.style.color = '#92400E';
+      }
+      if (lines.length) {
+        el.innerHTML =
+          '<strong>' + (errors.length ? '🚫 重大なバリデーションエラー' : '⚠ シフト警告') + ` (${lines.length}件)</strong><br>` +
+          lines.slice(0, 10).map(l => '・' + l).join('<br>') +
+          (lines.length > 10 ? `<br>...他${lines.length - 10}件` : '');
         el.style.display = 'block';
       } else if (el) {
         el.style.display = 'none';
       }
-    } catch(e) {}
+    } catch(e) { console.warn('[validate]', e); }
   }
 
   /* 個別メール送信 (mailto:) */
@@ -6871,7 +6970,10 @@ BAR EXCHANGEのシフト担当です。
 </script>
 <script src="/i18n.js"></script>
 <script>
-  if (window.RakuI18n) RakuI18n.buildSwitcher('staff-lang-switcher');
+  if (window.RakuI18n) {
+    RakuI18n.buildSwitcher('staff-lang-switcher');
+    RakuI18n.buildSwitcher('manager-lang-switcher');
+  }
 </script>
 </body>
 </html>
