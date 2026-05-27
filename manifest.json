@@ -1,7 +1,7 @@
 {
   "name": "RAKURAKU シフト管理",
   "short_name": "RAKURAKU",
-  "description": "バー・飲食店向けシフト管理プラットフォーム",
+  "description": "バー・飲食店向けシフト管理プラットフォーム — 1タップシフト作成・GPS打刻・3段階自動募集",
   "start_url": "/shift.html",
   "scope": "/",
   "display": "standalone",
@@ -9,6 +9,7 @@
   "theme_color": "#4F46E5",
   "orientation": "portrait-primary",
   "lang": "ja",
+  "categories": ["business", "productivity"],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -22,5 +23,45 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "出退勤打刻",
+      "short_name": "打刻",
+      "description": "GPS出退勤打刻画面を開く",
+      "url": "/attendance.html",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "私のシフト",
+      "short_name": "マイシフト",
+      "description": "今週のシフトを確認",
+      "url": "/myshift.html",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "シフト希望提出",
+      "short_name": "希望提出",
+      "description": "次週のシフト希望を提出",
+      "url": "/shift.html#submit",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "デモ予約",
+      "short_name": "デモ",
+      "description": "無料デモを予約",
+      "url": "/demo-reservation.html",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "prefer_related_applications": false,
+  "share_target": {
+    "action": "/shift.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }

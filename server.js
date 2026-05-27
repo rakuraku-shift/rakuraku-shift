@@ -873,6 +873,77 @@ app.get('/api/referral', (req, res) => {
   res.json(readJSON(file, []));
 });
 
+// ── マスタデータ同期 API（ポジション・時給・休憩ルール）─────────────
+app.post('/api/master-data/:shopId', (req, res) => {
+  const { shopId } = req.params;
+  if (!shopId) return res.status(400).json({ error: 'shopId 必須' });
+  const safeId = _safeShopId(shopId);
+  const file = path.join(DATA_DIR, `master-data-${safeId}.json`);
+  try {
+    writeJSON(file, { ...req.body, updatedAt: Date.now() });
+    const room = 'shop:' + safeId;
+    io.to(room).emit('master_data_updated', { shopId, data: req.body });
+    res.json({ ok: true });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get('/api/master-data/:shopId', (req, res) => {
+  const { shopId } = req.params;
+  const safeId = _safeShopId(shopId);
+  const file = path.join(DATA_DIR, `master-data-${safeId}.json`);
+  res.json(readJSON(file, null));
+});
+
+// ── 本部 集計 API（複数店舗横断 KPI）─────────────────
+app.get('/api/hq/summary', (req, res) => {
+  try {
+    const adminFile = path.join(DATA_DIR, 'admin-data.json');
+    const adminData = readJSON(adminFile, { shops: [] });
+    const shops = adminData.shops || [];
+
+    // 各店舗の最新スナップショットを取得
+    const enriched = shops.map(s => {
+      const safeId = _safeShopId(s.id || s.shopId || s.name);
+      const snapFile = path.join(DATA_DIR, `snapshot-${safeId}.json`);
+      const snap = readJSON(snapFile, null);
+      const masterFile = path.join(DATA_DIR, `master-data-${safeId}.json`);
+      const master = readJSON(masterFile, null);
+      return {
+        ...s,
+        staffCount: snap?.staffs?.length || 0,
+        monthSales: snap?.monthSales || 0,
+        laborCost: snap?.laborCost || 0,
+        lastActive: snap?.updatedAt || s.lastActive,
+        hasMasterData: !!master,
+      };
+    });
+
+    // KPI 集計
+    const totals = enriched.reduce((acc, s) => {
+      acc.staffs += s.staffCount || 0;
+      acc.sales += s.monthSales || 0;
+      acc.laborCost += s.laborCost || 0;
+      if (s.subscriptionStatus === 'active' || s.billingStatus === 'paid') acc.paid++;
+      if (s.subscriptionStatus === 'trialing') acc.trial++;
+      if (s.subscriptionStatus === 'past_due' || s.billingStatus === 'unpaid') acc.unpaid++;
+      return acc;
+    }, { staffs: 0, sales: 0, laborCost: 0, paid: 0, trial: 0, unpaid: 0 });
+
+    res.json({
+      ok: true,
+      shopCount: enriched.length,
+      totals,
+      mrr: totals.paid * 9800,
+      arr: totals.paid * 9800 * 12,
+      shops: enriched,
+    });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ── 休み変更届 API ────────────────────────────────
 app.post('/api/change-request', (req, res) => {
   const { shopId, name, date, reason, note, type } = req.body || {};

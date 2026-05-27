@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>マスタデータ管理 — RAKURAKU</title>
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;
+        --orange:#F97316;--green:#22C55E;--blue:#3B82F6;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:var(--slate-50);min-height:100vh;line-height:1.6;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:1080px;margin:0 auto;padding:24px;}
+  .page-header{margin-bottom:24px;}
+  .page-header h1{font-size:26px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px;}
+  .page-header .sub{font-size:13px;color:var(--slate-500);font-weight:600;}
+
+  .tabs{display:flex;gap:6px;border-bottom:2px solid var(--slate-100);margin-bottom:20px;overflow-x:auto;}
+  .tab{padding:10px 16px;background:none;border:none;font-size:13px;font-weight:800;color:var(--slate-500);cursor:pointer;font-family:inherit;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;}
+  .tab.active{color:var(--indigo);border-bottom-color:var(--indigo);}
+
+  .card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 4px 20px rgba(0,0,0,.04);border:1.5px solid var(--slate-100);margin-bottom:18px;}
+  .card h2{font-size:16px;font-weight:900;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:680px){.grid-2{grid-template-columns:1fr;}}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:11px;font-weight:800;color:var(--slate-700);margin-bottom:5px;letter-spacing:.03em;}
+  .field input, .field select, .field textarea{
+    width:100%;padding:10px 12px;border:1.5px solid var(--slate-200);border-radius:8px;
+    font-size:13px;font-family:inherit;outline:none;background:var(--slate-50);transition:all .15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--indigo);background:#fff;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;padding:10px 12px;background:var(--slate-50);font-weight:800;color:var(--slate-700);font-size:11px;letter-spacing:.04em;border-bottom:2px solid var(--slate-100);}
+  td{padding:10px 12px;border-bottom:1px solid var(--slate-100);}
+  tr:hover td{background:var(--slate-50);}
+
+  .pos-pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:14px;font-size:11px;font-weight:800;}
+  .pos-hall{background:#FEF3C7;color:var(--orange);}
+  .pos-kitchen{background:#DCFCE7;color:#16A34A;}
+  .pos-cashier{background:#DBEAFE;color:var(--blue);}
+  .pos-other{background:var(--slate-100);color:var(--slate-700);}
+
+  .btn{padding:10px 16px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;border:none;transition:all .15s;}
+  .btn-primary{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;box-shadow:0 4px 12px rgba(79,70,229,.25);}
+  .btn-primary:hover{transform:translateY(-1px);}
+  .btn-ghost{background:var(--slate-100);color:var(--slate-700);}
+  .btn-ghost:hover{background:var(--slate-200);}
+  .btn-danger{background:#FEE2E2;color:var(--rose);}
+  .btn-danger:hover{background:#FECACA;}
+  .btn-sm{padding:6px 10px;font-size:11px;}
+
+  .save-bar{position:sticky;bottom:0;background:rgba(255,255,255,.97);backdrop-filter:blur(8px);border-top:1.5px solid var(--slate-100);padding:14px 24px;margin:24px -24px -24px;display:flex;gap:10px;justify-content:flex-end;}
+
+  .tag{display:inline-block;background:var(--indigo-l);color:var(--indigo);padding:3px 8px;border-radius:6px;font-size:10px;font-weight:800;letter-spacing:.04em;}
+  .empty{text-align:center;padding:36px 18px;color:var(--slate-500);font-size:13px;}
+  .empty .ic{font-size:36px;display:block;margin-bottom:8px;}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;padding:12px 22px;border-radius:24px;font-size:13px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.2);display:none;z-index:1000;}
+  .toast.show{display:block;animation:slideUp .25s;}
+  @keyframes slideUp{from{transform:translate(-50%,20px);opacity:0;}to{transform:translate(-50%,0);opacity:1;}}
+
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .slot-row{display:grid;grid-template-columns:80px 80px 1fr 1fr 90px 70px;gap:8px;align-items:center;padding:8px;border-bottom:1px solid var(--slate-100);}
+  .slot-row.header{font-weight:800;font-size:11px;color:var(--slate-500);background:var(--slate-50);}
+  .slot-row input, .slot-row select{padding:7px 9px;font-size:12px;border:1px solid var(--slate-200);border-radius:6px;background:#fff;font-family:inherit;}
+  @media(max-width:680px){.slot-row{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU マスタ管理</span></a>
+    <a href="/shift.html" style="font-size:12px;color:var(--slate-500);font-weight:700;">← シフト画面</a>
+  </div>
+</header>
+
+<div class="container">
+
+<div class="page-header">
+  <h1>⚙️ マスタデータ管理</h1>
+  <p class="sub">ポジション・標準時給・時間帯テンプレート・休憩ルールを店舗全体で統一管理</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('positions')">🎯 ポジション</button>
+  <button class="tab" onclick="switchTab('wages')">💰 標準時給</button>
+  <button class="tab" onclick="switchTab('slots')">⏰ 時間帯テンプレ</button>
+  <button class="tab" onclick="switchTab('breaks')">☕ 休憩ルール</button>
+  <button class="tab" onclick="switchTab('holidays')">🎌 ホリデー</button>
+</div>
+
+<!-- ========== ポジション ========== -->
+<div class="tab-panel active" id="tab-positions">
+  <div class="card">
+    <h2>🎯 ポジション設定</h2>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:14px;">店舗で使うポジションを編集できます。シフト作成時の選択肢になります。</p>
+
+    <table id="position-table">
+      <thead>
+        <tr><th>キー</th><th>表示名</th><th>色</th><th>標準時給</th><th>夜間時給</th><th></th></tr>
+      </thead>
+      <tbody id="position-tbody"></tbody>
+    </table>
+
+    <button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="addPosition()">+ ポジション追加</button>
+  </div>
+</div>
+
+<!-- ========== 標準時給 ========== -->
+<div class="tab-panel" id="tab-wages">
+  <div class="card">
+    <h2>💰 標準時給設定</h2>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:14px;">新規スタッフのデフォルト時給。深夜割増 (22:00以降 +25%) は自動計算されます。</p>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>標準時給（円/時）</label>
+        <input type="number" id="w-normal" min="900" step="50" value="1200" />
+      </div>
+      <div class="field">
+        <label>深夜時給（円/時）<span style="font-weight:400;color:var(--slate-500);font-size:10px;">22:00以降</span></label>
+        <input type="number" id="w-night" min="900" step="50" value="1500" />
+      </div>
+      <div class="field">
+        <label>最低賃金（円/時）<span style="font-weight:400;color:var(--slate-500);font-size:10px;">地域別</span></label>
+        <input type="number" id="w-min" min="0" step="10" value="1163" />
+      </div>
+      <div class="field">
+        <label>新人研修時給（円/時）</label>
+        <input type="number" id="w-trainee" min="900" step="50" value="1100" />
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📊 役職別 時給差額（円/時）</h2>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:14px;">標準時給からの加算額。例: 店長 +500円</p>
+    <div class="grid-2">
+      <div class="field">
+        <label>店長</label>
+        <input type="number" id="r-tencho" step="50" value="500" />
+      </div>
+      <div class="field">
+        <label>副店長</label>
+        <input type="number" id="r-fukutencho" step="50" value="300" />
+      </div>
+      <div class="field">
+        <label>マネージャー</label>
+        <input type="number" id="r-manager" step="50" value="400" />
+      </div>
+      <div class="field">
+        <label>リーダー</label>
+        <input type="number" id="r-leader" step="50" value="200" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 時間帯テンプレ ========== -->
+<div class="tab-panel" id="tab-slots">
+  <div class="card">
+    <h2>⏰ 時間帯テンプレート</h2>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:14px;">シフト作成で使う時間帯。営業時間に合わせて編集できます。</p>
+
+    <div class="slot-row header">
+      <div>キー</div><div>表示名</div><div>開始</div><div>終了</div><div>標準人数</div><div></div>
+    </div>
+    <div id="slot-rows"></div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="addSlot()">+ 時間帯追加</button>
+  </div>
+</div>
+
+<!-- ========== 休憩ルール ========== -->
+<div class="tab-panel" id="tab-breaks">
+  <div class="card">
+    <h2>☕ 休憩ルール（労基法34条準拠）</h2>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:14px;">勤務時間に応じて自動付与される休憩時間。</p>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>6時間超〜8時間以下の勤務</label>
+        <input type="number" id="b-6h" min="0" step="5" value="45" />
+        <p style="font-size:10px;color:var(--slate-500);margin-top:4px;">分（労基法 45分以上必須）</p>
+      </div>
+      <div class="field">
+        <label>8時間超の勤務</label>
+        <input type="number" id="b-8h" min="0" step="5" value="60" />
+        <p style="font-size:10px;color:var(--slate-500);margin-top:4px;">分（労基法 60分以上必須）</p>
+      </div>
+      <div class="field">
+        <label>休憩控除を給与から差し引く</label>
+        <select id="b-deduct">
+          <option value="true">はい（自動控除）</option>
+          <option value="false">いいえ（休憩有給）</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>休憩打刻必須化</label>
+        <select id="b-required">
+          <option value="false">任意</option>
+          <option value="true">必須</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📐 残業ルール</h2>
+    <div class="grid-2">
+      <div class="field">
+        <label>週40時間超で時給割増（労基32条）</label>
+        <select id="o-weekly">
+          <option value="1.25">+25% (法定通り)</option>
+          <option value="1.30">+30%</option>
+          <option value="1.50">+50%</option>
+          <option value="1.00">割増なし</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>連続勤務上限</label>
+        <select id="o-consec">
+          <option value="6">6日まで（推奨）</option>
+          <option value="5">5日まで</option>
+          <option value="7">7日まで</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ホリデー ========== -->
+<div class="tab-panel" id="tab-holidays">
+  <div class="card">
+    <h2>🎌 ホリデー設定</h2>
+    <p style="font-size:12px;color:var(--slate-500);margin-bottom:14px;">祝日・閑散日を登録すると、シフト作成時に必要人数が自動調整されます。</p>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>祝日割増（%）</label>
+        <input type="number" id="h-holiday-bonus" min="0" step="5" value="35" />
+      </div>
+      <div class="field">
+        <label>祝日 必要人数倍率</label>
+        <select id="h-holiday-mult">
+          <option value="1.5">×1.5（繁忙）</option>
+          <option value="1.2">×1.2（やや繁忙）</option>
+          <option value="1.0">×1.0（通常）</option>
+          <option value="0.7">×0.7（閑散）</option>
+        </select>
+      </div>
+    </div>
+
+    <p style="font-size:11px;color:var(--slate-500);margin-top:8px;">※ 個別日付の祝日/閑散日マークは <a href="/shift.html" style="color:var(--indigo);font-weight:700;">シフト画面 → 🎌 ホリデー</a> から登録</p>
+  </div>
+</div>
+
+<div class="save-bar">
+  <button class="btn btn-ghost" onclick="resetDefaults()">🔄 デフォルトに戻す</button>
+  <button class="btn btn-primary" onclick="saveMasterData()">💾 マスタを保存</button>
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'rakuraku-master-data';
+
+const DEFAULT_POSITIONS = [
+  { key:'hall',    name:'ホール',  color:'orange',  wageNormal:1200, wageNight:1500 },
+  { key:'kitchen', name:'キッチン', color:'green',   wageNormal:1250, wageNight:1560 },
+  { key:'cashier', name:'レジ',    color:'blue',    wageNormal:1200, wageNight:1500 },
+];
+
+const DEFAULT_SLOTS = [
+  { key:'morning',   name:'朝',  start:'09:00', end:'15:00', standardCount:2 },
+  { key:'afternoon', name:'昼',  start:'15:00', end:'18:00', standardCount:2 },
+  { key:'evening',   name:'夜',  start:'18:00', end:'22:00', standardCount:4 },
+  { key:'midnight',  name:'深夜', start:'22:00', end:'02:00', standardCount:3 },
+];
+
+let masterData = loadMaster();
+
+function loadMaster() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return {
+    positions: [...DEFAULT_POSITIONS],
+    slots:     [...DEFAULT_SLOTS],
+    wages:     { normal:1200, night:1500, min:1163, trainee:1100 },
+    roleBonus: { tencho:500, fukutencho:300, manager:400, leader:200 },
+    breaks:    { '6h':45, '8h':60, deduct:true, required:false },
+    overtime:  { weekly:1.25, consec:6 },
+    holiday:   { bonus:35, multiplier:1.5 },
+  };
+}
+
+function saveMasterData() {
+  // ポジション
+  const positions = [];
+  document.querySelectorAll('#position-tbody tr').forEach(tr => {
+    const inputs = tr.querySelectorAll('input, select');
+    positions.push({
+      key: inputs[0].value.trim(),
+      name: inputs[1].value.trim(),
+      color: inputs[2].value,
+      wageNormal: +inputs[3].value || 1200,
+      wageNight: +inputs[4].value || 1500,
+    });
+  });
+  masterData.positions = positions.filter(p => p.key && p.name);
+
+  // スロット
+  const slots = [];
+  document.querySelectorAll('#slot-rows .slot-row:not(.header)').forEach(row => {
+    const inputs = row.querySelectorAll('input, select');
+    slots.push({
+      key: inputs[0].value.trim(),
+      name: inputs[1].value.trim(),
+      start: inputs[2].value,
+      end: inputs[3].value,
+      standardCount: +inputs[4].value || 1,
+    });
+  });
+  masterData.slots = slots.filter(s => s.key && s.name);
+
+  // 時給
+  masterData.wages = {
+    normal: +document.getElementById('w-normal').value || 1200,
+    night: +document.getElementById('w-night').value || 1500,
+    min: +document.getElementById('w-min').value || 1163,
+    trainee: +document.getElementById('w-trainee').value || 1100,
+  };
+  masterData.roleBonus = {
+    tencho: +document.getElementById('r-tencho').value || 500,
+    fukutencho: +document.getElementById('r-fukutencho').value || 300,
+    manager: +document.getElementById('r-manager').value || 400,
+    leader: +document.getElementById('r-leader').value || 200,
+  };
+  masterData.breaks = {
+    '6h': +document.getElementById('b-6h').value || 45,
+    '8h': +document.getElementById('b-8h').value || 60,
+    deduct: document.getElementById('b-deduct').value === 'true',
+    required: document.getElementById('b-required').value === 'true',
+  };
+  masterData.overtime = {
+    weekly: +document.getElementById('o-weekly').value || 1.25,
+    consec: +document.getElementById('o-consec').value || 6,
+  };
+  masterData.holiday = {
+    bonus: +document.getElementById('h-holiday-bonus').value || 35,
+    multiplier: +document.getElementById('h-holiday-mult').value || 1.5,
+  };
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(masterData));
+    showToast('💾 マスタを保存しました');
+  } catch(e) {
+    alert('保存失敗: ' + e.message);
+  }
+}
+
+function resetDefaults() {
+  if (!confirm('全設定をデフォルトに戻します。よろしいですか？')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  masterData = loadMaster();
+  renderAll();
+  showToast('🔄 デフォルトに戻しました');
+}
+
+function renderPositions() {
+  const tbody = document.getElementById('position-tbody');
+  tbody.innerHTML = '';
+  masterData.positions.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input value="${p.key}" style="width:90px;padding:5px 8px;border:1px solid var(--slate-200);border-radius:6px;font-family:inherit;" /></td>
+      <td><input value="${p.name}" style="width:100px;padding:5px 8px;border:1px solid var(--slate-200);border-radius:6px;font-family:inherit;" /></td>
+      <td>
+        <select style="padding:5px 8px;border:1px solid var(--slate-200);border-radius:6px;font-family:inherit;">
+          <option value="orange" ${p.color==='orange'?'selected':''}>🟠 オレンジ</option>
+          <option value="green" ${p.color==='green'?'selected':''}>🟢 緑</option>
+          <option value="blue" ${p.color==='blue'?'selected':''}>🔵 青</option>
+          <option value="purple" ${p.color==='purple'?'selected':''}>🟣 紫</option>
+          <option value="pink" ${p.color==='pink'?'selected':''}>🩷 ピンク</option>
+        </select>
+      </td>
+      <td><input type="number" value="${p.wageNormal}" min="900" step="50" style="width:80px;padding:5px 8px;border:1px solid var(--slate-200);border-radius:6px;font-family:inherit;" /></td>
+      <td><input type="number" value="${p.wageNight}" min="900" step="50" style="width:80px;padding:5px 8px;border:1px solid var(--slate-200);border-radius:6px;font-family:inherit;" /></td>
+      <td><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">削除</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function addPosition() {
+  masterData.positions.push({ key:'new', name:'新規', color:'purple', wageNormal:1200, wageNight:1500 });
+  renderPositions();
+}
+
+function renderSlots() {
+  const root = document.getElementById('slot-rows');
+  root.innerHTML = '';
+  masterData.slots.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'slot-row';
+    row.innerHTML = `
+      <input value="${s.key}" />
+      <input value="${s.name}" />
+      <input type="time" value="${s.start}" />
+      <input type="time" value="${s.end}" />
+      <input type="number" min="1" max="20" value="${s.standardCount}" />
+      <button class="btn btn-danger btn-sm" onclick="this.closest('.slot-row').remove()">削除</button>
+    `;
+    root.appendChild(row);
+  });
+}
+
+function addSlot() {
+  masterData.slots.push({ key:'new', name:'新規', start:'10:00', end:'14:00', standardCount:2 });
+  renderSlots();
+}
+
+function renderWages() {
+  document.getElementById('w-normal').value = masterData.wages.normal;
+  document.getElementById('w-night').value = masterData.wages.night;
+  document.getElementById('w-min').value = masterData.wages.min;
+  document.getElementById('w-trainee').value = masterData.wages.trainee;
+  document.getElementById('r-tencho').value = masterData.roleBonus.tencho;
+  document.getElementById('r-fukutencho').value = masterData.roleBonus.fukutencho;
+  document.getElementById('r-manager').value = masterData.roleBonus.manager;
+  document.getElementById('r-leader').value = masterData.roleBonus.leader;
+}
+
+function renderBreaks() {
+  document.getElementById('b-6h').value = masterData.breaks['6h'];
+  document.getElementById('b-8h').value = masterData.breaks['8h'];
+  document.getElementById('b-deduct').value = String(masterData.breaks.deduct);
+  document.getElementById('b-required').value = String(masterData.breaks.required);
+  document.getElementById('o-weekly').value = masterData.overtime.weekly;
+  document.getElementById('o-consec').value = masterData.overtime.consec;
+}
+
+function renderHoliday() {
+  document.getElementById('h-holiday-bonus').value = masterData.holiday.bonus;
+  document.getElementById('h-holiday-mult').value = masterData.holiday.multiplier;
+}
+
+function renderAll() {
+  renderPositions();
+  renderSlots();
+  renderWages();
+  renderBreaks();
+  renderHoliday();
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+document.addEventListener('DOMContentLoaded', renderAll);
+</script>
+</body>
+</html>
