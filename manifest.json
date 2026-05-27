@@ -47,6 +47,13 @@
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
+      "name": "マイダッシュボード",
+      "short_name": "ホーム",
+      "description": "個人ダッシュボード (KPI/お知らせ/シフト)",
+      "url": "/staff-dashboard.html",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
       "name": "デモ予約",
       "short_name": "デモ",
       "description": "無料デモを予約",

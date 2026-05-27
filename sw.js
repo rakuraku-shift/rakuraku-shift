@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v2 — push通知対応 */
-var CACHE = 'rakuraku-v2';
+/* RAKURAKU Service Worker v3 — push通知 + オフライン強化 */
+var CACHE = 'rakuraku-v3';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -16,7 +16,13 @@ var ASSETS = [
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',
-  '/i18n.js'
+  '/i18n.js',
+  '/offline-sync.js',
+  '/blog.html',
+  '/notification-settings.html',
+  '/sales-import.html',
+  '/announcements.html',
+  '/staff-dashboard.html'
 ];
 
 self.addEventListener('install', function(e) {

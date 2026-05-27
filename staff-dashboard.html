@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>マイダッシュボード — RAKURAKU</title>
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;--blue:#3B82F6;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(180deg,var(--slate-50),#fff);min-height:100vh;line-height:1.6;}
+
+  .nav{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:20px;}
+  .nav-inner{max-width:680px;margin:0 auto;}
+  .greeting{font-size:13px;opacity:.9;font-weight:600;}
+  .name-large{font-size:24px;font-weight:900;letter-spacing:-.02em;margin-top:2px;}
+  .nav-input{margin-top:10px;padding:9px 12px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;font-size:13px;font-weight:600;width:200px;font-family:inherit;outline:none;}
+  .nav-input::placeholder{color:rgba(255,255,255,.6);}
+
+  .container{max-width:680px;margin:0 auto;padding:20px 18px 100px;}
+
+  /* ─── 今日のステータス ─── */
+  .today-card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 8px 30px rgba(79,70,229,.1);margin-bottom:18px;}
+  .today-date{font-size:11px;font-weight:800;color:var(--indigo);letter-spacing:.04em;margin-bottom:5px;}
+  .today-status{font-size:22px;font-weight:900;letter-spacing:-.01em;}
+  .today-time{font-size:14px;color:var(--slate-500);font-weight:700;margin-top:3px;}
+  .today-actions{display:flex;gap:8px;margin-top:14px;}
+  .ta-btn{flex:1;padding:11px 12px;background:var(--indigo-l);color:var(--indigo);border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px;}
+  .ta-btn.primary{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;}
+
+  /* ─── KPI ─── */
+  .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  .kpi{background:#fff;padding:14px;border-radius:14px;border:1.5px solid var(--slate-100);}
+  .kpi-l{font-size:10px;font-weight:800;color:var(--slate-500);letter-spacing:.04em;}
+  .kpi-v{font-size:22px;font-weight:900;color:var(--slate-900);letter-spacing:-.02em;margin-top:3px;}
+  .kpi-v .u{font-size:11px;color:var(--slate-500);font-weight:700;margin-left:3px;}
+  .kpi-sub{font-size:10px;color:var(--slate-500);font-weight:700;margin-top:3px;}
+
+  /* ─── 機能カード ─── */
+  .feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  .feature-card{background:#fff;border-radius:14px;padding:16px 14px;border:1.5px solid var(--slate-100);text-align:center;text-decoration:none;color:var(--slate-700);transition:transform .12s, box-shadow .12s;cursor:pointer;}
+  .feature-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.06);}
+  .feature-card .ic{font-size:30px;margin-bottom:5px;}
+  .feature-card .lbl{font-size:11px;font-weight:800;}
+  .feature-card .desc{font-size:9px;color:var(--slate-500);font-weight:600;margin-top:2px;}
+
+  /* ─── お知らせ ─── */
+  .section{background:#fff;border-radius:14px;padding:18px;margin-bottom:16px;border:1.5px solid var(--slate-100);}
+  .section-title{font-size:13px;font-weight:900;color:var(--slate-900);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+  .section-title .more{font-size:11px;color:var(--indigo);font-weight:700;text-decoration:none;}
+
+  .announce-item{padding:10px 12px;border-radius:8px;border-left:3px solid var(--indigo);background:linear-gradient(90deg,var(--indigo-l)33,#fff);margin-bottom:8px;}
+  .announce-item.urgent{border-left-color:var(--rose);background:#FEF7F7;}
+  .announce-item.important{border-left-color:var(--amber);background:#FFFCEC;}
+  .announce-t{font-size:12px;font-weight:800;margin-bottom:3px;}
+  .announce-b{font-size:11px;color:var(--slate-700);line-height:1.6;}
+
+  .shift-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--slate-100);font-size:12px;}
+  .shift-row:last-child{border-bottom:none;}
+  .shift-date{font-weight:800;}
+  .shift-time{color:var(--slate-700);font-weight:700;}
+  .shift-cancel-badge{background:#FEF3C7;color:#B45309;font-size:9px;padding:2px 7px;border-radius:8px;font-weight:800;}
+
+  .empty{text-align:center;padding:24px 14px;color:var(--slate-500);font-size:11px;}
+  .empty .ic{font-size:32px;display:block;margin-bottom:5px;}
+
+  /* Bottom Quick Bar */
+  .quick-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid var(--slate-100);padding:10px 12px;box-shadow:0 -4px 14px rgba(0,0,0,.06);z-index:50;}
+  .quick-bar-inner{max-width:680px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;}
+  .qb-btn{padding:8px;background:none;border:none;border-radius:8px;font-size:9px;font-weight:800;color:var(--slate-500);cursor:pointer;text-align:center;text-decoration:none;font-family:inherit;}
+  .qb-btn .ic{font-size:20px;display:block;margin-bottom:2px;}
+  .qb-btn:hover{background:var(--slate-50);color:var(--indigo);}
+
+  /* 進捗バー */
+  .progress-card{background:linear-gradient(135deg,#FAF5FF,#EEF2FF);border-radius:14px;padding:16px;margin-bottom:18px;border:1.5px solid #DDD6FE;}
+  .progress-title{font-size:12px;font-weight:800;color:var(--indigo);margin-bottom:8px;display:flex;justify-content:space-between;}
+  .progress-bar{height:10px;background:var(--slate-100);border-radius:5px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--indigo),var(--purple));border-radius:5px;transition:width .4s;}
+  .progress-sub{font-size:10px;color:var(--slate-500);font-weight:700;margin-top:6px;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="greeting" id="greeting">こんにちは</div>
+    <div class="name-large" id="name-large">スタッフ さん</div>
+    <input type="text" class="nav-input" id="staff-name" placeholder="お名前を入力" />
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ─── 今日のステータス ─── -->
+  <div class="today-card">
+    <div class="today-date" id="today-date">—</div>
+    <div class="today-status" id="today-status">📅 今日のシフトを確認しましょう</div>
+    <div class="today-time" id="today-time"></div>
+    <div class="today-actions">
+      <a href="/attendance.html" class="ta-btn primary">⏰ 打刻</a>
+      <a href="/myshift.html" class="ta-btn">📅 シフト</a>
+    </div>
+  </div>
+
+  <!-- ─── 今月のKPI ─── -->
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-l">今月 出勤日数</div><div class="kpi-v"><span id="k-days">0</span><span class="u">日</span></div><div class="kpi-sub" id="k-days-sub">先月: 0日</div></div>
+    <div class="kpi"><div class="kpi-l">今月 勤務時間</div><div class="kpi-v"><span id="k-hours">0</span><span class="u">時間</span></div><div class="kpi-sub" id="k-hours-sub">深夜: 0時間</div></div>
+    <div class="kpi"><div class="kpi-l">予想給与</div><div class="kpi-v">¥<span id="k-pay">0</span></div><div class="kpi-sub" id="k-pay-sub">時給込み</div></div>
+    <div class="kpi"><div class="kpi-l">スキル評価</div><div class="kpi-v"><span id="k-eval">—</span></div><div class="kpi-sub">最高 5.0</div></div>
+  </div>
+
+  <!-- ─── 月次目標進捗 ─── -->
+  <div class="progress-card">
+    <div class="progress-title">
+      <span>🎯 今月の出勤目標</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%;"></div></div>
+    <div class="progress-sub" id="progress-sub">目標を設定すると進捗が表示されます</div>
+  </div>
+
+  <!-- ─── お知らせ ─── -->
+  <div class="section">
+    <div class="section-title">
+      <span>📢 店長からのお知らせ</span>
+      <a href="#" class="more" id="ann-more" style="display:none;">すべて見る</a>
+    </div>
+    <div id="announce-list">
+      <div class="empty"><span class="ic">📭</span>新しいお知らせはありません</div>
+    </div>
+  </div>
+
+  <!-- ─── 次のシフト ─── -->
+  <div class="section">
+    <div class="section-title">
+      <span>📅 次の出勤予定</span>
+      <a href="/myshift.html" class="more">詳細</a>
+    </div>
+    <div id="upcoming-list">
+      <div class="empty"><span class="ic">🗓</span>名前を入力するとシフトが表示されます</div>
+    </div>
+  </div>
+
+  <!-- ─── 機能ナビ ─── -->
+  <div class="feature-grid">
+    <a href="/attendance.html" class="feature-card">
+      <div class="ic">⏰</div>
+      <div class="lbl">出退勤打刻</div>
+      <div class="desc">GPS対応・休憩管理</div>
+    </a>
+    <a href="/myshift.html" class="feature-card">
+      <div class="ic">📅</div>
+      <div class="lbl">マイシフト</div>
+      <div class="desc">月間カレンダー</div>
+    </a>
+    <a href="/myshift.html#change" class="feature-card">
+      <div class="ic">🆘</div>
+      <div class="lbl">休み変更届</div>
+      <div class="desc">急な体調不良に</div>
+    </a>
+    <a href="/shift.html" class="feature-card">
+      <div class="ic">📝</div>
+      <div class="lbl">シフト希望提出</div>
+      <div class="desc">来月の希望日</div>
+    </a>
+  </div>
+
+</div>
+
+<!-- ボトムバー -->
+<nav class="quick-bar">
+  <div class="quick-bar-inner">
+    <a href="/staff-dashboard.html" class="qb-btn" style="color:var(--indigo);"><div class="ic">🏠</div>ホーム</a>
+    <a href="/attendance.html" class="qb-btn"><div class="ic">⏰</div>打刻</a>
+    <a href="/myshift.html" class="qb-btn"><div class="ic">📅</div>シフト</a>
+    <a href="/shift.html" class="qb-btn"><div class="ic">📝</div>提出</a>
+  </div>
+</nav>
+
+<script src="/i18n.js"></script>
+<script src="/offline-sync.js"></script>
+<script>
+function loadStaffName() {
+  return localStorage.getItem('rakuraku-staff-name') || '';
+}
+function saveStaffName(n) {
+  localStorage.setItem('rakuraku-staff-name', n);
+}
+
+function updateGreeting() {
+  const now = new Date();
+  const h = now.getHours();
+  let greeting = 'こんにちは';
+  if (h < 5) greeting = '夜遅くまでお疲れさまです';
+  else if (h < 11) greeting = 'おはようございます';
+  else if (h < 17) greeting = 'こんにちは';
+  else if (h < 22) greeting = 'こんばんは';
+  else greeting = '今日もお疲れさまでした';
+  document.getElementById('greeting').textContent = greeting + '!';
+  document.getElementById('today-date').textContent = now.toLocaleDateString('ja-JP', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function loadShifts() {
+  try { return JSON.parse(localStorage.getItem('rakuraku-shift-data') || '{}'); }
+  catch(e) { return {}; }
+}
+
+function getMyShiftFor(name, dateStr) {
+  const data = loadShifts();
+  const shifts = data.generatedShifts || data.shifts || [];
+  const sh = shifts.find(s => s.date === dateStr);
+  if (!sh) return null;
+  return (sh.assignments || []).filter(a => a.staffName === name || a.staffId === name);
+}
+
+function calcHours(start, end) {
+  if (!start || !end) return 0;
+  const [sh, sm] = start.split(':').map(Number);
+  const [eh, em] = end.split(':').map(Number);
+  let mins = (eh * 60 + em) - (sh * 60 + sm);
+  if (mins < 0) mins += 24 * 60;
+  return mins / 60;
+}
+
+function renderToday(name) {
+  const today = new Date().toISOString().slice(0,10);
+  const myShifts = getMyShiftFor(name, today);
+  if (myShifts && myShifts.length > 0) {
+    const sh = myShifts[0];
+    document.getElementById('today-status').textContent = '✅ 今日は出勤日です';
+    document.getElementById('today-time').textContent = `🕒 ${sh.start || '?'} 〜 ${sh.end || '?'}${sh.role ? ' / ' + sh.role : ''}`;
+  } else {
+    document.getElementById('today-status').textContent = '☕ 今日はお休みです';
+    document.getElementById('today-time').textContent = 'ゆっくり休んでください';
+  }
+}
+
+function renderKPI(name) {
+  const data = loadShifts();
+  const month = new Date().toISOString().slice(0,7);
+  const lastMonth = new Date(); lastMonth.setMonth(lastMonth.getMonth() - 1);
+  const lastMonthKey = lastMonth.toISOString().slice(0,7);
+
+  const shifts = data.generatedShifts || data.shifts || [];
+  const staffs = data.staffs || data.staff || [];
+  const staff = staffs.find(s => s.name === name);
+  const wage = staff?.wage || 1200;
+
+  let days = 0, hours = 0, nightHrs = 0, lastDays = 0;
+  const dayCount = new Set();
+  shifts.forEach(sh => {
+    if (!sh.date) return;
+    (sh.assignments || []).forEach(a => {
+      if (a.staffName !== name && a.staffId !== name) return;
+      const h = calcHours(a.start, a.end);
+      if (sh.date.startsWith(month)) {
+        dayCount.add(sh.date);
+        hours += h;
+        /* 22時以降の時間 */
+        if (a.start && a.end) {
+          const [sh1, sm] = a.start.split(':').map(Number);
+          const [eh, em] = a.end.split(':').map(Number);
+          let s = sh1 * 60 + sm, e = eh * 60 + em;
+          if (e <= s) e += 24 * 60;
+          const ovS = Math.max(s, 22*60);
+          const ovE = Math.min(e, 29*60);
+          if (ovE > ovS) nightHrs += (ovE - ovS) / 60;
+        }
+      } else if (sh.date.startsWith(lastMonthKey)) {
+        lastDays++;
+      }
+    });
+  });
+  days = dayCount.size;
+
+  document.getElementById('k-days').textContent = days;
+  document.getElementById('k-days-sub').textContent = `先月: ${lastDays}日`;
+  document.getElementById('k-hours').textContent = hours.toFixed(1);
+  document.getElementById('k-hours-sub').textContent = `深夜: ${nightHrs.toFixed(1)}時間`;
+  const pay = Math.round(hours * wage + nightHrs * wage * 0.25);
+  document.getElementById('k-pay').textContent = pay.toLocaleString();
+
+  /* 評価 */
+  try {
+    const evals = JSON.parse(localStorage.getItem('rakuraku-shift-staff_evals_v2') || '{}');
+    const myEval = evals[name];
+    if (myEval) {
+      const scores = Object.values(myEval).filter(v => typeof v === 'number');
+      const avg = scores.length ? (scores.reduce((a,b) => a+b, 0) / scores.length) : 0;
+      document.getElementById('k-eval').textContent = avg.toFixed(1);
+    }
+  } catch(e) {}
+
+  /* 目標進捗 (目標: 月12日 = 平均) */
+  const target = 12;
+  const pct = Math.min(100, Math.round(days / target * 100));
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-sub').textContent = `目標 ${target}日 中 ${days}日 達成 (残り ${Math.max(0, target - days)}日)`;
+}
+
+function renderUpcoming(name) {
+  const data = loadShifts();
+  const shifts = data.generatedShifts || data.shifts || [];
+  const today = new Date().toISOString().slice(0,10);
+  const upcoming = [];
+  shifts.filter(s => s.date && s.date >= today).sort((a,b) => a.date.localeCompare(b.date)).forEach(sh => {
+    (sh.assignments || []).forEach(a => {
+      if (a.staffName === name || a.staffId === name) {
+        upcoming.push({ date: sh.date, time: `${a.start || '?'}〜${a.end || '?'}`, role: a.role || '' });
+      }
+    });
+  });
+  const root = document.getElementById('upcoming-list');
+  if (!upcoming.length) {
+    root.innerHTML = `<div class="empty"><span class="ic">🗓</span>今後の出勤予定はありません</div>`;
+    return;
+  }
+  root.innerHTML = upcoming.slice(0, 5).map(u => {
+    const [y,m,d] = u.date.split('-').map(Number);
+    const dow = ['日','月','火','水','木','金','土'][new Date(y, m-1, d).getDay()];
+    return `<div class="shift-row">
+      <div><span class="shift-date">${m}/${d}(${dow})</span> ${u.role ? `<span style="font-size:10px;color:var(--slate-500);">/ ${u.role}</span>` : ''}</div>
+      <div class="shift-time">${u.time}</div>
+    </div>`;
+  }).join('');
+}
+
+async function renderAnnouncements() {
+  const root = document.getElementById('announce-list');
+  let list = [];
+  try {
+    const shopId = localStorage.getItem('rakuraku-shop-id') || 'default';
+    const res = await fetch('/api/announcements/' + shopId);
+    if (res.ok) list = await res.json();
+  } catch(e) {}
+  if (!list.length) {
+    try { list = JSON.parse(localStorage.getItem('rakuraku-announcements') || '[]'); } catch(e) {}
+  }
+  const visible = list.filter(a => a.show !== false).slice(0, 3);
+  if (!visible.length) {
+    root.innerHTML = `<div class="empty"><span class="ic">📭</span>新しいお知らせはありません</div>`;
+    return;
+  }
+  root.innerHTML = visible.map(a => `
+    <div class="announce-item ${a.priority || ''}">
+      <div class="announce-t">${escapeHtml(a.title)}</div>
+      <div class="announce-b">${escapeHtml(a.body).slice(0,120)}${a.body.length > 120 ? '…' : ''}</div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+function render() {
+  const name = document.getElementById('staff-name').value.trim();
+  if (name) {
+    document.getElementById('name-large').textContent = name + ' さん';
+    saveStaffName(name);
+    renderToday(name);
+    renderKPI(name);
+    renderUpcoming(name);
+  } else {
+    document.getElementById('name-large').textContent = 'スタッフ さん';
+  }
+  renderAnnouncements();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateGreeting();
+  const savedName = loadStaffName();
+  if (savedName) document.getElementById('staff-name').value = savedName;
+  document.getElementById('staff-name').addEventListener('input', render);
+  render();
+  /* 1分ごとに自動更新 */
+  setInterval(render, 60000);
+});
+
+/* Service Worker 登録 */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
