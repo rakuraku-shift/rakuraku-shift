@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>紹介プログラム — RAKURAKU</title>
+<meta name="description" content="RAKURAKU紹介プログラム。1店舗紹介でお互い1ヶ月無料。" />
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(180deg,var(--slate-50),#fff);min-height:100vh;line-height:1.7;}
+  a{color:var(--indigo);text-decoration:none;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:800px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:800px;margin:0 auto;padding:30px 24px;}
+  .hero{text-align:center;margin-bottom:40px;}
+  .hero-eyebrow{display:inline-block;background:linear-gradient(135deg,var(--amber),#D97706);color:#fff;font-size:11px;font-weight:900;padding:5px 14px;border-radius:20px;letter-spacing:.04em;margin-bottom:14px;}
+  .hero h1{font-size:36px;font-weight:900;letter-spacing:-.02em;line-height:1.25;margin-bottom:10px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--amber),#D97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:15px;color:var(--slate-500);font-weight:600;}
+  @media(max-width:640px){.hero h1{font-size:26px;}}
+
+  .reward-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:30px;}
+  .reward{background:linear-gradient(135deg,#FFF7ED,#FFFBEB);border:2px solid var(--amber);border-radius:16px;padding:20px;text-align:center;}
+  .reward h3{font-size:14px;font-weight:900;color:#92400E;margin-bottom:6px;}
+  .reward .amount{font-size:28px;font-weight:900;color:#D97706;letter-spacing:-.02em;line-height:1;}
+  .reward .sub{font-size:11px;color:#92400E;margin-top:4px;font-weight:700;}
+  @media(max-width:640px){.reward-cards{grid-template-columns:1fr;}}
+
+  .steps{margin-bottom:40px;}
+  .step{display:flex;gap:14px;padding:14px;background:#fff;border:1.5px solid var(--slate-100);border-radius:12px;margin-bottom:10px;}
+  .step-num{width:36px;height:36px;flex-shrink:0;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;}
+  .step-body h4{font-size:14px;font-weight:900;margin-bottom:3px;}
+  .step-body p{font-size:13px;color:var(--slate-700);}
+
+  .form-card{background:#fff;border-radius:18px;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,.06);border:1.5px solid var(--slate-100);margin-bottom:30px;}
+  .form-card h2{font-size:18px;font-weight:900;margin-bottom:6px;}
+  .form-card .lead{font-size:13px;color:var(--slate-500);margin-bottom:20px;font-weight:600;}
+  .form-field{margin-bottom:14px;}
+  .form-field label{display:block;font-size:11px;font-weight:800;color:var(--slate-700);margin-bottom:5px;letter-spacing:.04em;}
+  .form-field input, .form-field textarea{
+    width:100%;padding:11px 13px;border:1.5px solid var(--slate-200);border-radius:9px;
+    font-size:13px;font-family:inherit;outline:none;background:var(--slate-50);
+  }
+  .form-field input:focus, .form-field textarea:focus{border-color:var(--indigo);background:#fff;}
+  .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .section-sep{margin:24px 0 14px;padding-top:18px;border-top:2px dashed var(--slate-200);font-size:13px;font-weight:900;color:var(--indigo);}
+  .btn-submit{width:100%;padding:15px;background:linear-gradient(135deg,var(--amber),#D97706);color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(245,158,11,.4);}
+  .info-text{font-size:11px;color:var(--slate-500);margin-top:14px;line-height:1.7;text-align:center;}
+
+  .success-card{display:none;background:linear-gradient(135deg,#ECFDF5,#fff);border:2px solid var(--emerald);border-radius:16px;padding:24px;text-align:center;}
+  .success-card.show{display:block;}
+  .success-card .code{font-size:22px;font-weight:900;color:var(--emerald);background:#fff;padding:10px 16px;border-radius:8px;border:1.5px dashed var(--emerald);display:inline-block;margin:10px 0;font-family:monospace;letter-spacing:.1em;}
+
+  .footer{text-align:center;padding:24px 0;font-size:11px;color:var(--slate-500);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;">← トップへ</a>
+  </div>
+</header>
+
+<div class="container">
+
+<section class="hero">
+  <div class="hero-eyebrow">🤝 紹介プログラム</div>
+  <h1>お知り合いに紹介して<br><span class="grad">お互いに1ヶ月無料</span></h1>
+  <p>バー・飲食店仲間に RAKURAKU を紹介してもらえると、紹介した方も紹介された方も翌月の月額料金が無料になります。</p>
+</section>
+
+<div class="reward-cards">
+  <div class="reward">
+    <h3>🎁 あなたへ</h3>
+    <div class="amount">¥9,800</div>
+    <div class="sub">翌月の月額が無料</div>
+  </div>
+  <div class="reward">
+    <h3>🎁 ご紹介先へ</h3>
+    <div class="amount">¥9,800</div>
+    <div class="sub">初月の月額が無料</div>
+  </div>
+</div>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <h4>下のフォームから紹介申請</h4>
+      <p>あなたのお店と、紹介したいお店の情報を入力してください。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <h4>紹介コードがメールで届く</h4>
+      <p>あなたの専用紹介コード（例: <code>RAKU-XXXX-YYYY</code>）が発行されます。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <h4>紹介先がコードを入力して契約</h4>
+      <p>紹介先が無料トライアル時にコードを入力 → 契約成立で双方の無料月が確定。</p>
+    </div>
+  </div>
+</div>
+
+<div class="form-card" id="form-card">
+  <h2>📝 紹介申請フォーム</h2>
+  <div class="lead">紹介者・被紹介者の両方の情報をご入力ください</div>
+
+  <div class="section-sep">あなた（紹介者）の情報</div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label>お店の名前 <span style="color:#EF4444;">*</span></label>
+      <input type="text" id="r-shop" required placeholder="例) BAR RAKURAKU 渋谷" />
+    </div>
+    <div class="form-field">
+      <label>お名前 <span style="color:#EF4444;">*</span></label>
+      <input type="text" id="r-name" required placeholder="例) 山田 太郎" />
+    </div>
+  </div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label>メール <span style="color:#EF4444;">*</span></label>
+      <input type="email" id="r-email" required />
+    </div>
+    <div class="form-field">
+      <label>RAKURAKU 契約店舗ID</label>
+      <input type="text" id="r-shopid" placeholder="bar-rakuraku-shibuya" />
+    </div>
+  </div>
+
+  <div class="section-sep">ご紹介先のお店の情報</div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label>お店の名前 <span style="color:#EF4444;">*</span></label>
+      <input type="text" id="t-shop" required placeholder="例) SHOT BAR LUNA" />
+    </div>
+    <div class="form-field">
+      <label>担当者名 <span style="color:#EF4444;">*</span></label>
+      <input type="text" id="t-name" required placeholder="例) 鈴木 花子" />
+    </div>
+  </div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label>連絡先メール</label>
+      <input type="email" id="t-email" placeholder="紹介先のメール" />
+    </div>
+    <div class="form-field">
+      <label>電話番号</label>
+      <input type="tel" id="t-phone" placeholder="連絡先電話" />
+    </div>
+  </div>
+
+  <div class="form-field" style="margin-top:14px;">
+    <label>備考（任意）</label>
+    <textarea id="r-note" rows="3" placeholder="紹介先の業態や、特に気にされている機能など"></textarea>
+  </div>
+
+  <button class="btn-submit" onclick="submitReferral()">🤝 紹介を申請する</button>
+  <p class="info-text">
+    ✓ 24時間以内に紹介コードをメールでお送りします<br>
+    ✓ 紹介先の契約成立をもって特典が確定します<br>
+    ✓ 不正・なりすましは無効となります
+  </p>
+</div>
+
+<div class="success-card" id="success-card">
+  <div style="font-size:48px;">🎉</div>
+  <h2 style="color:#047857;margin:10px 0 6px;">紹介申請ありがとうございます！</h2>
+  <p style="font-size:13px;color:var(--slate-700);">あなたの紹介コードは</p>
+  <div class="code" id="ref-code">RAKU-XXXX-YYYY</div>
+  <p style="font-size:12px;color:var(--slate-500);">このコードを紹介先にお伝えください。<br>契約成立で双方の月額¥9,800が無料になります。</p>
+  <p style="margin-top:16px;"><a href="/" style="color:var(--indigo);font-weight:800;">← トップへ戻る</a></p>
+</div>
+
+<div class="footer">
+  RAKURAKU / 代表 小泉 咲太 · 📞 080-5168-3303<br>
+  &copy; 2026 RAKURAKU. All rights reserved.
+</div>
+
+</div>
+
+<script>
+async function submitReferral() {
+  const data = {
+    referrer: {
+      shop: document.getElementById('r-shop').value.trim(),
+      name: document.getElementById('r-name').value.trim(),
+      email: document.getElementById('r-email').value.trim(),
+      shopId: document.getElementById('r-shopid').value.trim(),
+    },
+    target: {
+      shop: document.getElementById('t-shop').value.trim(),
+      name: document.getElementById('t-name').value.trim(),
+      email: document.getElementById('t-email').value.trim(),
+      phone: document.getElementById('t-phone').value.trim(),
+    },
+    note: document.getElementById('r-note').value.trim(),
+  };
+  if (!data.referrer.shop || !data.referrer.name || !data.referrer.email || !data.target.shop || !data.target.name) {
+    alert('必須項目を入力してください');
+    return;
+  }
+  /* 紹介コード生成 (クライアント側でも仮発行) */
+  const code = 'RAKU-' + Math.random().toString(36).substr(2,4).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+  data.code = code;
+  try {
+    const res = await fetch('/api/referral', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('api-failed');
+  } catch(e) {
+    /* メール代替 */
+    const body = encodeURIComponent(
+      `紹介申請\n\n紹介者: ${data.referrer.name} (${data.referrer.shop})\nメール: ${data.referrer.email}\n\n紹介先: ${data.target.name} (${data.target.shop})\nメール: ${data.target.email}\n電話: ${data.target.phone}\n\n紹介コード: ${code}\n\n備考: ${data.note}`
+    );
+    window.open(`mailto:koizumishota0323@gmail.com?subject=【RAKURAKU 紹介申請】${data.target.shop}&body=${body}`, '_blank');
+  }
+  document.getElementById('ref-code').textContent = code;
+  document.getElementById('form-card').style.display = 'none';
+  document.getElementById('success-card').classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

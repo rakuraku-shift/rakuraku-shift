@@ -793,6 +793,86 @@ app.get('/api/attendance/month', (req, res) => {
   res.json(loadAttendance(shop, ym));
 });
 
+// ── デモ予約 API ────────────────────────────────
+app.post('/api/demo-reservation', async (req, res) => {
+  const data = req.body || {};
+  const record = {
+    id: 'demo' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    ...data,
+    createdAt: Date.now(),
+  };
+  /* ファイルに追記保存 */
+  const file = path.join(DATA_DIR, 'demo-reservations.json');
+  const all = readJSON(file, []);
+  all.push(record);
+  writeJSON(file, all);
+  console.log(`[demo-reservation] ${data.shop} / ${data.name} / ${data.email}`);
+  /* 管理者にメール通知 (emailTransporter があれば) */
+  if (emailTransporter && process.env.EMAIL_USER) {
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: `[RAKURAKU] 🎁 デモ予約 — ${data.shop}`,
+        html: `<h2>デモ予約</h2>
+          <p><strong>店舗:</strong> ${data.shop}<br>
+          <strong>担当者:</strong> ${data.name}<br>
+          <strong>メール:</strong> ${data.email}<br>
+          <strong>電話:</strong> ${data.phone || '-'}<br>
+          <strong>第1希望:</strong> ${data.time1}<br>
+          <strong>第2希望:</strong> ${data.time2 || '-'}<br>
+          <strong>業態:</strong> ${data.type || '-'}<br>
+          <strong>備考:</strong> ${data.note || '-'}</p>`,
+      });
+    } catch(e) { console.warn('[demo-reservation email]', e.message); }
+  }
+  res.json({ ok: true, record });
+});
+
+app.get('/api/demo-reservation', (req, res) => {
+  const file = path.join(DATA_DIR, 'demo-reservations.json');
+  res.json(readJSON(file, []));
+});
+
+// ── 紹介プログラム API ────────────────────────────────
+app.post('/api/referral', async (req, res) => {
+  const data = req.body || {};
+  const record = {
+    id: 'ref' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    ...data,
+    status: 'pending',
+    createdAt: Date.now(),
+  };
+  const file = path.join(DATA_DIR, 'referrals.json');
+  const all = readJSON(file, []);
+  all.push(record);
+  writeJSON(file, all);
+  console.log(`[referral] ${data.referrer?.shop} → ${data.target?.shop} (${data.code})`);
+  if (emailTransporter && process.env.EMAIL_USER) {
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: `[RAKURAKU] 🤝 紹介申請 — ${data.target?.shop} (${data.code})`,
+        html: `<h2>紹介申請</h2>
+          <p><strong>紹介者:</strong> ${data.referrer?.name} (${data.referrer?.shop})<br>
+          メール: ${data.referrer?.email}</p>
+          <p><strong>紹介先:</strong> ${data.target?.name} (${data.target?.shop})<br>
+          メール: ${data.target?.email || '-'}<br>
+          電話: ${data.target?.phone || '-'}</p>
+          <p><strong>紹介コード:</strong> ${data.code}</p>
+          <p><strong>備考:</strong> ${data.note || '-'}</p>`,
+      });
+    } catch(e) { console.warn('[referral email]', e.message); }
+  }
+  res.json({ ok: true, record });
+});
+
+app.get('/api/referral', (req, res) => {
+  const file = path.join(DATA_DIR, 'referrals.json');
+  res.json(readJSON(file, []));
+});
+
 // ── 休み変更届 API ────────────────────────────────
 app.post('/api/change-request', (req, res) => {
   const { shopId, name, date, reason, note, type } = req.body || {};

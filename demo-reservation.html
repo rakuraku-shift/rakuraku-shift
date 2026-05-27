@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>無料デモ予約 — RAKURAKU</title>
+<meta name="description" content="RAKURAKU シフト管理SaaSの15分オンラインデモ予約フォーム。" />
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(180deg,var(--slate-50),#fff);min-height:100vh;line-height:1.6;}
+  a{color:var(--indigo);text-decoration:none;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:680px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;letter-spacing:-.01em;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:680px;margin:0 auto;padding:30px 24px;}
+  .hero{text-align:center;margin-bottom:30px;}
+  .hero-eyebrow{display:inline-block;background:var(--indigo-l);color:var(--indigo);font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:.04em;margin-bottom:14px;}
+  .hero h1{font-size:32px;font-weight:900;letter-spacing:-.02em;line-height:1.25;margin-bottom:10px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:14px;color:var(--slate-500);font-weight:600;}
+  @media(max-width:640px){.hero h1{font-size:24px;}}
+
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:30px;}
+  .ft{background:#fff;border:1.5px solid var(--slate-100);border-radius:10px;padding:12px;text-align:center;}
+  .ft .ic{font-size:24px;}
+  .ft .lbl{font-size:11px;font-weight:800;color:var(--slate-700);margin-top:5px;}
+  @media(max-width:640px){.features{grid-template-columns:1fr;}}
+
+  .form-card{background:#fff;border-radius:18px;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,.06);border:1.5px solid var(--slate-100);}
+  .form-field{margin-bottom:16px;}
+  .form-field label{display:block;font-size:12px;font-weight:800;color:var(--slate-700);margin-bottom:6px;}
+  .form-field input, .form-field select, .form-field textarea{
+    width:100%;padding:12px 14px;border:1.5px solid var(--slate-200);border-radius:10px;
+    font-size:14px;font-family:inherit;outline:none;background:var(--slate-50);transition:all .15s;
+  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus{border-color:var(--indigo);background:#fff;}
+  .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(max-width:640px){.form-row-2{grid-template-columns:1fr;}}
+  .btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:.02em;box-shadow:0 8px 24px rgba(79,70,229,.3);transition:transform .15s;}
+  .btn-submit:hover{transform:translateY(-1px);}
+  .info-text{font-size:11px;color:var(--slate-500);margin-top:14px;line-height:1.7;text-align:center;}
+
+  .success-card{display:none;background:linear-gradient(135deg,#ECFDF5,#fff);border:2px solid var(--emerald);border-radius:18px;padding:28px;text-align:center;}
+  .success-card.show{display:block;}
+  .success-card .ic{font-size:48px;margin-bottom:10px;}
+  .success-card h2{font-size:20px;font-weight:900;color:#047857;margin-bottom:6px;}
+  .success-card p{font-size:13px;color:var(--slate-700);}
+
+  .footer{text-align:center;padding:24px 0;font-size:11px;color:var(--slate-500);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;">← トップへ</a>
+  </div>
+</header>
+
+<div class="container">
+
+<section class="hero">
+  <div class="hero-eyebrow">🎁 完全無料 ・ オンライン15分</div>
+  <h1>無料 <span class="grad">オンラインデモ</span> 予約</h1>
+  <p>代表が画面を共有しながら、お店に合わせた使い方をご案内します。</p>
+</section>
+
+<div class="features">
+  <div class="ft"><div class="ic">⏱</div><div class="lbl">所要 15分</div></div>
+  <div class="ft"><div class="ic">💻</div><div class="lbl">Zoom / Google Meet</div></div>
+  <div class="ft"><div class="ic">🆓</div><div class="lbl">完全無料</div></div>
+</div>
+
+<div class="form-card" id="form-card">
+  <div class="form-field">
+    <label>店舗名 <span style="color:#EF4444;">*</span></label>
+    <input type="text" id="f-shop" placeholder="例) BAR RAKURAKU 渋谷" required />
+  </div>
+  <div class="form-field">
+    <label>ご担当者名 <span style="color:#EF4444;">*</span></label>
+    <input type="text" id="f-name" placeholder="例) 山田 太郎" required />
+  </div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label>メールアドレス <span style="color:#EF4444;">*</span></label>
+      <input type="email" id="f-email" placeholder="example@example.com" required />
+    </div>
+    <div class="form-field">
+      <label>電話番号</label>
+      <input type="tel" id="f-phone" placeholder="090-0000-0000" />
+    </div>
+  </div>
+  <div class="form-field">
+    <label>希望日時（第1希望） <span style="color:#EF4444;">*</span></label>
+    <input type="datetime-local" id="f-time1" required />
+  </div>
+  <div class="form-field">
+    <label>希望日時（第2希望）</label>
+    <input type="datetime-local" id="f-time2" />
+  </div>
+  <div class="form-field">
+    <label>店舗の業態・規模</label>
+    <select id="f-type">
+      <option value="">選択してください</option>
+      <option>バー（スタッフ5名以下）</option>
+      <option>バー（スタッフ6-15名）</option>
+      <option>居酒屋・ダイニング</option>
+      <option>レストラン</option>
+      <option>カフェ</option>
+      <option>その他</option>
+    </select>
+  </div>
+  <div class="form-field">
+    <label>気になっている機能・質問（任意）</label>
+    <textarea id="f-note" rows="3" placeholder="例) Timeeの代替として検討、深夜割増の計算ミスを減らしたい、外国人スタッフ対応が必要…"></textarea>
+  </div>
+  <button class="btn-submit" onclick="submitDemo()">📅 デモを予約する</button>
+  <p class="info-text">
+    ✓ 24時間以内に Zoom URL をメールでお送りします<br>
+    ✓ 強引な営業は一切ありません<br>
+    ✓ 当日 RAKURAKU をその場で試せます
+  </p>
+</div>
+
+<div class="success-card" id="success-card">
+  <div class="ic">🎉</div>
+  <h2>デモ予約 受付完了</h2>
+  <p>24時間以内に <strong id="success-email"></strong> 宛に<br>Zoom URL をお送りします。お楽しみに！</p>
+  <p style="margin-top:14px;"><a href="/" style="color:var(--indigo);font-weight:800;">← トップへ戻る</a></p>
+</div>
+
+<div class="footer">
+  RAKURAKU / 代表 小泉 咲太 · 📞 080-5168-3303<br>
+  &copy; 2026 RAKURAKU. All rights reserved.
+</div>
+
+</div>
+
+<script>
+async function submitDemo() {
+  const shop  = document.getElementById('f-shop').value.trim();
+  const name  = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const time1 = document.getElementById('f-time1').value;
+  const time2 = document.getElementById('f-time2').value;
+  const type  = document.getElementById('f-type').value;
+  const note  = document.getElementById('f-note').value.trim();
+  if (!shop || !name || !email || !time1) { alert('店舗名・お名前・メール・第1希望日時 は必須です'); return; }
+  try {
+    const res = await fetch('/api/demo-reservation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ shop, name, email, phone, time1, time2, type, note }),
+    });
+    /* APIが無くてもmailtoでフォールバック */
+    if (!res.ok) throw new Error('api-failed');
+    document.getElementById('success-email').textContent = email;
+    document.getElementById('form-card').style.display = 'none';
+    document.getElementById('success-card').classList.add('show');
+  } catch(e) {
+    /* メール代替送信 */
+    const body = encodeURIComponent(
+      `デモ予約\n\n店舗: ${shop}\nお名前: ${name}\nメール: ${email}\n電話: ${phone}\n\n第1希望: ${time1}\n第2希望: ${time2}\n業態: ${type}\n\n備考: ${note}`
+    );
+    window.location.href = `mailto:koizumishota0323@gmail.com?subject=【RAKURAKU デモ予約】${shop}&body=${body}`;
+    setTimeout(() => {
+      document.getElementById('success-email').textContent = email;
+      document.getElementById('form-card').style.display = 'none';
+      document.getElementById('success-card').classList.add('show');
+    }, 500);
+  }
+}
+</script>
+</body>
+</html>
