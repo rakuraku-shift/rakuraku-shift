@@ -218,8 +218,204 @@ async function handleSubscriptionStarted(session) {
   if (email) {
     try { await sendLicenseEmail(email, shopName, licenseCode); }
     catch (e) { console.error('[email] 送信失敗:', e.message); }
+
+    /* オンボーディング自動メール (Day1/3/7/14/30) をスケジュール */
+    try { scheduleOnboardingEmails(email, shopName, ownerName); }
+    catch (e) { console.warn('[onboarding] schedule失敗:', e.message); }
   }
 }
+
+// ══════════════════════════════════════════
+//  オンボーディング自動メール (Day 1/3/7/14/30)
+// ══════════════════════════════════════════
+const ONBOARDING_EMAILS = [
+  {
+    day: 1,
+    subject: '[RAKURAKU] ようこそ! 今日やる3つのこと',
+    html: ({ shopName, ownerName }) => `
+      <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
+        <h2 style="color:#4F46E5;">${ownerName || '店長'}様、ご登録ありがとうございます!</h2>
+        <p>RAKURAKU 開発代表の小泉です。${shopName || 'お店'} でのご利用、心からお待ちしておりました。</p>
+        <h3 style="color:#0F172A;margin-top:24px;">🎯 今日やる3つのこと (合計15分)</h3>
+        <ol>
+          <li><strong>マスタデータを設定</strong> (5分) — ポジション・標準時給・時間帯テンプレを入力<br>
+              → <a href="https://rakuraku-shift-production.up.railway.app/master-data.html" style="color:#4F46E5;">マスタ管理を開く</a></li>
+          <li><strong>スタッフを5名登録</strong> (5分) — QRコードを LINE で共有<br>
+              → <a href="https://rakuraku-shift-production.up.railway.app/shift.html" style="color:#4F46E5;">シフト画面で QR 生成</a></li>
+          <li><strong>動画チュートリアル 1本目を視聴</strong> (3分) — セットアップの完成形を確認<br>
+              → <a href="https://rakuraku-shift-production.up.railway.app/tutorial.html" style="color:#4F46E5;">動画を見る</a></li>
+        </ol>
+        <p style="margin-top:24px;">何か不明点があれば、このメールに返信するだけで私 (小泉) に直接届きます。</p>
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 小泉 咲太 / 📞 080-5168-3303</p>
+      </div>
+    `,
+  },
+  {
+    day: 3,
+    subject: '[RAKURAKU] スタッフ提出はうまく始まりましたか?',
+    html: ({ shopName, ownerName }) => `
+      <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
+        <h2 style="color:#4F46E5;">${ownerName || '店長'}様、ご登録から3日です</h2>
+        <p>${shopName || 'お店'} でスタッフの希望提出は始まっていますか?</p>
+        <h3>📌 よくつまずくポイント</h3>
+        <ul>
+          <li><strong>「スタッフが QR からアクセスできない」</strong> → 携帯のカメラで QR を読み取り、ブラウザで開く<br>
+              一度開けばホーム画面に追加できます</li>
+          <li><strong>「シフト希望を出す方法が分からない」</strong> → 動画 第2回をスタッフに見てもらってください</li>
+          <li><strong>「外国人スタッフも使える?」</strong> → 画面右上の言語切替で 英/中/韓 に切り替え可能</li>
+        </ul>
+        <p style="background:#EEF2FF;padding:14px;border-radius:8px;margin-top:18px;">
+          💡 <strong>5名のスタッフが提出すると</strong>、自動シフト生成が体感できます。<br>
+          まずは 1サイクル試して効果を実感してみてください。
+        </p>
+        <p>📺 <a href="https://rakuraku-shift-production.up.railway.app/tutorial.html" style="color:#4F46E5;">動画チュートリアル 全5本</a></p>
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">困った時は: <a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a></p>
+      </div>
+    `,
+  },
+  {
+    day: 7,
+    subject: '[RAKURAKU] 1週間経過 — 1回目のシフト生成、試しましたか?',
+    html: ({ shopName, ownerName }) => `
+      <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
+        <h2 style="color:#4F46E5;">${ownerName || '店長'}様、1週間お疲れさまでした</h2>
+        <p>そろそろ <strong>「✨ シフト作成」ボタン</strong> をタップしてみる頃合いです。</p>
+
+        <h3>🎯 シフト生成の見どころ</h3>
+        <ul>
+          <li><strong>時間バーが色で塗りつぶされて表示</strong> — 視覚的にひと目で分かる</li>
+          <li><strong>赤/黄/緑の不足カレンダー</strong> — 「今すぐ動くべき日」が分かる</li>
+          <li><strong>シフト調整依頼メール一括送信</strong> — 不足コマに対して既存スタッフへ自動提案</li>
+          <li><strong>📢 全員通知ボタン</strong> — メール + LINE 同時送信でシフト確定を一斉通知</li>
+        </ul>
+
+        <h3>💴 給与計算もぜひ試してください</h3>
+        <p>1週間分の打刻データがあれば、<a href="https://rakuraku-shift-production.up.railway.app/payroll.html" style="color:#4F46E5;">payroll.html</a> から給与明細PDFが生成できます。<br>深夜割増・休憩控除も自動です。</p>
+
+        <p style="background:#FEF3C7;padding:14px;border-radius:8px;margin-top:18px;">
+          🤝 <strong>知り合いの飲食店オーナー</strong>に紹介してくれませんか?<br>
+          <a href="https://rakuraku-shift-production.up.railway.app/referral.html" style="color:#B45309;">紹介プログラム</a> でお互い1ヶ月無料になります。
+        </p>
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">代表 小泉 咲太</p>
+      </div>
+    `,
+  },
+  {
+    day: 14,
+    subject: '[RAKURAKU] トライアル終了が近づいています — 今後について',
+    html: ({ shopName, ownerName }) => `
+      <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
+        <h2 style="color:#4F46E5;">${ownerName || '店長'}様、14日間ありがとうございました</h2>
+        <p>無料トライアル期間が間もなく終了します。${shopName || 'お店'} で RAKURAKU を使ってみて、いかがでしたでしょうか?</p>
+
+        <h3>💡 トライアル中の効果を振り返り</h3>
+        <p>下記URLから、これまでの利用状況をご確認いただけます:</p>
+        <ul>
+          <li>📊 <a href="https://rakuraku-shift-production.up.railway.app/staff-monthly.html" style="color:#4F46E5;">月次サマリ</a> — スタッフごとの勤務時間</li>
+          <li>📑 <a href="https://rakuraku-shift-production.up.railway.app/monthly-report.html" style="color:#4F46E5;">月次レポート</a> — 売上・人件費率</li>
+        </ul>
+
+        <h3>📌 継続いただける場合</h3>
+        <p>特に何もしていただく必要はありません。<br>15日目から <strong>月額 ¥9,800 (税込)</strong> の課金が開始します。</p>
+
+        <h3>解約をご希望の場合</h3>
+        <p>このメールに <strong>「解約希望」</strong> と返信していただくか、<a href="https://rakuraku-shift-production.up.railway.app/help.html" style="color:#4F46E5;">ヘルプ</a> から解約手続きをお願いします。<br>解約理由をお聞かせいただければ、改善の参考にさせていただきます。</p>
+
+        <p style="background:#DCFCE7;padding:14px;border-radius:8px;margin-top:18px;">
+          💴 <strong>年払いプラン (¥98,000・2ヶ月分お得)</strong> もご用意しています。<br>
+          長く使う予定があれば年払いが断然お得です。
+        </p>
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 咲太 / koizumishota0323@gmail.com</p>
+      </div>
+    `,
+  },
+  {
+    day: 30,
+    subject: '[RAKURAKU] 1ヶ月経過! 次のステップ + 紹介プログラム',
+    html: ({ shopName, ownerName }) => `
+      <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
+        <h2 style="color:#4F46E5;">${ownerName || '店長'}様、ご利用1ヶ月おめでとうございます 🎉</h2>
+        <p>${shopName || 'お店'} で RAKURAKU をご利用いただき、1ヶ月が経ちました。継続いただき本当にありがとうございます。</p>
+
+        <h3>🚀 次のステップ: まだ使っていない機能を試してみませんか?</h3>
+        <ol>
+          <li><strong>LINE 公式アカウント連携</strong> → <a href="https://rakuraku-shift-production.up.railway.app/notification-settings.html" style="color:#4F46E5;">通知設定</a><br>
+              シフト確定通知・お知らせを LINE で一斉送信。メールの3倍開封率</li>
+          <li><strong>売上データ取込</strong> → <a href="https://rakuraku-shift-production.up.railway.app/sales-import.html" style="color:#4F46E5;">売上取込</a><br>
+              毎日の売上を入力 → 人件費率の自動計算</li>
+          <li><strong>スタッフ評価機能</strong> → シフト画面のスタッフ名タップ → 5段階評価<br>
+              優秀スタッフを可視化 → 時給アップの根拠に</li>
+          <li><strong>個人給与照会 (パスワード保護)</strong> → スタッフが自分の今月給与を見れる</li>
+        </ol>
+
+        <h3>🤝 紹介プログラムでお互い1ヶ月無料</h3>
+        <p>知り合いの飲食店オーナーに RAKURAKU を紹介すると、<strong>あなたも紹介先も1ヶ月無料</strong> になります。<br>
+        紹介コード発行は1分で完了。<a href="https://rakuraku-shift-production.up.railway.app/referral.html" style="color:#4F46E5;">紹介プログラムページ</a> へ。</p>
+
+        <h3>📞 困った時はいつでも</h3>
+        <p>このメールにそのまま返信、または <a href="tel:08051683303" style="color:#4F46E5;">📞 080-5168-3303</a> へお電話ください。<br>代表が直接対応します。</p>
+
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 咲太</p>
+      </div>
+    `,
+  },
+];
+
+function scheduleOnboardingEmails(email, shopName, ownerName) {
+  if (!email) return;
+  const now = Date.now();
+  const file = path.join(DATA_DIR, 'scheduled-onboarding.json');
+  const all = readJSON(file, []);
+  ONBOARDING_EMAILS.forEach(e => {
+    all.push({
+      id: 'ob' + now + '_' + e.day,
+      email, shopName, ownerName,
+      day: e.day,
+      scheduledAt: now + e.day * 86400000,
+      sent: false,
+    });
+  });
+  writeJSON(file, all);
+  console.log(`[onboarding] ${email} に ${ONBOARDING_EMAILS.length}通のメールをスケジュール`);
+}
+
+async function processScheduledOnboarding() {
+  if (!emailTransporter) return;
+  const file = path.join(DATA_DIR, 'scheduled-onboarding.json');
+  const all = readJSON(file, []);
+  const now = Date.now();
+  let sentCount = 0;
+  for (const item of all) {
+    if (item.sent) continue;
+    if (item.scheduledAt > now) continue;
+    const template = ONBOARDING_EMAILS.find(e => e.day === item.day);
+    if (!template) { item.sent = true; continue; }
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: item.email,
+        subject: template.subject,
+        html: template.html({ shopName: item.shopName, ownerName: item.ownerName }),
+      });
+      item.sent = true;
+      item.sentAt = now;
+      sentCount++;
+      console.log(`[onboarding] Day${item.day} 送信 → ${item.email}`);
+    } catch(e) {
+      console.warn(`[onboarding] 送信失敗 Day${item.day}:`, e.message);
+      item.retries = (item.retries || 0) + 1;
+      if (item.retries > 3) item.sent = true; /* 3回失敗で諦め */
+    }
+  }
+  if (sentCount > 0 || all.some(i => i.sent === true)) {
+    writeJSON(file, all.filter(i => !i.sent || (now - (i.sentAt || 0)) < 30 * 86400000));
+  }
+}
+
+/* 1時間ごとに送信ジョブ実行 */
+setInterval(processScheduledOnboarding, 60 * 60 * 1000);
+/* 起動直後にも1回実行 (2分後) */
+setTimeout(processScheduledOnboarding, 2 * 60 * 1000);
 
 // ══════════════════════════════════════════
 //  SHOP DATA (シフトクロスデバイス同期)
@@ -360,8 +556,13 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
   }
 
   if (event.type === 'customer.subscription.deleted') {
-    updateSubscriptionStatus(event.data.object.id, 'cancelled');
-    console.log(`[stripe] サブスク解約 — ${event.data.object.id}`);
+    const subObj = event.data.object;
+    updateSubscriptionStatus(subObj.id, 'cancelled');
+    console.log(`[stripe] サブスク解約 — ${subObj.id}`);
+
+    /* 解約理由アンケート URL を送信 */
+    try { sendChurnSurveyEmail(subObj); }
+    catch(e) { console.warn('[churn-survey] email failed:', e.message); }
   }
 
   if (event.type === 'invoice.payment_failed') {
@@ -369,6 +570,85 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
   }
 
   res.json({ received: true });
+});
+
+async function sendChurnSurveyEmail(subObj) {
+  if (!emailTransporter) return;
+  /* 購読IDからメール+店舗情報を取得 */
+  const subs = readJSON(SUBS_FILE, []);
+  const sub = subs.find(s => s.subscriptionId === subObj.id);
+  if (!sub || !sub.email) return;
+  const baseUrl = process.env.BASE_URL || 'https://rakuraku-shift-production.up.railway.app';
+  const surveyUrl = `${baseUrl}/churn-survey.html?shop=${encodeURIComponent(sub.shopName || '')}&email=${encodeURIComponent(sub.email)}&subscription_id=${encodeURIComponent(subObj.id)}`;
+
+  await emailTransporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: sub.email,
+    subject: '[RAKURAKU] ご利用ありがとうございました — 改善のためアンケートにご協力ください',
+    html: `
+      <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
+        <h2 style="color:#4F46E5;">${sub.ownerName || sub.shopName || ''}様</h2>
+        <p>このたびは RAKURAKU をご利用いただき、誠にありがとうございました。</p>
+        <p>サービス改善のため、3分のアンケートにご協力いただけませんでしょうか?<br>
+        いただいたご意見は、改善作業に必ず反映させていただきます。</p>
+        <p style="text-align:center;margin:30px 0;">
+          <a href="${surveyUrl}" style="display:inline-block;background:#4F46E5;color:#fff;padding:14px 30px;border-radius:10px;text-decoration:none;font-weight:700;">
+            📊 アンケートに回答する (3分)
+          </a>
+        </p>
+        <p style="background:#FEF3C7;padding:14px;border-radius:8px;font-size:13px;">
+          📌 もし「一時休止」も可能です。店舗を閉めている期間など、利用しない月だけ課金停止できます。<br>
+          ご希望の場合は <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】一時休止希望">こちら</a> までご連絡ください。
+        </p>
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 咲太 / 📞 080-5168-3303</p>
+      </div>
+    `,
+  });
+  console.log(`[churn-survey] アンケートURL送信 → ${sub.email}`);
+}
+
+/* 解約理由アンケート API */
+app.post('/api/churn-survey', async (req, res) => {
+  const data = req.body || {};
+  const record = {
+    id: 'ch' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    ...data,
+    receivedAt: Date.now(),
+  };
+  const file = path.join(DATA_DIR, 'churn-surveys.json');
+  const all = readJSON(file, []);
+  all.push(record);
+  writeJSON(file, all);
+
+  console.log(`[churn-survey] 回答受信 — ${data.shop} / NPS:${data.nps} / 理由:${(data.reasons || []).join(',')}`);
+
+  /* 管理者にも通知 */
+  if (emailTransporter && process.env.EMAIL_USER) {
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: `[RAKURAKU] 📊 解約アンケート — ${data.shop || '?'} (NPS: ${data.nps}/10)`,
+        html: `
+          <h2>解約アンケート 回答</h2>
+          <p><strong>店舗:</strong> ${data.shop || '-'}<br>
+             <strong>メール:</strong> ${data.email || '-'}</p>
+          <p><strong>NPS:</strong> ${data.nps}/10</p>
+          <p><strong>解約理由:</strong><br>${(data.reasons || []).map(r => '• ' + r).join('<br>')}</p>
+          <p><strong>検討中の他社:</strong> ${data.competitor || '-'}</p>
+          <p><strong>改善要望:</strong><br>${(data.improvement || '-').replace(/\n/g, '<br>')}</p>
+          <p><strong>再連絡可否:</strong> ${data.recontact ? '✅ OK' : '❌ 不要'}</p>
+        `,
+      });
+    } catch(e) { console.warn('[churn-survey] admin email failed:', e.message); }
+  }
+
+  res.json({ ok: true, record });
+});
+
+app.get('/api/churn-survey', (req, res) => {
+  const file = path.join(DATA_DIR, 'churn-surveys.json');
+  res.json(readJSON(file, []));
 });
 
 app.use(express.json({ limit: '6mb' }));
@@ -383,6 +663,125 @@ function _404Handler(req, res, next) {
   // API は別途処理
   if (req.path.startsWith('/api/') || req.path.startsWith('/webhook/')) return next();
   res.status(404).sendFile(path.join(__dirname, '404.html'));
+}
+
+// ── Health check + Status Page API ──────────────────────────────
+const SERVER_START_TIME = Date.now();
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    uptime: Math.floor((Date.now() - SERVER_START_TIME) / 1000),
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+  });
+});
+
+/* ロードマップ 投票 + アイデア投稿 API */
+app.post('/api/roadmap-vote', (req, res) => {
+  const { id, voted } = req.body || {};
+  if (!id) return res.status(400).json({ error: 'id 必須' });
+  const file = path.join(DATA_DIR, 'roadmap-votes.json');
+  const all = readJSON(file, {});
+  all[id] = (all[id] || 0) + (voted ? 1 : -1);
+  if (all[id] < 0) all[id] = 0;
+  writeJSON(file, all);
+  res.json({ ok: true, votes: all[id] });
+});
+
+app.get('/api/roadmap-votes', (req, res) => {
+  res.json(readJSON(path.join(DATA_DIR, 'roadmap-votes.json'), {}));
+});
+
+app.post('/api/roadmap-idea', async (req, res) => {
+  const { title, desc, email } = req.body || {};
+  if (!title) return res.status(400).json({ error: 'title 必須' });
+  const file = path.join(DATA_DIR, 'roadmap-ideas.json');
+  const all = readJSON(file, []);
+  const record = { id: 'id' + Date.now(), title, desc: desc || '', email: email || '', submittedAt: Date.now() };
+  all.push(record);
+  writeJSON(file, all);
+  console.log(`[roadmap-idea] 新規: ${title} (${email || '匿名'})`);
+  if (emailTransporter && process.env.EMAIL_USER) {
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: `[RAKURAKU] 💡 新しい機能要望: ${title}`,
+        html: `<h2>${title}</h2><p>${(desc || '').replace(/\n/g,'<br>')}</p><p>連絡: ${email || '匿名'}</p>`,
+      });
+    } catch(e) { console.warn('[roadmap-idea email]', e.message); }
+  }
+  res.json({ ok: true, record });
+});
+
+app.get('/api/incidents', (req, res) => {
+  const file = path.join(DATA_DIR, 'incidents.json');
+  const all = readJSON(file, []);
+  /* 30日以内の障害のみ */
+  const now = Date.now();
+  res.json(all.filter(i => (now - new Date(i.startedAt).getTime()) < 30 * 86400000));
+});
+
+/* 管理者: 障害手動報告 */
+app.post('/api/incidents', (req, res) => {
+  const { title, description, status, severity } = req.body || {};
+  if (!title) return res.status(400).json({ error: 'title 必須' });
+  const file = path.join(DATA_DIR, 'incidents.json');
+  const all = readJSON(file, []);
+  const record = {
+    id: 'inc' + Date.now(),
+    title, description: description || '',
+    status: status || 'ongoing', /* ongoing / resolved / scheduled */
+    severity: severity || 'medium', /* low / medium / high / critical */
+    startedAt: new Date().toISOString(),
+    resolvedAt: status === 'resolved' ? new Date().toISOString() : null,
+  };
+  all.unshift(record);
+  writeJSON(file, all);
+
+  /* 購読者全員にメール送信 */
+  notifyStatusSubscribers(record).catch(e => console.warn('[incident notify]', e.message));
+  res.json({ ok: true, record });
+});
+
+app.post('/api/status-subscribe', (req, res) => {
+  const { email } = req.body || {};
+  if (!email) return res.status(400).json({ error: 'email 必須' });
+  const file = path.join(DATA_DIR, 'status-subscribers.json');
+  const all = readJSON(file, []);
+  if (!all.find(s => s.email === email)) {
+    all.push({ email, subscribedAt: Date.now() });
+    writeJSON(file, all);
+    console.log(`[status] 購読登録 → ${email}`);
+  }
+  res.json({ ok: true });
+});
+
+async function notifyStatusSubscribers(incident) {
+  if (!emailTransporter) return;
+  const subs = readJSON(path.join(DATA_DIR, 'status-subscribers.json'), []);
+  if (!subs.length) return;
+  const subject = incident.status === 'resolved'
+    ? `[RAKURAKU] ✅ 障害復旧 — ${incident.title}`
+    : `[RAKURAKU] 🚨 障害発生 — ${incident.title}`;
+  for (const s of subs) {
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: s.email,
+        subject,
+        html: `
+          <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;">
+            <h2>${incident.status === 'resolved' ? '✅' : '🚨'} ${incident.title}</h2>
+            <p>${incident.description || ''}</p>
+            <p><strong>発生時刻:</strong> ${new Date(incident.startedAt).toLocaleString('ja-JP')}</p>
+            ${incident.resolvedAt ? `<p><strong>復旧時刻:</strong> ${new Date(incident.resolvedAt).toLocaleString('ja-JP')}</p>` : ''}
+            <p><a href="https://rakuraku-shift-production.up.railway.app/status.html">稼働状況ページを確認</a></p>
+          </div>
+        `,
+      });
+    } catch(e) { console.warn('[status notify]', s.email, e.message); }
+  }
 }
 
 // ── REST API ──────────────────────────────

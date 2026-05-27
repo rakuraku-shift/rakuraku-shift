@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>解約理由アンケート — RAKURAKU</title>
+<meta name="description" content="RAKURAKU 解約時のアンケート。サービス改善のため、率直なご意見をお聞かせください。" />
+<meta name="theme-color" content="#4F46E5">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(180deg,var(--slate-50),#fff);min-height:100vh;line-height:1.7;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:760px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:760px;margin:0 auto;padding:40px 24px;}
+
+  .hero{text-align:center;margin-bottom:32px;}
+  .hero-eyebrow{display:inline-block;background:#FEE2E2;color:var(--rose);font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:.04em;margin-bottom:14px;}
+  .hero h1{font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1.3;margin-bottom:10px;}
+  .hero p{font-size:14px;color:var(--slate-500);font-weight:600;}
+  @media(max-width:680px){.hero h1{font-size:22px;}}
+
+  .thanks-msg{background:linear-gradient(135deg,#EFF6FF,#fff);border:1.5px solid #DBEAFE;border-radius:14px;padding:20px;margin-bottom:24px;text-align:center;font-size:13px;color:var(--slate-700);line-height:1.8;}
+  .thanks-msg strong{color:var(--indigo);}
+
+  .card{background:#fff;border:1.5px solid var(--slate-100);border-radius:16px;padding:28px;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,0,0,.04);}
+
+  .section{margin-bottom:24px;}
+  .section h2{font-size:15px;font-weight:900;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .section .req{color:#EF4444;font-size:10px;font-weight:800;background:#FEE2E2;padding:2px 8px;border-radius:8px;margin-left:auto;}
+
+  .reason-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  @media(max-width:600px){.reason-grid{grid-template-columns:1fr;}}
+  .reason{padding:12px 14px;border:1.5px solid var(--slate-200);border-radius:10px;cursor:pointer;font-size:13px;font-weight:700;color:var(--slate-700);transition:all .12s;display:flex;align-items:center;gap:8px;}
+  .reason:hover{border-color:var(--indigo);background:var(--indigo-l);}
+  .reason.selected{background:var(--indigo);color:#fff;border-color:var(--indigo);font-weight:800;}
+  .reason .ic{font-size:18px;}
+
+  .rating-row{display:flex;gap:6px;justify-content:center;}
+  .rating-btn{width:48px;height:48px;border-radius:50%;background:var(--slate-50);border:1.5px solid var(--slate-200);font-size:14px;font-weight:900;cursor:pointer;color:var(--slate-700);font-family:inherit;}
+  .rating-btn:hover{background:var(--indigo-l);border-color:var(--indigo);}
+  .rating-btn.selected{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-color:transparent;}
+  .rating-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--slate-500);margin-top:8px;font-weight:700;}
+
+  textarea{width:100%;min-height:120px;padding:13px;border:1.5px solid var(--slate-200);border-radius:10px;font-size:13px;font-family:inherit;outline:none;background:var(--slate-50);line-height:1.7;resize:vertical;}
+  textarea:focus{border-color:var(--indigo);background:#fff;}
+
+  input[type="text"], input[type="email"], select{width:100%;padding:11px 13px;border:1.5px solid var(--slate-200);border-radius:8px;font-size:13px;font-family:inherit;background:var(--slate-50);outline:none;}
+  input:focus, select:focus{border-color:var(--indigo);background:#fff;}
+
+  .btn{display:block;width:100%;padding:14px;border-radius:10px;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;border:none;text-align:center;text-decoration:none;}
+  .btn-primary{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.25);}
+  .btn-ghost{background:var(--slate-100);color:var(--slate-700);margin-top:8px;}
+
+  .success-card{display:none;background:linear-gradient(135deg,#ECFDF5,#fff);border:2px solid var(--emerald);border-radius:18px;padding:36px;text-align:center;}
+  .success-card.show{display:block;}
+  .success-card .ic{font-size:52px;margin-bottom:10px;}
+  .success-card h2{font-size:22px;font-weight:900;color:#047857;margin-bottom:8px;}
+  .success-card p{font-size:14px;color:var(--slate-700);line-height:1.7;}
+
+  .pause-offer{background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border:1.5px solid #FBBF24;border-radius:14px;padding:18px;margin-bottom:20px;font-size:13px;color:#78350F;}
+  .pause-offer strong{color:#92400E;}
+  .pause-offer a{color:#B45309;font-weight:800;text-decoration:underline;}
+
+  .footer-note{text-align:center;font-size:11px;color:var(--slate-500);padding:20px 0;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;">← トップへ</a>
+  </div>
+</header>
+
+<div class="container">
+
+<div id="form-area">
+<section class="hero">
+  <div class="hero-eyebrow">📊 解約理由アンケート</div>
+  <h1>ご利用ありがとうございました</h1>
+  <p>サービス改善のため、率直なご意見をお聞かせいただけると幸いです (3分)</p>
+</section>
+
+<div class="thanks-msg">
+  📝 アンケートにご協力いただくと、<strong>解約理由を改善した際のお知らせ</strong>をお送りします。<br>
+  ご希望であれば、改善後に <strong>30日間無料</strong> での再トライアルも可能です。
+</div>
+
+<div class="pause-offer">
+  ⏸ <strong>「一時休止」もご検討ください</strong><br>
+  店舗を閉めている期間など、利用しない月だけ <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】一時休止希望">休止</a> も可能です。<br>
+  休止中は課金停止、店舗データは保持。再開時に同じ環境を継続できます。
+</div>
+
+<div class="card">
+
+<form id="churn-form" onsubmit="event.preventDefault();submitSurvey();">
+
+  <!-- 基本情報 (URL パラメータから自動入力) -->
+  <div class="section">
+    <h2>基本情報</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <input type="text" id="f-shop" placeholder="店舗名" />
+      <input type="email" id="f-email" placeholder="メールアドレス" />
+    </div>
+  </div>
+
+  <!-- 1: 解約理由 (必須) -->
+  <div class="section">
+    <h2>1. 解約の主な理由は? <span class="req">必須・複数選択可</span></h2>
+    <div class="reason-grid" id="reasons">
+      <div class="reason" data-r="price"><span class="ic">💰</span><span>料金が高い</span></div>
+      <div class="reason" data-r="features"><span class="ic">🛠</span><span>必要な機能がない</span></div>
+      <div class="reason" data-r="hard"><span class="ic">📖</span><span>使い方が難しい</span></div>
+      <div class="reason" data-r="staff_reject"><span class="ic">👥</span><span>スタッフが慣れなかった</span></div>
+      <div class="reason" data-r="competitor"><span class="ic">🔄</span><span>他のサービスに乗り換え</span></div>
+      <div class="reason" data-r="bug"><span class="ic">🐛</span><span>不具合・バグが多い</span></div>
+      <div class="reason" data-r="close"><span class="ic">🚪</span><span>店舗を閉店・移転</span></div>
+      <div class="reason" data-r="trial_only"><span class="ic">⏱</span><span>トライアルで判断・継続なし</span></div>
+      <div class="reason" data-r="busy"><span class="ic">📵</span><span>導入する時間がなかった</span></div>
+      <div class="reason" data-r="other"><span class="ic">📝</span><span>その他</span></div>
+    </div>
+  </div>
+
+  <!-- 2: NPS -->
+  <div class="section">
+    <h2>2. RAKURAKU を同業者に勧めたい度合い (0-10) <span class="req">必須</span></h2>
+    <div class="rating-row" id="nps-row">
+      <button type="button" class="rating-btn" data-n="0">0</button>
+      <button type="button" class="rating-btn" data-n="1">1</button>
+      <button type="button" class="rating-btn" data-n="2">2</button>
+      <button type="button" class="rating-btn" data-n="3">3</button>
+      <button type="button" class="rating-btn" data-n="4">4</button>
+      <button type="button" class="rating-btn" data-n="5">5</button>
+      <button type="button" class="rating-btn" data-n="6">6</button>
+      <button type="button" class="rating-btn" data-n="7">7</button>
+      <button type="button" class="rating-btn" data-n="8">8</button>
+      <button type="button" class="rating-btn" data-n="9">9</button>
+      <button type="button" class="rating-btn" data-n="10">10</button>
+    </div>
+    <div class="rating-labels">
+      <span>勧めない</span><span>普通</span><span>強く勧める</span>
+    </div>
+  </div>
+
+  <!-- 3: 他社サービス -->
+  <div class="section">
+    <h2>3. 乗り換える場合、検討しているサービスは?</h2>
+    <select id="f-competitor">
+      <option value="">選択してください</option>
+      <option>Airシフト (リクルート)</option>
+      <option>Shifty (シフティ)</option>
+      <option>Shiftee (シフティー)</option>
+      <option>シフオプ (PERSOL)</option>
+      <option>HRMOS勤怠</option>
+      <option>ジョブカン</option>
+      <option>Excel / Googleスプレッドシート に戻る</option>
+      <option>紙のシフト表に戻る</option>
+      <option>その他</option>
+      <option>特に検討していない</option>
+    </select>
+  </div>
+
+  <!-- 4: 自由記述 -->
+  <div class="section">
+    <h2>4. 改善してほしい点・もったいなかった点</h2>
+    <textarea id="f-improvement" placeholder="率直なご意見をお書きください。「○○ができたら継続したかった」「××が不便だった」など、なんでも結構です。"></textarea>
+  </div>
+
+  <!-- 5: 連絡可否 -->
+  <div class="section">
+    <h2>5. 改善後の再連絡について</h2>
+    <div class="reason-grid">
+      <label class="reason" style="cursor:pointer;">
+        <input type="radio" name="recontact" value="yes" style="margin-right:6px;" checked />
+        <span>✅ 改善されたらメール希望</span>
+      </label>
+      <label class="reason" style="cursor:pointer;">
+        <input type="radio" name="recontact" value="no" style="margin-right:6px;" />
+        <span>❌ 連絡不要</span>
+      </label>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">📨 アンケートを送信</button>
+  <a href="/" class="btn btn-ghost">スキップしてトップへ</a>
+</form>
+</div>
+
+</div>
+
+<div class="success-card" id="success">
+  <div class="ic">🙏</div>
+  <h2>ご回答ありがとうございました</h2>
+  <p>
+    いただいたご意見は、サービス改善に必ず役立てます。<br>
+    また機会がありましたら、ぜひ <strong>RAKURAKU</strong> をお試しください。
+  </p>
+  <p style="margin-top:16px;font-size:12px;color:var(--slate-500);">
+    📞 080-5168-3303 / 代表 小泉 咲太
+  </p>
+  <a href="/" class="btn btn-primary" style="margin-top:20px;display:inline-block;width:auto;padding:13px 30px;">トップページへ</a>
+</div>
+
+</div>
+
+<div class="footer-note">
+  RAKURAKU / 代表 小泉 咲太 · 神奈川県横浜市桜木町<br>
+  &copy; 2026 RAKURAKU. All rights reserved.
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+document.getElementById('f-shop').value = params.get('shop') || '';
+document.getElementById('f-email').value = params.get('email') || '';
+
+const _selectedReasons = new Set();
+document.querySelectorAll('#reasons .reason').forEach(el => {
+  el.addEventListener('click', () => {
+    el.classList.toggle('selected');
+    if (el.classList.contains('selected')) _selectedReasons.add(el.dataset.r);
+    else _selectedReasons.delete(el.dataset.r);
+  });
+});
+
+let _nps = null;
+document.querySelectorAll('#nps-row .rating-btn').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('#nps-row .rating-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    _nps = parseInt(el.dataset.n);
+  });
+});
+
+async function submitSurvey() {
+  if (_selectedReasons.size === 0) {
+    alert('⚠ 解約理由を1つ以上選択してください');
+    return;
+  }
+  if (_nps === null) {
+    alert('⚠ NPS スコア (0-10) を選択してください');
+    return;
+  }
+  const payload = {
+    shop: document.getElementById('f-shop').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    reasons: Array.from(_selectedReasons),
+    nps: _nps,
+    competitor: document.getElementById('f-competitor').value,
+    improvement: document.getElementById('f-improvement').value.trim(),
+    recontact: (document.querySelector('input[name="recontact"]:checked') || {}).value === 'yes',
+    submittedAt: new Date().toISOString(),
+    referrer: params.get('subscription_id') || '',
+  };
+  try {
+    const res = await fetch('/api/churn-survey', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('api');
+  } catch(e) {
+    /* mailto フォールバック */
+    const body = encodeURIComponent(
+      `解約アンケート回答\n\n店舗: ${payload.shop}\nメール: ${payload.email}\n\n` +
+      `解約理由: ${payload.reasons.join(', ')}\n` +
+      `NPS: ${payload.nps}/10\n` +
+      `他社検討: ${payload.competitor || 'なし'}\n\n` +
+      `改善要望:\n${payload.improvement || 'なし'}\n\n` +
+      `再連絡: ${payload.recontact ? 'OK' : '不要'}`
+    );
+    window.open(`mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】解約アンケート (${payload.shop})&body=${body}`, '_blank');
+  }
+  document.getElementById('form-area').style.display = 'none';
+  document.getElementById('success').classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+<script src="/help-widget.js" defer></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v4 — push通知 + オフライン強化 + 拡充ページ */
-var CACHE = 'rakuraku-v4';
+/* RAKURAKU Service Worker v5 — スケール準備ページ追加 */
+var CACHE = 'rakuraku-v5';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -25,7 +25,11 @@ var ASSETS = [
   '/staff-dashboard.html',
   '/data-export.html',
   '/careers.html',
-  '/help-widget.js'
+  '/help-widget.js',
+  '/tutorial.html',
+  '/roadmap.html',
+  '/status.html',
+  '/churn-survey.html'
 ];
 
 self.addEventListener('install', function(e) {

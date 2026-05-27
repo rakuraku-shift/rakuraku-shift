@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>動画チュートリアル — RAKURAKU</title>
+<meta name="description" content="RAKURAKU の基本操作を3分動画で解説。シフト作成・打刻・給与確認・スタッフ評価まで。" />
+<meta name="theme-color" content="#4F46E5">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:var(--slate-50);min-height:100vh;line-height:1.7;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:1080px;margin:0 auto;padding:40px 24px;}
+
+  .hero{text-align:center;margin-bottom:42px;}
+  .hero-eyebrow{display:inline-block;background:var(--indigo-l);color:var(--indigo);font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:.04em;margin-bottom:14px;}
+  .hero h1{font-size:36px;font-weight:900;letter-spacing:-.02em;line-height:1.25;margin-bottom:12px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:15px;color:var(--slate-500);font-weight:600;}
+  @media(max-width:680px){.hero h1{font-size:24px;}}
+
+  .progress-bar{background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:18px;margin-bottom:30px;}
+  .progress-bar-title{font-size:13px;font-weight:800;color:var(--slate-700);margin-bottom:10px;display:flex;justify-content:space-between;}
+  .progress-track{height:10px;background:var(--slate-100);border-radius:5px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--indigo),var(--purple));border-radius:5px;transition:width .4s;}
+  .progress-steps{display:flex;justify-content:space-between;margin-top:10px;font-size:10px;color:var(--slate-500);font-weight:700;}
+
+  .video-grid{display:grid;grid-template-columns:1fr;gap:24px;}
+
+  .video-card{background:#fff;border:1.5px solid var(--slate-100);border-radius:18px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.04);transition:box-shadow .2s;}
+  .video-card:hover{box-shadow:0 12px 30px rgba(0,0,0,.08);}
+  .vc-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:0;}
+  @media(max-width:680px){.vc-grid{grid-template-columns:1fr;}}
+
+  .video-wrap{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#1E293B,#0F172A);overflow:hidden;}
+  .video-wrap iframe, .video-wrap video{width:100%;height:100%;border:none;display:block;}
+  .video-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;cursor:pointer;}
+  .video-placeholder .ic{font-size:64px;opacity:.6;}
+  .video-placeholder .msg{font-size:13px;margin-top:10px;font-weight:700;opacity:.8;}
+  .video-placeholder .sub{font-size:10px;opacity:.5;margin-top:3px;}
+
+  .vc-body{padding:24px;}
+  .vc-num{display:inline-block;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;font-size:11px;font-weight:900;padding:4px 12px;border-radius:14px;letter-spacing:.04em;margin-bottom:8px;}
+  .vc-title{font-size:18px;font-weight:900;letter-spacing:-.01em;margin-bottom:6px;}
+  .vc-duration{font-size:11px;color:var(--slate-500);font-weight:700;margin-bottom:10px;}
+  .vc-desc{font-size:13px;color:var(--slate-700);line-height:1.8;margin-bottom:12px;}
+  .vc-chapters{font-size:11px;color:var(--slate-500);line-height:1.9;}
+  .vc-chapters strong{color:var(--slate-900);}
+  .vc-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .vc-btn{padding:8px 14px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;border:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+  .vc-btn-primary{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;}
+  .vc-btn-ghost{background:var(--slate-100);color:var(--slate-700);}
+  .vc-btn-done{background:#DCFCE7;color:#16A34A;}
+
+  .pdf-section{background:linear-gradient(135deg,#FAF5FF,#fff);border-radius:18px;padding:30px;margin-top:40px;text-align:center;border:1.5px solid #E9D5FF;}
+  .pdf-section h2{font-size:20px;font-weight:900;margin-bottom:8px;}
+  .pdf-section p{font-size:13px;color:var(--slate-700);margin-bottom:18px;}
+  .pdf-btn{display:inline-block;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:13px 28px;border-radius:24px;font-weight:900;font-size:13px;text-decoration:none;}
+
+  .footer{text-align:center;padding:30px 0;font-size:11px;color:var(--slate-500);margin-top:30px;border-top:1px solid var(--slate-100);}
+  .footer a{color:var(--indigo);text-decoration:none;}
+
+  .upload-note{background:#FFFBEB;border-left:4px solid var(--amber);padding:14px 16px;border-radius:0 10px 10px 0;font-size:12px;color:#78350F;line-height:1.7;margin-top:30px;}
+  .upload-note code{background:#fff;padding:2px 8px;border-radius:4px;font-size:11px;color:var(--amber);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU チュートリアル</span></a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;">← トップへ</a>
+  </div>
+</header>
+
+<div class="container">
+
+<section class="hero">
+  <div class="hero-eyebrow">📺 動画で学ぶ RAKURAKU</div>
+  <h1>3分動画 ×5本で<br><span class="grad">基本操作 完全マスター</span></h1>
+  <p>iPhoneやPCで再生 → 一緒に操作 → 15分で全機能を覚えられます</p>
+</section>
+
+<div class="progress-bar">
+  <div class="progress-bar-title">
+    <span>📊 視聴進捗</span>
+    <span id="progress-pct">0 / 5 本</span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%;"></div></div>
+  <div class="progress-steps">
+    <span data-step="1">①</span><span data-step="2">②</span><span data-step="3">③</span><span data-step="4">④</span><span data-step="5">⑤</span>
+  </div>
+</div>
+
+<div class="video-grid" id="video-grid"></div>
+
+<div class="pdf-section">
+  <h2>📄 印刷用 完全ガイド (A4 PDF)</h2>
+  <p>動画で覚えた内容を PDF で持ち歩き or スタッフ全員に配布</p>
+  <a href="/getting-started.html" class="pdf-btn">📖 セットアップガイドを開く</a>
+</div>
+
+<div class="upload-note">
+  <strong>💡 店長様へ (動画準備中):</strong>
+  この動画チュートリアルは現在準備中です (2026年6月公開予定)。<br>
+  各動画の <strong>説明文・チャプター・操作手順</strong> は既に記載済みなので、上記の<a href="/getting-started.html" style="color:var(--indigo);font-weight:700;">セットアップガイド</a>と組み合わせれば今すぐ操作を学べます。<br>
+  動画ファイルを差し替える時は <code>tutorial.html</code> の <code>videoUrl</code> プロパティを編集してください。
+</div>
+
+</div>
+
+<div class="footer">
+  RAKURAKU / <a href="/help.html">FAQ</a> · <a href="/demo-reservation.html">デモ予約</a> · <a href="/getting-started.html">ガイド</a><br>
+  &copy; 2026 RAKURAKU. All rights reserved.
+</div>
+
+<script src="/help-widget.js" defer></script>
+<script>
+const VIDEOS = [
+  {
+    id: 1,
+    title: '🚀 初回セットアップ + スタッフ招待',
+    duration: '2分50秒',
+    videoUrl: '', /* YouTube/Vimeo URL を入れる */
+    desc: '店舗アカウント作成からスタッフへのQRコード配布まで。最短3分で運用開始できる手順。',
+    chapters: [
+      '0:00 〜 サインアップ画面で店舗情報入力',
+      '0:45 〜 マスタデータ設定 (時給/時間帯/ホリデー)',
+      '1:30 〜 スタッフ招待用 QRコード生成',
+      '2:15 〜 LINE/印刷で QR を配布',
+    ],
+    target: 'shift.html'
+  },
+  {
+    id: 2,
+    title: '📝 スタッフが希望シフトを提出する',
+    duration: '2分10秒',
+    videoUrl: '',
+    desc: 'スタッフ側の操作。QRからアクセス → 4ステップで完了。多言語対応の使い方も解説。',
+    chapters: [
+      '0:00 〜 QR からスタッフ用画面へ',
+      '0:30 〜 STEP1 名前 + メール入力',
+      '0:55 〜 STEP2 希望日カレンダー選択',
+      '1:25 〜 STEP3 時間帯選択 (朝/昼/夜/カスタム)',
+      '1:50 〜 STEP4 確認・提出 + 言語切替',
+    ],
+    target: 'shift.html'
+  },
+  {
+    id: 3,
+    title: '⚡ 1タップでシフト自動生成 + 編集',
+    duration: '3分20秒',
+    videoUrl: '',
+    desc: '店長の核機能。希望が揃ったら 1タップで自動生成 → 不足コマは色で可視化 → 編集も簡単。',
+    chapters: [
+      '0:00 〜 「✨ シフト作成」ボタンタップ',
+      '0:35 〜 生成された時間バー (色付き) の見方',
+      '1:10 〜 シフト調整カレンダー (赤/黄/緑) で不足検知',
+      '1:50 〜 時間バータップで個別編集',
+      '2:30 〜 必要人員の日別オーバーライド',
+      '3:00 〜 印刷・全員通知ボタン',
+    ],
+    target: 'shift.html#manager'
+  },
+  {
+    id: 4,
+    title: '⏰ GPS打刻 + 出退勤管理',
+    duration: '2分40秒',
+    videoUrl: '',
+    desc: 'スタッフのGPS打刻・店長のリアルタイム監視・不正打刻アラートまで。',
+    chapters: [
+      '0:00 〜 スタッフ: マイシフト → 打刻画面',
+      '0:30 〜 GPS位置確認 → 出勤打刻',
+      '1:00 〜 休憩開始/終了 + 退勤打刻',
+      '1:35 〜 店長: リアルタイム出退勤ウィジェット',
+      '2:10 〜 不正打刻アラート (店舗外打刻検知)',
+    ],
+    target: 'attendance.html'
+  },
+  {
+    id: 5,
+    title: '💴 給与計算 + 個人給与確認 + CSV出力',
+    duration: '3分00秒',
+    videoUrl: '',
+    desc: '店長: 給与明細PDF発行・freee/MF用CSV出力。スタッフ: パスワード付き個人給与確認。',
+    chapters: [
+      '0:00 〜 店長: payroll.html で月選択 → 自動計算',
+      '0:40 〜 深夜割増/休憩控除の自動処理',
+      '1:15 〜 freee / マネーフォワード CSV エクスポート',
+      '1:50 〜 スタッフ: シフト画面 名前タップ → 個人給与',
+      '2:20 〜 パスワード設定 (初回) + 給与確認',
+      '2:45 〜 パスワード忘れ時のリセット手順',
+    ],
+    target: 'payroll.html'
+  },
+];
+
+const STORAGE_KEY = 'rakuraku-tutorial-progress';
+
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveProgress(p) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch(e) {}
+}
+
+function markWatched(id) {
+  const p = loadProgress();
+  p[id] = { watchedAt: Date.now() };
+  saveProgress(p);
+  render();
+}
+
+function render() {
+  const root = document.getElementById('video-grid');
+  const progress = loadProgress();
+  const watched = Object.keys(progress).length;
+
+  root.innerHTML = VIDEOS.map(v => {
+    const isWatched = !!progress[v.id];
+    return `<div class="video-card">
+      <div class="vc-grid">
+        <div class="video-wrap">
+          ${v.videoUrl
+            ? (v.videoUrl.includes('youtube') || v.videoUrl.includes('youtu.be')
+              ? `<iframe src="${v.videoUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+              : `<video controls src="${v.videoUrl}"></video>`)
+            : `<div class="video-placeholder">
+                 <div class="ic">▶️</div>
+                 <div class="msg">動画準備中</div>
+                 <div class="sub">下の手順を参考に操作してください</div>
+               </div>`}
+        </div>
+        <div class="vc-body">
+          <span class="vc-num">第${v.id}回 / 全5本</span>
+          <h3 class="vc-title">${v.title}</h3>
+          <div class="vc-duration">⏱ ${v.duration}</div>
+          <p class="vc-desc">${v.desc}</p>
+          <div class="vc-chapters">
+            ${v.chapters.map(c => `<div><strong>${c.split(' ')[0]}</strong> ${c.split(' ').slice(1).join(' ')}</div>`).join('')}
+          </div>
+          <div class="vc-actions">
+            <a href="/${v.target}" target="_blank" class="vc-btn vc-btn-primary">🔧 実際に操作してみる</a>
+            ${isWatched
+              ? `<button class="vc-btn vc-btn-done" onclick="unmarkWatched(${v.id})">✓ 視聴済み</button>`
+              : `<button class="vc-btn vc-btn-ghost" onclick="markWatched(${v.id})">📺 視聴完了</button>`}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('progress-pct').textContent = `${watched} / ${VIDEOS.length} 本`;
+  document.getElementById('progress-fill').style.width = (watched / VIDEOS.length * 100) + '%';
+  document.querySelectorAll('.progress-steps [data-step]').forEach((el, i) => {
+    el.style.color = progress[i + 1] ? 'var(--indigo)' : '';
+    el.style.fontWeight = progress[i + 1] ? '900' : '700';
+  });
+}
+
+function unmarkWatched(id) {
+  const p = loadProgress();
+  delete p[id];
+  saveProgress(p);
+  render();
+}
+
+document.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>

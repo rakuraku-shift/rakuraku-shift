@@ -70,6 +70,30 @@
     <lastmod>2026-05-28</lastmod>
   </url>
   <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/tutorial.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-05-28</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/roadmap.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+    <lastmod>2026-05-28</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/status.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-05-28</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/careers.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.65</priority>
+    <lastmod>2026-05-28</lastmod>
+  </url>
+  <url>
     <loc>https://rakuraku-shift-production.up.railway.app/flyer.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

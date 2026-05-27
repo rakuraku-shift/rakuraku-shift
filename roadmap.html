@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>ロードマップ — RAKURAKU</title>
+<meta name="description" content="RAKURAKU 開発ロードマップ・リリースノート・機能投票。みなさんからの要望が機能を作ります。" />
+<meta name="theme-color" content="#4F46E5">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;--blue:#3B82F6;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:var(--slate-50);min-height:100vh;line-height:1.7;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:1200px;margin:0 auto;padding:40px 24px;}
+
+  .hero{text-align:center;margin-bottom:42px;}
+  .hero-eyebrow{display:inline-block;background:var(--indigo-l);color:var(--indigo);font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:.04em;margin-bottom:14px;}
+  .hero h1{font-size:38px;font-weight:900;letter-spacing:-.02em;line-height:1.25;margin-bottom:12px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:15px;color:var(--slate-500);font-weight:600;}
+  @media(max-width:680px){.hero h1{font-size:26px;}}
+
+  .columns{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:40px;}
+  @media(max-width:1024px){.columns{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:600px){.columns{grid-template-columns:1fr;}}
+
+  .column{background:#fff;border-radius:14px;padding:18px;border:1.5px solid var(--slate-100);min-height:400px;}
+  .col-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid;}
+  .col-header.ideas{border-color:var(--slate-300);}
+  .col-header.planned{border-color:var(--blue);}
+  .col-header.in-progress{border-color:var(--amber);}
+  .col-header.shipped{border-color:var(--emerald);}
+  .col-title{font-size:13px;font-weight:900;display:flex;align-items:center;gap:6px;}
+  .col-count{font-size:10px;font-weight:800;padding:3px 9px;border-radius:10px;background:var(--slate-100);color:var(--slate-500);}
+
+  .card-item{background:var(--slate-50);border-radius:10px;padding:12px;margin-bottom:8px;border-left:3px solid var(--slate-200);}
+  .card-item.priority-high{border-left-color:var(--rose);}
+  .card-item.priority-medium{border-left-color:var(--amber);}
+  .card-item.priority-low{border-left-color:var(--blue);}
+  .card-item.shipped{background:#F0FDF4;border-left-color:var(--emerald);}
+
+  .item-title{font-size:13px;font-weight:800;margin-bottom:5px;line-height:1.5;}
+  .item-desc{font-size:11px;color:var(--slate-700);line-height:1.7;margin-bottom:8px;}
+  .item-meta{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--slate-500);font-weight:700;}
+  .item-tag{padding:2px 7px;border-radius:8px;font-size:9px;font-weight:800;background:var(--slate-100);color:var(--slate-700);}
+  .vote-btn{background:#fff;border:1.5px solid var(--slate-200);border-radius:14px;padding:4px 10px;cursor:pointer;font-family:inherit;font-size:10px;font-weight:800;color:var(--slate-700);display:inline-flex;align-items:center;gap:4px;}
+  .vote-btn:hover{background:var(--indigo-l);border-color:var(--indigo);color:var(--indigo);}
+  .vote-btn.voted{background:var(--indigo);color:#fff;border-color:var(--indigo);}
+
+  .section{background:#fff;border-radius:14px;padding:24px;border:1.5px solid var(--slate-100);margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.04);}
+  .section h2{font-size:18px;font-weight:900;margin-bottom:16px;letter-spacing:-.01em;}
+
+  .release-item{padding:16px;border-radius:10px;margin-bottom:10px;background:linear-gradient(135deg,#FAF5FF,#fff);border-left:4px solid var(--purple);}
+  .release-version{font-size:11px;font-weight:900;color:var(--purple);background:#F3E8FF;padding:3px 10px;border-radius:10px;display:inline-block;}
+  .release-date{font-size:11px;color:var(--slate-500);font-weight:700;margin-left:8px;}
+  .release-title{font-size:14px;font-weight:900;margin:6px 0 4px;}
+  .release-changes{font-size:12px;color:var(--slate-700);line-height:1.8;}
+  .release-changes li{margin-bottom:3px;}
+
+  .suggest-card{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-radius:14px;padding:28px;margin-bottom:20px;}
+  .suggest-card h2{font-size:18px;font-weight:900;margin-bottom:8px;}
+  .suggest-card p{font-size:13px;opacity:.92;margin-bottom:16px;}
+  .suggest-form input, .suggest-form textarea{width:100%;padding:10px 14px;border:none;border-radius:8px;font-size:13px;font-family:inherit;margin-bottom:8px;}
+  .suggest-form textarea{min-height:80px;resize:vertical;}
+  .suggest-form button{padding:11px 22px;background:#fff;color:var(--indigo);border:none;border-radius:8px;font-weight:900;font-size:13px;cursor:pointer;font-family:inherit;}
+
+  .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .filter-pill{padding:6px 12px;border-radius:14px;font-size:11px;font-weight:800;background:var(--slate-100);color:var(--slate-700);cursor:pointer;border:none;font-family:inherit;}
+  .filter-pill.active{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;}
+
+  .footer-note{text-align:center;padding:30px 0;font-size:11px;color:var(--slate-500);margin-top:30px;border-top:1px solid var(--slate-100);}
+  .footer-note a{color:var(--indigo);text-decoration:none;}
+
+  .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px;}
+  @media(max-width:680px){.stats-bar{grid-template-columns:repeat(2,1fr);}}
+  .stat-box{background:#fff;border-radius:12px;padding:18px;text-align:center;border:1.5px solid var(--slate-100);}
+  .stat-box .v{font-size:24px;font-weight:900;letter-spacing:-.02em;}
+  .stat-box .l{font-size:10px;color:var(--slate-500);font-weight:800;margin-top:3px;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU Roadmap</span></a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;">← トップへ</a>
+  </div>
+</header>
+
+<div class="container">
+
+<section class="hero">
+  <div class="hero-eyebrow">🗺 開発ロードマップ</div>
+  <h1>あなたの要望が <span class="grad">次の機能</span> になる</h1>
+  <p>計画中・開発中・リリース済みの全機能を公開。投票で優先度を決めています。</p>
+</section>
+
+<div class="stats-bar">
+  <div class="stat-box"><div class="v" style="color:var(--emerald);" id="s-shipped">0</div><div class="l">完成済み機能</div></div>
+  <div class="stat-box"><div class="v" style="color:var(--amber);" id="s-progress">0</div><div class="l">開発中</div></div>
+  <div class="stat-box"><div class="v" style="color:var(--blue);" id="s-planned">0</div><div class="l">計画中</div></div>
+  <div class="stat-box"><div class="v" style="color:var(--slate-500);" id="s-ideas">0</div><div class="l">アイデア</div></div>
+</div>
+
+<div class="filter-row">
+  <button class="filter-pill active" onclick="filterCat('all',this)">全カテゴリ</button>
+  <button class="filter-pill" onclick="filterCat('core',this)">🎯 コア機能</button>
+  <button class="filter-pill" onclick="filterCat('mobile',this)">📱 モバイル</button>
+  <button class="filter-pill" onclick="filterCat('integration',this)">🔌 連携</button>
+  <button class="filter-pill" onclick="filterCat('analytics',this)">📊 分析</button>
+  <button class="filter-pill" onclick="filterCat('ux',this)">✨ UX改善</button>
+</div>
+
+<div class="columns">
+  <div class="column">
+    <div class="col-header ideas">
+      <div class="col-title">💡 アイデア</div>
+      <span class="col-count" id="c-ideas">0</span>
+    </div>
+    <div id="ideas-list"></div>
+  </div>
+
+  <div class="column">
+    <div class="col-header planned">
+      <div class="col-title">📅 計画中</div>
+      <span class="col-count" id="c-planned">0</span>
+    </div>
+    <div id="planned-list"></div>
+  </div>
+
+  <div class="column">
+    <div class="col-header in-progress">
+      <div class="col-title">🚧 開発中</div>
+      <span class="col-count" id="c-progress">0</span>
+    </div>
+    <div id="progress-list"></div>
+  </div>
+
+  <div class="column">
+    <div class="col-header shipped">
+      <div class="col-title">✅ 完成</div>
+      <span class="col-count" id="c-shipped">0</span>
+    </div>
+    <div id="shipped-list"></div>
+  </div>
+</div>
+
+<div class="suggest-card">
+  <h2>💌 機能アイデアを投稿する</h2>
+  <p>あなたが「これがあれば便利」と思う機能を提案してください。投票数が多いものから着手します。</p>
+  <form class="suggest-form" onsubmit="event.preventDefault();submitIdea();">
+    <input type="text" id="idea-title" placeholder="機能タイトル (例: シフトのCSV取込)" required maxlength="80" />
+    <textarea id="idea-desc" placeholder="どんな場面で使いたいか・どんな効果があるか (任意)" maxlength="500"></textarea>
+    <input type="email" id="idea-email" placeholder="連絡用メール (任意・実装したら通知します)" />
+    <button type="submit">📨 投稿する</button>
+  </form>
+</div>
+
+<div class="section">
+  <h2>🚀 直近のリリース履歴</h2>
+  <div id="releases"></div>
+</div>
+
+</div>
+
+<div class="footer-note">
+  RAKURAKU Roadmap · 月1回更新<br>
+  問い合わせ: <a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a> · 📞 080-5168-3303<br>
+  &copy; 2026 RAKURAKU. All rights reserved.
+</div>
+
+<script>
+const ROADMAP = [
+  /* ─── shipped ─── */
+  { id:'r1',  status:'shipped', cat:'core', title:'1タップ自動シフト生成', desc:'希望提出を元に最適配置を自動計算', votes:0, priority:'high', shippedAt:'2026-05' },
+  { id:'r2',  status:'shipped', cat:'core', title:'GPS出退勤打刻', desc:'店舗範囲内で打刻、不正打刻を自動検知', votes:0, priority:'high', shippedAt:'2026-05' },
+  { id:'r3',  status:'shipped', cat:'core', title:'深夜割増自動計算 +25%', desc:'22時以降の勤務時間を自動で割増', votes:0, priority:'high', shippedAt:'2026-05' },
+  { id:'r4',  status:'shipped', cat:'core', title:'3段階自動募集 (内部→社内→Timee)', desc:'人手不足時の段階的な人材確保', votes:0, priority:'high', shippedAt:'2026-05' },
+  { id:'r5',  status:'shipped', cat:'mobile', title:'PWA + プッシュ通知', desc:'ホーム画面追加・オフライン対応・通知', votes:0, priority:'high', shippedAt:'2026-05' },
+  { id:'r6',  status:'shipped', cat:'integration', title:'LINE公式アカウント連携', desc:'Messaging APIで全員一斉通知', votes:0, priority:'medium', shippedAt:'2026-05' },
+  { id:'r7',  status:'shipped', cat:'integration', title:'freee/MF CSVエクスポート', desc:'給与計算ソフトへ取込可能', votes:0, priority:'medium', shippedAt:'2026-05' },
+  { id:'r8',  status:'shipped', cat:'analytics', title:'本部ダッシュボード', desc:'複数店舗の横断KPI監視', votes:0, priority:'medium', shippedAt:'2026-05' },
+  { id:'r9',  status:'shipped', cat:'ux', title:'多言語対応 (日/英/中/韓)', desc:'外国人スタッフ対応', votes:0, priority:'medium', shippedAt:'2026-05' },
+  { id:'r10', status:'shipped', cat:'core', title:'個人給与照会 (パスワード保護)', desc:'スタッフ本人だけが見れる給与', votes:0, priority:'medium', shippedAt:'2026-05' },
+
+  /* ─── in-progress ─── */
+  { id:'p1', status:'in-progress', cat:'integration', title:'POS自動定期取込 (Square)', desc:'毎日1回 売上を自動でSquareから取込', votes:8, priority:'high' },
+  { id:'p2', status:'in-progress', cat:'core', title:'iOS/Android ネイティブアプリ', desc:'Capacitorでアプリストア配信', votes:12, priority:'high' },
+
+  /* ─── planned ─── */
+  { id:'pl1', status:'planned', cat:'integration', title:'freee API 直接連携', desc:'CSV経由ではなく API で給与データを直接送信', votes:5, priority:'medium' },
+  { id:'pl2', status:'planned', cat:'analytics', title:'AI シフト最適化 (来客予測)', desc:'過去売上から最適人員を機械学習で予測', votes:15, priority:'medium' },
+  { id:'pl3', status:'planned', cat:'mobile', title:'Apple Watch 打刻', desc:'時計をかざすだけで GPS 打刻', votes:3, priority:'low' },
+  { id:'pl4', status:'planned', cat:'ux', title:'ダークモード対応', desc:'夜の店舗運営で目に優しい', votes:9, priority:'medium' },
+  { id:'pl5', status:'planned', cat:'integration', title:'勘定奉行 / 弥生 連携', desc:'中小企業の主要会計ソフトに対応', votes:2, priority:'low' },
+
+  /* ─── ideas ─── */
+  { id:'i1', status:'ideas', cat:'analytics', title:'シフト効率ベンチマーク', desc:'同業他店との人件費率比較 (匿名)', votes:7, priority:'low' },
+  { id:'i2', status:'ideas', cat:'core', title:'動画マニュアル機能', desc:'店舗独自のマニュアル動画を配信', votes:4, priority:'low' },
+  { id:'i3', status:'ideas', cat:'integration', title:'POS連携 (スマレジ)', desc:'スマレジAPI連携で売上自動取込', votes:6, priority:'medium' },
+  { id:'i4', status:'ideas', cat:'ux', title:'シフト交換マッチング', desc:'スタッフ間で希望日を交換できる', votes:11, priority:'medium' },
+];
+
+const VOTES_KEY = 'rakuraku-roadmap-votes';
+
+function loadVotes() {
+  try { return JSON.parse(localStorage.getItem(VOTES_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+
+function saveVotes(v) {
+  try { localStorage.setItem(VOTES_KEY, JSON.stringify(v)); } catch(e) {}
+}
+
+let _filterCat = 'all';
+
+function filterCat(cat, btn) {
+  _filterCat = cat;
+  document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function render() {
+  const votes = loadVotes();
+  const filtered = ROADMAP.filter(r => _filterCat === 'all' || r.cat === _filterCat);
+  const buckets = { ideas: [], planned: [], 'in-progress': [], shipped: [] };
+  filtered.forEach(r => buckets[r.status] && buckets[r.status].push(r));
+
+  /* 投票数で並び替え (shipped以外) */
+  buckets.ideas.sort((a,b) => (b.votes + (votes[b.id] ? 1 : 0)) - (a.votes + (votes[a.id] ? 1 : 0)));
+  buckets.planned.sort((a,b) => (b.votes + (votes[b.id] ? 1 : 0)) - (a.votes + (votes[a.id] ? 1 : 0)));
+  buckets['in-progress'].sort((a,b) => (b.votes + (votes[b.id] ? 1 : 0)) - (a.votes + (votes[a.id] ? 1 : 0)));
+
+  document.getElementById('ideas-list').innerHTML = renderList(buckets.ideas, votes);
+  document.getElementById('planned-list').innerHTML = renderList(buckets.planned, votes);
+  document.getElementById('progress-list').innerHTML = renderList(buckets['in-progress'], votes);
+  document.getElementById('shipped-list').innerHTML = renderList(buckets.shipped, votes, true);
+
+  document.getElementById('c-ideas').textContent = buckets.ideas.length;
+  document.getElementById('c-planned').textContent = buckets.planned.length;
+  document.getElementById('c-progress').textContent = buckets['in-progress'].length;
+  document.getElementById('c-shipped').textContent = buckets.shipped.length;
+
+  document.getElementById('s-shipped').textContent = ROADMAP.filter(r => r.status === 'shipped').length;
+  document.getElementById('s-progress').textContent = ROADMAP.filter(r => r.status === 'in-progress').length;
+  document.getElementById('s-planned').textContent = ROADMAP.filter(r => r.status === 'planned').length;
+  document.getElementById('s-ideas').textContent = ROADMAP.filter(r => r.status === 'ideas').length;
+}
+
+function renderList(items, votes, isShipped) {
+  if (!items.length) return '<div style="font-size:11px;color:var(--slate-300);text-align:center;padding:20px;">なし</div>';
+  return items.map(r => {
+    const voted = votes[r.id];
+    const total = r.votes + (voted ? 1 : 0);
+    const cls = 'card-item ' + (isShipped ? 'shipped' : 'priority-' + (r.priority || 'low'));
+    return `<div class="${cls}">
+      <div class="item-title">${escapeHtml(r.title)}</div>
+      <div class="item-desc">${escapeHtml(r.desc)}</div>
+      <div class="item-meta">
+        <span class="item-tag">${catLabel(r.cat)}</span>
+        ${isShipped
+          ? `<span style="color:var(--emerald);">✓ ${r.shippedAt || ''}</span>`
+          : `<button class="vote-btn ${voted ? 'voted' : ''}" onclick="vote('${r.id}')">${voted ? '✓' : '👍'} ${total}</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function vote(id) {
+  const votes = loadVotes();
+  if (votes[id]) {
+    delete votes[id];
+  } else {
+    votes[id] = Date.now();
+    /* サーバーに通知 (集計用) */
+    fetch('/api/roadmap-vote', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, voted: true }),
+    }).catch(()=>{});
+  }
+  saveVotes(votes);
+  render();
+}
+
+function catLabel(c) {
+  return { core: '🎯 コア', mobile: '📱 モバイル', integration: '🔌 連携', analytics: '📊 分析', ux: '✨ UX' }[c] || c;
+}
+
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+async function submitIdea() {
+  const title = document.getElementById('idea-title').value.trim();
+  const desc = document.getElementById('idea-desc').value.trim();
+  const email = document.getElementById('idea-email').value.trim();
+  if (!title) { alert('⚠ タイトルは必須です'); return; }
+  try {
+    await fetch('/api/roadmap-idea', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, desc, email }),
+    });
+    alert('🙏 投稿ありがとうございます!\n検討後、ロードマップに追加します。');
+    document.getElementById('idea-title').value = '';
+    document.getElementById('idea-desc').value = '';
+    document.getElementById('idea-email').value = '';
+  } catch(e) {
+    const body = encodeURIComponent(`機能要望\n\nタイトル: ${title}\n\n説明:\n${desc}\n\nメール: ${email}`);
+    window.location.href = `mailto:koizumishota0323@gmail.com?subject=【RAKURAKU 機能要望】${title}&body=${body}`;
+  }
+}
+
+const RELEASES = [
+  {
+    version: 'v1.5.0',
+    date: '2026-05-28',
+    title: 'スケール準備 + 個人給与パスワード',
+    changes: [
+      '個人給与照会 (パスワード保護) 追加',
+      '無料期間上限ポリシー (2ヶ月) 実装',
+      '動画チュートリアル / オンボーディング自動メール / 解約アンケート / Status / Roadmap 公開',
+    ],
+  },
+  {
+    version: 'v1.4.0',
+    date: '2026-05-28',
+    title: '大規模機能追加 (12ページ・10API)',
+    changes: [
+      'マスタデータ管理 / スタッフ別月次サマリ / 本部ダッシュボード',
+      '通知設定 / LINE Messaging API / シフト確定全員通知',
+      'POS売上取込 / お知らせ管理 / データバックアップ',
+    ],
+  },
+  {
+    version: 'v1.3.0',
+    date: '2026-05-28',
+    title: 'シフト管理画面の大型改修',
+    changes: [
+      '時間バー塗りつぶし (グラデーション)',
+      '不足カレンダー (赤/黄/緑色分け)',
+      '時間編集モーダル + 必要人員 日別オーバーライド',
+      '個別欠勤マーク + 自動代替募集',
+    ],
+  },
+];
+
+function renderReleases() {
+  document.getElementById('releases').innerHTML = RELEASES.map(r => `
+    <div class="release-item">
+      <span class="release-version">${r.version}</span>
+      <span class="release-date">${r.date}</span>
+      <div class="release-title">${escapeHtml(r.title)}</div>
+      <ul class="release-changes">${r.changes.map(c => '<li>' + escapeHtml(c) + '</li>').join('')}</ul>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  render();
+  renderReleases();
+});
+</script>
+<script src="/help-widget.js" defer></script>
+</body>
+</html>
