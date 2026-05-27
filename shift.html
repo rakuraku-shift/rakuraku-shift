@@ -626,23 +626,84 @@
     }
     .tc-row .tc-track { height:28px; }
 
-    /* バー */
+    /* バー — 色塗りつぶし版（時間マスをはっきり表示） */
     .tc-bar {
-      position:absolute; top:3px; height:22px; border-radius:4px;
-      display:flex; align-items:center; padding:0 5px; overflow:hidden;
-      border:1.5px solid transparent; min-width:3px;
-      transition:filter .15s; cursor:default;
+      position:absolute; top:3px; height:22px; border-radius:5px;
+      display:flex; align-items:center; padding:0 6px; overflow:hidden;
+      border:none; min-width:3px; cursor:pointer;
+      transition:filter .15s, transform .1s, box-shadow .15s;
+      box-shadow:0 1px 3px rgba(0,0,0,.08);
     }
-    .tc-bar:hover { filter:brightness(.94); }
-    .tc-bar.hall    { background:var(--orange-l); border-color:var(--orange); color:#7C2D12; }
-    .tc-bar.kitchen { background:var(--green-l);  border-color:var(--green);  color:#14532D; }
-    .tc-bar.cashier { background:var(--blue-l);   border-color:var(--blue);   color:#1E3A8A; }
-    .tc-bname { font-size:10px; font-weight:700; white-space:nowrap; flex-shrink:1; overflow:hidden; text-overflow:ellipsis; }
-    .tc-btime { font-size:8px; opacity:.65; white-space:nowrap; flex-shrink:0; margin-left:3px; }
+    .tc-bar:hover { filter:brightness(1.05); transform:translateY(-1px); box-shadow:0 3px 8px rgba(0,0,0,.15); }
+    .tc-bar:active { transform:scale(.97); }
+    .tc-bar.hall    { background:linear-gradient(135deg,#FB923C,#EA580C); color:#fff; }
+    .tc-bar.kitchen { background:linear-gradient(135deg,#34D399,#059669); color:#fff; }
+    .tc-bar.cashier { background:linear-gradient(135deg,#60A5FA,#2563EB); color:#fff; }
+    .tc-bname { font-size:10px; font-weight:800; white-space:nowrap; flex-shrink:1; overflow:hidden; text-overflow:ellipsis; text-shadow:0 1px 2px rgba(0,0,0,.2); }
+    .tc-btime { font-size:8.5px; font-weight:700; opacity:.95; white-space:nowrap; flex-shrink:0; margin-left:4px; text-shadow:0 1px 2px rgba(0,0,0,.15); }
     .tc-bar.tc-unknown {
-      opacity:.38; border-style:dashed;
-      background:var(--slate-100); border-color:var(--slate-300); color:var(--slate-500);
+      opacity:.55; background:linear-gradient(135deg,#94A3B8,#64748B); color:#fff;
     }
+    .tc-bar.editable::after { content:'✏️'; position:absolute; top:-1px; right:-1px; font-size:9px; opacity:0; transition:opacity .15s; }
+    .tc-bar.editable:hover::after { opacity:1; }
+    .tc-staff-name { cursor:pointer; transition:color .15s; }
+    .tc-staff-name:hover { color:var(--indigo); text-decoration:underline; }
+
+    /* シフト調整カレンダー */
+    .adj-cal { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-top:8px; }
+    .adj-cal-dow { font-size:10px; font-weight:800; color:var(--slate-500); text-align:center; padding:4px 0; letter-spacing:.04em; }
+    .adj-cal-dow.sun { color:#EF4444; } .adj-cal-dow.sat { color:#3B82F6; }
+    .adj-cal-cell {
+      aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      border-radius:8px; padding:4px 2px; font-size:11px; font-weight:700; cursor:pointer;
+      background:var(--slate-50); color:var(--slate-700); position:relative; transition:all .15s; border:2px solid transparent;
+    }
+    .adj-cal-cell.empty { visibility:hidden; }
+    .adj-cal-cell:hover:not(.empty) { transform:scale(1.04); box-shadow:0 4px 12px rgba(0,0,0,.15); }
+    .adj-cal-cell-num { font-size:13px; font-weight:900; }
+    .adj-cal-cell-mark { font-size:8px; font-weight:700; margin-top:1px; line-height:1; }
+    .adj-cal-cell.ok { background:linear-gradient(135deg,#10B981,#059669); color:#fff; }
+    .adj-cal-cell.warn { background:linear-gradient(135deg,#F59E0B,#D97706); color:#fff; }
+    .adj-cal-cell.danger { background:linear-gradient(135deg,#EF4444,#DC2626); color:#fff; }
+    .adj-cal-cell.sun:not(.ok):not(.warn):not(.danger) { color:#EF4444; }
+    .adj-cal-cell.sat:not(.ok):not(.warn):not(.danger) { color:#3B82F6; }
+    .adj-cal-legend { display:flex; gap:14px; justify-content:center; margin-top:14px; font-size:11px; font-weight:700; flex-wrap:wrap; }
+    .adj-cal-legend-item { display:inline-flex; align-items:center; gap:5px; color:var(--slate-700); }
+    .adj-cal-legend-dot { width:14px; height:14px; border-radius:4px; }
+
+    /* 編集モーダル */
+    .edit-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,.7); z-index:1100; align-items:center; justify-content:center; padding:18px; backdrop-filter:blur(6px); }
+    .edit-overlay.show { display:flex; }
+    .edit-card { background:#fff; border-radius:16px; padding:22px; width:100%; max-width:380px; box-shadow:0 20px 60px rgba(0,0,0,.3); animation:editIn .25s; }
+    @keyframes editIn { from { opacity:0; transform:scale(.95); } to { opacity:1; transform:scale(1); } }
+    .edit-card h3 { font-size:16px; font-weight:900; margin-bottom:4px; }
+    .edit-card .sub { font-size:11px; color:var(--slate-500); margin-bottom:14px; font-weight:600; }
+    .edit-card label { display:block; font-size:11px; font-weight:800; color:var(--slate-700); margin-bottom:5px; letter-spacing:.04em; }
+    .edit-card input[type=time], .edit-card input[type=number] {
+      width:100%; padding:11px 12px; border:1.5px solid var(--slate-200); border-radius:9px;
+      font-size:14px; font-weight:700; font-family:inherit; outline:none; margin-bottom:10px;
+    }
+    .edit-card input:focus { border-color:var(--indigo); }
+    .edit-row { display:flex; gap:8px; align-items:center; margin-bottom:6px; }
+    .edit-row span { font-size:13px; font-weight:800; color:var(--slate-500); }
+    .edit-card .row2 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+    .edit-btn { width:100%; padding:13px; border:none; border-radius:10px; font-size:14px; font-weight:900; cursor:pointer; font-family:inherit; margin-top:6px; }
+    .edit-btn.save { background:linear-gradient(135deg,#4F46E5,#7C3AED); color:#fff; }
+    .edit-btn.delete { background:#FEF2F2; color:#DC2626; border:1.5px solid rgba(239,68,68,.3); margin-top:8px; }
+    .edit-btn.cancel { background:var(--slate-100); color:var(--slate-700); margin-top:6px; }
+
+    /* スタッフ評価モーダル（ポジション別のみ・コメントなし） */
+    .staff-eval-modal { display:none; position:fixed; inset:0; background:rgba(15,23,42,.7); z-index:1100; align-items:center; justify-content:center; padding:18px; backdrop-filter:blur(6px); }
+    .staff-eval-modal.show { display:flex; }
+    .se-card { background:#fff; border-radius:16px; padding:22px; width:100%; max-width:400px; box-shadow:0 20px 60px rgba(0,0,0,.3); }
+    .se-name { font-size:18px; font-weight:900; text-align:center; margin-bottom:14px; }
+    .se-pos-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--slate-100); }
+    .se-pos-row:last-child { border-bottom:none; }
+    .se-pos-name { font-size:13px; font-weight:800; }
+    .se-stars { display:flex; gap:3px; }
+    .se-star { font-size:24px; cursor:pointer; color:#E2E8F0; transition:color .1s, transform .1s; }
+    .se-star.filled { color:#F59E0B; }
+    .se-star:hover { transform:scale(1.2); }
 
     /* 未配置行 */
     .tc-unset-row {
@@ -2789,14 +2850,12 @@
   </div>
 
   <!-- Staff Evaluation（管理者のみ） -->
-  <div class="card" id="staff-eval-card" style="margin-top:12px;">
-    <div class="section-hdr">
-      <div class="section-title">📊 スタッフ評価</div>
-      <span class="srv-readonly-badge" style="background:rgba(239,68,68,.08);color:#F87171;border:1px solid rgba(239,68,68,.2);">🔒 管理者のみ</span>
-    </div>
-    <div id="staff-eval-list">
-      <div class="reg-empty">スタッフが提出すると評価できます</div>
-    </div>
+  <!-- 旧スタッフ評価カードは削除。生成シフトの名前タップで評価する方式に変更 -->
+  <div class="card" id="staff-eval-card" style="margin-top:12px;display:none;">
+    <div id="staff-eval-list"></div>
+  </div>
+  <div style="background:linear-gradient(135deg,#EEF2FF,#FAF5FF);border:1.5px dashed #A5B4FC;border-radius:12px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--indigo);font-weight:700;line-height:1.7;">
+    💡 <strong>スタッフ評価</strong>は、生成されたシフト上のスタッフ名をタップして入力できます（ポジション別5段階）
   </div>
 
   <!-- Survey results (read-only) -->
@@ -2942,6 +3001,50 @@
   </div>
 
   <!-- ════════ シフト調整依頼カード（不足コマに既存スタッフへの時間調整依頼を提案） ════════ -->
+  <!-- 時間編集モーダル (シフトの時間バーをタップ → 開く) -->
+  <div class="edit-overlay" id="edit-time-overlay" onclick="if(event.target===this)closeEditTime()">
+    <div class="edit-card">
+      <h3>⏰ シフト時間を編集</h3>
+      <div class="sub" id="edit-time-staff-info">―</div>
+      <label>開始 〜 終了</label>
+      <div class="edit-row">
+        <input type="time" id="edit-time-start" />
+        <span>〜</span>
+        <input type="time" id="edit-time-end" />
+      </div>
+      <button class="edit-btn save" onclick="saveEditTime()">💾 保存</button>
+      <button class="edit-btn delete" onclick="deleteEditTime()">🗑 この時間を削除</button>
+      <button class="edit-btn cancel" onclick="closeEditTime()">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- 必要人員編集モーダル (日付ヘッダーをタップ → 開く) -->
+  <div class="edit-overlay" id="edit-need-overlay" onclick="if(event.target===this)closeEditNeed()">
+    <div class="edit-card">
+      <h3>👥 必要人員を編集</h3>
+      <div class="sub" id="edit-need-date-info">―</div>
+      <label>朝（9:00〜13:00）</label>
+      <input type="number" id="edit-need-morning" min="0" max="20" step="1" />
+      <label>昼（11:00〜15:00）</label>
+      <input type="number" id="edit-need-lunch" min="0" max="20" step="1" />
+      <label>夜（17:00〜23:00）</label>
+      <input type="number" id="edit-need-evening" min="0" max="20" step="1" />
+      <button class="edit-btn save" onclick="saveEditNeed()">💾 保存</button>
+      <button class="edit-btn cancel" onclick="closeEditNeed()">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- スタッフ評価モーダル (シフト上の名前タップ → 開く・ポジション別のみ) -->
+  <div class="staff-eval-modal" id="staff-eval-modal" onclick="if(event.target===this)closeStaffEval()">
+    <div class="se-card">
+      <div class="se-name" id="se-name">―</div>
+      <div style="font-size:11px;color:var(--slate-500);text-align:center;margin-bottom:14px;font-weight:600;">ポジション別 5段階評価</div>
+      <div id="se-positions"></div>
+      <button class="edit-btn save" onclick="saveStaffEval()" style="margin-top:14px;">💾 評価を保存</button>
+      <button class="edit-btn cancel" onclick="closeStaffEval()">閉じる</button>
+    </div>
+  </div>
+
   <div class="card" id="adjustment-card" style="display:none;margin-top:12px;">
     <div class="section-hdr" style="margin-bottom:6px;">
       <div class="section-title">📧 シフト調整依頼</div>
@@ -5028,10 +5131,41 @@
     document.getElementById('print-bar-sub').textContent = `${allDates.length}日分 · ${allStaff.length}名 — 印刷してスタッフに配布`;
     document.getElementById('generated-card').scrollIntoView({ behavior:'smooth', block:'start' });
 
-    /* 🆕 シフト調整依頼カードを表示（不足コマがあれば既存スタッフに調整依頼） */
+    /* 🆕 シフト調整依頼カードを表示（カレンダー形式・色分け） */
     const shortages = analyzeShortages(schedule, allDates, allStaff, rules);
     _bulkAdjustmentCache = shortages;
+    _lastSchedule = schedule; // カレンダー描画と編集に必要
     renderAdjustmentCard(shortages);
+
+    /* 生成シフトのバーをクリック編集可能に */
+    setTimeout(function() {
+      document.querySelectorAll('.tc-bar:not(.tc-unknown)').forEach(function(bar) {
+        bar.classList.add('editable');
+        bar.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const nameEl = this.closest('.tc-row')?.querySelector('.tc-staff-name');
+          const name = nameEl ? nameEl.textContent.trim() : '';
+          const timeText = this.querySelector('.tc-btime')?.textContent.trim() || '';
+          openEditTime(name, timeText, this);
+        });
+      });
+      /* スタッフ名タップで評価モーダル */
+      document.querySelectorAll('.tc-staff-name').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+          e.stopPropagation();
+          openStaffEval(this.textContent.trim());
+        });
+      });
+      /* 日付ヘッダタップで必要人員編集 */
+      document.querySelectorAll('.tc-section-date').forEach(function(el) {
+        el.style.cursor = 'pointer';
+        el.title = 'クリックで必要人員を編集';
+        el.addEventListener('click', function() {
+          const date = el.dataset.date || '';
+          if (date) openEditNeed(date);
+        });
+      });
+    }, 100);
 
     /* ✅ 計算ミス検知バリデーション */
     if (typeof validateGeneratedShift === 'function') validateGeneratedShift();
@@ -5273,8 +5407,8 @@
 
       return `<div class="tc-section${satCls}">
         <div class="tc-section-hdr">
-          <div class="tc-section-date">
-            ${m}/${d} <span class="tc-dow">${DAY_NAMES[dow]}</span>
+          <div class="tc-section-date" data-date="${date}" title="クリックで必要人員を編集">
+            ${m}/${d} <span class="tc-dow">${DAY_NAMES[dow]}</span> <span style="font-size:10px;opacity:.6;">✏️</span>
           </div>
           <div class="tc-section-meta">${meta}</div>
         </div>
@@ -5444,8 +5578,89 @@
     return result;
   }
 
-  /* 調整依頼カードのHTMLを描画 */
+  /* 調整依頼カードのHTMLを描画（カレンダー形式 + 色分け） */
   function renderAdjustmentCard(shortages) {
+    const card = document.getElementById('adjustment-card');
+    if (!card) return;
+
+    /* 月のカレンダーを構築 — 全日程 + その日の充足状況 */
+    const rules = loadTimeRules();
+    const schedule = _lastSchedule || {};
+    const allDates = Object.keys(schedule).sort();
+
+    if (!allDates.length) {
+      card.style.display = 'none';
+      return;
+    }
+    card.style.display = 'block';
+
+    /* shortages を date → 集計マップに変換 */
+    const shortageMap = {};
+    (shortages || []).forEach(s => {
+      if (!shortageMap[s.date]) shortageMap[s.date] = { totalNeeded: 0, totalTarget: 0, periods: [] };
+      shortageMap[s.date].totalNeeded += s.needed;
+      shortageMap[s.date].totalTarget += s.target;
+      shortageMap[s.date].periods.push({ period: s.period, needed: s.needed, target: s.target });
+    });
+
+    /* 集計バッジ */
+    document.getElementById('adj-count-badge').textContent = (shortages || []).length + 'コマ不足';
+
+    /* カレンダーHTML生成 */
+    const first = new Date(allDates[0]);
+    const year = first.getFullYear(), month = first.getMonth();
+    const monthFirst = new Date(year, month, 1);
+    const monthLast = new Date(year, month + 1, 0);
+    const startDow = monthFirst.getDay();
+    const daysInMonth = monthLast.getDate();
+
+    let calHtml = '';
+    /* 曜日ヘッダー */
+    ['日','月','火','水','木','金','土'].forEach((d, i) => {
+      const cls = i === 0 ? 'sun' : (i === 6 ? 'sat' : '');
+      calHtml += `<div class="adj-cal-dow ${cls}">${d}</div>`;
+    });
+    /* 空セル */
+    for (let i = 0; i < startDow; i++) calHtml += `<div class="adj-cal-cell empty"></div>`;
+    /* 日付セル */
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const dow = new Date(year, month, day).getDay();
+      const dowCls = dow === 0 ? 'sun' : (dow === 6 ? 'sat' : '');
+      let cellCls = '', mark = '';
+      if (schedule[dateStr]) {
+        const sh = shortageMap[dateStr];
+        if (sh) {
+          /* 不足率 = needed / target */
+          const ratio = sh.totalTarget > 0 ? (sh.totalNeeded / sh.totalTarget) : 0;
+          if (ratio >= 0.5) { cellCls = 'danger'; mark = `🚫 -${sh.totalNeeded}`; }
+          else { cellCls = 'warn'; mark = `⚠ -${sh.totalNeeded}`; }
+        } else {
+          cellCls = 'ok'; mark = '✓ 充足';
+        }
+      }
+      calHtml += `<div class="adj-cal-cell ${cellCls} ${dowCls}" onclick="openEditNeed('${dateStr}')" title="${dateStr}">
+        <div class="adj-cal-cell-num">${day}</div>
+        <div class="adj-cal-cell-mark">${mark}</div>
+      </div>`;
+    }
+
+    document.getElementById('adjustment-content').innerHTML = `
+      <div style="font-size:11px;color:var(--slate-500);font-weight:700;margin-bottom:10px;line-height:1.6;">
+        💡 各日付タップで <strong>必要人員を編集</strong> できます。色は人員充足状況：
+      </div>
+      <div class="adj-cal">${calHtml}</div>
+      <div class="adj-cal-legend">
+        <div class="adj-cal-legend-item"><span class="adj-cal-legend-dot" style="background:linear-gradient(135deg,#10B981,#059669);"></span>充足</div>
+        <div class="adj-cal-legend-item"><span class="adj-cal-legend-dot" style="background:linear-gradient(135deg,#F59E0B,#D97706);"></span>少し不足</div>
+        <div class="adj-cal-legend-item"><span class="adj-cal-legend-dot" style="background:linear-gradient(135deg,#EF4444,#DC2626);"></span>大幅不足</div>
+        <div class="adj-cal-legend-item"><span class="adj-cal-legend-dot" style="background:var(--slate-50);border:1px solid var(--slate-200);"></span>未確定</div>
+      </div>
+    `;
+  }
+
+  /* 旧版（ストック保持） */
+  function _renderAdjustmentCardLegacy(shortages) {
     const card = document.getElementById('adjustment-card');
     if (!card) return;
     if (!shortages || shortages.length === 0) {
@@ -5641,6 +5856,157 @@
         el.style.display = 'none';
       }
     } catch(e) { console.warn('[validate]', e); }
+  }
+
+  /* ════════ 時間編集モーダル ════════ */
+  let _editTimeCtx = null;
+  function openEditTime(name, timeText, barEl) {
+    _editTimeCtx = { name, timeText, barEl };
+    document.getElementById('edit-time-staff-info').textContent = `${name} — 現在: ${timeText}`;
+    /* timeText "9〜13" や "9:30〜18:00" をパース */
+    const m = /(\d{1,2})(?::(\d{2}))?\s*[〜\-~]\s*(\d{1,2})(?::(\d{2}))?/.exec(timeText);
+    if (m) {
+      document.getElementById('edit-time-start').value =
+        String(m[1]).padStart(2,'0') + ':' + (m[2] || '00');
+      document.getElementById('edit-time-end').value =
+        String(m[3]).padStart(2,'0') + ':' + (m[4] || '00');
+    }
+    document.getElementById('edit-time-overlay').classList.add('show');
+  }
+  function closeEditTime() {
+    document.getElementById('edit-time-overlay').classList.remove('show');
+    _editTimeCtx = null;
+  }
+  function saveEditTime() {
+    if (!_editTimeCtx) return closeEditTime();
+    const start = document.getElementById('edit-time-start').value;
+    const end   = document.getElementById('edit-time-end').value;
+    if (!start || !end) { showToast('⚠ 開始/終了 両方入力してください'); return; }
+    /* スタッフ提出データを更新 */
+    const subs = loadState();
+    const idx = subs.findIndex(s => s.name === _editTimeCtx.name);
+    if (idx >= 0) {
+      subs[idx].customTimes = subs[idx].customTimes || [];
+      /* 旧時間を置換 */
+      const oldTime = _editTimeCtx.timeText.replace(/[〜~]/, '-').replace(/\s/g,'');
+      const newTime = start + '-' + end;
+      /* customTimes に新時間追加（旧プリセットは別途扱う） */
+      subs[idx].customTimes = subs[idx].customTimes.filter(t => t.replace(/\s/g,'') !== oldTime);
+      subs[idx].customTimes.push(newTime);
+      saveState(subs);
+      showToast('✅ シフト時間を更新しました');
+      closeEditTime();
+      /* 再生成 */
+      if (typeof generateShift === 'function') setTimeout(generateShift, 200);
+    } else {
+      showToast('⚠ スタッフが見つかりません');
+    }
+  }
+  function deleteEditTime() {
+    if (!_editTimeCtx) return closeEditTime();
+    if (!confirm(`${_editTimeCtx.name} の "${_editTimeCtx.timeText}" を削除しますか？`)) return;
+    const subs = loadState();
+    const idx = subs.findIndex(s => s.name === _editTimeCtx.name);
+    if (idx >= 0) {
+      const oldTime = _editTimeCtx.timeText.replace(/[〜~]/, '-').replace(/\s/g,'');
+      subs[idx].customTimes = (subs[idx].customTimes || []).filter(t => t.replace(/\s/g,'') !== oldTime);
+      saveState(subs);
+      showToast('🗑 シフトを削除しました');
+      closeEditTime();
+      if (typeof generateShift === 'function') setTimeout(generateShift, 200);
+    }
+  }
+
+  /* ════════ 必要人員編集モーダル ════════ */
+  let _editNeedDate = null;
+  function openEditNeed(date) {
+    _editNeedDate = date;
+    const [y,m,d] = date.split('-').map(Number);
+    const dow = ['日','月','火','水','木','金','土'][new Date(y,m-1,d).getDay()];
+    document.getElementById('edit-need-date-info').textContent = `${m}/${d}(${dow}) の必要人員`;
+    /* デフォルトは loadTimeRules から、もし日付別オーバーライドがあればそれを使う */
+    const rules = loadTimeRules();
+    const dayOverrides = _loadDayOverrides();
+    const o = dayOverrides[date] || {};
+    document.getElementById('edit-need-morning').value = o.morning != null ? o.morning : rules.morning.min;
+    document.getElementById('edit-need-lunch').value   = o.lunch   != null ? o.lunch   : rules.lunch.min;
+    document.getElementById('edit-need-evening').value = o.evening != null ? o.evening : rules.evening.min;
+    document.getElementById('edit-need-overlay').classList.add('show');
+  }
+  function closeEditNeed() {
+    document.getElementById('edit-need-overlay').classList.remove('show');
+    _editNeedDate = null;
+  }
+  function _loadDayOverrides() {
+    try { return JSON.parse(storageGet(_sk('day_need_overrides')) || '{}'); } catch(e) { return {}; }
+  }
+  function _saveDayOverrides(o) {
+    try { storageSet(_sk('day_need_overrides'), JSON.stringify(o)); } catch(e) {}
+  }
+  function saveEditNeed() {
+    if (!_editNeedDate) return closeEditNeed();
+    const m = parseInt(document.getElementById('edit-need-morning').value) || 0;
+    const l = parseInt(document.getElementById('edit-need-lunch').value) || 0;
+    const e = parseInt(document.getElementById('edit-need-evening').value) || 0;
+    const overrides = _loadDayOverrides();
+    overrides[_editNeedDate] = { morning: m, lunch: l, evening: e };
+    _saveDayOverrides(overrides);
+    showToast('✅ 必要人員を更新しました');
+    closeEditNeed();
+    /* 再分析 */
+    if (typeof generateShift === 'function') setTimeout(generateShift, 200);
+  }
+
+  /* ════════ スタッフ評価モーダル (タップ起動・ポジション別のみ) ════════ */
+  const EVAL_POSITIONS_NEW = [
+    { key:'hall',    label:'🏃 ホール接客' },
+    { key:'kitchen', label:'🍳 キッチン調理' },
+    { key:'cashier', label:'🧾 レジ・会計' },
+    { key:'leader',  label:'👑 リーダーシップ' },
+    { key:'speed',   label:'⚡ 仕事の速さ' },
+  ];
+  let _evalCtxName = null;
+  let _evalCtxScores = {};
+  function openStaffEval(name) {
+    _evalCtxName = name;
+    document.getElementById('se-name').textContent = '⭐ ' + name + ' の評価';
+    /* 既存評価を読み込み */
+    const all = _loadAllEvals();
+    _evalCtxScores = Object.assign({}, all[name] || {});
+    /* ポジション別星を描画 */
+    document.getElementById('se-positions').innerHTML = EVAL_POSITIONS_NEW.map(p => `
+      <div class="se-pos-row">
+        <span class="se-pos-name">${p.label}</span>
+        <span class="se-stars" data-pos="${p.key}">
+          ${[1,2,3,4,5].map(n => `<span class="se-star ${(_evalCtxScores[p.key]||0) >= n ? 'filled' : ''}" data-n="${n}" onclick="_setStar('${p.key}',${n})">★</span>`).join('')}
+        </span>
+      </div>
+    `).join('');
+    document.getElementById('staff-eval-modal').classList.add('show');
+  }
+  function _setStar(pos, n) {
+    _evalCtxScores[pos] = n;
+    document.querySelectorAll(`.se-stars[data-pos="${pos}"] .se-star`).forEach((s, i) => {
+      s.classList.toggle('filled', (i+1) <= n);
+    });
+  }
+  function closeStaffEval() {
+    document.getElementById('staff-eval-modal').classList.remove('show');
+    _evalCtxName = null;
+  }
+  function _loadAllEvals() {
+    try { return JSON.parse(storageGet(_sk('staff_evals_v2')) || '{}'); } catch(e) { return {}; }
+  }
+  function _saveAllEvals(d) {
+    try { storageSet(_sk('staff_evals_v2'), JSON.stringify(d)); } catch(e) {}
+  }
+  function saveStaffEval() {
+    if (!_evalCtxName) return;
+    const all = _loadAllEvals();
+    all[_evalCtxName] = _evalCtxScores;
+    _saveAllEvals(all);
+    showToast('✅ 評価を保存しました');
+    closeStaffEval();
   }
 
   /* 個別メール送信 (mailto:) */
