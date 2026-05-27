@@ -81,6 +81,9 @@
   <div class="hero-eyebrow">🤝 紹介プログラム</div>
   <h1>お知り合いに紹介して<br><span class="grad">お互いに1ヶ月無料</span></h1>
   <p>バー・飲食店仲間に RAKURAKU を紹介してもらえると、紹介した方も紹介された方も翌月の月額料金が無料になります。</p>
+  <p style="font-size:11px;color:var(--slate-500);margin-top:8px;background:var(--slate-50);padding:6px 14px;border-radius:14px;display:inline-block;font-weight:700;">
+    📌 無料期間の上限ポリシー: <strong>1店舗あたり最大2ヶ月まで</strong> (14日トライアル含む)
+  </p>
 </section>
 
 <div class="reward-cards">
@@ -226,11 +229,19 @@ async function submitReferral() {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error('api-failed');
+    const result = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      /* 上限超過などのサーバーエラー */
+      if (result.error && result.detail) {
+        alert(`⚠ ${result.error}\n\n${result.detail}\n\n※ RAKURAKU の無料期間は1店舗あたり最大2ヶ月までです。`);
+        return;
+      }
+      throw new Error('api-failed');
+    }
   } catch(e) {
     /* メール代替 */
     const body = encodeURIComponent(
-      `紹介申請\n\n紹介者: ${data.referrer.name} (${data.referrer.shop})\nメール: ${data.referrer.email}\n\n紹介先: ${data.target.name} (${data.target.shop})\nメール: ${data.target.email}\n電話: ${data.target.phone}\n\n紹介コード: ${code}\n\n備考: ${data.note}`
+      `紹介申請\n\n紹介者: ${data.referrer.name} (${data.referrer.shop})\nメール: ${data.referrer.email}\n\n紹介先: ${data.target.name} (${data.target.shop})\nメール: ${data.target.email}\n電話: ${data.target.phone}\n\n紹介コード: ${code}\n\n備考: ${data.note}\n\n※ 無料期間は最大2ヶ月までです`
     );
     window.open(`mailto:koizumishota0323@gmail.com?subject=【RAKURAKU 紹介申請】${data.target.shop}&body=${body}`, '_blank');
   }

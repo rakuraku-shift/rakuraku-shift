@@ -835,19 +835,73 @@ app.get('/api/demo-reservation', (req, res) => {
 });
 
 // ── 紹介プログラム API ────────────────────────────────
+/* ════════════════════════════════════════════
+ * 無料期間上限ポリシー: 1店舗あたり最大 2ヶ月 (60日)
+ * 14日トライアル + 紹介ボーナス + パートナー特典 を合算してこの上限を超えない
+ ════════════════════════════════════════════ */
+const MAX_FREE_DAYS = 60;
+
+function calcGrantedFreeDays(shopId) {
+  /* 当該店舗が既に受け取った無料日数の合計を返す */
+  if (!shopId) return 0;
+  const refFile = path.join(DATA_DIR, 'referrals.json');
+  const refs = readJSON(refFile, []);
+  let total = 14; /* 初回 14日トライアル分は常に算入 */
+  refs.forEach(r => {
+    if (r.referrer?.shopId === shopId || r.referrer?.shop === shopId) total += 30; /* 紹介者特典 */
+    if (r.target?.shopId === shopId || r.target?.shop === shopId) total += 30; /* 被紹介者特典 */
+  });
+  /* パートナー特典・キャンペーン特典は別途記録 */
+  const promoFile = path.join(DATA_DIR, 'promos.json');
+  const promos = readJSON(promoFile, []);
+  promos.filter(p => p.shopId === shopId).forEach(p => total += (p.days || 0));
+  return total;
+}
+
+app.get('/api/free-days/:shopId', (req, res) => {
+  const days = calcGrantedFreeDays(req.params.shopId);
+  res.json({ shopId: req.params.shopId, grantedDays: days, maxAllowed: MAX_FREE_DAYS, remaining: Math.max(0, MAX_FREE_DAYS - days) });
+});
+
 app.post('/api/referral', async (req, res) => {
   const data = req.body || {};
+
+  /* 上限チェック (紹介元・紹介先 双方を事前検証) */
+  const referrerShop = data.referrer?.shopId || data.referrer?.shop;
+  const targetShop = data.target?.shopId || data.target?.shop;
+  const referrerDays = calcGrantedFreeDays(referrerShop);
+  const targetDays = calcGrantedFreeDays(targetShop);
+
+  if (referrerDays + 30 > MAX_FREE_DAYS) {
+    return res.status(400).json({
+      error: '紹介者の無料期間上限超過',
+      detail: `紹介者「${referrerShop}」は既に ${referrerDays}日 の無料期間を受給。上限 ${MAX_FREE_DAYS}日 を超えるため適用不可。`,
+      grantedDays: referrerDays,
+      maxAllowed: MAX_FREE_DAYS,
+    });
+  }
+  if (targetDays + 30 > MAX_FREE_DAYS) {
+    return res.status(400).json({
+      error: '紹介先の無料期間上限超過',
+      detail: `紹介先「${targetShop}」は既に ${targetDays}日 の無料期間を受給。上限 ${MAX_FREE_DAYS}日 を超えるため適用不可。`,
+      grantedDays: targetDays,
+      maxAllowed: MAX_FREE_DAYS,
+    });
+  }
+
   const record = {
     id: 'ref' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
     ...data,
     status: 'pending',
+    bonusDaysReferrer: 30,
+    bonusDaysTarget: 30,
     createdAt: Date.now(),
   };
   const file = path.join(DATA_DIR, 'referrals.json');
   const all = readJSON(file, []);
   all.push(record);
   writeJSON(file, all);
-  console.log(`[referral] ${data.referrer?.shop} → ${data.target?.shop} (${data.code})`);
+  console.log(`[referral] ${data.referrer?.shop} → ${data.target?.shop} (${data.code}) — 紹介者既受 ${referrerDays}d / 被紹介者既受 ${targetDays}d`);
   if (emailTransporter && process.env.EMAIL_USER) {
     try {
       await emailTransporter.sendMail({
@@ -871,6 +925,29 @@ app.post('/api/referral', async (req, res) => {
 app.get('/api/referral', (req, res) => {
   const file = path.join(DATA_DIR, 'referrals.json');
   res.json(readJSON(file, []));
+});
+
+/* パートナー・キャンペーン特典追加 (管理者用)
+   POST /api/promo { shopId, days, reason } */
+app.post('/api/promo', (req, res) => {
+  const { shopId, days, reason } = req.body || {};
+  if (!shopId || !days) return res.status(400).json({ error: 'shopId, days 必須' });
+  const granted = calcGrantedFreeDays(shopId);
+  if (granted + days > MAX_FREE_DAYS) {
+    return res.status(400).json({
+      error: '無料期間上限超過',
+      detail: `店舗「${shopId}」は既に ${granted}日 受給済み。+${days}日 を追加すると上限 ${MAX_FREE_DAYS}日 を超えるため拒否`,
+      grantedDays: granted,
+      maxAllowed: MAX_FREE_DAYS,
+      maxAddable: MAX_FREE_DAYS - granted,
+    });
+  }
+  const file = path.join(DATA_DIR, 'promos.json');
+  const all = readJSON(file, []);
+  all.push({ id: 'pr' + Date.now(), shopId, days, reason: reason || '', grantedAt: Date.now() });
+  writeJSON(file, all);
+  console.log(`[promo] ${shopId} +${days}日 (${reason || '理由なし'})`);
+  res.json({ ok: true, totalGranted: granted + days, remaining: MAX_FREE_DAYS - (granted + days) });
 });
 
 // ── マスタデータ同期 API（ポジション・時給・休憩ルール）─────────────
