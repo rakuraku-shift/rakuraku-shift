@@ -3,15 +3,53 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>RAKURAKU — バー・飲食店向けシフト管理SaaS</title>
-<meta name="description" content="RAKURAKU は1タップで完璧なシフト作成。バー・飲食店向けクラウド型シフト管理プラットフォーム。深夜割増自動計算・売上管理・スタッフ評価まで一気通貫。"/>
+<title>RAKURAKU — バー・飲食店向けシフト管理SaaS | 月¥9,800・14日無料</title>
+<meta name="description" content="バー・飲食店向けクラウド型シフト管理SaaS「RAKURAKU」。1タップでシフト作成、深夜割増自動計算、不足コマはTimee/シェアフルへワンタップ配信。月¥9,800・14日間無料トライアル・クレカ登録不要。"/>
+<meta name="keywords" content="シフト管理,飲食店,バー,SaaS,シフト作成,Timee代替,シェアフル,深夜割増,給与計算,人件費管理"/>
+<meta name="author" content="RAKURAKU / 小泉 咲太"/>
+<meta name="robots" content="index,follow"/>
+<link rel="canonical" href="https://rakuraku-shift-production.up.railway.app/"/>
 <meta name="theme-color" content="#4F46E5">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="icon" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
 <!-- OGP -->
-<meta property="og:title" content="RAKURAKU — バー・飲食店向けシフト管理"/>
-<meta property="og:description" content="1タップで完璧なシフト作成。深夜割増自動計算・売上管理・スタッフ評価まで。"/>
+<meta property="og:site_name" content="RAKURAKU"/>
+<meta property="og:title" content="RAKURAKU — バー・飲食店向けシフト管理SaaS"/>
+<meta property="og:description" content="1タップで完璧なシフト作成。Timee手数料を月¥30,000-50,000削減。月¥9,800・14日間無料トライアル。"/>
 <meta property="og:type" content="website"/>
+<meta property="og:url" content="https://rakuraku-shift-production.up.railway.app/"/>
+<meta property="og:image" content="https://rakuraku-shift-production.up.railway.app/icon-512.png"/>
+<meta property="og:locale" content="ja_JP"/>
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="RAKURAKU — シフト作成1タップ・Timee代替SaaS"/>
+<meta name="twitter:description" content="月¥9,800・14日無料・クレカ不要。バー・飲食店専用シフト管理。"/>
+<meta name="twitter:image" content="https://rakuraku-shift-production.up.railway.app/icon-512.png"/>
+<!-- 構造化データ (JSON-LD) — Google検索結果リッチスニペット用 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "RAKURAKU",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web (PWA)",
+  "description": "バー・飲食店向けシフト管理SaaS。深夜割増自動計算・3段階自動募集（Timee/シェアフル連携）",
+  "offers": {
+    "@type": "Offer",
+    "price": "9800",
+    "priceCurrency": "JPY",
+    "availability": "https://schema.org/InStock"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "RAKURAKU",
+    "url": "https://rakuraku-shift-production.up.railway.app/",
+    "email": "koizumishota0323@gmail.com",
+    "telephone": "+81-80-5168-3303"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -155,6 +193,48 @@
   .cta-strip h2{font-size:28px;font-weight:900;margin-bottom:8px;color:#fff;}
   .cta-strip p{color:rgba(255,255,255,.85);margin-bottom:26px;font-size:14px;}
   .cta-strip .btn-primary{background:#fff;color:var(--indigo)!important;box-shadow:none;}
+
+  /* ─── 比較表 ─── */
+  .cmp-table-wrap{max-width:900px;margin:0 auto;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.06);}
+  .cmp-table{width:100%;border-collapse:collapse;background:#fff;font-size:14px;min-width:560px;}
+  .cmp-table th, .cmp-table td{padding:12px 14px;text-align:center;border-bottom:1px solid var(--slate-100);}
+  .cmp-table thead th{background:var(--slate-50);font-weight:800;color:var(--slate-700);font-size:13px;letter-spacing:.02em;}
+  .cmp-table td:first-child, .cmp-table th:first-child{text-align:left;font-weight:700;color:var(--slate-700);}
+  .cmp-table .cmp-self{background:linear-gradient(180deg,var(--indigo-l),rgba(238,242,255,.4));color:var(--indigo);font-weight:900;border-left:2px solid var(--indigo);border-right:2px solid var(--indigo);}
+  .cmp-table thead .cmp-self{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;font-size:14px;border-color:transparent;}
+  .cmp-yes{color:var(--emerald);font-weight:900;}
+  .cmp-no{color:var(--slate-300);font-weight:600;}
+  @media(max-width:640px){.cmp-table{font-size:12px;}.cmp-table th,.cmp-table td{padding:9px 8px;}}
+
+  /* ─── Founder ─── */
+  .founder-card{max-width:760px;margin:0 auto;background:linear-gradient(135deg,#fff,var(--slate-50));border:1.5px solid var(--slate-100);border-radius:20px;padding:30px;display:flex;align-items:flex-start;gap:24px;box-shadow:0 8px 32px rgba(0,0,0,.04);}
+  .founder-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;flex-shrink:0;box-shadow:0 6px 16px rgba(79,70,229,.3);}
+  .founder-body{flex:1;}
+  .founder-name{font-size:20px;font-weight:900;letter-spacing:-.01em;margin-bottom:8px;}
+  .founder-role{font-size:11px;font-weight:700;color:var(--indigo);background:var(--indigo-l);padding:3px 10px;border-radius:20px;margin-left:8px;vertical-align:middle;letter-spacing:.04em;}
+  .founder-quote{font-size:14px;color:var(--slate-700);line-height:1.9;margin-bottom:14px;}
+  .founder-quote strong{color:var(--indigo);}
+  .founder-contact{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;font-weight:700;}
+  .founder-contact a{color:var(--indigo);}
+  @media(max-width:640px){.founder-card{flex-direction:column;align-items:center;text-align:center;padding:24px;}.founder-name{display:block;}.founder-role{display:inline-block;margin:6px 0 0 0;}.founder-contact{justify-content:center;}}
+
+  /* ─── スティッキー モバイル CTA バー ─── */
+  .sticky-cta{display:none;}
+  @media(max-width:768px){
+    .sticky-cta{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:99;background:rgba(15,23,42,.95);backdrop-filter:blur(10px);padding:10px 14px;align-items:center;gap:10px;border-top:1px solid rgba(255,255,255,.1);box-shadow:0 -4px 20px rgba(0,0,0,.2);}
+    .sticky-cta-text{flex:1;color:#fff;font-size:12px;font-weight:700;line-height:1.4;}
+    .sticky-cta-text small{font-size:10px;color:#94A3B8;font-weight:600;display:block;}
+    .sticky-cta-btn{padding:11px 18px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;white-space:nowrap;box-shadow:0 4px 12px rgba(79,70,229,.4);}
+    body{padding-bottom:64px;}
+  }
+
+  /* ─── Cookie同意バナー ─── */
+  .cookie-banner{display:none;position:fixed;bottom:18px;left:18px;right:18px;max-width:520px;margin:0 auto;background:#0F172A;color:#fff;padding:16px 18px;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.3);z-index:200;font-size:12px;line-height:1.6;align-items:center;gap:14px;}
+  .cookie-banner.show{display:flex;}
+  .cookie-banner-text{flex:1;}
+  .cookie-banner-text a{color:#A5B4FC;}
+  .cookie-banner-btn{padding:8px 16px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;}
+  @media(max-width:768px){.cookie-banner{bottom:78px;}}
 
   /* ─── Footer / 特商法 ─── */
   footer{background:var(--slate-900);color:#94A3B8;padding:60px 0 30px;font-size:13px;}
@@ -368,6 +448,63 @@
   </div>
 </section>
 
+<!-- ════════ COMPARISON ════════ -->
+<section id="compare" class="pains">
+  <div class="container">
+    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;">COMPARISON</span>
+    <h2 class="section-title">他のシフト管理と何が違う？</h2>
+    <p class="section-sub">バー・飲食店専用に最適化。Timee 手数料を月数万円削減できます。</p>
+    <div class="cmp-table-wrap">
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="cmp-self">RAKURAKU</th>
+            <th>Excel</th>
+            <th>Timee</th>
+            <th>AirShift</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>月額料金</td><td class="cmp-self"><strong>¥9,800</strong></td><td>¥0</td><td>¥0 + 紹介料 ¥30k-50k</td><td>¥5,500</td></tr>
+          <tr><td>シフト自動作成</td><td class="cmp-self"><span class="cmp-yes">◎ 1タップ</span></td><td class="cmp-no">✕ 手動</td><td class="cmp-no">✕</td><td class="cmp-yes">○</td></tr>
+          <tr><td>深夜割増 自動計算</td><td class="cmp-self"><span class="cmp-yes">◎ +25%</span></td><td class="cmp-no">✕ 手計算</td><td class="cmp-no">✕</td><td class="cmp-yes">○</td></tr>
+          <tr><td>不足コマ自動募集</td><td class="cmp-self"><span class="cmp-yes">◎ 3段階自動</span></td><td class="cmp-no">✕</td><td class="cmp-yes">○ 単発</td><td class="cmp-no">✕</td></tr>
+          <tr><td>Timee/シェアフル連携</td><td class="cmp-self"><span class="cmp-yes">◎ ワンタップ</span></td><td class="cmp-no">✕</td><td>—</td><td class="cmp-no">✕</td></tr>
+          <tr><td>売上 × 人件費率</td><td class="cmp-self"><span class="cmp-yes">◎ 自動</span></td><td class="cmp-no">✕ 手計算</td><td class="cmp-no">✕</td><td class="cmp-no">△</td></tr>
+          <tr><td>スタッフ評価</td><td class="cmp-self"><span class="cmp-yes">◎ 5段階</span></td><td class="cmp-no">✕</td><td class="cmp-no">✕</td><td class="cmp-no">△</td></tr>
+          <tr><td>飲食店業態最適化</td><td class="cmp-self"><span class="cmp-yes">◎ 専用</span></td><td>—</td><td class="cmp-no">△</td><td class="cmp-no">△</td></tr>
+          <tr><td>14日間 無料体験</td><td class="cmp-self"><span class="cmp-yes">◎ クレカ不要</span></td><td>—</td><td>—</td><td class="cmp-yes">○</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11px;color:var(--slate-400);text-align:center;margin-top:18px;">※ 2026年5月時点の各社公開情報に基づく比較。料金は税抜き表記の場合があります。</p>
+  </div>
+</section>
+
+<!-- ════════ FOUNDER ════════ -->
+<section id="founder">
+  <div class="container">
+    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;">FOUNDER</span>
+    <h2 class="section-title">代表からひとこと</h2>
+    <div class="founder-card">
+      <div class="founder-avatar">小</div>
+      <div class="founder-body">
+        <div class="founder-name">小泉 咲太 <span class="founder-role">RAKURAKU 代表</span></div>
+        <p class="founder-quote">
+          シフト管理の煩雑さ、Excel と LINE の往復、Timee 手数料の重さ。<br>
+          僕自身の飲食店現場での経験から、「<strong>もう、シフトで悩まない</strong>」をつくりました。<br>
+          バー・飲食店オーナーさん、何でもご相談ください。代表が直接対応します。
+        </p>
+        <div class="founder-contact">
+          <a href="mailto:koizumishota0323@gmail.com">📨 koizumishota0323@gmail.com</a>
+          <a href="tel:08051683303">📞 080-5168-3303</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ════════ FAQ ════════ -->
 <section id="faq">
   <div class="container">
@@ -436,6 +573,7 @@
         <a href="#" onclick="event.preventDefault();openOverlay('terms');">利用規約</a>
         <a href="#" onclick="event.preventDefault();openOverlay('privacy');">プライバシーポリシー</a>
         <a href="#tokushoho">特定商取引法に基づく表記</a>
+        <a href="/about.html">会社概要</a>
       </div>
       <div class="footer-col">
         <h4>CONTACT</h4>
@@ -533,6 +671,18 @@
   </div>
 </div>
 
+<!-- ════════ STICKY MOBILE CTA ════════ -->
+<div class="sticky-cta">
+  <div class="sticky-cta-text">🎁 14日間 無料<small>クレカ登録不要・即解約OK</small></div>
+  <button class="sticky-cta-btn" onclick="openSubModal()">今すぐ試す →</button>
+</div>
+
+<!-- ════════ COOKIE CONSENT BANNER ════════ -->
+<div class="cookie-banner" id="cookie-banner">
+  <div class="cookie-banner-text">🍪 当サイトは、サービス品質向上のため Cookie を使用します。利用を続けることで <a href="#" onclick="event.preventDefault();openOverlay('privacy');">プライバシーポリシー</a> に同意したものとみなします。</div>
+  <button class="cookie-banner-btn" onclick="acceptCookies()">同意</button>
+</div>
+
 <!-- ════════ Subscribe Modal ════════ -->
 <div class="sub-modal" id="sub-modal" onclick="if(event.target===this)closeSubModal()">
   <div class="sub-modal-card">
@@ -567,6 +717,19 @@
 </div>
 
 <script>
+  /* Cookie 同意 */
+  function acceptCookies() {
+    try { localStorage.setItem('rakuraku_cookie_accepted', '1'); } catch(e) {}
+    document.getElementById('cookie-banner').classList.remove('show');
+  }
+  (function showCookieBanner(){
+    try {
+      if (!localStorage.getItem('rakuraku_cookie_accepted')) {
+        setTimeout(function(){ document.getElementById('cookie-banner').classList.add('show'); }, 1200);
+      }
+    } catch(e) {}
+  })();
+
   function openOverlay(name) {
     document.getElementById('overlay-' + name).classList.add('show');
     document.body.style.overflow = 'hidden';

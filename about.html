@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>会社概要・運営者情報 — RAKURAKU</title>
+<meta name="description" content="RAKURAKU（運営: 小泉 咲太）の会社概要、ミッション、お問い合わせ先。バー・飲食店向けシフト管理SaaS。"/>
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<meta name="theme-color" content="#4F46E5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-300:#CBD5E1;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:#fff;line-height:1.8;-webkit-font-smoothing:antialiased;}
+  a{color:var(--indigo);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);}
+  .nav-inner{max-width:920px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;letter-spacing:-.01em;}
+  .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;box-shadow:0 4px 12px rgba(79,70,229,.3);}
+  .nav-back{font-size:13px;color:var(--slate-700);font-weight:700;}
+
+  .container{max-width:780px;margin:0 auto;padding:0 24px;}
+  .hero{padding:60px 0 30px;text-align:center;}
+  .hero h1{font-size:36px;font-weight:900;letter-spacing:-.02em;margin-bottom:14px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:15px;color:var(--slate-500);font-weight:600;}
+  @media(max-width:640px){.hero h1{font-size:26px;}}
+
+  .section{margin-bottom:50px;}
+  .section-title{font-size:20px;font-weight:900;color:var(--indigo);margin-bottom:14px;padding-bottom:8px;border-bottom:3px solid var(--indigo-l);display:flex;align-items:center;gap:8px;}
+
+  .mission{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-radius:18px;padding:30px;margin-bottom:40px;text-align:center;}
+  .mission-eyebrow{font-size:11px;font-weight:800;letter-spacing:.1em;opacity:.8;margin-bottom:10px;}
+  .mission-text{font-size:24px;font-weight:900;line-height:1.5;letter-spacing:-.01em;}
+
+  .info-table{width:100%;font-size:14px;border-collapse:collapse;}
+  .info-table th, .info-table td{padding:12px 14px;border-bottom:1px solid var(--slate-100);text-align:left;vertical-align:top;}
+  .info-table th{color:var(--slate-700);font-weight:800;width:32%;background:var(--slate-50);}
+
+  .founder{display:flex;gap:24px;align-items:flex-start;background:var(--slate-50);border-radius:18px;padding:28px;}
+  .founder-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;flex-shrink:0;box-shadow:0 6px 16px rgba(79,70,229,.3);}
+  .founder-name{font-size:18px;font-weight:900;margin-bottom:6px;}
+  .founder-role{font-size:11px;font-weight:700;color:var(--indigo);background:var(--indigo-l);padding:3px 10px;border-radius:20px;margin-left:6px;}
+  .founder-body p{font-size:14px;color:var(--slate-700);line-height:1.85;}
+  @media(max-width:640px){.founder{flex-direction:column;align-items:center;text-align:center;}}
+
+  .timeline{position:relative;padding-left:30px;}
+  .timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--indigo),var(--purple));}
+  .timeline-item{position:relative;padding-bottom:24px;}
+  .timeline-item::before{content:'';position:absolute;left:-26px;top:6px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--indigo);}
+  .timeline-date{font-size:12px;font-weight:800;color:var(--indigo);}
+  .timeline-title{font-size:15px;font-weight:800;margin:2px 0 4px;}
+  .timeline-desc{font-size:13px;color:var(--slate-700);}
+
+  .contact-card{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-radius:20px;padding:40px 32px;text-align:center;margin:40px 0;}
+  .contact-card h2{font-size:24px;font-weight:900;margin-bottom:10px;color:#fff;}
+  .contact-card p{color:rgba(255,255,255,.85);margin-bottom:24px;font-size:14px;}
+  .contact-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .contact-btn{padding:12px 24px;background:#fff;color:var(--indigo)!important;border-radius:10px;font-size:13px;font-weight:800;text-decoration:none;}
+  .contact-btn:hover{opacity:.9;text-decoration:none;}
+
+  .footer{text-align:center;padding:30px 0;font-size:11px;color:var(--slate-500);border-top:1px solid var(--slate-100);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <span class="logo-mark">R</span>
+      <span>RAKURAKU</span>
+    </a>
+    <a href="/" class="nav-back">← トップへ戻る</a>
+  </div>
+</header>
+
+<div class="container">
+
+<section class="hero">
+  <h1>RAKURAKU <span class="grad">について</span></h1>
+  <p>バー・飲食店の現場から生まれたシフト管理プラットフォーム</p>
+</section>
+
+<div class="mission">
+  <div class="mission-eyebrow">OUR MISSION</div>
+  <div class="mission-text">「シフトで悩まない」<br>を、すべての飲食店に。</div>
+</div>
+
+<section class="section">
+  <div class="section-title">🏢 会社概要</div>
+  <table class="info-table">
+    <tr><th>サービス名</th><td>RAKURAKU（ラクラク）</td></tr>
+    <tr><th>運営</th><td>RAKURAKU</td></tr>
+    <tr><th>代表者</th><td>小泉 咲太</td></tr>
+    <tr><th>所在地</th><td>神奈川県横浜市桜木町</td></tr>
+    <tr><th>電話番号</th><td><a href="tel:08051683303">080-5168-3303</a></td></tr>
+    <tr><th>メールアドレス</th><td><a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a></td></tr>
+    <tr><th>ウェブサイト</th><td><a href="/">https://rakuraku-shift-production.up.railway.app/</a></td></tr>
+    <tr><th>事業内容</th><td>バー・飲食店向けシフト管理SaaS の開発・運営</td></tr>
+    <tr><th>サービス開始</th><td>2026年5月</td></tr>
+    <tr><th>決済処理</th><td>Stripe Inc.（PCI DSS Level 1 準拠）</td></tr>
+    <tr><th>サーバー</th><td>Railway（日本国内エッジ）</td></tr>
+  </table>
+</section>
+
+<section class="section">
+  <div class="section-title">👤 創業者プロフィール</div>
+  <div class="founder">
+    <div class="founder-avatar">小</div>
+    <div class="founder-body">
+      <div>
+        <span class="founder-name">小泉 咲太</span>
+        <span class="founder-role">創業者 / 開発</span>
+      </div>
+      <p style="margin-top:14px;">
+        飲食店の現場で「シフト作成に毎月徹夜」「LINEで希望が埋もれる」「Timeeに毎月数万円」という痛みを目の当たりにし、それを根本から解決するためにRAKURAKUを開発。<br><br>
+        小規模なバーから大型の居酒屋まで、業態に合わせた最適化と、現場で使いやすいUI/UXに徹底的にこだわっています。お困りごとがあれば代表が直接対応します。
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">📅 沿革・ロードマップ</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-date">2026年5月</div>
+      <div class="timeline-title">サービスローンチ</div>
+      <div class="timeline-desc">シフト管理・3段階自動募集・Chrome拡張 を含むコア機能リリース。Stripe決済対応。</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">2026年下期 予定</div>
+      <div class="timeline-title">予約管理機能の追加</div>
+      <div class="timeline-desc">シフト管理と連動した予約管理。来客予測に基づくシフト最適化。</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">2027年 予定</div>
+      <div class="timeline-title">複数店舗チェーン対応強化</div>
+      <div class="timeline-desc">本社からの一元管理・店舗横断スタッフ配置・売上比較ダッシュボード強化。</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">🤝 RAKURAKU の約束</div>
+  <div style="background:var(--slate-50);border-radius:14px;padding:24px;">
+    <ul style="list-style:none;padding:0;font-size:14px;line-height:2;color:var(--slate-700);">
+      <li>✓ <strong>明朗な料金</strong> — 月¥9,800、追加課金・隠れた費用は一切なし</li>
+      <li>✓ <strong>解約自由</strong> — 違約金ゼロ、いつでも解約OK</li>
+      <li>✓ <strong>日本語サポート</strong> — 代表が直接対応</li>
+      <li>✓ <strong>データオーナーシップ</strong> — 顧客データは顧客のもの。いつでもエクスポート可能</li>
+      <li>✓ <strong>セキュリティ重視</strong> — 国内サーバー・SSL常時暗号化・Stripe決済</li>
+      <li>✓ <strong>継続改善</strong> — 月次バージョンアップを継続実施</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<div class="container">
+  <div class="contact-card">
+    <h2>お気軽にお問い合わせください</h2>
+    <p>導入相談・無料デモ・機能要望、何でもどうぞ</p>
+    <div class="contact-links">
+      <a class="contact-btn" href="mailto:koizumishota0323@gmail.com">📨 メール</a>
+      <a class="contact-btn" href="tel:08051683303">📞 080-5168-3303</a>
+      <a class="contact-btn" href="/">🏠 トップへ戻る</a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  RAKURAKU / 代表 小泉 咲太 · &copy; 2026 RAKURAKU. All rights reserved.
+</div>
+
+</body>
+</html>

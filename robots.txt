@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /noru-admin.html
+Disallow: /api/
+Disallow: /data/
+Disallow: /subscribe-success.html
+Disallow: /worker-dashboard.html
+Disallow: /admin-settings.html
+
+Sitemap: https://rakuraku-shift-production.up.railway.app/sitemap.xml

@@ -323,6 +323,13 @@ app.use(express.static(path.join(__dirname)));
 // public/ も引き続き配信
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 静的ファイル配信後、未マッチパスに404ページを返す（API系より下に置くため位置はサーバ末尾に注意）
+function _404Handler(req, res, next) {
+  // API は別途処理
+  if (req.path.startsWith('/api/') || req.path.startsWith('/webhook/')) return next();
+  res.status(404).sendFile(path.join(__dirname, '404.html'));
+}
+
 // ── REST API ──────────────────────────────
 app.get('/api/state', (req, res) => {
   res.json(engine.getState());
@@ -871,6 +878,11 @@ app.post('/api/survey/send-invite', async (req, res) => {
   }
   res.json({ ok: true, results });
 });
+
+// ══════════════════════════════════════════
+//  404 ハンドラ（全てのルート定義の後）
+// ══════════════════════════════════════════
+app.use(_404Handler);
 
 // ══════════════════════════════════════════
 //  START
