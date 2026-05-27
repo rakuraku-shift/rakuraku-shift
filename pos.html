@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111">
+<title>会計レジ — モバイルオーダー</title>
+<style>
+  :root {
+    --bg: #f3f4f6;
+    --card: #fff;
+    --text: #111;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --primary: #ff5a3c;
+    --green: #16a34a;
+    --blue: #2563eb;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Helvetica Neue", sans-serif; }
+  body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header {
+    background: #111; color: #fff; padding: 12px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .h-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; }
+  #live-dot { width:8px; height:8px; border-radius:50%; background:#888; display:inline-block; margin-right:6px; vertical-align: middle; }
+  #live-dot.live { background:#22c55e; }
+
+  #layout {
+    display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 50px);
+  }
+  @media (max-width: 720px) {
+    #layout { grid-template-columns: 1fr; }
+    #right { display: none; }
+    #layout.show-detail #left { display: none; }
+    #layout.show-detail #right { display: block; }
+  }
+
+  #left {
+    background: #fff; border-right: 1px solid var(--border);
+    overflow-y: auto; max-height: calc(100vh - 50px);
+  }
+  .sec-title {
+    padding: 12px 16px; font-size: 0.78rem; font-weight: 700;
+    color: var(--muted); letter-spacing: 1.5px;
+    border-bottom: 1px solid var(--border); background: #fafafa;
+  }
+  .tbl-row {
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+  }
+  .tbl-row:hover { background: #fafafa; }
+  .tbl-row.active { background: #fff4f0; border-left: 4px solid var(--primary); padding-left: 12px; }
+  .tbl-no { font-weight: 800; font-size: 1.1rem; }
+  .tbl-meta { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .tbl-total { font-weight: 700; color: var(--primary); }
+  .tbl-paid .tbl-total { color: var(--green); }
+  .empty-list { padding: 60px 20px; text-align: center; color: var(--muted); }
+
+  #right { padding: 20px; }
+  .det-card {
+    background: var(--card); border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    padding: 24px; max-width: 680px; margin: 0 auto;
+  }
+  .det-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding-bottom: 14px; border-bottom: 2px dashed var(--border); margin-bottom: 16px;
+  }
+  .det-table-no {
+    font-size: 2rem; font-weight: 900; line-height: 1;
+  }
+  .det-time { font-size: 0.78rem; color: var(--muted); margin-top: 6px; }
+  .det-status {
+    font-size: 0.75rem; padding: 4px 12px; border-radius: 999px; font-weight: 700;
+  }
+  .st-open { background: #fef3c7; color: #92400e; }
+  .st-paid { background: #d1fae5; color: #065f46; }
+
+  .ord-block { margin-bottom: 14px; }
+  .ord-time { font-size: 0.72rem; color: var(--muted); margin-bottom: 4px; }
+  .ord-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.92rem; }
+  .ord-row .name { flex: 1; }
+  .ord-row .qty  { color: var(--muted); margin: 0 12px; }
+  .ord-row .amt  { font-weight: 600; }
+
+  .totals {
+    border-top: 2px solid var(--text); padding-top: 14px; margin-top: 8px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .total-row { display: flex; justify-content: space-between; }
+  .total-row.grand { font-size: 1.6rem; font-weight: 900; padding-top: 8px; }
+
+  .actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .btn {
+    flex: 1; min-width: 140px; padding: 14px; border-radius: 10px; border: none;
+    font-size: 0.95rem; font-weight: 700; cursor: pointer;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-cash { background: var(--green); color: #fff; }
+  .btn-stripe { background: var(--blue); color: #fff; }
+  .btn-back { background: #f3f4f6; color: var(--text); border: 1px solid var(--border); flex: 0; min-width: 80px; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .empty-detail { text-align: center; padding: 80px 20px; color: var(--muted); }
+  .empty-emoji { font-size: 4rem; margin-bottom: 16px; }
+
+  .paid-info {
+    background: #ecfdf5; border-radius: 8px; padding: 14px;
+    margin-top: 16px; color: var(--green); font-size: 0.9rem; text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-title"><span id="live-dot"></span>会計レジ</div>
+  <div style="font-size:0.8rem;color:#ccc;" id="now">--:--</div>
+</header>
+
+<div id="layout">
+  <div id="left">
+    <div class="sec-title">会計待ち</div>
+    <div id="list-open"></div>
+    <div class="sec-title">本日の会計済み</div>
+    <div id="list-paid"></div>
+  </div>
+  <div id="right">
+    <div id="detail" class="empty-detail">
+      <div class="empty-emoji">🧾</div>
+      <div>左のテーブルを選択してください</div>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(() => {
+  let orders = [];
+  let sessions = [];
+  let selectedSessionId = null;
+
+  function fmtTime(iso) {
+    return new Date(iso).toLocaleTimeString('ja-JP', { hour:'2-digit', minute:'2-digit' });
+  }
+
+  function sessionOrders(sid) {
+    return orders.filter(o => o.sessionId === sid);
+  }
+  function sessionTotal(sid) {
+    return sessionOrders(sid).reduce((s, o) => s + o.subtotal, 0);
+  }
+
+  async function fetchAll() {
+    const r = await fetch('/api/restaurant/orders');
+    const j = await r.json();
+    orders = j.orders;
+    sessions = j.sessions;
+    render();
+  }
+
+  function render() {
+    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+    const openSessions = sessions
+      .filter(s => s.status === 'open')
+      .sort((a, b) => a.openedAt.localeCompare(b.openedAt));
+    const paidSessions = sessions
+      .filter(s => s.status === 'paid' && new Date(s.paidAt) >= todayStart)
+      .sort((a, b) => b.paidAt.localeCompare(a.paidAt));
+
+    document.getElementById('list-open').innerHTML = openSessions.length
+      ? openSessions.map(renderRow).join('')
+      : '<div class="empty-list">会計待ちなし</div>';
+    document.getElementById('list-paid').innerHTML = paidSessions.length
+      ? paidSessions.map(renderRow).join('')
+      : '<div class="empty-list" style="padding:30px 20px;font-size:0.85rem;">本日の会計はまだありません</div>';
+
+    if (selectedSessionId) renderDetail();
+  }
+
+  function renderRow(s) {
+    const total = sessionTotal(s.id);
+    const orderCount = sessionOrders(s.id).length;
+    const cls = s.status === 'paid' ? 'tbl-paid' : '';
+    const isActive = s.id === selectedSessionId ? 'active' : '';
+    const time = s.status === 'paid' ? `${fmtTime(s.paidAt)} 会計` : `${fmtTime(s.openedAt)} 開始`;
+    const methodLabel = s.status === 'paid'
+      ? (s.paymentMethod === 'stripe' ? '💳 スマホ' : '💵 現金')
+      : `${orderCount}件の注文`;
+    return `
+      <div class="tbl-row ${cls} ${isActive}" onclick="App.select('${s.id}')">
+        <div>
+          <div class="tbl-no">🪑 ${s.tableNo}番</div>
+          <div class="tbl-meta">${time} ・ ${methodLabel}</div>
+        </div>
+        <div class="tbl-total">¥${total.toLocaleString()}</div>
+      </div>
+    `;
+  }
+
+  function renderDetail() {
+    const s = sessions.find(x => x.id === selectedSessionId);
+    if (!s) {
+      document.getElementById('detail').innerHTML =
+        '<div class="empty-detail"><div class="empty-emoji">🧾</div><div>テーブルを選択してください</div></div>';
+      return;
+    }
+    const sOrders = sessionOrders(s.id).slice().sort((a,b) => a.createdAt.localeCompare(b.createdAt));
+    let ordBlocks = '';
+    for (const o of sOrders) {
+      let rows = '';
+      for (const it of o.items) {
+        rows += `
+          <div class="ord-row">
+            <span class="name">${it.emoji||''} ${escapeHtml(it.name)}</span>
+            <span class="qty">× ${it.qty}</span>
+            <span class="amt">¥${(it.price*it.qty).toLocaleString()}</span>
+          </div>`;
+      }
+      const stLabel = { new:'受付', preparing:'調理中', served:'提供済', cancelled:'キャンセル' }[o.status] || o.status;
+      ordBlocks += `
+        <div class="ord-block">
+          <div class="ord-time">${fmtTime(o.createdAt)} ・ ${stLabel}</div>
+          ${rows}
+        </div>
+      `;
+    }
+
+    const total = sessionTotal(s.id);
+    const isPaid = s.status === 'paid';
+
+    let actions = '';
+    if (!isPaid) {
+      actions = `
+        <button class="btn btn-back" onclick="App.back()">← 戻る</button>
+        <button class="btn btn-cash" onclick="App.cashPay('${s.id}', ${total})">💵 現金で会計</button>
+      `;
+    } else {
+      actions = `<button class="btn btn-back" onclick="App.back()">← 戻る</button>`;
+    }
+
+    let paidInfo = '';
+    if (isPaid) {
+      const method = s.paymentMethod === 'stripe' ? 'スマホ決済（Stripe）' : '現金';
+      paidInfo = `<div class="paid-info">✓ ${method}で会計完了 ¥${(s.paidAmount||total).toLocaleString()} (${fmtTime(s.paidAt)})</div>`;
+    }
+
+    document.getElementById('detail').innerHTML = `
+      <div class="det-card">
+        <div class="det-header">
+          <div>
+            <div class="det-table-no">🪑 ${s.tableNo}番</div>
+            <div class="det-time">${fmtTime(s.openedAt)} 〜</div>
+          </div>
+          <div class="det-status ${isPaid?'st-paid':'st-open'}">${isPaid?'会計済':'会計待ち'}</div>
+        </div>
+        ${ordBlocks || '<div class="empty-list">注文がありません</div>'}
+        <div class="totals">
+          <div class="total-row grand"><span>合計</span><span>¥${total.toLocaleString()}</span></div>
+        </div>
+        ${paidInfo}
+        <div class="actions">${actions}</div>
+      </div>
+    `;
+
+    document.getElementById('layout').classList.add('show-detail');
+  }
+
+  function select(sid) {
+    selectedSessionId = sid;
+    render();
+  }
+  function back() {
+    selectedSessionId = null;
+    document.getElementById('layout').classList.remove('show-detail');
+    document.getElementById('detail').innerHTML =
+      '<div class="empty-detail"><div class="empty-emoji">🧾</div><div>左のテーブルを選択してください</div></div>';
+    render();
+  }
+  async function cashPay(sid, total) {
+    if (!confirm(`現金 ¥${total.toLocaleString()} で会計を確定しますか？`)) return;
+    const r = await fetch(`/api/restaurant/session/${sid}/cash-paid`, { method: 'POST' });
+    const j = await r.json();
+    if (!r.ok) { alert(j.error || '失敗しました'); return; }
+    await fetchAll();
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  setInterval(() => {
+    document.getElementById('now').textContent = new Date().toLocaleTimeString('ja-JP', { hour:'2-digit', minute:'2-digit' });
+  }, 1000);
+  document.getElementById('now').textContent = new Date().toLocaleTimeString('ja-JP', { hour:'2-digit', minute:'2-digit' });
+
+  try {
+    const socket = io();
+    socket.on('connect', () => document.getElementById('live-dot').classList.add('live'));
+    socket.on('disconnect', () => document.getElementById('live-dot').classList.remove('live'));
+    socket.on('restaurant_new_order', () => fetchAll());
+    socket.on('restaurant_order_updated', () => fetchAll());
+    socket.on('restaurant_session_paid', () => fetchAll());
+  } catch {}
+
+  window.App = { select, back, cashPay };
+  fetchAll();
+})();
+</script>
+</body>
+</html>

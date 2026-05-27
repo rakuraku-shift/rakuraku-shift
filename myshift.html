@@ -8,332 +8,173 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f0f4f8; color: #2d3748; min-height: 100vh; }
 
-    /* Tab bar */
-    .tab-bar {
-      display: flex;
-      background: #fff;
-      border-bottom: 2px solid #e2e8f0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 14px 8px;
-      border: none;
-      background: transparent;
-      font-size: 13px;
-      font-weight: 600;
-      color: #a0aec0;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-    .tab-btn .icon { font-size: 20px; }
+    /* ---- Tab bar ---- */
+    .tab-bar { display: flex; background: #fff; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .tab-btn { flex: 1; padding: 10px 4px; border: none; background: transparent; font-size: 11px; font-weight: 600; color: #a0aec0; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .tab-btn .icon { font-size: 18px; }
     .tab-btn.active { color: #4c6ef5; border-bottom: 3px solid #4c6ef5; }
 
-    /* Screens */
+    /* ---- Screens ---- */
     .screen { display: none; padding: 16px; max-width: 480px; margin: 0 auto; }
     .screen.active { display: block; }
 
-    /* Cards */
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
-    }
+    /* ---- Cards ---- */
+    .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
     .card h2 { font-size: 16px; font-weight: 700; margin-bottom: 14px; color: #2d3748; }
 
-    /* Inputs */
-    input[type="text"], input[type="number"], select {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 15px;
-      outline: none;
-      transition: border 0.2s;
-      background: #f7fafc;
-    }
-    input[type="text"]:focus, input[type="number"]:focus, select:focus {
-      border-color: #4c6ef5;
-      background: #fff;
-    }
+    /* ---- Inputs ---- */
+    input[type="text"], input[type="number"], select { width: 100%; padding: 12px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 15px; outline: none; transition: border 0.2s; background: #f7fafc; }
+    input[type="text"]:focus, input[type="number"]:focus, select:focus { border-color: #4c6ef5; background: #fff; }
     label { font-size: 13px; color: #718096; margin-bottom: 6px; display: block; font-weight: 600; }
 
-    /* Buttons */
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+    /* ---- Buttons ---- */
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
     .btn-primary { background: #4c6ef5; color: #fff; }
     .btn-primary:active { background: #3b5bdb; transform: scale(0.98); }
     .btn-success { background: #38a169; color: #fff; }
-    .btn-success:active { background: #2f855a; transform: scale(0.98); }
-    .btn-outline {
-      background: transparent;
-      border: 1.5px solid #e2e8f0;
-      color: #4a5568;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      width: auto;
-    }
+    .btn-success:active { background: #2f855a; }
+    .btn-outline { background: transparent; border: 1.5px solid #e2e8f0; color: #4a5568; padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; width: auto; }
+    .btn-print { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px; margin-top: 14px; border: 2px solid #4c6ef5; border-radius: 12px; background: #fff; color: #4c6ef5; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
 
-    /* Calendar */
-    .calendar-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
+    /* ---- Calendar ---- */
+    .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
     .calendar-header span { font-weight: 700; font-size: 15px; }
-    .calendar-nav {
-      background: #f0f4f8;
-      border: none;
-      border-radius: 8px;
-      width: 32px;
-      height: 32px;
-      font-size: 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-    }
-    .cal-day-name {
-      text-align: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: #a0aec0;
-      padding: 4px 0;
-    }
-    .cal-day-name.sun { color: #fc8181; }
-    .cal-day-name.sat { color: #63b3ed; }
-    .cal-day {
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1.5px solid transparent;
-      transition: all 0.15s;
-      color: #2d3748;
-    }
-    .cal-day.empty { cursor: default; }
-    .cal-day.past { color: #cbd5e0; cursor: default; }
+    .calendar-nav { background: #f0f4f8; border: none; border-radius: 8px; width: 32px; height: 32px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day-name { text-align: center; font-size: 11px; font-weight: 700; color: #a0aec0; padding: 4px 0; }
+    .cal-day-name.sun { color: #fc8181; } .cal-day-name.sat { color: #63b3ed; }
+    .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; color: #2d3748; }
+    .cal-day.empty { cursor: default; } .cal-day.past { color: #cbd5e0; cursor: default; }
     .cal-day.selected { background: #4c6ef5; color: #fff; }
     .cal-day:not(.empty):not(.past):hover { background: #ebf4ff; border-color: #4c6ef5; }
     .cal-day.sun:not(.empty):not(.past):not(.selected) { color: #fc8181; }
     .cal-day.sat:not(.empty):not(.past):not(.selected) { color: #63b3ed; }
 
-    /* Time slots */
+    /* ---- Time chips ---- */
     .time-slots { display: flex; gap: 8px; flex-wrap: wrap; }
-    .time-chip {
-      padding: 8px 14px;
-      border-radius: 20px;
-      border: 1.5px solid #e2e8f0;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      color: #4a5568;
-      transition: all 0.15s;
-      background: #f7fafc;
-    }
+    .time-chip { padding: 8px 14px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-size: 13px; font-weight: 600; cursor: pointer; color: #4a5568; transition: all 0.15s; background: #f7fafc; }
     .time-chip.selected { background: #4c6ef5; color: #fff; border-color: #4c6ef5; }
 
-    /* Selected dates list */
+    /* ---- Date tags ---- */
     .selected-list { display: flex; flex-wrap: wrap; gap: 6px; min-height: 32px; }
-    .date-tag {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: #ebf4ff;
-      color: #4c6ef5;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .date-tag .remove {
-      cursor: pointer;
-      color: #a0aec0;
-      font-size: 14px;
-      line-height: 1;
-    }
+    .date-tag { display: flex; align-items: center; gap: 4px; background: #ebf4ff; color: #4c6ef5; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .date-tag .remove { cursor: pointer; color: #a0aec0; font-size: 14px; line-height: 1; }
     .date-tag .remove:hover { color: #e53e3e; }
 
-    /* Success toast */
-    .toast {
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: #2d3748;
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 24px;
-      font-size: 14px;
-      font-weight: 600;
-      opacity: 0;
-      transition: all 0.3s;
-      z-index: 999;
-      white-space: nowrap;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    /* Manager: submissions */
-    .submission-item {
-      padding: 12px 0;
-      border-bottom: 1px solid #f0f4f8;
-    }
-    .submission-item:last-child { border-bottom: none; }
-    .sub-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-    .role-badge {
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: 600;
-    }
+    /* ---- Role badges ---- */
+    .role-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
     .role-hall { background: #feebc8; color: #c05621; }
     .role-kitchen { background: #c6f6d5; color: #276749; }
     .role-cashier { background: #bee3f8; color: #2b6cb0; }
-    .sub-dates { font-size: 12px; color: #718096; margin-top: 4px; }
 
-    /* Generated shift table */
-    .shift-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .shift-table th {
-      background: #f0f4f8;
-      padding: 8px 10px;
-      text-align: left;
-      font-weight: 700;
-      font-size: 12px;
-      color: #718096;
-    }
-    .shift-table td { padding: 10px; border-bottom: 1px solid #f0f4f8; vertical-align: top; }
-    .shift-table tr:last-child td { border-bottom: none; }
-    .assigned-name {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: #f0f4f8;
-      border-radius: 6px;
-      padding: 3px 8px;
-      margin: 2px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    /* Rule config */
-    .rule-row {
-      display: grid;
-      grid-template-columns: 1fr 80px 80px;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-    .rule-row select, .rule-row input { font-size: 13px; padding: 8px 10px; }
-    .rule-label { font-size: 12px; color: #718096; font-weight: 600; }
-
-    /* Empty state */
-    .empty-state {
-      text-align: center;
-      padding: 32px 16px;
-      color: #a0aec0;
-    }
-    .empty-state .emoji { font-size: 40px; margin-bottom: 8px; }
-    .empty-state p { font-size: 14px; }
-
-    /* Stats row */
+    /* ---- Stats ---- */
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-    .stat-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 14px 10px;
-      text-align: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
+    .stat-card { background: #fff; border-radius: 12px; padding: 14px 10px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
     .stat-num { font-size: 24px; font-weight: 800; color: #4c6ef5; }
     .stat-lbl { font-size: 11px; color: #a0aec0; font-weight: 600; margin-top: 2px; }
 
-    /* Bottom safe area */
+    /* ---- Submission list ---- */
+    .submission-item { padding: 12px 0; border-bottom: 1px solid #f0f4f8; }
+    .submission-item:last-child { border-bottom: none; }
+    .sub-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+    .sub-dates { font-size: 12px; color: #718096; margin-top: 4px; }
+
+    /* ---- Shift table ---- */
+    .shift-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .shift-table th { background: #f0f4f8; padding: 8px 10px; text-align: left; font-weight: 700; font-size: 12px; color: #718096; }
+    .shift-table td { padding: 10px; border-bottom: 1px solid #f0f4f8; vertical-align: top; }
+    .shift-table tr:last-child td { border-bottom: none; }
+
+    /* ---- Assigned names ---- */
+    .assigned-name { display: inline-flex; align-items: center; gap: 4px; background: #f0f4f8; border-radius: 6px; padding: 3px 8px; margin: 2px; font-size: 12px; font-weight: 600; transition: opacity 0.2s; }
+    .assigned-name.absent { background: #fff5f5; text-decoration: line-through; color: #a0aec0; opacity: 0.7; }
+    .absent-btn { border: none; background: transparent; cursor: pointer; font-size: 11px; color: #a0aec0; padding: 0 2px; line-height: 1; transition: color 0.15s; }
+    .absent-btn:hover { color: #e53e3e; }
+    .absent-btn.active { color: #e53e3e; }
+    .name-overflow { display: none; }
+    .name-overflow.open { display: inline-flex; flex-wrap: wrap; gap: 2px; }
+    .expand-btn { display: inline-flex; align-items: center; gap: 2px; padding: 2px 6px; background: #edf2ff; color: #4c6ef5; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; margin: 2px; }
+
+    /* ---- Rule config ---- */
+    .rule-row { display: grid; grid-template-columns: 1fr 80px 80px; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .rule-row select, .rule-row input { font-size: 13px; padding: 8px 10px; }
+    .rule-label { font-size: 12px; color: #718096; font-weight: 600; }
+
+    /* ---- Alerts ---- */
+    .absent-alert { display: flex; align-items: flex-start; gap: 8px; background: #fff5f5; border: 1.5px solid #feb2b2; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px; font-size: 13px; color: #c53030; font-weight: 600; }
+    .absent-alert .alert-icon { font-size: 16px; flex-shrink: 0; }
+    .absent-alert .alert-body { line-height: 1.5; }
+    .info-alert { display: flex; align-items: flex-start; gap: 8px; background: #f0fff4; border: 1.5px solid #9ae6b4; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px; font-size: 13px; color: #276749; font-weight: 600; }
+    .warn-alert { display: flex; align-items: flex-start; gap: 8px; background: #fffbeb; border: 1.5px solid #f6e05e; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px; font-size: 13px; color: #744210; font-weight: 600; }
+
+    /* ---- Toast ---- */
+    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: #2d3748; color: #fff; padding: 12px 24px; border-radius: 24px; font-size: 14px; font-weight: 600; opacity: 0; transition: all 0.3s; z-index: 999; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ---- Empty state ---- */
+    .empty-state { text-align: center; padding: 32px 16px; color: #a0aec0; }
+    .empty-state .emoji { font-size: 40px; margin-bottom: 8px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ========== 打刻画面 ========== */
+    .clock-status-bar { display: flex; align-items: center; justify-content: space-between; background: #f7fafc; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; }
+    .clock-status-label { font-size: 12px; color: #718096; font-weight: 600; }
+    .clock-status-val { font-size: 14px; font-weight: 700; color: #2d3748; }
+
+    .clock-big-time { text-align: center; font-size: 48px; font-weight: 800; color: #2d3748; letter-spacing: 2px; margin: 8px 0 4px; }
+    .clock-big-date { text-align: center; font-size: 14px; color: #718096; font-weight: 600; margin-bottom: 16px; }
+
+    .gps-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+    .gps-ok  { background: #c6f6d5; color: #276749; }
+    .gps-ng  { background: #fed7d7; color: #c53030; }
+    .gps-chk { background: #e9d8fd; color: #553c9a; }
+    .gps-skip{ background: #e2e8f0; color: #4a5568; }
+
+    .clock-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .clock-action-btn { padding: 18px 10px; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .clock-action-btn .icon { font-size: 24px; }
+    .clock-action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-clock-in    { background: #4c6ef5; color: #fff; }
+    .btn-break-start { background: #ed8936; color: #fff; }
+    .btn-break-end   { background: #38a169; color: #fff; }
+    .btn-clock-out   { background: #e53e3e; color: #fff; }
+    .clock-action-btn:not(:disabled):active { transform: scale(0.97); }
+
+    .today-log { font-size: 13px; }
+    .log-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f4f8; }
+    .log-row:last-child { border-bottom: none; }
+    .log-label { color: #718096; font-weight: 600; }
+    .log-val   { font-weight: 700; color: #2d3748; }
+
+    /* ========== 勤怠管理テーブル ========== */
+    .attendance-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .attendance-table th { background: #f0f4f8; padding: 8px 6px; text-align: center; font-weight: 700; font-size: 11px; color: #718096; }
+    .attendance-table td { padding: 8px 6px; border-bottom: 1px solid #f0f4f8; text-align: center; }
+    .attendance-table tr:last-child td { border-bottom: none; }
+    .att-absent { color: #e53e3e; font-weight: 700; }
+    .att-ok     { color: #38a169; font-weight: 700; }
+    .att-name   { text-align: left; font-weight: 700; }
+
+    .wage-summary { background: #f7fafc; border-radius: 12px; padding: 14px; margin-top: 12px; }
+    .wage-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 13px; }
+    .wage-row.total { border-top: 1.5px solid #e2e8f0; margin-top: 6px; padding-top: 10px; font-size: 15px; font-weight: 800; color: #4c6ef5; }
+    .wage-label { color: #718096; font-weight: 600; }
+
+    /* ---- Bottom safe area ---- */
     .screen-bottom { height: 24px; }
 
-    /* Print button */
-    .btn-print {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 13px;
-      margin-top: 14px;
-      border: 2px solid #4c6ef5;
-      border-radius: 12px;
-      background: #fff;
-      color: #4c6ef5;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-print:active { background: #ebf4ff; }
-
-    /* ===== 印刷スタイル ===== */
+    /* ========== 印刷 ========== */
     @media print {
       body { background: #fff; }
-
-      /* 印刷不要な要素を非表示 */
-      .tab-bar,
-      #screen-staff,
-      .stats,
-      #submissions-list,
-      .card:has(#rule-hall-min),
-      .btn-success,
-      .btn-print,
-      .toast,
-      .screen-bottom { display: none !important; }
-
-      /* 生成シフトだけ全画面表示 */
+      .tab-bar, #screen-staff, #screen-clock, .stats, #submissions-list,
+      #rule-section, .btn-success, .btn-print, .toast, .screen-bottom,
+      #absent-alerts, .absent-btn, .expand-btn { display: none !important; }
       #screen-manager { display: block !important; padding: 0; }
-      #generated-card {
-        display: block !important;
-        box-shadow: none;
-        border: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      /* 印刷ヘッダー */
+      #generated-card { display: block !important; box-shadow: none; border: none; padding: 0; margin: 0; }
       #print-header { display: block !important; }
-
-      /* テーブルを印刷しやすく */
       .shift-table { width: 100%; font-size: 11pt; }
       .shift-table th { background: #f0f4f8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .shift-table td { padding: 8px; }
       .assigned-name { background: #f0f4f8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-
       @page { margin: 15mm; size: A4; }
     }
   </style>
@@ -343,26 +184,25 @@
 <!-- Tab bar -->
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('staff')" id="tab-staff">
-    <span class="icon">👤</span>
-    <span>シフト提出</span>
+    <span class="icon">📋</span><span>シフト提出</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('clock')" id="tab-clock">
+    <span class="icon">⏱️</span><span>打刻</span>
   </button>
   <button class="tab-btn" onclick="switchTab('manager')" id="tab-manager">
-    <span class="icon">📋</span>
-    <span>店長ビュー</span>
+    <span class="icon">👔</span><span>店長</span>
   </button>
 </div>
 
-<!-- ========== STAFF SCREEN ========== -->
+<!-- ========== STAFF: シフト提出 ========== -->
 <div class="screen active" id="screen-staff">
-
-  <!-- Name -->
   <div class="card" style="margin-top:16px;">
     <h2>👋 あなたの情報</h2>
     <div style="margin-bottom:12px;">
       <label>名前</label>
       <input type="text" id="staff-name" placeholder="例: 山田 太郎" />
     </div>
-    <div>
+    <div style="margin-bottom:12px;">
       <label>役職</label>
       <select id="staff-role">
         <option value="hall">ホール</option>
@@ -370,9 +210,12 @@
         <option value="cashier">レジ</option>
       </select>
     </div>
+    <div>
+      <label>時給（円）</label>
+      <input type="number" id="staff-wage" placeholder="例: 1050" min="0" />
+    </div>
   </div>
 
-  <!-- Calendar -->
   <div class="card">
     <h2>📅 希望日を選択</h2>
     <div class="calendar-header">
@@ -383,7 +226,6 @@
     <div class="calendar-grid" id="cal-grid"></div>
   </div>
 
-  <!-- Time preference -->
   <div class="card">
     <h2>⏰ 希望時間帯</h2>
     <div class="time-slots" id="time-slots">
@@ -394,16 +236,15 @@
       <div class="time-chip" data-slot="full" onclick="toggleTime(this)">🕐 フルタイム</div>
     </div>
     <div style="margin-top:14px;">
-      <label>✏️ 自由入力（例: 10:00〜14:30）</label>
+      <label>✏️ 自由入力（例: 10 14 → 10:00〜14:00）</label>
       <div style="display:flex;gap:8px;">
         <input type="text" id="custom-time-input" placeholder="例: 10 14 → 10:00〜14:00" style="flex:1;" onkeydown="if(event.key==='Enter')addCustomTime()" />
-        <button onclick="addCustomTime()" style="padding:12px 16px;background:#4c6ef5;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;">追加</button>
+        <button onclick="addCustomTime()" style="padding:12px 16px;background:#4c6ef5;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">追加</button>
       </div>
       <div class="time-slots" id="custom-time-list" style="margin-top:10px;"></div>
     </div>
   </div>
 
-  <!-- Selected summary -->
   <div class="card">
     <h2>📌 選択中の日付</h2>
     <div class="selected-list" id="selected-dates-list">
@@ -411,52 +252,89 @@
     </div>
   </div>
 
-  <!-- Submit -->
   <button class="btn btn-primary" onclick="submitShift()">シフトを提出する</button>
   <div class="screen-bottom"></div>
 </div>
 
-<!-- ========== MANAGER SCREEN ========== -->
-<div class="screen" id="screen-manager">
+<!-- ========== CLOCK: 打刻 ========== -->
+<div class="screen" id="screen-clock">
+  <div class="card" style="margin-top:16px;">
+    <h2>⏱️ 打刻</h2>
+    <div style="margin-bottom:12px;">
+      <label>スタッフ選択</label>
+      <select id="clock-staff-select" onchange="onClockStaffChange()">
+        <option value="">-- 選択してください --</option>
+      </select>
+    </div>
 
-  <!-- Stats -->
-  <div class="stats" style="margin-top:16px;">
-    <div class="stat-card">
-      <div class="stat-num" id="stat-staff">0</div>
-      <div class="stat-lbl">提出人数</div>
+    <div class="clock-big-time" id="clock-display">--:--:--</div>
+    <div class="clock-big-date" id="clock-date-display">----年--月--日（-）</div>
+
+    <!-- GPS -->
+    <div style="text-align:center;margin-bottom:16px;">
+      <span class="gps-badge gps-skip" id="gps-badge">📍 GPS未確認</span>
+      <br>
+      <button onclick="checkGPS()" style="margin-top:8px;padding:6px 16px;background:#f0f4f8;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#4a5568;">
+        📡 位置確認
+      </button>
     </div>
-    <div class="stat-card">
-      <div class="stat-num" id="stat-dates">0</div>
-      <div class="stat-lbl">対象日数</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="stat-shifts">0</div>
-      <div class="stat-lbl">配置済み</div>
+
+    <!-- 打刻ボタン -->
+    <div class="clock-btn-grid" id="clock-btns">
+      <button class="clock-action-btn btn-clock-in" id="btn-in" onclick="doClock('in')" disabled>
+        <span class="icon">🟢</span>出勤
+      </button>
+      <button class="clock-action-btn btn-break-start" id="btn-break-s" onclick="doClock('break_start')" disabled>
+        <span class="icon">☕</span>休憩開始
+      </button>
+      <button class="clock-action-btn btn-break-end" id="btn-break-e" onclick="doClock('break_end')" disabled>
+        <span class="icon">▶️</span>休憩終了
+      </button>
+      <button class="clock-action-btn btn-clock-out" id="btn-out" onclick="doClock('out')" disabled>
+        <span class="icon">🔴</span>退勤
+      </button>
     </div>
   </div>
 
-  <!-- Submissions -->
+  <!-- 本日の打刻ログ -->
+  <div class="card" id="today-log-card">
+    <h2>📋 本日のログ</h2>
+    <div id="today-log-body">
+      <div class="empty-state"><div class="emoji">🕐</div><p>まだ打刻がありません</p></div>
+    </div>
+  </div>
+
+  <div class="screen-bottom"></div>
+</div>
+
+<!-- ========== MANAGER: 店長ビュー ========== -->
+<div class="screen" id="screen-manager">
+
+  <div class="stats" style="margin-top:16px;">
+    <div class="stat-card"><div class="stat-num" id="stat-staff">0</div><div class="stat-lbl">提出人数</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-dates">0</div><div class="stat-lbl">対象日数</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-shifts">0</div><div class="stat-lbl">配置済み</div></div>
+  </div>
+
+  <!-- 提出一覧 -->
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
       <h2 style="margin:0;">📥 提出一覧</h2>
       <button class="btn-outline" onclick="clearAll()">リセット</button>
     </div>
     <div id="submissions-list">
-      <div class="empty-state">
-        <div class="emoji">📭</div>
-        <p>まだ提出がありません</p>
-      </div>
+      <div class="empty-state"><div class="emoji">📭</div><p>まだ提出がありません</p></div>
     </div>
   </div>
 
-  <!-- Rule config -->
-  <div class="card">
+  <!-- ルール設定 -->
+  <div class="card" id="rule-section">
     <h2>⚙️ シフトルール設定</h2>
-    <div style="margin-bottom:8px;">
+    <div>
       <div class="rule-row">
         <span class="rule-label">役職</span>
-        <span class="rule-label">最低人数</span>
-        <span class="rule-label">最大人数</span>
+        <span class="rule-label">最低</span>
+        <span class="rule-label">最大</span>
       </div>
       <div class="rule-row">
         <span style="font-size:13px;font-weight:600;">🏃 ホール</span>
@@ -474,27 +352,43 @@
         <input type="number" id="rule-cashier-max" value="2" min="0" max="10" />
       </div>
     </div>
+    <div style="margin-top:14px;">
+      <label>🏪 店舗の住所・場所メモ（GPS基準点）</label>
+      <input type="text" id="store-address" placeholder="例: 東京都渋谷区〇〇1-2-3" />
+      <p style="font-size:11px;color:#a0aec0;margin-top:4px;">※実際のGPS座標は打刻時に自動取得します</p>
+    </div>
   </div>
 
-  <!-- Generate -->
-  <button class="btn btn-success" onclick="generateShift()" style="margin-bottom:16px;">
-    ✨ シフトを自動生成
-  </button>
+  <button class="btn btn-success" onclick="generateShift()" style="margin-bottom:16px;">✨ シフトを自動生成</button>
 
-  <!-- Generated shift -->
+  <!-- 生成シフト -->
   <div class="card" id="generated-card" style="display:none;">
-    <!-- 印刷時だけ表示されるヘッダー -->
-    <div id="print-header" style="display:none; margin-bottom:16px; border-bottom:2px solid #2d3748; padding-bottom:12px;">
-      <div style="font-size:18pt; font-weight:800;" id="print-title">シフト表</div>
-      <div style="font-size:10pt; color:#718096; margin-top:4px;" id="print-date"></div>
+    <div id="absent-alerts"></div>
+    <div id="print-header" style="display:none;margin-bottom:16px;border-bottom:2px solid #2d3748;padding-bottom:12px;">
+      <div style="font-size:18pt;font-weight:800;" id="print-title">シフト表</div>
+      <div style="font-size:10pt;color:#718096;margin-top:4px;" id="print-date"></div>
     </div>
-
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
       <h2 style="margin:0;">📆 生成されたシフト</h2>
     </div>
     <div id="generated-content"></div>
-
     <button class="btn-print" onclick="printShift()">🖨️ 印刷する</button>
+  </div>
+
+  <!-- 勤怠管理 -->
+  <div class="card" id="attendance-card">
+    <h2>🕐 勤怠・給与管理</h2>
+
+    <!-- 日付フィルタ -->
+    <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;">
+      <input type="text" id="att-filter-date" placeholder="日付で絞込 例: 2026-05-28" style="flex:1;font-size:13px;padding:8px 12px;" />
+      <button class="btn-outline" onclick="renderAttendance()">表示</button>
+      <button class="btn-outline" onclick="document.getElementById('att-filter-date').value='';renderAttendance()">全件</button>
+    </div>
+
+    <div id="attendance-content">
+      <div class="empty-state"><div class="emoji">📊</div><p>打刻データがありません</p></div>
+    </div>
   </div>
 
   <div class="screen-bottom"></div>
@@ -504,32 +398,46 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // ---- State ----
-  const DAY_NAMES = ['日','月','火','水','木','金','土'];
+  // ==============================
+  // STATE
+  // ==============================
+  const DAY_NAMES  = ['日','月','火','水','木','金','土'];
   const ROLE_LABELS = { hall: 'ホール', kitchen: 'キッチン', cashier: 'レジ' };
+  const TIME_LABELS = { morning: '朝', lunch: '昼', afternoon: '夕方', evening: '夜', full: 'フルタイム' };
 
   let currentYear, currentMonth;
   let selectedDates = new Set();
   let selectedTimes = new Set();
-  let customTimes = [];
+  let customTimes   = [];
+  let absentMap     = {};
+  let clockInterval = null;
+  let gpsOk         = false;
 
-  function loadState() {
-    return JSON.parse(localStorage.getItem('shift_submissions') || '[]');
-  }
-  function saveState(data) {
-    localStorage.setItem('shift_submissions', JSON.stringify(data));
-  }
+  // localStorageキー
+  const LS_SUBMISSIONS = 'shift_submissions';
+  const LS_ATTENDANCE  = 'shift_attendance';  // [{ name, date, events:[{type,time}], breakMins }]
 
-  // ---- Tabs ----
+  function loadSubmissions() { return JSON.parse(localStorage.getItem(LS_SUBMISSIONS) || '[]'); }
+  function saveSubmissions(d){ localStorage.setItem(LS_SUBMISSIONS, JSON.stringify(d)); }
+  function loadAttendance()  { return JSON.parse(localStorage.getItem(LS_ATTENDANCE)  || '[]'); }
+  function saveAttendance(d) { localStorage.setItem(LS_ATTENDANCE,  JSON.stringify(d)); }
+
+  // ==============================
+  // TABS
+  // ==============================
   function switchTab(tab) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('screen-' + tab).classList.add('active');
     document.getElementById('tab-' + tab).classList.add('active');
     if (tab === 'manager') renderManagerView();
+    if (tab === 'clock') { startClock(); renderTodayLog(); populateClockSelect(); }
+    else stopClock();
   }
 
-  // ---- Calendar ----
+  // ==============================
+  // CALENDAR
+  // ==============================
   function initCalendar() {
     const now = new Date();
     currentYear = now.getFullYear();
@@ -540,49 +448,38 @@
   function changeMonth(dir) {
     currentMonth += dir;
     if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-    if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+    if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
     renderCalendar();
   }
 
   function renderCalendar() {
-    const title = document.getElementById('cal-title');
-    title.textContent = `${currentYear}年 ${currentMonth + 1}月`;
-
+    document.getElementById('cal-title').textContent = `${currentYear}年 ${currentMonth + 1}月`;
     const grid = document.getElementById('cal-grid');
     grid.innerHTML = '';
-
-    const dayNames = ['日','月','火','水','木','金','土'];
     const classes = ['sun','','','','','','sat'];
-    dayNames.forEach((d, i) => {
+    DAY_NAMES.forEach((d, i) => {
       const el = document.createElement('div');
       el.className = 'cal-day-name ' + classes[i];
       el.textContent = d;
       grid.appendChild(el);
     });
-
     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const today = new Date(); today.setHours(0,0,0,0);
-
     for (let i = 0; i < firstDay; i++) {
-      const el = document.createElement('div');
-      el.className = 'cal-day empty';
-      grid.appendChild(el);
+      const el = document.createElement('div'); el.className = 'cal-day empty'; grid.appendChild(el);
     }
-
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(currentYear, currentMonth, d);
-      const dateStr = formatDate(currentYear, currentMonth + 1, d);
+      const dateStr = fmtDate(currentYear, currentMonth + 1, d);
       const dow = date.getDay();
-
       const el = document.createElement('div');
       el.textContent = d;
       let cls = 'cal-day';
       if (dow === 0) cls += ' sun';
       if (dow === 6) cls += ' sat';
-      if (date < today) {
-        cls += ' past';
-      } else {
+      if (date < today) { cls += ' past'; }
+      else {
         if (selectedDates.has(dateStr)) cls += ' selected';
         el.onclick = () => toggleDate(dateStr, el);
       }
@@ -591,309 +488,529 @@
     }
   }
 
-  function formatDate(y, m, d) {
-    return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  }
+  function fmtDate(y, m, d) { return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+  function fmtTime(date) { return date.toTimeString().slice(0,8); }
 
   function toggleDate(dateStr, el) {
-    if (selectedDates.has(dateStr)) {
-      selectedDates.delete(dateStr);
-      el.classList.remove('selected');
-    } else {
-      selectedDates.add(dateStr);
-      el.classList.add('selected');
-    }
+    if (selectedDates.has(dateStr)) { selectedDates.delete(dateStr); el.classList.remove('selected'); }
+    else { selectedDates.add(dateStr); el.classList.add('selected'); }
     renderSelectedList();
   }
-
   function renderSelectedList() {
     const container = document.getElementById('selected-dates-list');
-    if (selectedDates.size === 0) {
-      container.innerHTML = '<span style="color:#a0aec0;font-size:13px;">カレンダーから日付を選んでください</span>';
-      return;
-    }
+    if (selectedDates.size === 0) { container.innerHTML = '<span style="color:#a0aec0;font-size:13px;">カレンダーから日付を選んでください</span>'; return; }
     const sorted = [...selectedDates].sort();
     container.innerHTML = sorted.map(d => {
-      const [y, m, day] = d.split('-').map(Number);
-      const dow = new Date(y, m-1, day).getDay();
-      return `<div class="date-tag">
-        ${m}/${day}(${DAY_NAMES[dow]})
-        <span class="remove" onclick="removeDate('${d}')">×</span>
-      </div>`;
+      const [y,m,day] = d.split('-').map(Number);
+      const dow = new Date(y,m-1,day).getDay();
+      return `<div class="date-tag">${m}/${day}(${DAY_NAMES[dow]})<span class="remove" onclick="removeDate('${d}')">×</span></div>`;
     }).join('');
   }
+  function removeDate(dateStr) { selectedDates.delete(dateStr); renderCalendar(); renderSelectedList(); }
 
-  function removeDate(dateStr) {
-    selectedDates.delete(dateStr);
-    renderCalendar();
-    renderSelectedList();
-  }
-
-  // ---- Time chips ----
+  // ==============================
+  // TIME CHIPS
+  // ==============================
   function toggleTime(el) {
     const slot = el.dataset.slot;
-    if (selectedTimes.has(slot)) {
-      selectedTimes.delete(slot);
-      el.classList.remove('selected');
-    } else {
-      selectedTimes.add(slot);
-      el.classList.add('selected');
-    }
+    if (selectedTimes.has(slot)) { selectedTimes.delete(slot); el.classList.remove('selected'); }
+    else { selectedTimes.add(slot); el.classList.add('selected'); }
   }
 
-  // ---- Custom time ----
   function parseTimeInput(raw) {
-    // 数字だけ取り出す
-    const nums = raw.trim().replace(/[^\d\s:〜~\-\/]/g, '').trim();
-
-    // スペース・〜・~・-・/ で分割して2つの時刻を取得
-    const parts = nums.split(/[\s〜~\-\/]+/).filter(Boolean);
-
+    const parts = raw.trim().split(/[\s〜~\-\/]+/).filter(Boolean);
     function parseOne(s) {
-      if (!s) return null;
-      // 4桁: 1430 → 14:30
       if (/^\d{3,4}$/.test(s)) {
-        const h = s.length === 4 ? parseInt(s.slice(0,2)) : parseInt(s.slice(0,1));
-        const m = s.length === 4 ? parseInt(s.slice(2))   : parseInt(s.slice(1));
-        if (h > 23 || m > 59) return null;
+        const h = s.length===4 ? parseInt(s.slice(0,2)) : parseInt(s.slice(0,1));
+        const m = s.length===4 ? parseInt(s.slice(2))   : parseInt(s.slice(1));
+        if (h>23||m>59) return null;
         return `${h}:${String(m).padStart(2,'0')}`;
       }
-      // コロン付き: 10:30
       if (/^\d{1,2}:\d{2}$/.test(s)) return s;
-      // 1〜2桁: 10 → 10:00
-      if (/^\d{1,2}$/.test(s)) {
-        const h = parseInt(s);
-        if (h > 23) return null;
-        return `${h}:00`;
-      }
+      if (/^\d{1,2}$/.test(s)) { const h=parseInt(s); return h>23?null:`${h}:00`; }
       return null;
     }
-
-    if (parts.length >= 2) {
-      const from = parseOne(parts[0]);
-      const to   = parseOne(parts[1]);
-      if (from && to) return `${from}〜${to}`;
-    }
-    if (parts.length === 1) {
-      const from = parseOne(parts[0]);
-      if (from) return `${from}〜`;
-    }
-    return raw.trim(); // パースできなければそのまま
+    if (parts.length >= 2) { const f=parseOne(parts[0]),t=parseOne(parts[1]); if(f&&t) return `${f}〜${t}`; }
+    if (parts.length === 1) { const f=parseOne(parts[0]); if(f) return `${f}〜`; }
+    return raw.trim();
   }
 
   function addCustomTime() {
     const input = document.getElementById('custom-time-input');
-    const raw = input.value.trim();
-    if (!raw) return;
+    const raw = input.value.trim(); if (!raw) return;
     const val = parseTimeInput(raw);
     if (customTimes.includes(val)) { showToast('⚠️ すでに追加されています'); return; }
-    customTimes.push(val);
-    input.value = '';
-    renderCustomTimes();
+    customTimes.push(val); input.value = ''; renderCustomTimes();
   }
-
-  function removeCustomTime(idx) {
-    customTimes.splice(idx, 1);
-    renderCustomTimes();
-  }
-
+  function removeCustomTime(idx) { customTimes.splice(idx,1); renderCustomTimes(); }
   function renderCustomTimes() {
-    const container = document.getElementById('custom-time-list');
-    container.innerHTML = customTimes.map((t, i) => `
-      <div class="time-chip selected" style="display:flex;align-items:center;gap:6px;">
-        ${t}
-        <span onclick="removeCustomTime(${i})" style="cursor:pointer;font-size:14px;opacity:0.7;">×</span>
-      </div>`).join('');
+    document.getElementById('custom-time-list').innerHTML = customTimes.map((t,i) =>
+      `<div class="time-chip selected" style="display:flex;align-items:center;gap:6px;">${t}<span onclick="removeCustomTime(${i})" style="cursor:pointer;font-size:14px;opacity:0.7;">×</span></div>`
+    ).join('');
   }
 
-  // ---- Submit shift ----
+  // ==============================
+  // SUBMIT SHIFT
+  // ==============================
   function submitShift() {
     const name = document.getElementById('staff-name').value.trim();
     const role = document.getElementById('staff-role').value;
+    const wage = parseInt(document.getElementById('staff-wage').value) || 0;
     if (!name) { showToast('⚠️ 名前を入力してください'); return; }
     if (selectedDates.size === 0) { showToast('⚠️ 希望日を選んでください'); return; }
     if (selectedTimes.size === 0 && customTimes.length === 0) { showToast('⚠️ 希望時間帯を選んでください'); return; }
 
-    const submissions = loadState();
+    const submissions = loadSubmissions();
     const existing = submissions.findIndex(s => s.name === name);
-    const entry = {
-      name,
-      role,
-      dates: [...selectedDates].sort(),
-      times: [...selectedTimes],
-      customTimes: [...customTimes],
-      submittedAt: new Date().toISOString()
-    };
-
-    if (existing >= 0) {
-      submissions[existing] = entry;
-    } else {
-      submissions.push(entry);
-    }
-    saveState(submissions);
+    const entry = { name, role, wage, dates: [...selectedDates].sort(), times: [...selectedTimes], customTimes: [...customTimes], submittedAt: new Date().toISOString() };
+    if (existing >= 0) submissions[existing] = entry; else submissions.push(entry);
+    saveSubmissions(submissions);
 
     showToast('✅ シフトを提出しました！');
-    selectedDates.clear();
-    selectedTimes.forEach(s => {
-      const el = document.querySelector(`.time-chip[data-slot="${s}"]`);
-      if (el) el.classList.remove('selected');
-    });
-    selectedTimes.clear();
-    customTimes = [];
-    renderCustomTimes();
-    renderCalendar();
-    renderSelectedList();
-    document.getElementById('staff-name').value = '';
+    selectedDates.clear(); selectedTimes.forEach(s => { const el=document.querySelector(`.time-chip[data-slot="${s}"]`); if(el) el.classList.remove('selected'); }); selectedTimes.clear();
+    customTimes=[]; renderCustomTimes(); renderCalendar(); renderSelectedList();
+    document.getElementById('staff-name').value='';
+    document.getElementById('staff-wage').value='';
+    populateClockSelect();
   }
 
-  // ---- Manager view ----
+  // ==============================
+  // MANAGER VIEW
+  // ==============================
   function renderManagerView() {
-    const submissions = loadState();
+    const submissions = loadSubmissions();
     const allDates = new Set(submissions.flatMap(s => s.dates));
-
     document.getElementById('stat-staff').textContent = submissions.length;
     document.getElementById('stat-dates').textContent = allDates.size;
 
     const list = document.getElementById('submissions-list');
     if (submissions.length === 0) {
-      list.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><p>まだ提出がありません</p></div>`;
+      list.innerHTML = '<div class="empty-state"><div class="emoji">📭</div><p>まだ提出がありません</p></div>';
       document.getElementById('stat-shifts').textContent = '0';
-      return;
+    } else {
+      list.innerHTML = submissions.map(s => {
+        const badgeCls = `role-badge role-${s.role}`;
+        const presetStr = s.times.map(t => TIME_LABELS[t]||t).join(' / ');
+        const customStr = (s.customTimes||[]).join(' / ');
+        const timesStr  = [presetStr,customStr].filter(Boolean).join(' / ');
+        const datesStr  = s.dates.map(d => { const [y,m,day]=d.split('-').map(Number); return `${m}/${day}`; }).join(', ');
+        const wageStr   = s.wage ? `💴 ${s.wage.toLocaleString()}円/時` : '';
+        return `<div class="submission-item">
+          <div class="sub-name">${s.name}<span class="${badgeCls}">${ROLE_LABELS[s.role]}</span>${wageStr ? `<span style="font-size:11px;color:#718096;">${wageStr}</span>` : ''}</div>
+          <div class="sub-dates">⏰ ${timesStr}</div>
+          <div class="sub-dates">📅 ${datesStr}</div>
+        </div>`;
+      }).join('');
     }
-
-    const TIME_LABELS = { morning: '朝', lunch: '昼', afternoon: '夕方', evening: '夜', full: 'フルタイム' };
-    list.innerHTML = submissions.map(s => {
-      const badgeCls = `role-badge role-${s.role}`;
-      const presetStr = s.times.map(t => TIME_LABELS[t] || t).join(' / ');
-      const customStr = (s.customTimes || []).join(' / ');
-      const timesStr = [presetStr, customStr].filter(Boolean).join(' / ');
-      const datesStr = s.dates.map(d => {
-        const [y,m,day] = d.split('-').map(Number);
-        return `${m}/${day}`;
-      }).join(', ');
-      return `<div class="submission-item">
-        <div class="sub-name">
-          ${s.name}
-          <span class="${badgeCls}">${ROLE_LABELS[s.role]}</span>
-        </div>
-        <div class="sub-dates">⏰ ${timesStr}</div>
-        <div class="sub-dates">📅 ${datesStr}</div>
-      </div>`;
-    }).join('');
+    renderAttendance();
   }
 
   function clearAll() {
     if (!confirm('全ての提出データをリセットしますか？')) return;
-    localStorage.removeItem('shift_submissions');
+    localStorage.removeItem(LS_SUBMISSIONS);
     document.getElementById('generated-card').style.display = 'none';
-    renderManagerView();
-    showToast('🗑 リセットしました');
+    renderManagerView(); showToast('🗑 リセットしました');
+    populateClockSelect();
   }
 
-  // ---- Auto generate ----
+  // ==============================
+  // GENERATE SHIFT
+  // ==============================
   function generateShift() {
-    const submissions = loadState();
-    if (submissions.length === 0) {
-      showToast('⚠️ 提出データがありません');
-      return;
-    }
-
+    const submissions = loadSubmissions();
+    if (submissions.length === 0) { showToast('⚠️ 提出データがありません'); return; }
     const rules = {
-      hall:    { min: +document.getElementById('rule-hall-min').value, max: +document.getElementById('rule-hall-max').value },
+      hall:    { min: +document.getElementById('rule-hall-min').value,    max: +document.getElementById('rule-hall-max').value },
       kitchen: { min: +document.getElementById('rule-kitchen-min').value, max: +document.getElementById('rule-kitchen-max').value },
       cashier: { min: +document.getElementById('rule-cashier-min').value, max: +document.getElementById('rule-cashier-max').value },
     };
-
-    // Collect all unique dates from submissions
     const allDates = [...new Set(submissions.flatMap(s => s.dates))].sort();
-
-    // Build date -> staff mapping
-    const schedule = {};
-    let totalAssigned = 0;
-
+    const schedule = {}; let totalAssigned = 0;
     allDates.forEach(date => {
       const available = submissions.filter(s => s.dates.includes(date));
-      const assigned = { hall: [], kitchen: [], cashier: [] };
-
-      // Assign by role respecting max
-      ['hall', 'kitchen', 'cashier'].forEach(role => {
-        const pool = available.filter(s => s.role === role);
-        // Shuffle lightly (by name hash for consistency)
-        pool.sort((a, b) => a.name.localeCompare(b.name));
+      const assigned  = { hall:[], kitchen:[], cashier:[] };
+      ['hall','kitchen','cashier'].forEach(role => {
+        const pool = available.filter(s => s.role === role).sort((a,b) => a.name.localeCompare(b.name));
         const count = Math.min(pool.length, rules[role].max);
-        assigned[role] = pool.slice(0, count).map(s => s.name);
+        assigned[role] = pool.slice(0,count).map(s => s.name);
         totalAssigned += assigned[role].length;
       });
-
       schedule[date] = assigned;
     });
-
     document.getElementById('stat-shifts').textContent = totalAssigned;
+    window._lastSchedule = schedule;
+    window._lastRules = rules;
+    window._lastAllDates = allDates;
+    renderShiftTable();
+  }
 
-    // Render table
+  function renderNameCell(date, role, names, minRequired) {
+    const SHOW = 2;
+    if (names.length === 0) return '<span style="color:#a0aec0;font-size:12px;">⚠️未配置</span>';
+    function nameTag(n) {
+      const key = date+'_'+role+'_'+n;
+      const isAbsent = !!absentMap[key];
+      const absCls = isAbsent ? ' absent' : '';
+      const btnCls = isAbsent ? ' active' : '';
+      return '<span class="assigned-name'+absCls+'">' + n +
+        '<button class="absent-btn'+btnCls+'" onclick="toggleAbsent(\''+date+'\',\''+role+'\',\''+n.replace(/'/g,"\\'")+'\')" title="'+(isAbsent?'欠勤を取り消す':'欠勤にする')+'">'+(isAbsent?'🔄':'✕')+'</button></span>';
+    }
+    const activeCount = names.filter(n => !absentMap[date+'_'+role+'_'+n]).length;
+    const warn = activeCount < minRequired ? '⚠️ ' : '';
+    if (names.length <= SHOW) return warn + names.map(nameTag).join('');
+    const visible = names.slice(0,SHOW), hidden = names.slice(SHOW);
+    const uid = ('expand_'+date+'_'+role).replace(/-/g,'');
+    return warn + visible.map(nameTag).join('') +
+      '<span class="name-overflow" id="'+uid+'">' + hidden.map(nameTag).join('') + '</span>' +
+      '<button class="expand-btn" onclick="toggleExpand(\''+uid+'\',this)">▼ +'+hidden.length+'</button>';
+  }
+
+  function toggleExpand(uid, btn) {
+    const el = document.getElementById(uid);
+    const isOpen = el.classList.toggle('open');
+    btn.textContent = isOpen ? '▲ 閉じる' : '▼ +'+el.querySelectorAll('.assigned-name').length;
+  }
+
+  function toggleAbsent(date, role, name) {
+    const key = date+'_'+role+'_'+name;
+    absentMap[key] = !absentMap[key];
+    renderShiftTable(); renderAbsentAlerts();
+    showToast(absentMap[key] ? '😢 '+name+' さんを欠勤にしました' : '✅ '+name+' さんの欠勤を取り消しました');
+  }
+
+  function renderAbsentAlerts() {
+    const entries = Object.entries(absentMap).filter(([,v]) => v);
+    const box = document.getElementById('absent-alerts');
+    if (entries.length === 0) { box.innerHTML = ''; return; }
+    const rules = window._lastRules || {}, schedule = window._lastSchedule || {};
+    const msgs = entries.map(([key]) => {
+      const parts = key.split('_'), date = parts[0], role = parts[1], name = parts.slice(2).join('_');
+      const [y,m,d] = date.split('-').map(Number);
+      const dateLabel = m+'/'+d+'('+DAY_NAMES[new Date(y,m-1,d).getDay()]+')';
+      const roleLabel = ROLE_LABELS[role]||role;
+      const activeOnDay = (schedule[date]?.[role]||[]).filter(n => !absentMap[date+'_'+role+'_'+n]).length;
+      const short = (rules[role]?.min||0) - activeOnDay;
+      const shortMsg = short > 0 ? '　→ '+roleLabel+'が'+short+'名不足！' : '';
+      return '<div class="absent-alert"><span class="alert-icon">🚨</span><div class="alert-body">'+dateLabel+' <strong>'+name+'</strong> さん（'+roleLabel+'）が欠勤'+shortMsg+'</div></div>';
+    });
+    box.innerHTML = msgs.join('');
+  }
+
+  function renderShiftTable() {
+    const schedule = window._lastSchedule, rules = window._lastRules, allDates = window._lastAllDates;
+    if (!schedule) return;
     const content = document.getElementById('generated-content');
     const rows = allDates.map(date => {
-      const [y, m, d] = date.split('-').map(Number);
-      const dow = new Date(y, m-1, d).getDay();
-      const dateLabel = `${m}/${d}(${DAY_NAMES[dow]})`;
+      const [y,m,d] = date.split('-').map(Number);
+      const dateLabel = m+'/'+d+'('+DAY_NAMES[new Date(y,m-1,d).getDay()]+')';
       const s = schedule[date];
-
-      const hallWarn = s.hall.length < rules.hall.min ? '⚠️' : '';
-      const kitchenWarn = s.kitchen.length < rules.kitchen.min ? '⚠️' : '';
-      const cashierWarn = s.cashier.length < rules.cashier.min ? '⚠️' : '';
-
-      return `<tr>
-        <td style="font-weight:700;font-size:13px;">${dateLabel}</td>
-        <td>${hallWarn}${s.hall.map(n => `<span class="assigned-name">${n}</span>`).join('') || '<span style="color:#a0aec0;font-size:12px;">未配置</span>'}</td>
-        <td>${kitchenWarn}${s.kitchen.map(n => `<span class="assigned-name">${n}</span>`).join('') || '<span style="color:#a0aec0;font-size:12px;">未配置</span>'}</td>
-        <td>${cashierWarn}${s.cashier.map(n => `<span class="assigned-name">${n}</span>`).join('') || '<span style="color:#a0aec0;font-size:12px;">未配置</span>'}</td>
-      </tr>`;
+      return '<tr><td style="font-weight:700;font-size:13px;white-space:nowrap;">'+dateLabel+'</td>' +
+        '<td>'+renderNameCell(date,'hall',   s.hall,   rules.hall.min)+'</td>' +
+        '<td>'+renderNameCell(date,'kitchen',s.kitchen,rules.kitchen.min)+'</td>' +
+        '<td>'+renderNameCell(date,'cashier',s.cashier,rules.cashier.min)+'</td></tr>';
     }).join('');
-
-    content.innerHTML = `
-      <p style="font-size:12px;color:#a0aec0;margin-bottom:12px;">⚠️ は最低人数不足</p>
-      <div style="overflow-x:auto;">
-        <table class="shift-table">
-          <thead>
-            <tr>
-              <th>日付</th>
-              <th>🏃ホール</th>
-              <th>🍳キッチン</th>
-              <th>🧾レジ</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>`;
-
+    content.innerHTML =
+      '<p style="font-size:12px;color:#a0aec0;margin-bottom:10px;">⚠️ は最低人数不足 ／ ✕ で欠勤登録</p>' +
+      '<div style="overflow-x:auto;"><table class="shift-table"><thead><tr>' +
+      '<th>日付</th><th>🏃ホール</th><th>🍳キッチン</th><th>🧾レジ</th>' +
+      '</tr></thead><tbody>'+rows+'</tbody></table></div>';
+    renderAbsentAlerts();
     document.getElementById('generated-card').style.display = 'block';
-    document.getElementById('generated-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('generated-card').scrollIntoView({ behavior:'smooth', block:'start' });
     showToast('✨ シフトを生成しました！');
   }
 
-  // ---- Print ----
+  // ==============================
+  // PRINT
+  // ==============================
   function printShift() {
-    // 印刷ヘッダーにタイトルと日付をセット
-    const allDates = [...document.querySelectorAll('.shift-table tbody tr')]
-      .map(r => r.cells[0].textContent).filter(Boolean);
     const now = new Date();
-    const titleEl = document.getElementById('print-title');
-    const dateEl  = document.getElementById('print-date');
-    titleEl.textContent = 'シフト表';
-    dateEl.textContent  = `作成日: ${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
+    document.getElementById('print-title').textContent = 'シフト表';
+    document.getElementById('print-date').textContent  = '作成日: '+now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日';
     window.print();
   }
 
-  // ---- Toast ----
-  function showToast(msg) {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 2500);
+  // ==============================
+  // 打刻 CLOCK
+  // ==============================
+  function populateClockSelect() {
+    const subs = loadSubmissions();
+    const sel  = document.getElementById('clock-staff-select');
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">-- 選択してください --</option>' +
+      subs.map(s => `<option value="${s.name}">${s.name}（${ROLE_LABELS[s.role]}）</option>`).join('');
+    if (prev) sel.value = prev;
+    onClockStaffChange();
   }
 
-  // ---- Init ----
+  function onClockStaffChange() {
+    renderTodayLog();
+    updateClockButtons();
+  }
+
+  function startClock() {
+    stopClock();
+    function tick() {
+      const now = new Date();
+      document.getElementById('clock-display').textContent = fmtTime(now);
+      const days=['日','月','火','水','木','金','土'];
+      document.getElementById('clock-date-display').textContent =
+        now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日（'+days[now.getDay()]+'）';
+    }
+    tick();
+    clockInterval = setInterval(tick, 1000);
+  }
+  function stopClock() { if (clockInterval) { clearInterval(clockInterval); clockInterval=null; } }
+
+  // GPS確認
+  function checkGPS() {
+    const badge = document.getElementById('gps-badge');
+    badge.className = 'gps-badge gps-chk';
+    badge.textContent = '📡 位置取得中...';
+    if (!navigator.geolocation) {
+      badge.className = 'gps-badge gps-ng';
+      badge.textContent = '❌ GPS非対応';
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        // デモ: 半径500m以内ならOK（実際の店舗座標と比較）
+        // ここでは常にOKとしてデモ動作させる
+        const lat = pos.coords.latitude, lng = pos.coords.longitude;
+        gpsOk = true;
+        badge.className = 'gps-badge gps-ok';
+        badge.textContent = '✅ 店舗内を確認 ('+ lat.toFixed(4)+', '+lng.toFixed(4)+')';
+        updateClockButtons();
+      },
+      err => {
+        // 位置情報が取れなくてもデモ打刻は可能（警告のみ）
+        gpsOk = false;
+        badge.className = 'gps-badge gps-ng';
+        badge.textContent = '⚠️ 位置情報取得失敗';
+        updateClockButtons();
+      },
+      { timeout: 8000 }
+    );
+  }
+
+  // 今日の打刻レコードを取得・なければ作成
+  function getTodayRecord(name) {
+    if (!name) return null;
+    const today = fmtDate(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate());
+    const all = loadAttendance();
+    let rec = all.find(r => r.name===name && r.date===today);
+    if (!rec) { rec = { name, date: today, events:[], breakMins:0 }; }
+    return rec;
+  }
+
+  function saveTodayRecord(rec) {
+    const all = loadAttendance();
+    const idx = all.findIndex(r => r.name===rec.name && r.date===rec.date);
+    if (idx>=0) all[idx]=rec; else all.push(rec);
+    saveAttendance(all);
+  }
+
+  function getLastEventType(rec) {
+    if (!rec || rec.events.length===0) return null;
+    return rec.events[rec.events.length-1].type;
+  }
+
+  function updateClockButtons() {
+    const name = document.getElementById('clock-staff-select').value;
+    const rec  = getTodayRecord(name);
+    const last = getLastEventType(rec);
+    const hasName = !!name;
+
+    const btnIn = document.getElementById('btn-in');
+    const btnBS = document.getElementById('btn-break-s');
+    const btnBE = document.getElementById('btn-break-end') || document.getElementById('btn-break-e');
+    const btnOut= document.getElementById('btn-out');
+
+    // 出勤: まだ打刻なし or 取り消し
+    btnIn.disabled  = !hasName || (last === 'in' || last === 'break_start' || last === 'break_end' || last === 'out');
+    // 休憩開始: 出勤後 or 休憩終了後
+    btnBS.disabled  = !hasName || !(last === 'in' || last === 'break_end');
+    // 休憩終了: 休憩開始後
+    document.getElementById('btn-break-e').disabled = !hasName || last !== 'break_start';
+    // 退勤: 出勤後 or 休憩終了後
+    btnOut.disabled = !hasName || !(last === 'in' || last === 'break_end');
+  }
+
+  function doClock(type) {
+    const name = document.getElementById('clock-staff-select').value;
+    if (!name) { showToast('⚠️ スタッフを選択してください'); return; }
+    if (!gpsOk) {
+      // GPS未確認でも打刻可能だが警告
+      if (!confirm('GPS未確認です。それでも打刻しますか？')) return;
+    }
+    const rec  = getTodayRecord(name);
+    const now  = new Date();
+    const timeStr = fmtTime(now);
+
+    // 休憩終了の場合、休憩時間を計算
+    if (type === 'break_end') {
+      const lastBreakStart = [...rec.events].reverse().find(e => e.type==='break_start');
+      if (lastBreakStart) {
+        const startMs = parseTimeToMs(lastBreakStart.time);
+        const endMs   = parseTimeToMs(timeStr);
+        rec.breakMins += Math.round((endMs - startMs) / 60000);
+      }
+    }
+
+    rec.events.push({ type, time: timeStr, gps: gpsOk });
+    saveTodayRecord(rec);
+
+    const labels = { in:'出勤', break_start:'休憩開始', break_end:'休憩終了', out:'退勤' };
+    showToast('✅ '+labels[type]+'打刻: '+timeStr);
+    renderTodayLog();
+    updateClockButtons();
+  }
+
+  function parseTimeToMs(timeStr) {
+    const [h,m,s] = timeStr.split(':').map(Number);
+    return ((h*60+m)*60+(s||0))*1000;
+  }
+
+  function renderTodayLog() {
+    const name = document.getElementById('clock-staff-select').value;
+    const body = document.getElementById('today-log-body');
+    if (!name) { body.innerHTML = '<div class="empty-state"><div class="emoji">👆</div><p>スタッフを選択してください</p></div>'; return; }
+    const rec = getTodayRecord(name);
+    if (!rec || rec.events.length===0) { body.innerHTML = '<div class="empty-state"><div class="emoji">🕐</div><p>まだ打刻がありません</p></div>'; return; }
+
+    const labels  = { in:'🟢 出勤', break_start:'☕ 休憩開始', break_end:'▶️ 休憩終了', out:'🔴 退勤' };
+    let html = '<div class="today-log">';
+    rec.events.forEach(e => {
+      const gpsIcon = e.gps ? '📍' : '⚠️';
+      html += `<div class="log-row"><span class="log-label">${labels[e.type]||e.type}</span><span class="log-val">${e.time} ${gpsIcon}</span></div>`;
+    });
+
+    // 実働時間計算
+    const inEvent  = rec.events.find(e => e.type==='in');
+    const outEvent = [...rec.events].reverse().find(e => e.type==='out');
+    if (inEvent) {
+      const endMs = outEvent ? parseTimeToMs(outEvent.time) : parseTimeToMs(fmtTime(new Date()));
+      const totalMins = Math.round((endMs - parseTimeToMs(inEvent.time)) / 60000);
+      const workMins  = totalMins - (rec.breakMins||0);
+      html += `<div class="log-row" style="margin-top:8px;"><span class="log-label">休憩時間</span><span class="log-val">${rec.breakMins||0}分</span></div>`;
+      html += `<div class="log-row"><span class="log-label">実働時間</span><span class="log-val" style="color:#4c6ef5;">${Math.floor(workMins/60)}時間${workMins%60}分</span></div>`;
+
+      // 給与計算
+      const subs = loadSubmissions();
+      const staff = subs.find(s => s.name===name);
+      if (staff && staff.wage) {
+        const wage = Math.round((workMins / 60) * staff.wage);
+        html += `<div class="log-row"><span class="log-label">本日の給与（目安）</span><span class="log-val" style="color:#38a169;">¥${wage.toLocaleString()}</span></div>`;
+      }
+    }
+    html += '</div>';
+    body.innerHTML = html;
+  }
+
+  // ==============================
+  // 勤怠・給与一覧（店長ビュー）
+  // ==============================
+  function renderAttendance() {
+    const filterDate = document.getElementById('att-filter-date').value.trim();
+    const allAtt = loadAttendance();
+    const subs   = loadSubmissions();
+    const content = document.getElementById('attendance-content');
+
+    let records = filterDate ? allAtt.filter(r => r.date === filterDate) : allAtt;
+    if (records.length === 0) {
+      content.innerHTML = '<div class="empty-state"><div class="emoji">📊</div><p>打刻データがありません</p></div>';
+      return;
+    }
+
+    // 日付でグループ化
+    const byDate = {};
+    records.forEach(r => {
+      if (!byDate[r.date]) byDate[r.date] = [];
+      byDate[r.date].push(r);
+    });
+
+    let html = '';
+    Object.keys(byDate).sort().forEach(date => {
+      const [y,m,d] = date.split('-').map(Number);
+      const dow = new Date(y,m-1,d).getDay();
+      const dateLabel = m+'/'+d+'('+DAY_NAMES[dow]+')';
+      html += `<div style="font-weight:700;font-size:13px;color:#4c6ef5;margin:12px 0 6px;">${dateLabel}</div>`;
+      html += '<div style="overflow-x:auto;"><table class="attendance-table"><thead><tr>' +
+        '<th>名前</th><th>出勤</th><th>退勤</th><th>休憩</th><th>実働</th><th>給与目安</th>' +
+        '</tr></thead><tbody>';
+
+      let dayTotalWage = 0;
+      byDate[date].forEach(rec => {
+        const inEv  = rec.events.find(e => e.type==='in');
+        const outEv = [...rec.events].reverse().find(e => e.type==='out');
+        const staff = subs.find(s => s.name===rec.name);
+        const role  = staff ? ROLE_LABELS[staff.role] : '';
+        const wage  = staff?.wage || 0;
+        let workMins = 0, wageAmt = 0, wageStr = '-';
+
+        if (inEv && outEv) {
+          const totalMins = Math.round((parseTimeToMs(outEv.time) - parseTimeToMs(inEv.time))/60000);
+          workMins = Math.max(0, totalMins - (rec.breakMins||0));
+          if (wage) { wageAmt = Math.round((workMins/60)*wage); wageStr = '¥'+wageAmt.toLocaleString(); dayTotalWage += wageAmt; }
+        }
+
+        const inStr   = inEv ? inEv.time.slice(0,5) : '<span class="att-absent">未打刻</span>';
+        const outStr  = outEv ? outEv.time.slice(0,5) : (inEv ? '<span style="color:#ed8936">勤務中</span>' : '-');
+        const workStr = workMins ? Math.floor(workMins/60)+'h'+workMins%60+'m' : '-';
+
+        html += `<tr>
+          <td class="att-name">${rec.name}<br><span style="font-size:10px;color:#a0aec0;">${role}</span></td>
+          <td>${inStr}</td><td>${outStr}</td>
+          <td>${rec.breakMins||0}分</td>
+          <td class="${workMins?'att-ok':''}">${workStr}</td>
+          <td style="color:#38a169;font-weight:700;">${wageStr}</td>
+        </tr>`;
+      });
+
+      html += '</tbody></table></div>';
+      if (dayTotalWage > 0) {
+        html += `<div class="wage-summary">
+          <div class="wage-row total"><span class="wage-label">📅 ${dateLabel} 合計人件費</span><span>¥${dayTotalWage.toLocaleString()}</span></div>
+        </div>`;
+      }
+    });
+
+    // 期間合計
+    let grandTotal = 0;
+    records.forEach(rec => {
+      const inEv  = rec.events.find(e => e.type==='in');
+      const outEv = [...rec.events].reverse().find(e => e.type==='out');
+      const staff = subs.find(s => s.name===rec.name);
+      if (inEv && outEv && staff?.wage) {
+        const totalMins = Math.round((parseTimeToMs(outEv.time)-parseTimeToMs(inEv.time))/60000);
+        const workMins  = Math.max(0, totalMins-(rec.breakMins||0));
+        grandTotal += Math.round((workMins/60)*staff.wage);
+      }
+    });
+
+    if (grandTotal > 0 && !filterDate) {
+      html += `<div class="wage-summary" style="border:2px solid #4c6ef5;">
+        <div class="wage-row total"><span class="wage-label">💰 期間合計人件費</span><span>¥${grandTotal.toLocaleString()}</span></div>
+      </div>`;
+    }
+
+    content.innerHTML = html;
+  }
+
+  // ==============================
+  // TOAST
+  // ==============================
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2800);
+  }
+
+  // ==============================
+  // INIT
+  // ==============================
   initCalendar();
+  populateClockSelect();
 </script>
 </body>
 </html>

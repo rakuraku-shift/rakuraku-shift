@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1a1a">
+<title>キッチン受付 — モバイルオーダー</title>
+<style>
+  :root {
+    --bg: #f3f4f6;
+    --card: #fff;
+    --text: #111;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --primary: #ff5a3c;
+    --blue: #2563eb;
+    --green: #16a34a;
+    --orange: #f59e0b;
+    --red: #dc2626;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Helvetica Neue", sans-serif; }
+  body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header {
+    background: #111; color: #fff; padding: 12px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .h-left { display:flex; align-items:center; gap:14px; }
+  .h-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; }
+  #live-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #888;
+    box-shadow: 0 0 0 0 rgba(34,197,94,0.6);
+  }
+  #live-dot.live { background: #22c55e; animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+  }
+  #count { font-size: 0.8rem; color: #ccc; }
+  #sound-toggle {
+    background: #333; color: #fff; border: 1px solid #444;
+    padding: 6px 12px; border-radius: 8px; font-size: 0.78rem;
+    cursor: pointer;
+  }
+  #sound-toggle.on { background: var(--green); border-color: var(--green); }
+
+  /* FILTER */
+  #filters {
+    display: flex; gap: 8px; padding: 12px 16px;
+    background: #fff; border-bottom: 1px solid var(--border);
+    position: sticky; top: 47px; z-index: 5;
+    overflow-x: auto;
+  }
+  .flt {
+    padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border);
+    background: #fff; color: var(--muted); cursor: pointer;
+    font-size: 0.85rem; font-weight: 600; white-space: nowrap;
+  }
+  .flt.active { background: var(--text); color: #fff; border-color: var(--text); }
+  .flt-badge {
+    display: inline-block; min-width: 18px; height: 18px; padding: 0 4px;
+    border-radius: 9px; background: var(--primary); color: #fff;
+    font-size: 0.7rem; font-weight: 700; margin-left: 4px;
+    line-height: 18px; text-align: center;
+  }
+
+  /* GRID */
+  #grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px; padding: 12px;
+  }
+
+  .order {
+    background: var(--card); border-radius: 12px; padding: 14px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    display: flex; flex-direction: column;
+    border-left: 5px solid var(--orange);
+  }
+  .order.preparing { border-left-color: var(--blue); }
+  .order.served { border-left-color: var(--green); opacity: 0.7; }
+  .order.cancelled { border-left-color: var(--muted); opacity: 0.5; }
+
+  .ord-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .table-no {
+    background: var(--text); color: #fff;
+    padding: 4px 12px; border-radius: 8px;
+    font-weight: 800; font-size: 0.9rem;
+  }
+  .ord-time { font-size: 0.78rem; color: var(--muted); }
+  .ord-status {
+    font-size: 0.7rem; padding: 3px 10px; border-radius: 999px; font-weight: 700;
+  }
+  .st-new       { background: #fef3c7; color: #92400e; }
+  .st-preparing { background: #dbeafe; color: #1e40af; }
+  .st-served    { background: #d1fae5; color: #065f46; }
+  .st-cancelled { background: #f3f4f6; color: var(--muted); }
+
+  .ord-items { flex: 1; margin-bottom: 12px; }
+  .ord-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 0; font-size: 0.95rem;
+  }
+  .ord-item-name { font-weight: 600; }
+  .ord-item-qty {
+    background: var(--primary); color: #fff;
+    min-width: 28px; height: 24px; border-radius: 6px;
+    font-weight: 800; font-size: 0.88rem;
+    display: flex; align-items: center; justify-content: center; padding: 0 6px;
+  }
+  .ord-note { font-size: 0.75rem; color: var(--muted); padding-left: 8px; }
+
+  .ord-actions { display: flex; gap: 8px; }
+  .ord-btn {
+    flex: 1; padding: 10px; border-radius: 8px; border: none;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer;
+  }
+  .btn-prep { background: var(--blue); color: #fff; }
+  .btn-served { background: var(--green); color: #fff; }
+  .btn-cancel { background: #f3f4f6; color: var(--muted); border: 1px solid var(--border); }
+  .ord-btn:active { transform: scale(0.97); }
+
+  .empty {
+    grid-column: 1/-1;
+    text-align: center; padding: 80px 20px; color: var(--muted);
+  }
+  .empty-emoji { font-size: 4rem; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-left">
+    <div id="live-dot"></div>
+    <div class="h-title">キッチン受付</div>
+    <div id="count">0件</div>
+  </div>
+  <button id="sound-toggle">🔔 通知音 OFF</button>
+</header>
+
+<div id="filters">
+  <button class="flt active" data-filter="active">受付中・調理中 <span class="flt-badge" id="b-active">0</span></button>
+  <button class="flt" data-filter="new">受付 <span class="flt-badge" id="b-new">0</span></button>
+  <button class="flt" data-filter="preparing">調理中 <span class="flt-badge" id="b-preparing">0</span></button>
+  <button class="flt" data-filter="served">提供済</button>
+  <button class="flt" data-filter="all">全て</button>
+</div>
+
+<div id="grid"></div>
+
+<audio id="ding" preload="auto" src="data:audio/wav;base64,UklGRiQEAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAEAACBgIN/g3+CgIB/g3+Ef4N+hH6Ge4l5iniOdJB1k3GVcZdvmW6abZpsm2ueapxqnGmcaJ1onWedZ55on2egZqFlomSkY6Vipl+nXqlbq1mtV69VsFOzUbVPtk24S7pJvEi+Rb9DwUHDP8U9xzvJOcw3zjXQM9Iy1DDWLtkr2yndJ98l4SLkH+Yc6BnsFu4T8RDzDfYL+Aj7BP4B" loop="false"></audio>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(() => {
+  const grid = document.getElementById('grid');
+  let orders = [];
+  let sessions = [];
+  let currentFilter = 'active';
+  let soundOn = false;
+
+  document.getElementById('sound-toggle').onclick = (e) => {
+    soundOn = !soundOn;
+    e.target.classList.toggle('on', soundOn);
+    e.target.textContent = soundOn ? '🔔 通知音 ON' : '🔔 通知音 OFF';
+    if (soundOn) {
+      // Some browsers require user gesture to enable audio
+      const a = document.getElementById('ding');
+      a.play().catch(() => {});
+    }
+  };
+
+  document.querySelectorAll('.flt').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.flt').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      currentFilter = b.dataset.filter;
+      render();
+    };
+  });
+
+  async function fetchOrders() {
+    const r = await fetch('/api/restaurant/orders');
+    const j = await r.json();
+    orders = j.orders;
+    sessions = j.sessions;
+    render();
+  }
+
+  function filtered() {
+    if (currentFilter === 'active') return orders.filter(o => o.status === 'new' || o.status === 'preparing');
+    if (currentFilter === 'all') return orders;
+    return orders.filter(o => o.status === currentFilter);
+  }
+
+  function elapsedMin(iso) {
+    return Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  }
+
+  function render() {
+    // バッジ更新
+    document.getElementById('b-active').textContent = orders.filter(o => o.status==='new'||o.status==='preparing').length;
+    document.getElementById('b-new').textContent = orders.filter(o => o.status==='new').length;
+    document.getElementById('b-preparing').textContent = orders.filter(o => o.status==='preparing').length;
+
+    const list = filtered().slice().sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    document.getElementById('count').textContent = `${list.length}件`;
+
+    if (!list.length) {
+      grid.innerHTML = '<div class="empty"><div class="empty-emoji">🍳</div>注文はありません</div>';
+      return;
+    }
+
+    let html = '';
+    for (const o of list) {
+      const min = elapsedMin(o.createdAt);
+      const time = new Date(o.createdAt).toLocaleTimeString('ja-JP', { hour:'2-digit', minute:'2-digit' });
+      const stLabel = { new: '受付', preparing: '調理中', served: '提供済', cancelled: 'キャンセル' }[o.status];
+      let itemsHtml = '';
+      for (const it of o.items) {
+        itemsHtml += `
+          <div class="ord-item">
+            <div>
+              <div class="ord-item-name">${it.emoji||''} ${escapeHtml(it.name)}</div>
+              ${it.note ? `<div class="ord-note">📝 ${escapeHtml(it.note)}</div>` : ''}
+            </div>
+            <div class="ord-item-qty">× ${it.qty}</div>
+          </div>`;
+      }
+      let actions = '';
+      if (o.status === 'new') {
+        actions = `
+          <button class="ord-btn btn-prep" onclick="App.setStatus('${o.id}','preparing')">調理開始</button>
+          <button class="ord-btn btn-cancel" onclick="App.setStatus('${o.id}','cancelled')">キャンセル</button>`;
+      } else if (o.status === 'preparing') {
+        actions = `<button class="ord-btn btn-served" onclick="App.setStatus('${o.id}','served')">提供済にする</button>`;
+      } else if (o.status === 'served') {
+        actions = `<button class="ord-btn btn-cancel" onclick="App.setStatus('${o.id}','preparing')">調理中に戻す</button>`;
+      }
+      html += `
+        <div class="order ${o.status}">
+          <div class="ord-head">
+            <div class="table-no">🪑 ${o.tableNo}番</div>
+            <div class="ord-time">${time} <span style="color:${min>=15?'#dc2626':'inherit'}">(${min}分経過)</span></div>
+          </div>
+          <div class="ord-status st-${o.status}" style="align-self:flex-start;margin-bottom:8px;">${stLabel}</div>
+          <div class="ord-items">${itemsHtml}</div>
+          ${actions ? `<div class="ord-actions">${actions}</div>` : ''}
+        </div>
+      `;
+    }
+    grid.innerHTML = html;
+  }
+
+  async function setStatus(id, status) {
+    const r = await fetch(`/api/restaurant/order/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    if (!r.ok) alert('更新失敗');
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // Socket.io リアルタイム
+  try {
+    const socket = io();
+    socket.on('connect', () => {
+      document.getElementById('live-dot').classList.add('live');
+    });
+    socket.on('disconnect', () => {
+      document.getElementById('live-dot').classList.remove('live');
+    });
+    socket.on('restaurant_new_order', ({ order }) => {
+      orders.unshift(order);
+      render();
+      if (soundOn) {
+        try { document.getElementById('ding').play(); } catch {}
+      }
+      // バイブ（モバイル）
+      try { if (navigator.vibrate) navigator.vibrate([100, 80, 100]); } catch {}
+    });
+    socket.on('restaurant_order_updated', ({ order }) => {
+      const i = orders.findIndex(o => o.id === order.id);
+      if (i >= 0) orders[i] = order; else orders.push(order);
+      render();
+    });
+    socket.on('restaurant_session_paid', () => fetchOrders());
+  } catch {}
+
+  window.App = { setStatus };
+  fetchOrders();
+
+  // 経過時間の表示を更新
+  setInterval(render, 30000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111">
+<title>メニュー管理 — モバイルオーダー</title>
+<style>
+  :root {
+    --bg: #f3f4f6;
+    --card: #fff;
+    --text: #111;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --primary: #ff5a3c;
+    --green: #16a34a;
+    --red: #dc2626;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Helvetica Neue", sans-serif; }
+  body { background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
+
+  header {
+    background: #111; color: #fff; padding: 14px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .h-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; }
+  .btn-save {
+    background: var(--primary); color: #fff; border: none;
+    padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;
+  }
+  .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  main { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+  .panel {
+    background: var(--card); border-radius: 12px; padding: 18px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06); margin-bottom: 18px;
+  }
+  .panel-title {
+    font-size: 0.95rem; font-weight: 800; margin-bottom: 14px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+  }
+
+  .form-row {
+    display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .form-row label { font-size: 0.85rem; min-width: 110px; color: var(--muted); }
+  .form-row input, .form-row select {
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 0.92rem; flex: 1; min-width: 100px;
+  }
+  .form-row input[type="checkbox"] { flex: 0; min-width: 0; }
+
+  .cat-list, .item-list { display: flex; flex-direction: column; gap: 8px; }
+  .cat-card {
+    border: 1px solid var(--border); border-radius: 10px; padding: 12px;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .cat-card input.name { flex: 1; padding: 6px 10px; border:1px solid var(--border); border-radius:6px; font-size:0.92rem; }
+  .cat-card input.order { width: 60px; padding: 6px 10px; border:1px solid var(--border); border-radius:6px; }
+  .icon-btn {
+    background: #f3f4f6; border: 1px solid var(--border); color: var(--muted);
+    padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.78rem;
+  }
+  .icon-btn.danger:hover { background: #fef2f2; color: var(--red); border-color: var(--red); }
+
+  .item-card {
+    border: 1px solid var(--border); border-radius: 10px; padding: 12px;
+    display: grid; grid-template-columns: 50px 1fr 120px 100px 80px 80px auto;
+    gap: 8px; align-items: center;
+  }
+  @media (max-width: 720px) {
+    .item-card { grid-template-columns: 50px 1fr auto; grid-template-rows: auto auto auto; }
+    .item-card .price, .item-card .order-input, .item-card .avail-wrap { grid-column: 1 / span 3; }
+  }
+  .item-card .emoji { font-size: 1.6rem; text-align: center; }
+  .item-card input, .item-card select {
+    padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.88rem; width: 100%;
+  }
+  .item-card .avail-wrap { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+
+  .add-btn {
+    background: #fff; color: var(--text); border: 2px dashed var(--border);
+    padding: 12px; border-radius: 10px; width: 100%; cursor: pointer;
+    font-weight: 600; color: var(--muted); margin-top: 8px;
+  }
+  .add-btn:hover { background: #fafafa; border-color: var(--primary); color: var(--primary); }
+
+  #toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: var(--text); color: #fff; padding: 12px 24px; border-radius: 30px;
+    font-size: 0.9rem; opacity: 0; transition: opacity 0.3s; z-index: 100;
+  }
+  #toast.show { opacity: 1; }
+  #toast.error { background: var(--red); }
+
+  .preview-link {
+    display: inline-block; background: #eee; color: var(--text);
+    padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 0.85rem;
+    margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-title">📋 メニュー管理</div>
+  <div>
+    <a class="preview-link" href="order.html?table=1" target="_blank">プレビュー</a>
+    <button class="btn-save" id="btn-save">変更を保存</button>
+  </div>
+</header>
+
+<main>
+  <div class="panel">
+    <div class="panel-title">店舗設定</div>
+    <div class="form-row">
+      <label>店舗名</label>
+      <input id="shop-name" type="text" placeholder="○○居酒屋">
+    </div>
+    <div class="form-row">
+      <label>消費税率</label>
+      <input id="tax-rate" type="number" step="0.01" min="0" max="0.5" style="max-width:120px;">
+      <span style="font-size:0.85rem;color:var(--muted);">（例: 0.1 = 10%）</span>
+    </div>
+    <div class="form-row">
+      <label>価格表示</label>
+      <select id="tax-included" style="max-width:200px;">
+        <option value="true">税込価格</option>
+        <option value="false">税抜価格</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">カテゴリ</div>
+    <div class="cat-list" id="cat-list"></div>
+    <button class="add-btn" onclick="App.addCat()">＋ カテゴリを追加</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">メニュー商品</div>
+    <div class="item-list" id="item-list"></div>
+    <button class="add-btn" onclick="App.addItem()">＋ 商品を追加</button>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<script>
+(() => {
+  let menu = { settings: {}, categories: [], items: [] };
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.toggle('error', error);
+    t.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  async function load() {
+    const r = await fetch('/api/restaurant/menu');
+    menu = await r.json();
+    if (!menu.settings) menu.settings = {};
+    if (!menu.categories) menu.categories = [];
+    if (!menu.items) menu.items = [];
+    render();
+  }
+
+  function render() {
+    document.getElementById('shop-name').value = menu.settings.shopName || '';
+    document.getElementById('tax-rate').value = menu.settings.taxRate ?? 0.1;
+    document.getElementById('tax-included').value = String(menu.settings.taxIncluded ?? true);
+
+    const cats = menu.categories.slice().sort((a,b) => (a.order||0)-(b.order||0));
+    document.getElementById('cat-list').innerHTML = cats.map((c, i) => `
+      <div class="cat-card">
+        <input class="order" type="number" value="${c.order ?? i+1}" onchange="App.updateCat('${c.id}','order',this.value)" title="表示順">
+        <input class="name" type="text" value="${escapeAttr(c.name)}" onchange="App.updateCat('${c.id}','name',this.value)" placeholder="カテゴリ名">
+        <button class="icon-btn danger" onclick="App.delCat('${c.id}')">削除</button>
+      </div>
+    `).join('');
+
+    const items = menu.items.slice().sort((a,b) => {
+      const ca = cats.find(c => c.id === a.categoryId)?.order || 999;
+      const cb = cats.find(c => c.id === b.categoryId)?.order || 999;
+      if (ca !== cb) return ca - cb;
+      return (a.order||0) - (b.order||0);
+    });
+    document.getElementById('item-list').innerHTML = items.map(it => `
+      <div class="item-card">
+        <input class="emoji" type="text" value="${escapeAttr(it.emoji||'')}" maxlength="2" onchange="App.updateItem('${it.id}','emoji',this.value)" placeholder="🍺">
+        <input type="text" value="${escapeAttr(it.name)}" onchange="App.updateItem('${it.id}','name',this.value)" placeholder="商品名">
+        <select onchange="App.updateItem('${it.id}','categoryId',this.value)">
+          ${cats.map(c => `<option value="${c.id}" ${it.categoryId===c.id?'selected':''}>${escapeAttr(c.name)}</option>`).join('')}
+        </select>
+        <input class="price" type="number" value="${it.price}" min="0" step="10" onchange="App.updateItem('${it.id}','price',this.value)" placeholder="価格">
+        <input class="order-input" type="number" value="${it.order ?? 0}" onchange="App.updateItem('${it.id}','order',this.value)" placeholder="順序">
+        <label class="avail-wrap">
+          <input type="checkbox" ${it.available!==false?'checked':''} onchange="App.updateItem('${it.id}','available',this.checked)">
+          販売中
+        </label>
+        <button class="icon-btn danger" onclick="App.delItem('${it.id}')">削除</button>
+      </div>
+    `).join('');
+  }
+
+  function escapeAttr(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function uid(prefix) {
+    return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+
+  function addCat() {
+    menu.categories.push({ id: uid('c_'), name: '新カテゴリ', order: menu.categories.length + 1 });
+    render();
+  }
+  function updateCat(id, key, val) {
+    const c = menu.categories.find(x => x.id === id);
+    if (!c) return;
+    if (key === 'order') c.order = Number(val);
+    else c[key] = val;
+    render();
+  }
+  function delCat(id) {
+    const usedBy = menu.items.filter(x => x.categoryId === id).length;
+    if (usedBy && !confirm(`このカテゴリは${usedBy}件の商品で使用されています。商品ごと削除しますか？`)) return;
+    menu.categories = menu.categories.filter(x => x.id !== id);
+    menu.items = menu.items.filter(x => x.categoryId !== id);
+    render();
+  }
+  function addItem() {
+    if (!menu.categories.length) { toast('先にカテゴリを追加してください', true); return; }
+    menu.items.push({
+      id: uid('m_'),
+      categoryId: menu.categories[0].id,
+      name: '新メニュー',
+      price: 500,
+      emoji: '🍽️',
+      description: '',
+      available: true,
+      order: menu.items.length + 1,
+    });
+    render();
+  }
+  function updateItem(id, key, val) {
+    const it = menu.items.find(x => x.id === id);
+    if (!it) return;
+    if (key === 'price' || key === 'order') it[key] = Number(val);
+    else if (key === 'available') it[key] = !!val;
+    else it[key] = val;
+  }
+  function delItem(id) {
+    if (!confirm('この商品を削除しますか？')) return;
+    menu.items = menu.items.filter(x => x.id !== id);
+    render();
+  }
+
+  // 設定変更
+  document.getElementById('shop-name').onchange = (e) => menu.settings.shopName = e.target.value;
+  document.getElementById('tax-rate').onchange = (e) => menu.settings.taxRate = Number(e.target.value);
+  document.getElementById('tax-included').onchange = (e) => menu.settings.taxIncluded = e.target.value === 'true';
+
+  document.getElementById('btn-save').onclick = async (e) => {
+    e.target.disabled = true; e.target.textContent = '保存中...';
+    try {
+      const r = await fetch('/api/restaurant/menu', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(menu),
+      });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || '保存に失敗');
+      toast('✓ 保存しました');
+    } catch (err) {
+      toast(err.message, true);
+    } finally {
+      e.target.disabled = false; e.target.textContent = '変更を保存';
+    }
+  };
+
+  window.App = { addCat, updateCat, delCat, addItem, updateItem, delItem };
+  load();
+})();
+</script>
+</body>
+</html>

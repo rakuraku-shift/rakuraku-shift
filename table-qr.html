@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>テーブルQR発行 — モバイルオーダー</title>
+<style>
+  :root {
+    --bg: #f3f4f6;
+    --card: #fff;
+    --text: #111;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --primary: #ff5a3c;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Helvetica Neue", sans-serif; }
+  body { background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 40px; }
+
+  header {
+    background: #111; color: #fff; padding: 14px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .h-title { font-size: 1.1rem; font-weight: 800; }
+  .btn-print {
+    background: var(--primary); color: #fff; border: none;
+    padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;
+  }
+
+  main { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+  .controls {
+    background: var(--card); border-radius: 12px; padding: 18px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06); margin-bottom: 18px;
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  }
+  .controls label { font-size: 0.85rem; color: var(--muted); }
+  .controls input {
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 0.92rem; width: 100px;
+  }
+  .controls button {
+    padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);
+    background: #fff; cursor: pointer; font-weight: 600;
+  }
+  .controls button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  .qrgrid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .qr-card {
+    background: var(--card); border-radius: 12px; padding: 20px; text-align: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    break-inside: avoid;
+  }
+  .qr-title { font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
+  .qr-tableno { font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
+  .qr-img { width: 100%; max-width: 200px; height: auto; margin: 0 auto; display: block; }
+  .qr-foot { font-size: 0.75rem; color: var(--muted); margin-top: 10px; word-break: break-all; }
+  .qr-actions { margin-top: 10px; }
+  .qr-actions a {
+    display: inline-block; padding: 6px 12px; font-size: 0.78rem;
+    background: #f3f4f6; color: var(--text); text-decoration: none;
+    border-radius: 6px;
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    header, .controls, .no-print { display: none !important; }
+    main { padding: 0; max-width: none; }
+    .qrgrid { grid-template-columns: repeat(2, 1fr); gap: 0; }
+    .qr-card {
+      box-shadow: none; border: 1px dashed #999;
+      page-break-inside: avoid; margin: 0;
+      border-radius: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-title">📱 テーブルQR発行</div>
+  <button class="btn-print" onclick="window.print()">🖨 印刷する</button>
+</header>
+
+<main>
+  <div class="controls no-print">
+    <label>テーブル数</label>
+    <input id="count" type="number" value="10" min="1" max="100">
+    <label>開始番号</label>
+    <input id="start" type="number" value="1" min="1">
+    <button class="primary" onclick="App.gen()">QRを生成</button>
+    <span style="font-size:0.8rem;color:var(--muted);">※印刷したQRを各テーブルに貼ってください</span>
+  </div>
+
+  <div class="qrgrid" id="qrgrid"></div>
+</main>
+
+<script>
+(() => {
+  async function gen() {
+    const count = Math.max(1, Math.min(100, Number(document.getElementById('count').value) || 10));
+    const start = Math.max(1, Number(document.getElementById('start').value) || 1);
+    const grid = document.getElementById('qrgrid');
+    grid.innerHTML = '<div style="padding:40px;text-align:center;color:#888;">生成中...</div>';
+
+    const results = [];
+    for (let i = 0; i < count; i++) {
+      const tableNo = start + i;
+      try {
+        const r = await fetch(`/api/restaurant/table-qr/${tableNo}`);
+        const j = await r.json();
+        results.push({ tableNo, ...j });
+      } catch (e) {
+        results.push({ tableNo, error: e.message });
+      }
+    }
+    grid.innerHTML = results.map(r => `
+      <div class="qr-card">
+        <div class="qr-title">テーブル</div>
+        <div class="qr-tableno">${r.tableNo}</div>
+        ${r.dataUrl
+          ? `<img class="qr-img" src="${r.dataUrl}" alt="QR ${r.tableNo}">`
+          : `<div style="color:#dc2626;">${r.error}</div>`}
+        <div class="qr-foot">${r.url || ''}</div>
+        ${r.dataUrl ? `<div class="qr-actions no-print"><a href="${r.dataUrl}" download="table-${r.tableNo}.png">PNG保存</a></div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  window.App = { gen };
+  gen();
+})();
+</script>
+</body>
+</html>

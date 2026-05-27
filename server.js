@@ -42,9 +42,11 @@ const REGISTRY_FILE     = path.join(DATA_DIR, 'staff-registry.json');
 const SUBSCRIPTIONS_FILE = path.join(DATA_DIR, 'subscriptions.json');
 const SHOPS_DIR          = path.join(DATA_DIR, 'shops');
 const ADMIN_FILE         = path.join(DATA_DIR, 'admin.json');
+const ATTENDANCE_DIR     = path.join(DATA_DIR, 'attendance');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
 if (!fs.existsSync(SHOPS_DIR)) fs.mkdirSync(SHOPS_DIR, { recursive: true });
+if (!fs.existsSync(ATTENDANCE_DIR)) fs.mkdirSync(ATTENDANCE_DIR, { recursive: true });
 
 // ── アンケート ──
 function loadSurveys() { return readJSON(SURVEY_FILE, []); }
@@ -258,6 +260,30 @@ function getShopMetaById(shopId) {
   return shops.find(s => s.shopId === shopId || s.id === shopId) || null;
 }
 
+/* ── 出退勤データ管理 ── */
+function attendanceFile(shopId, yearMonth) {
+  const safe = _safeShopId(shopId) || 'default';
+  return path.join(ATTENDANCE_DIR, `${safe}-${yearMonth}.json`);
+}
+function _monthKeyOf(ts) {
+  const d = new Date(ts);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+function _dayKeyOf(ts) {
+  const d = new Date(ts);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function loadAttendance(shopId, yearMonth) {
+  return readJSON(attendanceFile(shopId, yearMonth), []);
+}
+function appendAttendance(shopId, record) {
+  const ym = _monthKeyOf(record.ts);
+  const all = loadAttendance(shopId, ym);
+  all.push(record);
+  writeJSON(attendanceFile(shopId, ym), all);
+  return record;
+}
+
 // ══════════════════════════════════════════
 //  PRICE ENGINE
 // ══════════════════════════════════════════
@@ -290,6 +316,9 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
     if (session.mode === 'subscription') {
       // RAKURAKU SaaS — サブスク開始（無料トライアル開始）
       await handleSubscriptionStarted(session);
+    } else if (session.metadata?.type === 'restaurant') {
+      // 飲食店モバイルオーダー — テーブル会計完了
+      handleRestaurantPaymentCompleted(session);
     } else {
       // バー注文の単発決済（既存フロー）
       const tableNo = parseInt(session.metadata?.tableNo);
@@ -688,6 +717,56 @@ app.post('/api/admin/data', (req, res) => {
   res.json({ ok: true, _updatedAt: data._updatedAt });
 });
 
+// ── 出退勤 (GPS打刻) API ────────────────────────────────
+app.post('/api/attendance/clock', (req, res) => {
+  const { shopId, name, type, lat, lng, accuracy, distanceM, outsideAllowed, ts } = req.body || {};
+  if (!shopId || !name || !type) {
+    return res.status(400).json({ error: 'shopId, name, type 必須' });
+  }
+  if (!['in', 'out', 'break_start', 'break_end'].includes(type)) {
+    return res.status(400).json({ error: 'type は in/out/break_start/break_end のいずれか' });
+  }
+  const record = {
+    id: 'a' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    shopId,
+    name: String(name).slice(0, 64),
+    type,
+    lat: typeof lat === 'number' ? lat : null,
+    lng: typeof lng === 'number' ? lng : null,
+    accuracy: typeof accuracy === 'number' ? accuracy : null,
+    distanceM: typeof distanceM === 'number' ? distanceM : null,
+    outsideAllowed: !!outsideAllowed,
+    ts: typeof ts === 'number' ? ts : Date.now(),
+  };
+  appendAttendance(shopId, record);
+  const room = 'shop:' + _safeShopId(shopId);
+  io.to(room).emit('attendance_updated', record);
+  /* 不正打刻は管理者にも通知 */
+  if (outsideAllowed) {
+    console.log(`[attendance] ⚠ 範囲外打刻 — ${shopId} / ${name} / ${type} / ${distanceM}m`);
+  }
+  res.json({ ok: true, record });
+});
+
+app.get('/api/attendance/today', (req, res) => {
+  const { shop, name } = req.query;
+  if (!shop) return res.status(400).json({ error: 'shop 必須' });
+  const ym = _monthKeyOf(Date.now());
+  const today = _dayKeyOf(Date.now());
+  const all = loadAttendance(shop, ym);
+  let records = all.filter(r => _dayKeyOf(r.ts) === today);
+  if (name) records = records.filter(r => r.name === name);
+  records.sort((a, b) => a.ts - b.ts);
+  res.json(records);
+});
+
+app.get('/api/attendance/month', (req, res) => {
+  const { shop, month } = req.query;
+  if (!shop) return res.status(400).json({ error: 'shop 必須' });
+  const ym = month || _monthKeyOf(Date.now());
+  res.json(loadAttendance(shop, ym));
+});
+
 // ── 在庫 API ────────────────────────────────
 app.get('/api/stock', (req, res) => {
   res.json(loadStock());
@@ -880,6 +959,274 @@ app.post('/api/survey/send-invite', async (req, res) => {
 });
 
 // ══════════════════════════════════════════
+//  飲食店モバイルオーダー（QR注文 + スマホ会計）
+// ══════════════════════════════════════════
+const RESTAURANT_MENU_FILE   = path.join(DATA_DIR, 'restaurant-menu.json');
+const RESTAURANT_ORDERS_FILE = path.join(DATA_DIR, 'restaurant-orders.json');
+
+function loadRestaurantMenu() {
+  return readJSON(RESTAURANT_MENU_FILE, {
+    settings: { shopName: '店舗', taxRate: 0.1, taxIncluded: true, currency: 'JPY' },
+    categories: [],
+    items: [],
+  });
+}
+function saveRestaurantMenu(m) { writeJSON(RESTAURANT_MENU_FILE, m); }
+
+function loadRestaurantData() {
+  return readJSON(RESTAURANT_ORDERS_FILE, { sessions: [], orders: [] });
+}
+function saveRestaurantData(d) { writeJSON(RESTAURANT_ORDERS_FILE, d); }
+
+function genId(prefix) {
+  return prefix + '_' + crypto.randomBytes(6).toString('hex');
+}
+
+function findOrCreateOpenSession(data, tableNo) {
+  let s = data.sessions.find(x => x.tableNo === Number(tableNo) && x.status === 'open');
+  if (!s) {
+    s = {
+      id: genId('ts'),
+      tableNo: Number(tableNo),
+      status: 'open',
+      openedAt: new Date().toISOString(),
+      closedAt: null,
+      paymentMethod: null,
+      paidAt: null,
+      stripeSessionId: null,
+      paidAmount: 0,
+    };
+    data.sessions.push(s);
+  }
+  return s;
+}
+
+function sessionOrders(data, sessionId) {
+  return data.orders.filter(o => o.sessionId === sessionId);
+}
+
+function sessionTotal(data, sessionId) {
+  return sessionOrders(data, sessionId).reduce((sum, o) => sum + o.subtotal, 0);
+}
+
+// ── メニュー ─────────────────────────────────
+app.get('/api/restaurant/menu', (req, res) => {
+  res.json(loadRestaurantMenu());
+});
+
+app.put('/api/restaurant/menu', (req, res) => {
+  const m = req.body;
+  if (!m || !Array.isArray(m.items) || !Array.isArray(m.categories)) {
+    return res.status(400).json({ error: 'invalid menu' });
+  }
+  saveRestaurantMenu(m);
+  io.emit('restaurant_menu_updated');
+  res.json({ ok: true });
+});
+
+// ── 注文 ────────────────────────────────────
+// お客様：注文を投入
+app.post('/api/restaurant/order', (req, res) => {
+  const { tableNo, items } = req.body;
+  if (!tableNo || !Array.isArray(items) || !items.length) {
+    return res.status(400).json({ error: 'tableNo and items required' });
+  }
+
+  const menu = loadRestaurantMenu();
+  const enriched = [];
+  for (const it of items) {
+    const def = menu.items.find(m => m.id === it.itemId);
+    if (!def || !def.available) {
+      return res.status(400).json({ error: `商品が見つからない/取扱停止: ${it.itemId}` });
+    }
+    const qty = Math.max(1, Number(it.qty) || 1);
+    enriched.push({
+      itemId: def.id,
+      name: def.name,
+      emoji: def.emoji || '',
+      price: def.price,
+      qty,
+      note: (it.note || '').slice(0, 80),
+    });
+  }
+  const subtotal = enriched.reduce((s, x) => s + x.price * x.qty, 0);
+
+  const data = loadRestaurantData();
+  const session = findOrCreateOpenSession(data, tableNo);
+
+  const order = {
+    id: genId('ord'),
+    sessionId: session.id,
+    tableNo: session.tableNo,
+    items: enriched,
+    subtotal,
+    status: 'new',
+    createdAt: new Date().toISOString(),
+  };
+  data.orders.push(order);
+  saveRestaurantData(data);
+
+  io.emit('restaurant_new_order', { order, session });
+  res.json({ ok: true, order, sessionTotal: sessionTotal(data, session.id) });
+});
+
+// 店舗側：注文一覧
+app.get('/api/restaurant/orders', (req, res) => {
+  const data = loadRestaurantData();
+  const status = req.query.status;
+  let orders = data.orders;
+  if (status) orders = orders.filter(o => o.status === status);
+  // 新しい順
+  orders = orders.slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  res.json({ orders, sessions: data.sessions });
+});
+
+// 店舗側：注文ステータス更新
+app.put('/api/restaurant/order/:id/status', (req, res) => {
+  const { status } = req.body;
+  const valid = ['new', 'preparing', 'served', 'cancelled'];
+  if (!valid.includes(status)) return res.status(400).json({ error: 'invalid status' });
+
+  const data = loadRestaurantData();
+  const order = data.orders.find(o => o.id === req.params.id);
+  if (!order) return res.status(404).json({ error: 'order not found' });
+  order.status = status;
+  order.updatedAt = new Date().toISOString();
+  saveRestaurantData(data);
+  io.emit('restaurant_order_updated', { order });
+  res.json({ ok: true, order });
+});
+
+// テーブルセッション取得（お客様の「今までの注文」表示用）
+app.get('/api/restaurant/table/:tableNo/session', (req, res) => {
+  const data = loadRestaurantData();
+  const session = data.sessions
+    .filter(s => s.tableNo === Number(req.params.tableNo) && s.status === 'open')
+    .sort((a, b) => b.openedAt.localeCompare(a.openedAt))[0];
+  if (!session) return res.json({ session: null, orders: [], total: 0 });
+  const orders = sessionOrders(data, session.id);
+  res.json({ session, orders, total: sessionTotal(data, session.id) });
+});
+
+// ── 会計：Stripe Checkout（スマホ決済） ────────
+app.post('/api/restaurant/checkout', async (req, res) => {
+  if (!stripe) return res.status(503).json({ error: 'Stripe未設定です' });
+  const { sessionId, tableNo } = req.body;
+
+  const data = loadRestaurantData();
+  let session;
+  if (sessionId) session = data.sessions.find(s => s.id === sessionId);
+  else if (tableNo) session = data.sessions
+    .filter(s => s.tableNo === Number(tableNo) && s.status === 'open')
+    .sort((a, b) => b.openedAt.localeCompare(a.openedAt))[0];
+  if (!session) return res.status(404).json({ error: 'セッションが見つかりません' });
+  if (session.status === 'paid') return res.status(400).json({ error: '既に会計済みです' });
+
+  const orders = sessionOrders(data, session.id);
+  if (!orders.length) return res.status(400).json({ error: '注文がありません' });
+
+  // 商品を line_items にフラット化
+  const lineMap = new Map();
+  for (const o of orders) {
+    for (const it of o.items) {
+      const key = `${it.itemId}|${it.price}`;
+      const cur = lineMap.get(key) || { name: `${it.emoji} ${it.name}`.trim(), price: it.price, qty: 0 };
+      cur.qty += it.qty;
+      lineMap.set(key, cur);
+    }
+  }
+
+  const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+  try {
+    const checkout = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [...lineMap.values()].map(l => ({
+        price_data: {
+          currency: 'jpy',
+          product_data: { name: l.name },
+          unit_amount: l.price,
+        },
+        quantity: l.qty,
+      })),
+      mode: 'payment',
+      success_url: `${baseUrl}/order.html?table=${session.tableNo}&paid=1`,
+      cancel_url:  `${baseUrl}/order.html?table=${session.tableNo}&cancelled=1`,
+      metadata: {
+        type: 'restaurant',
+        sessionId: session.id,
+        tableNo: String(session.tableNo),
+      },
+      locale: 'ja',
+    });
+
+    session.stripeSessionId = checkout.id;
+    saveRestaurantData(data);
+
+    io.emit('restaurant_payment_requested', { sessionId: session.id, tableNo: session.tableNo });
+    res.json({ url: checkout.url, stripeSessionId: checkout.id });
+  } catch (e) {
+    console.error('[restaurant stripe]', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 店舗側：現金会計（手動でセッションを paid に）
+app.post('/api/restaurant/session/:id/cash-paid', (req, res) => {
+  const data = loadRestaurantData();
+  const session = data.sessions.find(s => s.id === req.params.id);
+  if (!session) return res.status(404).json({ error: 'session not found' });
+  if (session.status === 'paid') return res.status(400).json({ error: '既に会計済みです' });
+
+  const total = sessionTotal(data, session.id);
+  session.status = 'paid';
+  session.paymentMethod = 'cash';
+  session.paidAt = new Date().toISOString();
+  session.paidAmount = total;
+  saveRestaurantData(data);
+
+  io.emit('restaurant_session_paid', { sessionId: session.id, tableNo: session.tableNo, total, method: 'cash' });
+  res.json({ ok: true, session, total });
+});
+
+// 店舗側：テーブル番号別QRコード（PNG画像）を返す
+app.get('/api/restaurant/table-qr/:tableNo', async (req, res) => {
+  const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+  const url = `${baseUrl}/order.html?table=${encodeURIComponent(req.params.tableNo)}`;
+  try {
+    const dataUrl = await QRCode.toDataURL(url, { width: 512, margin: 2 });
+    res.json({ url, dataUrl });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Stripe Webhook 完了処理：飲食店モバイル会計
+function handleRestaurantPaymentCompleted(checkout) {
+  const sessionId = checkout.metadata?.sessionId;
+  if (!sessionId) return;
+  const data = loadRestaurantData();
+  const session = data.sessions.find(s => s.id === sessionId);
+  if (!session) {
+    console.warn(`[restaurant] webhook: session not found ${sessionId}`);
+    return;
+  }
+  session.status = 'paid';
+  session.paymentMethod = 'stripe';
+  session.paidAt = new Date().toISOString();
+  session.paidAmount = checkout.amount_total;
+  session.stripeSessionId = checkout.id;
+  saveRestaurantData(data);
+
+  io.emit('restaurant_session_paid', {
+    sessionId: session.id,
+    tableNo: session.tableNo,
+    total: checkout.amount_total,
+    method: 'stripe',
+  });
+  console.log(`[restaurant] 支払い完了 — ${session.tableNo}番卓 ¥${checkout.amount_total}`);
+}
+
+// ══════════════════════════════════════════
 //  404 ハンドラ（全てのルート定義の後）
 // ══════════════════════════════════════════
 app.use(_404Handler);
@@ -901,6 +1248,13 @@ server.listen(PORT, () => {
   console.log(`  🍽️   テーブル管理      http://localhost:${PORT}/tables.html`);
   console.log(`  📋  スタッフハンディ  http://localhost:${PORT}/staff.html`);
   console.log(`  ⭐  職場評価ダッシュ  http://localhost:${PORT}/worker-dashboard.html`);
+  console.log(`${divider}`);
+  console.log(`  🍽️  飲食店モバイルオーダー`);
+  console.log(`  📱  お客様注文（QR）   http://localhost:${PORT}/order.html?table=1`);
+  console.log(`  👨‍🍳  キッチン受付      http://localhost:${PORT}/kitchen.html`);
+  console.log(`  💴  会計レジ          http://localhost:${PORT}/pos.html`);
+  console.log(`  📋  メニュー管理      http://localhost:${PORT}/menu-admin.html`);
+  console.log(`  🔳  テーブルQR発行    http://localhost:${PORT}/table-qr.html`);
   console.log(`${divider}`);
   if (stripe) {
     console.log(`  💳  Stripe 決済       有効 (${process.env.STRIPE_SECRET_KEY?.slice(0,12)}...)`);

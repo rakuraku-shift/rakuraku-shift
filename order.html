@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ff5a3c">
+<title>ご注文 — モバイルオーダー</title>
+<style>
+  :root {
+    --primary: #ff5a3c;
+    --primary-dark: #e63d20;
+    --bg: #fafaf7;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #777;
+    --border: #ececec;
+    --green: #16a34a;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Helvetica Neue", sans-serif; }
+  body { background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 120px; }
+
+  /* HEADER */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+  }
+  .shop-name { font-weight: 700; font-size: 1rem; }
+  .table-badge {
+    background: var(--primary); color: #fff;
+    padding: 6px 14px; border-radius: 999px;
+    font-weight: 700; font-size: 0.85rem;
+  }
+
+  /* TABS */
+  #tabs { display:flex; gap:0; overflow-x:auto; background:#fff; border-bottom:1px solid var(--border); position:sticky; top: 53px; z-index: 40; }
+  #tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0; padding: 14px 18px; font-size: 0.9rem; font-weight: 600;
+    color: var(--muted); border:none; background:transparent; cursor:pointer;
+    border-bottom: 3px solid transparent;
+  }
+  .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+  /* MENU */
+  #menu { padding: 12px; display:flex; flex-direction:column; gap: 10px; }
+  .item {
+    background: var(--card); border-radius: 14px; padding: 14px;
+    display: flex; gap: 12px; align-items: center; box-shadow: var(--shadow);
+  }
+  .item-emoji {
+    width: 56px; height: 56px; font-size: 2rem;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff4f0; border-radius: 12px; flex-shrink:0;
+  }
+  .item-info { flex: 1; min-width: 0; }
+  .item-name { font-weight: 700; font-size: 1rem; margin-bottom: 2px; }
+  .item-desc { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; line-height:1.3; }
+  .item-price { font-weight: 700; color: var(--primary); font-size: 0.95rem; }
+  .item-unavail { opacity: 0.5; }
+  .item-unavail-label { font-size:0.7rem; background:#eee; color:var(--muted); padding:2px 8px; border-radius:6px; }
+
+  .qty-ctrl { display: flex; align-items: center; gap: 8px; flex-shrink:0; }
+  .qty-btn {
+    width: 32px; height: 32px; border-radius: 50%; border:1px solid var(--border);
+    background: #fff; color: var(--text); font-size: 1.2rem; font-weight:700;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .qty-btn:active { background: #f5f5f5; }
+  .qty-btn.plus { background: var(--primary); color:#fff; border-color: var(--primary); }
+  .qty-val { min-width: 18px; text-align: center; font-weight: 700; font-size: 0.95rem; }
+
+  /* SECTION TITLES */
+  .cat-title {
+    font-size: 0.78rem; font-weight: 700; color: var(--muted); letter-spacing: 1px;
+    padding: 6px 4px; margin-top: 8px;
+  }
+
+  /* CART BAR */
+  #cart-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 60;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 12px 16px; box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+    display: none;
+  }
+  #cart-bar.show { display: block; }
+  .cart-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .cart-count { font-size: 0.85rem; color: var(--muted); }
+  .cart-total { font-size: 1.2rem; font-weight: 800; }
+  .btn-order {
+    width: 100%; padding: 14px; border-radius: 12px; border: none;
+    background: var(--primary); color: #fff; font-size: 1rem; font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-order:active { background: var(--primary-dark); }
+  .btn-order:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* HISTORY tab */
+  #history { padding: 16px; }
+  .hist-card {
+    background: var(--card); border-radius: 12px; padding: 14px;
+    box-shadow: var(--shadow); margin-bottom: 10px;
+  }
+  .hist-head { display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; }
+  .hist-time { font-size: 0.75rem; color: var(--muted); }
+  .hist-status {
+    font-size: 0.7rem; padding: 3px 10px; border-radius: 999px; font-weight:700;
+  }
+  .st-new      { background: #fff7e0; color: #b88600; }
+  .st-preparing{ background: #e0f0ff; color: #1e60c0; }
+  .st-served   { background: #e0f7e0; color: var(--green); }
+  .st-cancelled{ background: #f8d0d0; color: #b00; text-decoration: line-through; }
+  .hist-item { display:flex; justify-content:space-between; font-size: 0.88rem; padding: 2px 0; }
+  .hist-divider { border-top:1px dashed var(--border); margin: 8px 0; padding-top:8px; display:flex; justify-content:space-between; font-weight:700; }
+
+  #checkout-section {
+    background: var(--card); border-radius: 14px; padding: 18px;
+    margin-top: 16px; box-shadow: var(--shadow); text-align:center;
+  }
+  .total-label { font-size: 0.78rem; color: var(--muted); }
+  .total-val { font-size: 2rem; font-weight: 800; color: var(--primary); margin: 4px 0 14px; }
+  .btn-pay {
+    width: 100%; padding: 14px; border-radius: 12px; border: none;
+    background: var(--primary); color: #fff; font-size: 1rem; font-weight: 700;
+    cursor: pointer; margin-bottom: 8px;
+  }
+  .btn-pay:active { background: var(--primary-dark); }
+  .pay-note { font-size: 0.75rem; color: var(--muted); }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+    background: #222; color: #fff; padding: 12px 20px; border-radius: 30px;
+    font-size: 0.88rem; opacity: 0; transition: opacity 0.3s; z-index: 100;
+    pointer-events: none; max-width: 90%; text-align: center;
+  }
+  #toast.show { opacity: 1; }
+
+  /* BANNERS */
+  .banner {
+    padding: 10px 16px; font-size: 0.85rem; text-align: center;
+  }
+  .banner-success { background: #e0f7e0; color: var(--green); }
+  .banner-cancel  { background: #fff3e0; color: #b86c00; }
+
+  .empty { text-align:center; padding: 60px 20px; color: var(--muted); }
+  .empty-emoji { font-size: 3rem; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="shop-name" id="shop-name">店舗名</div>
+  <div class="table-badge" id="table-badge">テーブル -</div>
+</header>
+
+<div id="banner-area"></div>
+
+<div id="tabs">
+  <button class="tab active" data-tab="menu">メニュー</button>
+  <button class="tab" data-tab="history">注文履歴・お会計</button>
+</div>
+
+<div id="view-menu">
+  <div id="menu"></div>
+</div>
+
+<div id="view-history" style="display:none;">
+  <div id="history"></div>
+</div>
+
+<div id="cart-bar">
+  <div class="cart-summary">
+    <div class="cart-count" id="cart-count">0点</div>
+    <div class="cart-total" id="cart-total">¥0</div>
+  </div>
+  <button class="btn-order" id="btn-order">注文を確定する</button>
+</div>
+
+<div id="toast"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(() => {
+  const params = new URLSearchParams(location.search);
+  const tableNo = params.get('table') || '1';
+  document.getElementById('table-badge').textContent = `テーブル ${tableNo}`;
+
+  let menu = null;
+  const cart = new Map(); // itemId -> { qty, def }
+
+  function showToast(msg, ms=2200) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => t.classList.remove('show'), ms);
+  }
+
+  function showBanner(html, cls) {
+    const area = document.getElementById('banner-area');
+    area.innerHTML = `<div class="banner banner-${cls}">${html}</div>`;
+    setTimeout(() => { area.innerHTML = ''; }, 6000);
+  }
+
+  if (params.get('paid') === '1') {
+    showBanner('✓ お会計が完了しました。ありがとうございました。', 'success');
+    history.replaceState({}, '', `order.html?table=${tableNo}`);
+  } else if (params.get('cancelled') === '1') {
+    showBanner('お会計がキャンセルされました。', 'cancel');
+    history.replaceState({}, '', `order.html?table=${tableNo}`);
+  }
+
+  // ── タブ切替 ────────────────────
+  document.querySelectorAll('.tab').forEach(t => {
+    t.onclick = () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      const which = t.dataset.tab;
+      document.getElementById('view-menu').style.display = which === 'menu' ? '' : 'none';
+      document.getElementById('view-history').style.display = which === 'history' ? '' : 'none';
+      if (which === 'history') loadHistory();
+    };
+  });
+
+  // ── メニュー読み込み・描画 ─────────
+  async function loadMenu() {
+    const r = await fetch('/api/restaurant/menu');
+    menu = await r.json();
+    document.getElementById('shop-name').textContent = menu.settings?.shopName || '店舗';
+    renderMenu();
+  }
+
+  function renderMenu() {
+    const root = document.getElementById('menu');
+    const cats = (menu.categories || []).slice().sort((a,b) => (a.order||0)-(b.order||0));
+    const items = (menu.items || []);
+    let html = '';
+    for (const c of cats) {
+      const list = items.filter(i => i.categoryId === c.id).sort((a,b) => (a.order||0)-(b.order||0));
+      if (!list.length) continue;
+      html += `<div class="cat-title">${escapeHtml(c.name)}</div>`;
+      for (const it of list) {
+        const cur = cart.get(it.id);
+        const qty = cur?.qty || 0;
+        const unavail = !it.available;
+        html += `
+          <div class="item ${unavail ? 'item-unavail' : ''}">
+            <div class="item-emoji">${it.emoji || '🍽️'}</div>
+            <div class="item-info">
+              <div class="item-name">${escapeHtml(it.name)}</div>
+              ${it.description ? `<div class="item-desc">${escapeHtml(it.description)}</div>` : ''}
+              <div class="item-price">¥${it.price.toLocaleString()}${unavail ? ' <span class="item-unavail-label">在庫切れ</span>' : ''}</div>
+            </div>
+            ${unavail ? '' : `
+              <div class="qty-ctrl">
+                ${qty > 0 ? `<button class="qty-btn" onclick="App.dec('${it.id}')">−</button>
+                            <div class="qty-val">${qty}</div>` : ''}
+                <button class="qty-btn plus" onclick="App.inc('${it.id}')">＋</button>
+              </div>`}
+          </div>
+        `;
+      }
+    }
+    if (!html) html = '<div class="empty"><div class="empty-emoji">🍽️</div>メニューが登録されていません</div>';
+    root.innerHTML = html;
+    updateCartBar();
+  }
+
+  function updateCartBar() {
+    const bar = document.getElementById('cart-bar');
+    let count = 0, total = 0;
+    for (const { qty, def } of cart.values()) {
+      count += qty;
+      total += qty * def.price;
+    }
+    if (count === 0) { bar.classList.remove('show'); return; }
+    bar.classList.add('show');
+    document.getElementById('cart-count').textContent = `${count}点`;
+    document.getElementById('cart-total').textContent = `¥${total.toLocaleString()}`;
+  }
+
+  function inc(id) {
+    const def = menu.items.find(x => x.id === id);
+    if (!def) return;
+    const cur = cart.get(id) || { qty: 0, def };
+    cur.qty++;
+    cart.set(id, cur);
+    renderMenu();
+  }
+
+  function dec(id) {
+    const cur = cart.get(id);
+    if (!cur) return;
+    cur.qty--;
+    if (cur.qty <= 0) cart.delete(id);
+    else cart.set(id, cur);
+    renderMenu();
+  }
+
+  // ── 注文確定 ────────────────────
+  document.getElementById('btn-order').onclick = async () => {
+    if (!cart.size) return;
+    const items = [...cart.values()].map(c => ({ itemId: c.def.id, qty: c.qty }));
+    const btn = document.getElementById('btn-order');
+    btn.disabled = true; btn.textContent = '送信中...';
+    try {
+      const r = await fetch('/api/restaurant/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tableNo: Number(tableNo), items }),
+      });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || '注文に失敗しました');
+      cart.clear();
+      showToast('✓ ご注文を受け付けました');
+      renderMenu();
+      document.querySelector('[data-tab="history"]').click();
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = '注文を確定する';
+    }
+  };
+
+  // ── 履歴/会計 ───────────────────
+  async function loadHistory() {
+    const root = document.getElementById('history');
+    root.innerHTML = '<div class="empty">読み込み中...</div>';
+    const r = await fetch(`/api/restaurant/table/${encodeURIComponent(tableNo)}/session`);
+    const { session, orders, total } = await r.json();
+    if (!session || !orders.length) {
+      root.innerHTML = '<div class="empty"><div class="empty-emoji">🧾</div>まだ注文がありません</div>';
+      return;
+    }
+    let html = '';
+    for (const o of orders.slice().sort((a,b) => b.createdAt.localeCompare(a.createdAt))) {
+      const time = new Date(o.createdAt).toLocaleTimeString('ja-JP', { hour:'2-digit', minute:'2-digit' });
+      const stCls = `st-${o.status}`;
+      const stLabel = { new: '受付', preparing: '調理中', served: '提供済', cancelled: 'キャンセル' }[o.status] || o.status;
+      let itemsHtml = '';
+      for (const it of o.items) {
+        itemsHtml += `<div class="hist-item"><span>${it.emoji||''} ${escapeHtml(it.name)} × ${it.qty}</span><span>¥${(it.price*it.qty).toLocaleString()}</span></div>`;
+      }
+      html += `
+        <div class="hist-card">
+          <div class="hist-head">
+            <div class="hist-time">${time}</div>
+            <div class="hist-status ${stCls}">${stLabel}</div>
+          </div>
+          ${itemsHtml}
+          <div class="hist-divider"><span>小計</span><span>¥${o.subtotal.toLocaleString()}</span></div>
+        </div>
+      `;
+    }
+
+    const isPaid = session.status === 'paid';
+    html += `
+      <div id="checkout-section">
+        <div class="total-label">${isPaid ? '会計済み' : 'お会計合計'}</div>
+        <div class="total-val">¥${total.toLocaleString()}</div>
+        ${isPaid
+          ? '<div class="pay-note">✓ 会計が完了しています</div>'
+          : `<button class="btn-pay" id="btn-pay">スマホで決済する</button>
+             <div class="pay-note">クレジット・Apple Pay・Google Pay対応<br>現金の場合は店員にお声がけください</div>`}
+      </div>
+    `;
+    root.innerHTML = html;
+
+    const payBtn = document.getElementById('btn-pay');
+    if (payBtn) payBtn.onclick = () => startCheckout(session.id);
+  }
+
+  async function startCheckout(sessionId) {
+    const btn = document.getElementById('btn-pay');
+    btn.disabled = true; btn.textContent = '決済画面へ移動中...';
+    try {
+      const r = await fetch('/api/restaurant/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId }),
+      });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || '決済の開始に失敗しました');
+      location.href = j.url;
+    } catch (e) {
+      alert(e.message);
+      btn.disabled = false; btn.textContent = 'スマホで決済する';
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  }
+
+  // Socket.io: 自分のテーブルの注文状態がリアルタイムで更新される
+  try {
+    const socket = io();
+    socket.on('restaurant_order_updated', ({ order }) => {
+      if (order.tableNo === Number(tableNo) && document.getElementById('view-history').style.display !== 'none') {
+        loadHistory();
+      }
+    });
+    socket.on('restaurant_session_paid', ({ tableNo: t }) => {
+      if (Number(t) === Number(tableNo)) loadHistory();
+    });
+  } catch {}
+
+  window.App = { inc, dec };
+  loadMenu();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>出退勤打刻 — RAKURAKU</title>
+<meta name="description" content="GPSで安全に出退勤を打刻。不正打刻を防止します。" />
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#4F46E5; --purple:#7C3AED; --indigo-l:#EEF2FF;
+    --emerald:#10B981; --emerald-l:#ECFDF5;
+    --amber:#F59E0B; --red:#EF4444; --red-l:#FEF2F2;
+    --slate-900:#0F172A; --slate-700:#334155; --slate-500:#64748B; --slate-200:#E2E8F0; --slate-100:#F1F5F9; --slate-50:#F8FAFC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(180deg,var(--slate-50),#fff);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  .header{background:linear-gradient(135deg,var(--indigo) 0%,var(--purple) 100%);color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
+  .h-left{display:flex;align-items:center;gap:10px;}
+  .h-logo{width:32px;height:32px;background:#fff;color:var(--indigo);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;}
+  .h-title{font-size:16px;font-weight:900;letter-spacing:-.01em;}
+  .h-shop{font-size:11px;color:rgba(255,255,255,.8);font-weight:600;margin-top:1px;}
+  .h-clock{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.04em;}
+
+  .container{max-width:480px;margin:0 auto;padding:24px 18px 100px;}
+
+  /* Name input */
+  .name-card{background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:18px;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,0,0,.04);}
+  .label{font-size:11px;font-weight:800;color:var(--slate-500);letter-spacing:.06em;margin-bottom:8px;}
+  .name-input{width:100%;padding:14px 16px;border:1.5px solid var(--slate-200);border-radius:12px;font-size:18px;font-weight:700;font-family:inherit;outline:none;background:var(--slate-50);text-align:center;letter-spacing:.02em;}
+  .name-input:focus{border-color:var(--indigo);background:#fff;}
+
+  /* Status card */
+  .status-card{background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:20px;margin-bottom:18px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.04);}
+  .status-card.working{background:linear-gradient(135deg,var(--emerald-l),#fff);border-color:var(--emerald);}
+  .status-card.break{background:linear-gradient(135deg,#FFFBEB,#fff);border-color:var(--amber);}
+  .status-label{font-size:11px;font-weight:800;color:var(--slate-500);letter-spacing:.06em;}
+  .status-text{font-size:24px;font-weight:900;margin-top:4px;letter-spacing:-.01em;}
+  .status-card.working .status-text{color:#047857;}
+  .status-card.break .status-text{color:#92400E;}
+  .status-time{font-size:14px;color:var(--slate-500);margin-top:4px;font-weight:700;font-variant-numeric:tabular-nums;}
+  .status-summary{display:flex;justify-content:space-around;margin-top:12px;padding-top:12px;border-top:1px solid var(--slate-100);font-size:12px;color:var(--slate-700);font-weight:700;}
+  .status-summary .v{color:var(--indigo);font-size:14px;font-weight:900;display:block;}
+
+  /* GPS card */
+  .gps-card{background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+  .gps-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--slate-100);flex-shrink:0;}
+  .gps-icon.ok{background:var(--emerald-l);color:#047857;}
+  .gps-icon.error{background:var(--red-l);color:#991B1B;}
+  .gps-icon.loading{background:var(--indigo-l);color:var(--indigo);}
+  .gps-text{flex:1;}
+  .gps-status{font-size:12px;font-weight:800;color:var(--slate-900);}
+  .gps-detail{font-size:10px;color:var(--slate-500);margin-top:2px;font-weight:600;}
+
+  /* Action buttons */
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+  .btn-act{padding:20px 14px;border:none;border-radius:14px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:.02em;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .15s,opacity .15s;box-shadow:0 4px 14px rgba(0,0,0,.1);}
+  .btn-act:active:not(:disabled){transform:scale(.96);}
+  .btn-act:disabled{opacity:.4;cursor:not-allowed;background:var(--slate-100)!important;color:var(--slate-300)!important;box-shadow:none;}
+  .btn-act .ic{font-size:24px;}
+  .btn-clockin{background:linear-gradient(135deg,var(--emerald),#059669);color:#fff;}
+  .btn-clockout{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;}
+  .btn-break-start{background:linear-gradient(135deg,var(--amber),#D97706);color:#fff;}
+  .btn-break-end{background:linear-gradient(135deg,#06B6D4,#0891B2);color:#fff;}
+  .full{grid-column:span 2;}
+
+  /* History */
+  .history-card{background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:16px 18px;}
+  .history-title{font-size:13px;font-weight:900;color:var(--slate-900);margin-bottom:10px;display:flex;justify-content:space-between;}
+  .history-list{font-size:12px;}
+  .history-item{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--slate-100);font-weight:700;}
+  .history-item:last-child{border-bottom:none;}
+  .h-type{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 8px;border-radius:6px;letter-spacing:.02em;}
+  .h-type.clockin{background:var(--emerald-l);color:#047857;}
+  .h-type.clockout{background:var(--indigo-l);color:var(--indigo);}
+  .h-type.break-start{background:#FFFBEB;color:#92400E;}
+  .h-type.break-end{background:#ECFEFF;color:#0E7490;}
+  .history-time{color:var(--slate-700);font-variant-numeric:tabular-nums;}
+  .history-empty{text-align:center;color:var(--slate-500);font-size:12px;padding:14px 0;font-weight:600;}
+
+  /* Toast */
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#0F172A;color:#fff;padding:12px 22px;border-radius:30px;font-size:13px;font-weight:800;box-shadow:0 8px 30px rgba(0,0,0,.3);opacity:0;transition:opacity .25s,transform .25s;z-index:200;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.success{background:linear-gradient(135deg,var(--emerald),#059669);}
+  .toast.error{background:linear-gradient(135deg,var(--red),#DC2626);}
+
+  .hint{background:var(--indigo-l);border-left:3px solid var(--indigo);padding:10px 14px;border-radius:0 8px 8px 0;font-size:11px;color:var(--indigo);font-weight:700;margin-bottom:14px;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="h-left">
+    <div class="h-logo">R</div>
+    <div>
+      <div class="h-title">出退勤打刻</div>
+      <div class="h-shop" id="shop-name">読込中…</div>
+    </div>
+  </div>
+  <div class="h-clock" id="now-clock">--:--</div>
+</div>
+
+<div class="container">
+
+  <div class="hint">
+    💡 出勤・退勤・休憩はこの画面から打刻してください。GPS位置情報で店舗にいることが確認されます。
+  </div>
+
+  <!-- Name input -->
+  <div class="name-card">
+    <div class="label">👤 お名前</div>
+    <input type="text" class="name-input" id="staff-name" placeholder="例) 山田 太郎" autocomplete="name" />
+  </div>
+
+  <!-- GPS status -->
+  <div class="gps-card">
+    <div class="gps-icon loading" id="gps-icon">📍</div>
+    <div class="gps-text">
+      <div class="gps-status" id="gps-status">位置情報を取得中...</div>
+      <div class="gps-detail" id="gps-detail">GPS を有効にしてください</div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="status-card" id="status-card">
+    <div class="status-label">現在のステータス</div>
+    <div class="status-text" id="status-text">⏸ 未出勤</div>
+    <div class="status-time" id="status-time"></div>
+    <div class="status-summary" id="status-summary" style="display:none;">
+      <div>勤務時間<br><span class="v" id="sum-work">0時間0分</span></div>
+      <div>休憩時間<br><span class="v" id="sum-break">0分</span></div>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="actions">
+    <button class="btn-act btn-clockin" id="btn-clockin" onclick="clockAction('in')">
+      <div class="ic">⏰</div>
+      出勤
+    </button>
+    <button class="btn-act btn-clockout" id="btn-clockout" onclick="clockAction('out')" disabled>
+      <div class="ic">🏁</div>
+      退勤
+    </button>
+    <button class="btn-act btn-break-start" id="btn-break-start" onclick="clockAction('break_start')" disabled>
+      <div class="ic">☕</div>
+      休憩開始
+    </button>
+    <button class="btn-act btn-break-end" id="btn-break-end" onclick="clockAction('break_end')" disabled>
+      <div class="ic">▶️</div>
+      休憩終了
+    </button>
+  </div>
+
+  <!-- Today's history -->
+  <div class="history-card">
+    <div class="history-title">
+      <span>📋 本日の打刻履歴</span>
+      <span style="font-size:10px;color:var(--slate-500);font-weight:700;" id="today-date">--/--</span>
+    </div>
+    <div class="history-list" id="history-list">
+      <div class="history-empty">打刻履歴はまだありません</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  /* ══════════════════════════════════════════
+     設定・状態
+  ══════════════════════════════════════════ */
+  const params = new URLSearchParams(location.search);
+  const SHOP_ID = params.get('shop') || 'default';
+  const ALLOWED_RADIUS_METERS = 200; // デフォルト 200m（店舗設定で上書き可）
+  let _shopMeta = null;
+  let _currentPosition = null;
+  let _gpsError = null;
+  let _todayRecords = [];
+
+  /* ── お名前を localStorage に保存 ── */
+  function loadName() { try { return localStorage.getItem('rakuraku_attendance_name_' + SHOP_ID) || ''; } catch(e) { return ''; } }
+  function saveName(n) { try { localStorage.setItem('rakuraku_attendance_name_' + SHOP_ID, n); } catch(e) {} }
+  document.getElementById('staff-name').value = loadName();
+  document.getElementById('staff-name').addEventListener('input', e => saveName(e.target.value));
+
+  /* ── 時計 ── */
+  function updateClock() {
+    const d = new Date();
+    document.getElementById('now-clock').textContent =
+      String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    document.getElementById('today-date').textContent =
+      (d.getMonth()+1) + '/' + d.getDate() + ' (' + ['日','月','火','水','木','金','土'][d.getDay()] + ')';
+  }
+  setInterval(updateClock, 30000);
+  updateClock();
+
+  /* ══════════════════════════════════════════
+     店舗メタ情報取得
+  ══════════════════════════════════════════ */
+  async function loadShopMeta() {
+    try {
+      const res = await fetch('/api/shop/' + encodeURIComponent(SHOP_ID) + '/meta');
+      if (!res.ok) return;
+      _shopMeta = await res.json();
+      const nm = _shopMeta.shopName || _shopMeta.name || SHOP_ID;
+      document.getElementById('shop-name').textContent = nm;
+    } catch(e) {
+      document.getElementById('shop-name').textContent = SHOP_ID;
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     GPS 取得
+  ══════════════════════════════════════════ */
+  function startGPS() {
+    if (!navigator.geolocation) {
+      _gpsError = 'GPSがサポートされていません';
+      updateGPSStatus();
+      return;
+    }
+    navigator.geolocation.watchPosition(
+      pos => {
+        _currentPosition = { lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy };
+        _gpsError = null;
+        updateGPSStatus();
+      },
+      err => {
+        _gpsError = err.code === 1 ? 'GPSがブロックされています' : err.message;
+        updateGPSStatus();
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+    );
+  }
+
+  function haversineDistance(lat1, lng1, lat2, lng2) {
+    const R = 6371000; // 地球半径 m
+    const toRad = d => d * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng/2)**2;
+    return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function getDistanceToShop() {
+    if (!_currentPosition || !_shopMeta || !_shopMeta.latitude || !_shopMeta.longitude) return null;
+    return haversineDistance(_currentPosition.lat, _currentPosition.lng, _shopMeta.latitude, _shopMeta.longitude);
+  }
+
+  function updateGPSStatus() {
+    const icon = document.getElementById('gps-icon');
+    const status = document.getElementById('gps-status');
+    const detail = document.getElementById('gps-detail');
+    if (_gpsError) {
+      icon.className = 'gps-icon error';
+      icon.textContent = '⚠️';
+      status.textContent = 'GPS エラー';
+      detail.textContent = _gpsError + ' / 位置情報の許可をしてください';
+      return;
+    }
+    if (!_currentPosition) {
+      icon.className = 'gps-icon loading';
+      icon.textContent = '📍';
+      status.textContent = '位置情報を取得中...';
+      detail.textContent = 'しばらくお待ちください';
+      return;
+    }
+    const dist = getDistanceToShop();
+    if (dist === null) {
+      icon.className = 'gps-icon ok';
+      icon.textContent = '📍';
+      status.textContent = '位置情報 取得済み';
+      detail.textContent = `精度: ±${Math.round(_currentPosition.accuracy)}m（店舗位置未設定）`;
+      return;
+    }
+    const allowedRadius = (_shopMeta && _shopMeta.allowedRadiusMeters) || ALLOWED_RADIUS_METERS;
+    if (dist <= allowedRadius) {
+      icon.className = 'gps-icon ok';
+      icon.textContent = '✅';
+      status.textContent = '店舗範囲内です';
+      detail.textContent = `店舗から ${Math.round(dist)}m（許容 ${allowedRadius}m）`;
+    } else {
+      icon.className = 'gps-icon error';
+      icon.textContent = '🚫';
+      status.textContent = '店舗から離れています';
+      detail.textContent = `店舗から ${Math.round(dist)}m（許容 ${allowedRadius}m）— 打刻時に警告されます`;
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     打刻アクション
+  ══════════════════════════════════════════ */
+  async function clockAction(type) {
+    const name = document.getElementById('staff-name').value.trim();
+    if (!name) {
+      showToast('お名前を入力してください', 'error');
+      document.getElementById('staff-name').focus();
+      return;
+    }
+
+    const dist = getDistanceToShop();
+    const allowedRadius = (_shopMeta && _shopMeta.allowedRadiusMeters) || ALLOWED_RADIUS_METERS;
+    let warnDist = false;
+    if (dist !== null && dist > allowedRadius) {
+      warnDist = true;
+      if (!confirm(`店舗から ${Math.round(dist)}m 離れています（許容 ${allowedRadius}m）。\n本当に打刻しますか？\n\n※不正打刻として記録され、店長に警告が届きます。`)) {
+        return;
+      }
+    }
+
+    const payload = {
+      shopId: SHOP_ID,
+      name,
+      type, // 'in' | 'out' | 'break_start' | 'break_end'
+      lat: _currentPosition?.lat || null,
+      lng: _currentPosition?.lng || null,
+      accuracy: _currentPosition?.accuracy || null,
+      distanceM: dist,
+      outsideAllowed: warnDist,
+      ts: Date.now(),
+    };
+
+    try {
+      const res = await fetch('/api/attendance/clock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'サーバーエラー');
+      }
+      const labels = { in: '出勤', out: '退勤', break_start: '休憩開始', break_end: '休憩終了' };
+      showToast('✅ ' + labels[type] + ' を記録しました', 'success');
+      await loadHistory();
+    } catch(e) {
+      showToast('⚠ ' + e.message, 'error');
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     履歴・ステータス
+  ══════════════════════════════════════════ */
+  async function loadHistory() {
+    const name = document.getElementById('staff-name').value.trim();
+    if (!name) {
+      renderEmpty();
+      return;
+    }
+    try {
+      const res = await fetch('/api/attendance/today?shop=' + encodeURIComponent(SHOP_ID) + '&name=' + encodeURIComponent(name));
+      if (!res.ok) return renderEmpty();
+      _todayRecords = await res.json();
+      renderHistory();
+      updateButtons();
+    } catch(e) { renderEmpty(); }
+  }
+
+  function renderEmpty() {
+    document.getElementById('history-list').innerHTML = '<div class="history-empty">打刻履歴はまだありません</div>';
+    updateStatus(null);
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('history-list');
+    if (!_todayRecords.length) { renderEmpty(); return; }
+    list.innerHTML = _todayRecords.map(r => {
+      const d = new Date(r.ts);
+      const time = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+      const labels = { in: '出勤', out: '退勤', break_start: '休憩開始', break_end: '休憩終了' };
+      const warn = r.outsideAllowed ? ' ⚠️' : '';
+      return '<div class="history-item">' +
+        '<span class="h-type ' + r.type.replace('_','-') + '">' + (labels[r.type] || r.type) + warn + '</span>' +
+        '<span class="history-time">' + time + '</span>' +
+      '</div>';
+    }).join('');
+    updateStatus(currentStatus());
+  }
+
+  function currentStatus() {
+    // 最新の打刻から現状を判定
+    if (!_todayRecords.length) return null;
+    const sorted = [..._todayRecords].sort((a,b) => a.ts - b.ts);
+    let st = 'off';
+    sorted.forEach(r => {
+      if (r.type === 'in') st = 'working';
+      else if (r.type === 'out') st = 'off';
+      else if (r.type === 'break_start') st = 'break';
+      else if (r.type === 'break_end') st = 'working';
+    });
+    return st;
+  }
+
+  function calcWorkBreakMinutes() {
+    const sorted = [..._todayRecords].sort((a,b) => a.ts - b.ts);
+    let inT = null, breakT = null, workMs = 0, breakMs = 0;
+    sorted.forEach(r => {
+      if (r.type === 'in') inT = r.ts;
+      else if (r.type === 'out' && inT) { workMs += r.ts - inT; inT = null; }
+      else if (r.type === 'break_start' && inT) { workMs += r.ts - inT; breakT = r.ts; inT = null; }
+      else if (r.type === 'break_end' && breakT) { breakMs += r.ts - breakT; inT = r.ts; breakT = null; }
+    });
+    if (inT) workMs += Date.now() - inT;
+    if (breakT) breakMs += Date.now() - breakT;
+    return { work: Math.floor(workMs / 60000), brk: Math.floor(breakMs / 60000) };
+  }
+
+  function updateStatus(st) {
+    const card = document.getElementById('status-card');
+    const text = document.getElementById('status-text');
+    const time = document.getElementById('status-time');
+    const summary = document.getElementById('status-summary');
+
+    card.className = 'status-card';
+    summary.style.display = 'none';
+
+    if (st === 'working') {
+      card.classList.add('working');
+      text.textContent = '🟢 勤務中';
+    } else if (st === 'break') {
+      card.classList.add('break');
+      text.textContent = '☕ 休憩中';
+    } else if (st === 'off' && _todayRecords.length) {
+      text.textContent = '🏁 退勤済';
+    } else {
+      text.textContent = '⏸ 未出勤';
+    }
+
+    if (_todayRecords.length) {
+      const last = [..._todayRecords].sort((a,b) => b.ts - a.ts)[0];
+      const d = new Date(last.ts);
+      time.textContent = '最終打刻: ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+      const { work, brk } = calcWorkBreakMinutes();
+      document.getElementById('sum-work').textContent = Math.floor(work/60) + '時間' + (work%60) + '分';
+      document.getElementById('sum-break').textContent = brk + '分';
+      summary.style.display = 'flex';
+    } else {
+      time.textContent = '';
+    }
+  }
+
+  function updateButtons() {
+    const st = currentStatus();
+    document.getElementById('btn-clockin').disabled = st === 'working' || st === 'break';
+    document.getElementById('btn-clockout').disabled = !(st === 'working');
+    document.getElementById('btn-break-start').disabled = st !== 'working';
+    document.getElementById('btn-break-end').disabled = st !== 'break';
+  }
+
+  /* ══════════════════════════════════════════
+     Socket.io リアルタイム
+  ══════════════════════════════════════════ */
+  if (typeof io === 'function') {
+    const socket = io({ transports: ['websocket', 'polling'] });
+    socket.on('connect', () => socket.emit('shop_join', { shopId: SHOP_ID }));
+    socket.on('attendance_updated', (payload) => {
+      if (payload.shopId !== SHOP_ID) return;
+      const name = document.getElementById('staff-name').value.trim();
+      if (payload.name === name) loadHistory();
+    });
+  }
+
+  /* ── トースト ── */
+  function showToast(msg, type) {
+    const el = document.getElementById('toast');
+    el.className = 'toast ' + (type || '');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2600);
+  }
+
+  /* ── 初期化 ── */
+  document.getElementById('staff-name').addEventListener('change', loadHistory);
+  loadShopMeta();
+  startGPS();
+  loadHistory();
+</script>
+</body>
+</html>
