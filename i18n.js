@@ -120,6 +120,21 @@
     'my.toast_approved': { ja:'✅ 変更届が承認されました', en:'✅ Request approved', zh:'✅ 申请已批准', ko:'✅ 신청이 승인되었습니다' },
     'my.toast_rejected': { ja:'⚠ 変更届が却下されました', en:'⚠ Request rejected', zh:'⚠ 申请被拒绝', ko:'⚠ 신청이 거부되었습니다' },
     'my.required_fields': { ja:'名前・日付・理由は必須です', en:'Name, date, and reason are required', zh:'姓名、日期和原因为必填', ko:'이름, 날짜, 사유는 필수입니다' },
+
+    /* ─── shift.html スタッフ提出画面 ─── */
+    'staff.title': { ja:'シフト提出', en:'Submit Shift Request', zh:'提交班次申请', ko:'시프트 제출' },
+    'staff.sub': { ja:'希望の勤務日・時間帯を入力して提出してください',
+                   en:'Enter your preferred work dates and times',
+                   zh:'输入希望的工作日期和时间',
+                   ko:'희망 근무일과 시간을 입력하세요' },
+    'staff.go_attendance': { ja:'⏰ 出退勤打刻はこちら（GPS対応）',
+                             en:'⏰ Time Clock (GPS-enabled)',
+                             zh:'⏰ 出勤打卡（GPS）',
+                             ko:'⏰ 출퇴근 타각 (GPS)' },
+    'staff.go_myshift': { ja:'📅 マイシフト・休み変更届',
+                          en:'📅 My Shifts & Time-off Request',
+                          zh:'📅 我的班次·请假',
+                          ko:'📅 내 시프트·휴가 신청' },
   };
 
   const SUPPORTED_LANGS = ['ja', 'en', 'zh', 'ko'];

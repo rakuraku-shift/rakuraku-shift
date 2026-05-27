@@ -2120,6 +2120,34 @@
     /* スワイプによる戻る/進むの誤動作防止（カードスクロール時） */
     .shift-grid-wrap { overscroll-behavior-x: contain; }
 
+    /* 名前が多い時の横スクロール表示（共通） */
+    .scroll-x-staff,
+    .tc-staff-list,
+    .chip-row,
+    .adj-cands {
+      display: flex; gap: 6px; overflow-x: auto; scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch; padding: 2px 0; scrollbar-width: thin;
+    }
+    .scroll-x-staff::-webkit-scrollbar,
+    .tc-staff-list::-webkit-scrollbar,
+    .chip-row::-webkit-scrollbar,
+    .adj-cands::-webkit-scrollbar { height: 6px; }
+    .scroll-x-staff::-webkit-scrollbar-thumb,
+    .tc-staff-list::-webkit-scrollbar-thumb,
+    .chip-row::-webkit-scrollbar-thumb,
+    .adj-cands::-webkit-scrollbar-thumb { background: rgba(99,102,241,.3); border-radius: 3px; }
+    .scroll-x-staff > *,
+    .tc-staff-list > *,
+    .chip-row > *,
+    .adj-cands > * { flex-shrink: 0; }
+    /* スクロール可能を示すフェード（右端） */
+    .scroll-x-wrap { position: relative; }
+    .scroll-x-wrap::after {
+      content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 30px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,.95));
+      pointer-events: none;
+    }
+
     /* ─── 同期ステータスバッジ（画面右下） ─── */
     .sync-pill {
       position:fixed; right:14px; bottom:14px; z-index:900;
@@ -2215,10 +2243,19 @@
       </div>
       <div class="sh-badge">Staff Portal</div>
     </div>
-    <div class="sh-title">シフト提出</div>
-    <div class="sh-sub">希望の勤務日・時間帯を入力して提出してください</div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+      <div style="flex:1;">
+        <div class="sh-title" data-i18n="staff.title">シフト提出</div>
+        <div class="sh-sub" data-i18n="staff.sub">希望の勤務日・時間帯を入力して提出してください</div>
+      </div>
+      <div id="staff-lang-switcher"></div>
+    </div>
     <a href="#" onclick="event.preventDefault();window.location.href='/attendance.html?shop='+encodeURIComponent(getShopId());" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;padding:11px 14px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:10px;color:#fff;font-size:13px;font-weight:800;text-decoration:none;backdrop-filter:blur(6px);">
-      <span>⏰ 出退勤打刻はこちら（GPS対応）</span>
+      <span data-i18n="staff.go_attendance">⏰ 出退勤打刻はこちら（GPS対応）</span>
+      <span style="font-size:16px;">→</span>
+    </a>
+    <a href="#" onclick="event.preventDefault();window.location.href='/myshift.html?shop='+encodeURIComponent(getShopId());" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding:11px 14px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:10px;color:#fff;font-size:13px;font-weight:800;text-decoration:none;backdrop-filter:blur(6px);">
+      <span data-i18n="staff.go_myshift">📅 マイシフト・休み変更届</span>
       <span style="font-size:16px;">→</span>
     </a>
   </div>
@@ -4969,6 +5006,9 @@
     _bulkAdjustmentCache = shortages;
     renderAdjustmentCard(shortages);
 
+    /* ✅ 計算ミス検知バリデーション */
+    if (typeof validateGeneratedShift === 'function') validateGeneratedShift();
+
     showToast('✨ シフト表を生成しました！');
   }
 
@@ -5425,12 +5465,61 @@
             <span class="adj-date">${dateLbl}</span>
             <span class="adj-period">${PERIOD_ICONS[s.period]} ${PERIOD_NAMES[s.period]}</span>
             <span class="adj-shortage">${s.needed}名不足 (${s.count}/${s.target})</span>
+            <button onclick="markAbsenceAndRecruit('${s.date}','${s.role || ''}')" style="margin-left:auto;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;cursor:pointer;">🆘 欠勤対応</button>
           </div>
           ${candsHtml}
         </div>`;
     }).join('');
 
     document.getElementById('adjustment-content').innerHTML = bulkPanel + rowsHtml;
+  }
+
+  /* 欠勤マーク → そのまま外部求人モーダルを起動 */
+  function markAbsenceAndRecruit(date, role) {
+    if (!confirm(`${date} を欠勤として記録し、代替スタッフを募集しますか？\n→ Timee/シェアフル/バイトル モーダルが開きます。`)) return;
+    /* 欠勤履歴を localStorage に記録（後で監査用） */
+    try {
+      const absList = JSON.parse(storageGet(_sk('absence_log')) || '[]');
+      absList.push({ date, role, ts: Date.now(), source: 'manager' });
+      storageSet(_sk('absence_log'), JSON.stringify(absList));
+    } catch(e) {}
+    showToast('🆘 欠勤として記録 → 募集モーダルを開きます');
+    if (typeof openTimeeModalFor === 'function') {
+      setTimeout(() => openTimeeModalFor(date, role || 'hall'), 400);
+    }
+  }
+
+  /* シフト計算ミス検知 — generateShift 後に呼ぶ */
+  function validateGeneratedShift() {
+    try {
+      const rules = loadTimeRules();
+      const submissions = loadState();
+      const dupCheck = {};
+      let warns = [];
+      submissions.forEach(s => {
+        (s.dates || []).forEach(d => {
+          const key = `${s.name}_${d}`;
+          if (dupCheck[key]) warns.push(`⚠ ${s.name} の ${d} に重複シフトの可能性`);
+          dupCheck[key] = true;
+        });
+      });
+      const card = document.getElementById('validation-warn');
+      if (!card) {
+        const adjCard = document.getElementById('adjustment-card');
+        if (!adjCard) return;
+        const w = document.createElement('div');
+        w.id = 'validation-warn';
+        w.style.cssText = 'background:#FEF3C7;border-left:4px solid #F59E0B;padding:10px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#92400E;font-weight:700;margin:10px 0;display:none;';
+        adjCard.parentNode.insertBefore(w, adjCard);
+      }
+      const el = document.getElementById('validation-warn');
+      if (warns.length) {
+        el.innerHTML = '<strong>⚠ シフト作成バリデーション:</strong><br>' + warns.slice(0, 5).join('<br>');
+        el.style.display = 'block';
+      } else if (el) {
+        el.style.display = 'none';
+      }
+    } catch(e) {}
   }
 
   /* 個別メール送信 (mailto:) */
@@ -6730,6 +6819,10 @@ BAR EXCHANGEのシフト担当です。
       });
     });
   }
+</script>
+<script src="/i18n.js"></script>
+<script>
+  if (window.RakuI18n) RakuI18n.buildSwitcher('staff-lang-switcher');
 </script>
 </body>
 </html>
