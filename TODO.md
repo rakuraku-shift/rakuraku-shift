@@ -1,6 +1,45 @@
 # 🎯 RAKURAKU 機能ロードマップ・TODO
 
-最終更新: 2026年5月
+最終更新: 2026年5月28日
+
+## ✨ 2026-05-28 (本日) 追加実装
+
+### 新規ページ・機能
+- ✅ デモ予約フォーム (demo-reservation.html + /api/demo-reservation)
+- ✅ 紹介プログラム (referral.html + /api/referral + コード自動発行 RAKU-XXXX-YYYY)
+- ✅ マスタデータ管理ページ (master-data.html — ポジション/時給/時間帯/休憩/ホリデー 統一管理)
+- ✅ スタッフ別月次サマリ (staff-monthly.html — 勤務時間/給与/評価/カレンダー/PDF印刷)
+- ✅ 導入事例ページ (case-studies.html — 6事例 + オーナーの声5件)
+- ✅ 本部ダッシュボード (hq-dashboard.html — 6KPI/ランキング/アラート/CSV出力)
+- ✅ 通知設定センター (notification-settings.html — メール/LINE/Push/SMS統合UI)
+
+### LINE 公式アカウント連携
+- ✅ POST /api/notification/line/connect — 設定保存
+- ✅ POST /api/notification/line/test — Messaging API疎通テスト
+- ✅ POST /api/notification/line/broadcast — 全員へ通知
+
+### PWA 強化
+- ✅ sw.js v2: push通知受信ハンドラ + notificationclick
+- ✅ manifest.json: shortcuts追加 (打刻/マイシフト/希望提出/デモ予約)
+- ✅ Background Sync stub
+
+### サーバーAPI
+- ✅ POST/GET /api/master-data/:shopId — マスタ同期 (Socket.io broadcast対応)
+- ✅ GET /api/hq/summary — 本部集計KPI
+
+### #1 完了
+- ✅ #1 名前リスト水平スクロール class適用 (eval-staff-row badges + chip-row CSS)
+  → モバイル: 横スクロール、デスクトップ(≥880px): wrap
+
+### #6 完了
+- ✅ #6 shift.html i18n: フォーム/モーダル/トースト多言語化
+  → i18n.js に70+ keys 追加 (toast/confirm/edit/eval/holiday/audit/md/hq)
+  → tt() 関数: 既存日本語文字列を自動逆引き翻訳
+  → showToast() に自動翻訳ラップ適用
+  → 5モーダル に data-i18n 属性適用
+  → rakuraku-lang-changed イベントで動的レンダリング再実行
+
+
 
 ## 凡例
 - ✅ 実装済み・本番稼働中
@@ -93,8 +132,15 @@
 
 ## 🔴 残り未完了 (次セッション)
 
-- 🔴 #1 名前リスト水平スクロール の **具体要素への class 付与** （実態 5割・折りたたみで省略表示は完成済み）
-- 🔴 #6 shift.html 多言語化 の **フォーム・モーダル・トースト** （実態 5割・主要UIは完成）
+~~- 🔴 #1 名前リスト水平スクロール class 付与~~ → ✅ 2026-05-28 完成
+~~- 🔴 #6 shift.html 多言語化 フォーム・モーダル・トースト~~ → ✅ 2026-05-28 完成
+
+**現在残っている主要TODO:**
+- 📋 POS連携 (Square/Airレジ) — 売上自動取得
+- 📋 給与ソフト連携 (freee/マネーフォワード)
+- 📋 iOS/Android アプリ化 (Capacitor)
+- 📋 ブログ機能 (コンテンツマーケティング)
+- 📋 マスタデータ シフト画面側との同期 (master-data.html → shift.html へ反映)
 
 ## 🚧 このセッションで実装中
 
@@ -204,6 +250,11 @@
 ## 進捗率
 
 ```
-全体実装率: ★★★★★★★★☆☆ 80%
-（コア機能完成、運用機能が拡張中）
+全体実装率: ★★★★★★★★★☆ 90%
+（コア機能・運用機能・営業ページ・本部機能 すべて完成）
 ```
+
+### 残り10%の内訳
+- 外部システム連携 (POS / 給与ソフト)
+- ネイティブアプリ化
+- マスタデータの実シフト適用フロー
