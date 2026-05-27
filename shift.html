@@ -3013,61 +3013,61 @@
   <!-- 時間編集モーダル (シフトの時間バーをタップ → 開く) -->
   <div class="edit-overlay" id="edit-time-overlay" onclick="if(event.target===this)closeEditTime()">
     <div class="edit-card">
-      <h3>⏰ シフト時間を編集</h3>
+      <h3 data-i18n="edit.time_title">⏰ シフト時間を編集</h3>
       <div class="sub" id="edit-time-staff-info">―</div>
-      <label>開始 〜 終了</label>
+      <label><span data-i18n="edit.time_start">開始時刻</span> 〜 <span data-i18n="edit.time_end">終了時刻</span></label>
       <div class="edit-row">
         <input type="time" id="edit-time-start" />
         <span>〜</span>
         <input type="time" id="edit-time-end" />
       </div>
-      <button class="edit-btn save" onclick="saveEditTime()">💾 保存</button>
-      <button class="edit-btn" style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;margin-top:8px;" onclick="markAbsentFromEdit()">🆘 欠勤マーク → 代替募集</button>
-      <button class="edit-btn delete" onclick="deleteEditTime()">🗑 この時間を削除</button>
-      <button class="edit-btn cancel" onclick="closeEditTime()">キャンセル</button>
+      <button class="edit-btn save" onclick="saveEditTime()" data-i18n="edit.save_btn">💾 保存</button>
+      <button class="edit-btn" style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;margin-top:8px;" onclick="markAbsentFromEdit()" data-i18n="edit.absence_btn">🆘 欠勤マーク → 代替募集</button>
+      <button class="edit-btn delete" onclick="deleteEditTime()">🗑 <span data-i18n="confirm.delete_shift">この時間を削除</span></button>
+      <button class="edit-btn cancel" onclick="closeEditTime()" data-i18n="common.cancel">キャンセル</button>
     </div>
   </div>
 
   <!-- ホリデー設定モーダル -->
   <div class="edit-overlay" id="edit-holiday-overlay" onclick="if(event.target===this)closeHolidayModal()">
     <div class="edit-card">
-      <h3>🎌 祝日・特別営業日 設定</h3>
+      <h3 data-i18n="holiday.title">🎌 祝日・特別営業日 設定</h3>
       <div class="sub">祝日マークを設定すると、該当日に🎌マーク表示+必要人員1.5倍</div>
-      <label>日付を選択 → 種別タップ</label>
+      <label data-i18n="holiday.add_date">日付を選択 → 種別タップ</label>
       <input type="date" id="holiday-date" />
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;">
-        <button class="edit-btn" style="background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;margin:0;" onclick="setHoliday('holiday')">🎌 祝日 (繁忙)</button>
-        <button class="edit-btn" style="background:linear-gradient(135deg,#06B6D4,#0891B2);color:#fff;margin:0;" onclick="setHoliday('quiet')">😴 閑散日</button>
+        <button class="edit-btn" style="background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;margin:0;" onclick="setHoliday('holiday')" data-i18n="holiday.t_busy">🎌 祝日 (繁忙)</button>
+        <button class="edit-btn" style="background:linear-gradient(135deg,#06B6D4,#0891B2);color:#fff;margin:0;" onclick="setHoliday('quiet')" data-i18n="holiday.t_quiet">😴 閑散日</button>
       </div>
       <label>登録済み</label>
       <div id="holiday-list" style="max-height:200px;overflow-y:auto;font-size:12px;padding:8px;background:var(--slate-50);border-radius:8px;"></div>
-      <button class="edit-btn cancel" onclick="closeHolidayModal()">閉じる</button>
+      <button class="edit-btn cancel" onclick="closeHolidayModal()" data-i18n="common.close">閉じる</button>
     </div>
   </div>
 
   <!-- 監査ログモーダル -->
   <div class="edit-overlay" id="audit-log-overlay" onclick="if(event.target===this)closeAuditLog()">
     <div class="edit-card" style="max-width:520px;">
-      <h3>📜 シフト変更履歴</h3>
+      <h3 data-i18n="audit.title">📜 シフト変更履歴</h3>
       <div class="sub">直近30件のシフト操作ログ（時間編集・欠勤マーク・必要人員変更 etc）</div>
       <div id="audit-log-list" style="max-height:400px;overflow-y:auto;font-size:11px;line-height:1.6;padding:8px;background:var(--slate-50);border-radius:8px;font-family:'SF Mono',monospace;"></div>
-      <button class="edit-btn cancel" onclick="closeAuditLog()">閉じる</button>
+      <button class="edit-btn cancel" onclick="closeAuditLog()" data-i18n="common.close">閉じる</button>
     </div>
   </div>
 
   <!-- 必要人員編集モーダル (日付ヘッダーをタップ → 開く) -->
   <div class="edit-overlay" id="edit-need-overlay" onclick="if(event.target===this)closeEditNeed()">
     <div class="edit-card">
-      <h3>👥 必要人員を編集</h3>
+      <h3 data-i18n="edit.need_title">👥 必要人員を編集</h3>
       <div class="sub" id="edit-need-date-info">―</div>
-      <label>朝（9:00〜13:00）</label>
+      <label data-i18n="edit.need_morning">朝（9:00〜13:00）</label>
       <input type="number" id="edit-need-morning" min="0" max="20" step="1" />
-      <label>昼（11:00〜15:00）</label>
+      <label data-i18n="edit.need_lunch">昼（11:00〜15:00）</label>
       <input type="number" id="edit-need-lunch" min="0" max="20" step="1" />
-      <label>夜（17:00〜23:00）</label>
+      <label data-i18n="edit.need_evening">夜（17:00〜23:00）</label>
       <input type="number" id="edit-need-evening" min="0" max="20" step="1" />
-      <button class="edit-btn save" onclick="saveEditNeed()">💾 保存</button>
-      <button class="edit-btn cancel" onclick="closeEditNeed()">キャンセル</button>
+      <button class="edit-btn save" onclick="saveEditNeed()" data-i18n="edit.save_btn">💾 保存</button>
+      <button class="edit-btn cancel" onclick="closeEditNeed()" data-i18n="common.cancel">キャンセル</button>
     </div>
   </div>
 
@@ -3075,10 +3075,10 @@
   <div class="staff-eval-modal" id="staff-eval-modal" onclick="if(event.target===this)closeStaffEval()">
     <div class="se-card">
       <div class="se-name" id="se-name">―</div>
-      <div style="font-size:11px;color:var(--slate-500);text-align:center;margin-bottom:14px;font-weight:600;">ポジション別 5段階評価</div>
+      <div style="font-size:11px;color:var(--slate-500);text-align:center;margin-bottom:14px;font-weight:600;" data-i18n="eval.position">ポジション別 5段階評価</div>
       <div id="se-positions"></div>
-      <button class="edit-btn save" onclick="saveStaffEval()" style="margin-top:14px;">💾 評価を保存</button>
-      <button class="edit-btn cancel" onclick="closeStaffEval()">閉じる</button>
+      <button class="edit-btn save" onclick="saveStaffEval()" style="margin-top:14px;" data-i18n="eval.save_btn">💾 評価を保存</button>
+      <button class="edit-btn cancel" onclick="closeStaffEval()" data-i18n="common.close">閉じる</button>
     </div>
   </div>
 
@@ -6665,7 +6665,10 @@ ${slotLines}
   /* ── Toast ── */
   function showToast(msg) {
     const el = document.getElementById('toast');
-    el.textContent = msg;
+    /* 日本語 → 現在言語に自動翻訳 (i18n.js の tt() を使用) */
+    const text = (window.RakuI18n && typeof window.RakuI18n.tt === 'function')
+      ? window.RakuI18n.tt(msg) : msg;
+    el.textContent = text;
     el.classList.add('show');
     setTimeout(() => el.classList.remove('show'), 2600);
   }
@@ -7544,6 +7547,13 @@ BAR EXCHANGEのシフト担当です。
   if (window.RakuI18n) {
     RakuI18n.buildSwitcher('staff-lang-switcher');
     RakuI18n.buildSwitcher('manager-lang-switcher');
+    /* 言語切替時に動的レンダリングを再実行 */
+    window.addEventListener('rakuraku-lang-changed', function() {
+      try { if (typeof renderManagerView === 'function') renderManagerView(); } catch(e) {}
+      try { if (typeof renderStaffEval === 'function')  renderStaffEval();  } catch(e) {}
+      try { if (typeof renderReminderCard === 'function') renderReminderCard(); } catch(e) {}
+      try { if (typeof renderAdjustmentCard === 'function' && window._lastShortages) renderAdjustmentCard(window._lastShortages); } catch(e) {}
+    });
   }
 </script>
 </body>
