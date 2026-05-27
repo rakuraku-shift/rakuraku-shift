@@ -896,6 +896,33 @@ app.get('/api/master-data/:shopId', (req, res) => {
   res.json(readJSON(file, null));
 });
 
+// ── 汎用メール送信 API (シフト確定通知など)────────────
+app.post('/api/send-mail', async (req, res) => {
+  const { to, subject, text, html, shopId } = req.body || {};
+  if (!to || !subject || (!text && !html)) {
+    return res.status(400).json({ error: 'to, subject, text/html 必須' });
+  }
+  if (!emailTransporter) {
+    return res.status(503).json({ error: 'EMAIL_USER 未設定 — メール送信不可' });
+  }
+  const recipients = Array.isArray(to) ? to : [to];
+  let sent = 0, failed = [];
+  for (const r of recipients) {
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: r,
+        subject,
+        text: text || undefined,
+        html: html || undefined,
+      });
+      sent++;
+    } catch(e) { failed.push({ to: r, error: e.message }); }
+  }
+  console.log(`[send-mail] ${shopId || '?'} — ${sent}/${recipients.length} 送信成功`);
+  res.json({ ok: true, sent, failed });
+});
+
 // ── LINE 公式アカウント連携 API ────────────────────
 app.post('/api/notification/line/connect', (req, res) => {
   const { cid, secret, token, shopId } = req.body || {};

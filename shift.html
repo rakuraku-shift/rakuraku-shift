@@ -2988,9 +2988,12 @@
   <div id="print-bar">
     <div>
       <div class="pb-label">📆 シフト表が生成されました</div>
-      <div class="pb-sub" id="print-bar-sub">印刷してスタッフに配布できます</div>
+      <div class="pb-sub" id="print-bar-sub">印刷・全員通知できます</div>
     </div>
-    <button id="print-bar-btn" onclick="printShift()">🖨️ 印刷する</button>
+    <div style="display:flex;gap:6px;">
+      <button id="print-bar-btn" onclick="printShift()">🖨️ 印刷</button>
+      <button onclick="broadcastShiftConfirm()" style="padding:9px 14px;background:linear-gradient(135deg,#06C755,#02A047);color:#fff;border:none;border-radius:8px;font-weight:800;font-size:12px;cursor:pointer;font-family:inherit;">📢 全員通知</button>
+    </div>
   </div>
 
   <!-- Generated shift card -->
@@ -5477,6 +5480,67 @@
 
   /* ── Print / Preview ── */
   function printShift() { openPrintPreview(false); }
+
+  /* ── シフト確定 → 全員通知 (メール + LINE 同時送信) ── */
+  async function broadcastShiftConfirm() {
+    if (!confirm('シフト確定をスタッフ全員に通知しますか？\n\n📧 メール: 登録済アドレスへ送信\n💬 LINE: 公式アカウント友だち全員へ broadcast\n🔔 PWA: プッシュ通知 (有効化スタッフのみ)')) return;
+
+    const subs = loadState();
+    const knownWorkers = loadKnownWorkers();
+    const emails = [];
+    Object.values(knownWorkers).forEach(w => { if (w.email) emails.push(w.email); });
+    subs.forEach(s => { if (s.email && !emails.includes(s.email)) emails.push(s.email); });
+
+    const shopId = (typeof getShopId === 'function') ? getShopId() : 'default';
+    const monthLbl = getViewingMonth ? getViewingMonth() : new Date().toISOString().slice(0,7);
+    const msg = `📆 ${monthLbl} のシフトが確定しました！\n\nマイシフト画面で確認してください:\n${location.origin}/myshift.html\n\n変更希望は「休み変更届」から提出できます。`;
+
+    let mailOk = false, lineOk = false, errs = [];
+
+    /* メール送信 (既存のフォーマット利用 — server.js の /api/send-mail) */
+    if (emails.length > 0) {
+      try {
+        const res = await fetch('/api/send-mail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: emails,
+            subject: `【RAKURAKU】${monthLbl} シフト確定のお知らせ`,
+            text: msg,
+            shopId,
+          }),
+        });
+        mailOk = res.ok;
+      } catch(e) { errs.push('メール: ' + e.message); }
+    }
+
+    /* LINE broadcast */
+    try {
+      const res = await fetch('/api/notification/line/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shopId, message: msg }),
+      });
+      const data = await res.json();
+      lineOk = res.ok && data.ok;
+      if (!lineOk && data.error) errs.push('LINE: ' + data.error);
+    } catch(e) { errs.push('LINE: ' + e.message); }
+
+    /* 監査ログ */
+    if (typeof _appendAuditLog === 'function') {
+      _appendAuditLog('shift_broadcast', { month: monthLbl, mail: mailOk, line: lineOk, count: emails.length });
+    }
+
+    let resultMsg = '✅ 通知完了: ';
+    const parts = [];
+    if (mailOk) parts.push(`📧 メール ${emails.length}件`);
+    if (lineOk) parts.push('💬 LINE broadcast');
+    if (parts.length === 0) {
+      showToast('⚠ 通知失敗: ' + (errs[0] || '送信先がありません'));
+    } else {
+      showToast(resultMsg + parts.join(' / '));
+    }
+  }
 
   function openPrintPreview(isSample) {
     const wrapEl   = document.querySelector('#generated-content .shift-grid-wrap');
