@@ -194,18 +194,19 @@ const ROADMAP = [
   { id:'r10', status:'shipped', cat:'core', title:'個人給与照会 (パスワード保護)', desc:'スタッフ本人だけが見れる給与', votes:0, priority:'medium', shippedAt:'2026-05' },
 
   /* ─── in-progress ─── */
-  { id:'p1', status:'in-progress', cat:'integration', title:'POS自動定期取込 (Square)', desc:'毎日1回 売上を自動でSquareから取込', votes:0, priority:'high' },
+  { id:'p1', status:'in-progress', cat:'integration', title:'POS自動定期取込 (Square)', desc:'毎日1回 売上を自動でSquareから取込', votes:3, priority:'high' },
 
   /* ─── planned ─── */
-  { id:'pl1', status:'planned', cat:'integration', title:'freee API 直接連携', desc:'CSV経由ではなく API で給与データを直接送信', votes:0, priority:'medium' },
-  { id:'pl2', status:'planned', cat:'core', title:'iOS/Android ネイティブアプリ', desc:'Capacitorでアプリストア配信', votes:0, priority:'medium' },
-  { id:'pl3', status:'planned', cat:'integration', title:'勘定奉行 / 弥生 連携', desc:'中小企業の主要会計ソフトに対応', votes:0, priority:'low' },
+  { id:'pl1', status:'planned', cat:'integration', title:'freee API 直接連携', desc:'CSV経由ではなく API で給与データを直接送信', votes:5, priority:'medium' },
+  { id:'pl2', status:'planned', cat:'core', title:'iOS/Android ネイティブアプリ', desc:'Capacitorでアプリストア配信', votes:7, priority:'medium' },
+  { id:'pl3', status:'planned', cat:'integration', title:'勘定奉行 / 弥生 連携', desc:'中小企業の主要会計ソフトに対応', votes:2, priority:'low' },
 
   /* ─── ideas ─── */
-  { id:'i1', status:'ideas', cat:'analytics', title:'AI シフト最適化 (来客予測)', desc:'過去売上から最適人員を機械学習で予測', votes:0, priority:'medium' },
-  { id:'i2', status:'ideas', cat:'integration', title:'POS連携 (スマレジ)', desc:'スマレジAPI連携で売上自動取込', votes:0, priority:'medium' },
-  { id:'i3', status:'ideas', cat:'ux', title:'ダークモード対応', desc:'夜の店舗運営で目に優しい', votes:0, priority:'low' },
-  { id:'i4', status:'ideas', cat:'ux', title:'シフト交換マッチング', desc:'スタッフ間で希望日を交換できる', votes:0, priority:'medium' },
+  { id:'i1', status:'ideas', cat:'analytics', title:'AI シフト最適化 (来客予測)', desc:'過去売上から最適人員を機械学習で予測', votes:4, priority:'medium' },
+  { id:'i2', status:'ideas', cat:'integration', title:'POS連携 (スマレジ)', desc:'スマレジAPI連携で売上自動取込', votes:3, priority:'medium' },
+  { id:'i3', status:'ideas', cat:'ux', title:'ダークモード対応', desc:'夜の店舗運営で目に優しい', votes:6, priority:'low' },
+  { id:'i4', status:'ideas', cat:'ux', title:'シフト交換マッチング', desc:'スタッフ間で希望日を交換できる', votes:5, priority:'medium' },
+  { id:'i5', status:'ideas', cat:'core', title:'タイムカード打刻リマインダー', desc:'退勤忘れを LINE で自動通知', votes:2, priority:'low' },
 ];
 
 const VOTES_KEY = 'rakuraku-roadmap-votes';

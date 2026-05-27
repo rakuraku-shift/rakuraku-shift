@@ -102,8 +102,10 @@
           <div class="rhw-section-t">⚡ よく使う</div>
           <a href="/getting-started.html" class="rhw-link"><span class="ic">🚀</span><div><div>3分で始める</div><div class="desc">セットアップガイド</div></div></a>
           <a href="/help.html" class="rhw-link"><span class="ic">❓</span><div><div>よくある質問</div><div class="desc">FAQ 46項目</div></div></a>
-          <a href="/roadmap.html" class="rhw-link"><span class="ic">🗺</span><div><div>機能ロードマップ</div><div class="desc">要望を投稿できます</div></div></a>
-          <a href="/status.html" class="rhw-link"><span class="ic">🚦</span><div><div>稼働状況</div><div class="desc">リアルタイム監視</div></div></a>
+          <a href="/blog.html" class="rhw-link"><span class="ic">📚</span><div><div>ブログ</div><div class="desc">運営ノウハウ</div></div></a>
+          <a href="/case-studies.html" class="rhw-link"><span class="ic">📊</span><div><div>導入事例</div><div class="desc">他店の効果</div></div></a>
+          <a href="/roadmap.html" class="rhw-link"><span class="ic">🗺</span><div><div>機能ロードマップ</div><div class="desc">要望投稿可</div></div></a>
+          <a href="/status.html" class="rhw-link"><span class="ic">🚦</span><div><div>稼働状況</div><div class="desc">リアルタイム</div></div></a>
         </div>
         <div class="rhw-section">
           <div class="rhw-section-t">📞 直接お問い合わせ</div>

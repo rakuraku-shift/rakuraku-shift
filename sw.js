@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v6 — 正直版 (フィクションページ削除) */
-var CACHE = 'rakuraku-v6';
+/* RAKURAKU Service Worker v7 — 匿名化事例 + 法令遵守採用 + 現実的数値 */
+var CACHE = 'rakuraku-v7';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -12,6 +12,8 @@ var ASSETS = [
   '/hq-dashboard.html',
   '/demo-reservation.html',
   '/referral.html',
+  '/case-studies.html',
+  '/blog.html',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',

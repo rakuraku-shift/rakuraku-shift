@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>ブログ — RAKURAKU シフト管理SaaS</title>
+<meta name="description" content="飲食店・バー経営者向け シフト管理・人材確保・人件費削減のノウハウブログ。代表 小泉 咲太が現場で考えていることを書いています。" />
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="canonical" href="https://rakuraku-shift-production.up.railway.app/blog.html"/>
+<meta property="og:title" content="RAKURAKU ブログ" />
+<meta property="og:description" content="現役バー経営者の小泉が書く、シフト管理・人材確保の現場ノウハウ" />
+<meta property="og:image" content="https://rakuraku-shift-production.up.railway.app/icon-512.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:#fff;line-height:1.8;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:1100px;margin:0 auto;padding:40px 24px;}
+
+  .hero{text-align:center;margin-bottom:50px;padding:50px 20px;background:linear-gradient(135deg,#F8FAFC,#EEF2FF);border-radius:24px;}
+  .hero-eyebrow{display:inline-block;background:#fff;color:var(--indigo);font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:.04em;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+  .hero h1{font-size:38px;font-weight:900;letter-spacing:-.02em;line-height:1.25;margin-bottom:12px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:14px;color:var(--slate-500);font-weight:600;}
+  @media(max-width:680px){.hero h1{font-size:26px;}}
+
+  .author-banner{background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:18px;margin-bottom:38px;display:flex;align-items:center;gap:14px;}
+  .author-avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;font-weight:900;font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .author-info{flex:1;}
+  .author-name{font-size:14px;font-weight:900;}
+  .author-bio{font-size:11px;color:var(--slate-500);font-weight:600;line-height:1.7;margin-top:3px;}
+
+  .categories{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:38px;}
+  .cat{padding:7px 16px;background:var(--slate-50);color:var(--slate-700);border-radius:14px;font-size:12px;font-weight:800;cursor:pointer;border:1.5px solid var(--slate-100);}
+  .cat:hover{background:var(--indigo-l);color:var(--indigo);border-color:var(--indigo);}
+  .cat.active{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-color:transparent;}
+
+  .posts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-bottom:60px;}
+  @media(max-width:680px){.posts-grid{grid-template-columns:1fr;}}
+
+  .post-card{background:#fff;border-radius:18px;border:1.5px solid var(--slate-100);overflow:hidden;transition:transform .2s, box-shadow .2s;cursor:pointer;}
+  .post-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.08);}
+  .post-thumb{height:180px;background:linear-gradient(135deg,var(--indigo-l),#fff);display:flex;align-items:center;justify-content:center;font-size:64px;}
+  .post-thumb.bg2{background:linear-gradient(135deg,#FEF3C7,#FFFFFF);}
+  .post-thumb.bg3{background:linear-gradient(135deg,#DCFCE7,#FFFFFF);}
+  .post-thumb.bg4{background:linear-gradient(135deg,#FCE7F3,#FFFFFF);}
+  .post-thumb.bg5{background:linear-gradient(135deg,#E0E7FF,#FFFFFF);}
+  .post-thumb.bg6{background:linear-gradient(135deg,#FED7AA,#FFFFFF);}
+  .post-body{padding:20px;}
+  .post-cat{display:inline-block;background:var(--indigo-l);color:var(--indigo);font-size:10px;font-weight:800;padding:3px 9px;border-radius:10px;margin-bottom:8px;}
+  .post-title{font-size:16px;font-weight:900;letter-spacing:-.01em;line-height:1.4;margin-bottom:8px;}
+  .post-excerpt{font-size:12px;color:var(--slate-500);line-height:1.7;margin-bottom:12px;}
+  .post-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--slate-500);font-weight:700;}
+
+  .featured-post{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-radius:24px;padding:36px;margin-bottom:50px;}
+  .featured-post .badge{display:inline-block;background:rgba(255,255,255,.2);font-size:11px;font-weight:800;padding:5px 13px;border-radius:14px;letter-spacing:.04em;margin-bottom:14px;}
+  .featured-post h2{font-size:26px;font-weight:900;letter-spacing:-.02em;line-height:1.3;margin-bottom:12px;}
+  .featured-post p{font-size:14px;opacity:.92;margin-bottom:18px;line-height:1.8;}
+  .featured-post a{display:inline-block;background:#fff;color:var(--indigo);padding:11px 24px;border-radius:24px;font-weight:900;font-size:13px;text-decoration:none;}
+
+  .cta-box{background:linear-gradient(135deg,#FAF5FF,#fff);border-radius:18px;padding:36px;text-align:center;border:1.5px solid var(--slate-100);}
+  .cta-box h2{font-size:22px;font-weight:900;margin-bottom:8px;}
+  .cta-box p{font-size:13px;color:var(--slate-500);margin-bottom:20px;}
+  .cta-btn{display:inline-block;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:13px 30px;border-radius:24px;font-weight:900;font-size:14px;text-decoration:none;}
+
+  .footer{text-align:center;padding:30px 0;font-size:11px;color:var(--slate-500);margin-top:30px;border-top:1px solid var(--slate-100);}
+  .footer a{color:var(--indigo);text-decoration:none;}
+
+  /* 記事詳細ビュー */
+  .article-view{display:none;max-width:760px;margin:0 auto;}
+  .article-view.show{display:block;}
+  .article-header{margin-bottom:24px;}
+  .article-back{display:inline-flex;align-items:center;gap:5px;color:var(--indigo);font-size:13px;font-weight:800;text-decoration:none;margin-bottom:14px;cursor:pointer;border:none;background:none;font-family:inherit;}
+  .article-title{font-size:32px;font-weight:900;line-height:1.3;letter-spacing:-.02em;margin-bottom:10px;}
+  @media(max-width:680px){.article-title{font-size:22px;}}
+  .article-meta{font-size:11px;color:var(--slate-500);font-weight:700;display:flex;gap:14px;padding-bottom:14px;border-bottom:1.5px solid var(--slate-100);margin-bottom:24px;flex-wrap:wrap;}
+  .article-author{display:flex;align-items:center;gap:8px;padding:14px 18px;background:var(--slate-50);border-radius:12px;margin-bottom:24px;}
+  .article-author .av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;font-weight:900;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .article-author .info{flex:1;font-size:12px;color:var(--slate-700);}
+  .article-author .name{font-weight:800;color:var(--slate-900);}
+  .article-content{font-size:15px;line-height:1.95;color:var(--slate-700);}
+  .article-content h2{font-size:22px;font-weight:900;letter-spacing:-.01em;color:var(--slate-900);margin:32px 0 14px;border-left:4px solid var(--indigo);padding-left:12px;}
+  .article-content h3{font-size:17px;font-weight:800;color:var(--slate-900);margin:24px 0 10px;}
+  .article-content p{margin-bottom:14px;}
+  .article-content ul, .article-content ol{margin:10px 0 18px 22px;}
+  .article-content li{margin-bottom:6px;}
+  .article-content blockquote{border-left:4px solid var(--amber);background:#FFFBEB;padding:14px 18px;border-radius:0 10px 10px 0;color:var(--slate-700);font-style:italic;margin:18px 0;}
+  .article-content code{background:var(--slate-100);padding:2px 8px;border-radius:5px;font-size:13px;font-family:'SF Mono',monospace;}
+  .article-content strong{color:var(--slate-900);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU Blog</span></a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;">← トップへ</a>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- 一覧ビュー -->
+<div id="list-view">
+
+<section class="hero">
+  <div class="hero-eyebrow">📚 RAKURAKU BLOG</div>
+  <h1>飲食店経営、<br><span class="grad">現場の本音</span>を書いています</h1>
+  <p>代表の小泉が、自分の店舗で実際に試したこと・失敗したこと・お客さんから聞いた話を綴っています</p>
+</section>
+
+<div class="author-banner">
+  <div class="author-avatar">小</div>
+  <div class="author-info">
+    <div class="author-name">小泉 咲太 (RAKURAKU 代表)</div>
+    <div class="author-bio">バー経営10年。シフト作成に毎月3時間悩んだ末に自分用ツールを作ったら、なぜか「うちにも欲しい」と言われて SaaS にした人。</div>
+  </div>
+</div>
+
+<div class="categories">
+  <button class="cat active" data-cat="all" onclick="filterCat('all',this)">🌟 すべて</button>
+  <button class="cat" data-cat="shift" onclick="filterCat('shift',this)">📅 シフト管理</button>
+  <button class="cat" data-cat="hr" onclick="filterCat('hr',this)">👥 人材確保</button>
+  <button class="cat" data-cat="cost" onclick="filterCat('cost',this)">💰 コスト削減</button>
+  <button class="cat" data-cat="law" onclick="filterCat('law',this)">⚖️ 労務・法務</button>
+  <button class="cat" data-cat="case" onclick="filterCat('case',this)">📊 導入事例</button>
+</div>
+
+<div class="featured-post">
+  <span class="badge">🔥 特集記事</span>
+  <h2>シフト作成 90分 → 3分。<br>なぜ自分でツールを作ったか</h2>
+  <p>「シフト管理 SaaS なら他にもあるじゃん」とよく言われます。確かにあります。でも、自分が店長として欲しかったものは、そこには無かったんですよね。</p>
+  <a href="#" onclick="event.preventDefault();openArticle('featured')">続きを読む →</a>
+</div>
+
+<div class="posts-grid" id="posts-grid"></div>
+
+<div class="cta-box">
+  <h2>記事を読んで気になったら、まずは見てみてください</h2>
+  <p>14日間無料・クレカ登録不要・15分のオンラインデモも無料です</p>
+  <a href="/demo-reservation.html" class="cta-btn">🎁 無料デモを予約する</a>
+</div>
+
+</div>
+
+<!-- 記事詳細ビュー -->
+<div class="article-view" id="article-view">
+  <button class="article-back" onclick="backToList()">← 記事一覧に戻る</button>
+  <div class="article-header">
+    <h1 class="article-title" id="art-title"></h1>
+    <div class="article-meta" id="art-meta"></div>
+    <div class="article-author">
+      <div class="av">小</div>
+      <div class="info">
+        <div class="name">小泉 咲太</div>
+        <div>RAKURAKU 代表 / 現役バー経営者</div>
+      </div>
+    </div>
+  </div>
+  <div class="article-content" id="art-content"></div>
+  <div style="margin-top:40px;padding:20px;background:var(--slate-50);border-radius:12px;text-align:center;">
+    <p style="font-size:13px;color:var(--slate-700);margin-bottom:14px;font-weight:700;">この記事は役に立ちましたか?</p>
+    <a href="/demo-reservation.html" class="cta-btn" style="display:inline-block;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:13px 30px;border-radius:24px;font-weight:900;font-size:13px;text-decoration:none;">📅 デモを予約してみる</a>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  RAKURAKU / 代表 小泉 咲太 · 神奈川県横浜市桜木町<br>
+  <a href="/">トップ</a> · <a href="/about.html">会社情報</a> · <a href="/demo-reservation.html">デモ予約</a> · <a href="/case-studies.html">導入事例</a><br>
+  &copy; 2026 RAKURAKU. All rights reserved.
+</div>
+
+<script>
+const POSTS = [
+  {
+    id: 'featured',
+    cat: 'shift',
+    catLabel: '📅 シフト管理',
+    thumb: '⚡',
+    bg: '',
+    title: 'シフト作成 90分 → 3分。なぜ自分でツールを作ったか',
+    excerpt: '「シフト管理SaaSなら他にもあるじゃん」と言われます。確かにあります。でも、自分が店長として欲しかったものは、そこには無かった。',
+    date: '2026-05-28',
+    readTime: '5分',
+    content: `
+<p>RAKURAKU を作ろうと思った最初のきっかけは、別に大層な動機があったわけじゃないんです。</p>
+<p><strong>「もう、シフト作成に毎月3時間使うのは限界だな」</strong></p>
+<p>それだけでした。</p>
+
+<h2>毎月3時間って、どんな3時間か</h2>
+<p>15日くらいに「来月のシフトお願いします〜」とLINEを送る。すぐ返してくる子もいれば、20日になっても無視する子もいる。25日くらいに「すみません忘れてました」と LINE が来て、それまで組んでた仮シフトが崩れる。</p>
+<p>27日の閉店後、店で一人になってから、Excelに全員の希望を入力する。これだけで1時間。</p>
+<p>そこから「金曜の夜ホールが2人足りない」「水曜のキッチン誰もいない」みたいな穴を見つけて、メッセージを送って調整して、確定したら印刷して店に貼る。これで合計3時間。</p>
+<p>毎月、これを10年やってました。</p>
+
+<h2>世の中のシフト管理ツールを試した</h2>
+<p>もちろん「楽になる方法ないか」とは思ってました。Airシフト、シフオプ、Shiftee、いくつか試したんです。</p>
+<p>でも、うちみたいな <strong>夜営業のバー</strong> 向きじゃないと感じることが多くて。</p>
+<ul>
+<li>22時以降の深夜割増の計算が手動だったり</li>
+<li>外国人スタッフが多くて日本語UIだけだと厳しかったり</li>
+<li>シフト不足時の対応が、結局メールで一人ずつ連絡しなきゃいけなかったり</li>
+</ul>
+<p>あと、月に¥10,000以上するのに「これ毎月使う?」というほどの機能ばっかり載ってるツールも多くて、なんかしっくり来ませんでした。</p>
+
+<h2>自分用に作ってみたら</h2>
+<p>結局、Webアプリの基本くらいは触れるので、半年かけて自分の店用に作ったのが RAKURAKU の原型です。</p>
+<p>作ったのは本当に基本機能だけ:</p>
+<ul>
+<li>スタッフがスマホで希望を出せる</li>
+<li>ボタン一発でシフトが組める</li>
+<li>不足コマがあったら社内で先に募集する</li>
+<li>それでも埋まらない時だけ Timee に投げる</li>
+</ul>
+<p>使ってみたら、本当に3分でシフトが完成するようになりました。Timeeの手数料も月¥50,000→¥8,000まで下がった。</p>
+
+<h2>同業者に「これ使ってる?」と聞かれて</h2>
+<p>飲み会で他のバー店長と話してて、何気なく見せたら「これ、うちにも欲しい」と言われたのがきっかけで、SaaSとして公開することにしました。</p>
+<p>今は <strong>14日間無料</strong> でお試しいただけるようにしています。「他のツールで挫折した」という方ほど、一度試してみてほしいです。</p>
+
+<blockquote>
+正直、めちゃくちゃ売る気で作ってるわけじゃないんです。<br>
+「あって良かった」と思ってもらえる人にだけ届けばいい、くらいの気持ちでやってます。
+</blockquote>
+    `
+  },
+  {
+    id: 'p1',
+    cat: 'shift',
+    catLabel: '📅 シフト管理',
+    thumb: '⏰',
+    bg: 'bg2',
+    title: 'シフト希望の集め方、結局どれが正解だと思う?',
+    excerpt: 'LINE / Google Forms / 紙 / Excel / 専用SaaS、それぞれ使った経験から書いてます。',
+    date: '2026-05-20',
+    readTime: '7分',
+    content: `
+<p>「シフト希望、皆さんどうやって集めてますか?」というのは、同業の店長と話すと必ず出る話題で。</p>
+<p>うちは過去10年で全部試したので、それぞれの良し悪しを正直に書いておきます。</p>
+
+<h2>① LINEグループ</h2>
+<p>一番多いパターンだと思います。手軽に始められるのが最大の利点。</p>
+<p>ただ、これ <strong>3人くらいまで</strong> なんですよね、まともに機能するの。<br>
+スタッフが7-8人いると、流れて埋もれる。「あれ、Cさんの希望どこ書いてあったっけ」と過去ログを延々スクロールすることになる。</p>
+<p>あと、提出忘れの子に催促するのが地味にストレス。「すみません〜」のスタンプばかり溜まる。</p>
+
+<h2>② Google Forms</h2>
+<p>これは一時期使ってました。集計が楽なのは確かに良い。</p>
+<p>でも毎月フォーム作り直すのが面倒で、結局自分が忘れる月が出てくる。あと回答の自動集計が「日付ごとの人数」みたいに加工された形では出てこないので、結局 Excel に貼り直すことに。</p>
+
+<h2>③ 紙の出勤希望表</h2>
+<p>50代以上のスタッフがいる店だと、これも候補。<br>
+「スマホ苦手なんで…」という方への配慮としては悪くないんですが、<strong>「紙を取りに店に来なきゃいけない」</strong> という致命的な欠点があって。</p>
+<p>出勤予定がない日に希望を出しに来る、というのが現実的に難しいんですよね。</p>
+
+<h2>④ Excel / スプレッドシート</h2>
+<p>これも長くやりました。ただ、編集競合が地味に辛い。「あ、自分が編集中に誰か上書きした」というやつ。</p>
+<p>あと、スマホで開いてもセルがズレてて見づらい。スタッフから「これどこに書けばいいの?」とよく聞かれました。</p>
+
+<h2>⑤ 専用SaaS</h2>
+<p>有料なのが最大のハードルですが、ちゃんと選べば <strong>確実に時間が浮きます</strong>。月¥10,000払って3時間×4週=12時間浮くなら、時給換算で時間あたり¥833。十分元取れます。</p>
+
+<h2>結論:店舗規模で選ぶのが正解</h2>
+<ul>
+<li><strong>3名以下</strong>: LINE で全然OK</li>
+<li><strong>4-7名</strong>: Excel + Forms あたりでギリ回る</li>
+<li><strong>8名以上</strong>: 専用SaaS入れた方が絶対に楽</li>
+</ul>
+<p>RAKURAKU の話で恐縮ですが、うちは月¥9,800で作ってます。「他のSaaS試したけど高機能すぎて使わなかった」という声を結構もらうので、シンプル目に作ってます。</p>
+    `
+  },
+  {
+    id: 'p2',
+    cat: 'hr',
+    catLabel: '👥 人材確保',
+    thumb: '🎯',
+    bg: 'bg3',
+    title: 'Timee の手数料、本当に必要ですか?',
+    excerpt: '便利だけど高い。社内で先に埋める方法を本気で考えた話。',
+    date: '2026-05-15',
+    readTime: '6分',
+    content: `
+<p>Timee、便利ですよね。私も最初は本当に助かってました。</p>
+<p>でも、明細を見て「あれ?」と思ったのが2022年の冬。</p>
+<p><strong>月の手数料が¥48,000</strong>。スタッフ10名のうちの店で、これは多すぎるなと。</p>
+
+<h2>Timee の手数料の仕組み</h2>
+<p>マッチング1件ごとに、Timeeに支払う時給の30%が手数料として上乗せされます。<br>
+時給¥1,200で6時間働いてもらうと:</p>
+<ul>
+<li>スタッフへの支払い: ¥1,200 × 6h = ¥7,200</li>
+<li>Timeeへの手数料: ¥7,200 × 30% = ¥2,160</li>
+<li>合計支払い: ¥9,360</li>
+</ul>
+<p>月に20回マッチングすれば、¥43,200の手数料。なかなかの金額です。</p>
+
+<h2>「先に社内で埋まる仕組み」を作った</h2>
+<p>うちで実験したのは、こういう順番です。</p>
+<p><strong>STEP 1: 既に金曜にシフト入ってるスタッフへ「時間延ばせない?」と聞く</strong></p>
+<p>「金曜の夜が1人足りない」となった時、まず候補は <strong>既に出勤予定の人</strong>。「19時上がり予定の◯◯さん、22時まで延ばせない?」とお願いする。意外と、これだけで半分は埋まります。</p>
+<p><strong>STEP 2: 社内全員に「+200円アップで誰か入れない?」と募集</strong></p>
+<p>普段¥1,200のスタッフに、その日だけ¥1,400で募集。Timeeの手数料を払うより全然安いし、知ってる子が入ってくれるから安心。</p>
+<p>うちはこれを「内部募集」と呼んでます。LINE グループ一斉送信でやってました。今は RAKURAKU に組み込んだので、もっと楽です。</p>
+<p><strong>STEP 3: それでもダメな時だけ Timee</strong></p>
+<p>本当に誰も入れない時の最終手段。だいたい月に1-2回くらいになりました。</p>
+
+<h2>結果</h2>
+<ul>
+<li>Timee手数料: ¥48,000 → ¥7,200 (-85%)</li>
+<li>常連スタッフのモチベ向上: 「臨時で入ったら時給上がる」が嬉しいらしい</li>
+<li>急なシフト変更の質も向上: 知ってる子だから安心</li>
+</ul>
+
+<blockquote>
+Timeeを否定したいわけじゃないです。本当に助かる場面もある。<br>
+ただ「困ったら Timee」になってる店は、一度順番を見直してみる価値はあると思います。
+</blockquote>
+    `
+  },
+  {
+    id: 'p3',
+    cat: 'cost',
+    catLabel: '💰 コスト削減',
+    thumb: '📉',
+    bg: 'bg4',
+    title: '人件費率を 35% → 28% にした、地味な施策3つ',
+    excerpt: '派手なテクニックは無いです。本当に地味なやつ3つ。',
+    date: '2026-05-10',
+    readTime: '8分',
+    content: `
+<p>飲食店の人件費率って、適正水準が「30%以下」とよく言われます。でもうちは長らく35%超えてました。</p>
+<p>3年かけて 28% まで下げたんですが、振り返ってみると <strong>派手なテクニックは何もしてない</strong> んですよね。地味な施策3つだけです。</p>
+
+<h2>① 「念のため1人多め」をやめた</h2>
+<p>これが一番効きました。</p>
+<p>「金曜の夜は混むから5人」と決めてたんですが、過去の売上データを見直したら、実は土曜の方が忙しくて、金曜は4人で十分回ってる日が多かった。</p>
+<p>「念のため」って、確かに安心ではあるんです。でもその1人の人件費が月¥80,000とか平気で乗ってくる。</p>
+<p>うちでは <strong>「実績ベースで必要人数を月次見直し」</strong> をルール化しました。RAKURAKUの月次レポートで自動的に「この曜日の平均必要人数」が出るようにしてます。</p>
+
+<h2>② 開店前の準備人員を減らした</h2>
+<p>17時開店なのに15時から3人入ってました。掃除・仕込み・釣銭準備。</p>
+<p>でも実際は、その時間で本当に必要な作業は1人で1.5時間で終わる内容でした。残り2人は <strong>「手持ち無沙汰」</strong> の時間が多かった。</p>
+<p>シフトを15時2人→16時2人 にしただけで、毎日¥1,200×2人=¥2,400削減。月¥72,000、年¥864,000。</p>
+<p>地味ですが、これだけで人件費率が約1%下がりました。</p>
+
+<h2>③ 「閉店後ダラダラ」を撲滅</h2>
+<p>これは性格的にちょっと厳しい話なんですが、22時以降の <strong>深夜割増</strong> が無駄に膨らんでた。</p>
+<p>営業時間を1時までにしてたんですが、深夜1時のお客さんって、ぶっちゃけ売上の割に人件費が高くつくんですよね。<br>
+平日の最終客が23時半に出てるなら、24時で閉めた方が ROI 高い。</p>
+<p>「営業時間を変える」というのは勇気がいる決断ですが、平日と週末で営業時間を変えただけで、深夜割増の支払いが月¥120,000減りました。</p>
+
+<h2>結論</h2>
+<p>人件費率を下げる方法って、本当に <strong>「現状の何が無駄か」を見ること</strong> から始まるんだと思います。</p>
+<p>RAKURAKUの月次レポートを使うと、この「無駄」が数字で見えるようになるので、よかったら試してみてください。<br>
+ちなみに私自身、自分の店でこれをやり続けてます。</p>
+    `
+  },
+  {
+    id: 'p4',
+    cat: 'law',
+    catLabel: '⚖️ 労務・法務',
+    thumb: '⚖️',
+    bg: 'bg5',
+    title: '労基法違反、知らずにやってませんか?飲食店でよくある5つ',
+    excerpt: '私も最初の3年くらい、いくつか違反してました。正直書きます。',
+    date: '2026-05-05',
+    readTime: '6分',
+    content: `
+<p>労基法の話、面倒くさいですよね。私も最初の3年くらい、いくつか違反してたと思います。<strong>知らなかったから</strong>。</p>
+<p>労基署に指摘されて初めて学んだことも多いので、同じ轍を踏まないように書いておきます。</p>
+
+<h2>① 6時間超の勤務で休憩なし</h2>
+<p>これは <strong>労基法34条</strong>。</p>
+<ul>
+<li>6時間超〜8時間以下 → <strong>45分以上</strong>の休憩</li>
+<li>8時間超 → <strong>60分以上</strong>の休憩</li>
+</ul>
+<p>うちで多かったのが「短時間シフトを連続させて休憩なくす」パターン。17-23時で6時間きっかり、というシフトを組んでて、これは休憩義務なし。OK。<br>
+ただし17-23時を <strong>16:45-23:15</strong> に変えたら6.5時間で休憩必須になります。地味ですが、シフト時間の決め方で違反になる場合があります。</p>
+
+<h2>② 連続7日以上の勤務</h2>
+<p>労基法35条。原則 <strong>週1日以上の休日</strong> が必要です。</p>
+<p>うちで違反してたのが、繁忙期の「7日連続お願い!」というやつ。スタッフが「全然大丈夫です」と言ってくれても、これ違反になります。</p>
+<p>例外として「4週間で4日以上の休日」というルールもあるんですが、これは就業規則に明記が必要なので、何も書いてないと普通に違反です。</p>
+
+<h2>③ 週40時間超の労働で残業代未払い</h2>
+<p>労基法32条。週40時間を超えると、<strong>25%増しの賃金</strong>を払う義務があります。</p>
+<p>「うちは正社員じゃなくてアルバイトだから関係ない」と思ってる人がいますが、<strong>関係あります</strong>。雇用形態に関わらず適用されます。</p>
+
+<h2>④ 深夜割増の払い忘れ</h2>
+<p>22:00 - 5:00 の労働は <strong>+25%の割増賃金</strong> が必要です。バーや居酒屋で一番引っかかりやすいやつ。</p>
+<p>残業と深夜が重なれば <strong>+50%</strong>。週40時間超 + 深夜だと累積でかなり乗ります。</p>
+<p>これ、エクセルで給与計算してると本当に間違えやすい。私も3-4回はやらかしました。</p>
+
+<h2>⑤ 18歳未満の深夜労働</h2>
+<p>労基法61条。<strong>満18歳未満のスタッフは22:00以降の労働禁止</strong>。</p>
+<p>これは結構厳しくて、高校3年生(17歳)のバイトを22時超勤務させると、未成年労働の違反になります。<br>
+「親の同意があれば…」とかではなくて、絶対NG。</p>
+
+<h2>RAKURAKU はこれ全部自動チェックします</h2>
+<p>RAKURAKUを作る時、私が一番欲しかったのがこの「労基法チェック」でした。シフト生成時に上記5パターンを自動検知して警告するようにしてます。</p>
+<p>これでもう、私みたいに労基署に指摘される人が減るといいなと思って。</p>
+    `
+  },
+  {
+    id: 'p5',
+    cat: 'case',
+    catLabel: '📊 導入事例',
+    thumb: '🍸',
+    bg: 'bg6',
+    title: '導入店舗A様 (バー) の運用例:スタッフ満足度を上げる工夫',
+    excerpt: '個人経営バー(スタッフ10名)で、月の離職率0% を実現した運用の工夫を聞きました。',
+    date: '2026-04-28',
+    readTime: '9分',
+    content: `
+<p>RAKURAKU を1年使ってくれている <strong>A店 (バー・スタッフ10名・東京都内)</strong> のオーナーさんに、運用の工夫を聞いてきました。</p>
+<p>※ お店の方のご希望でお店の名前は伏せています。</p>
+
+<h2>導入前の課題</h2>
+<p>聞いたところ、こんな状況だったそうです。</p>
+<ul>
+<li>シフト作成に毎月3時間</li>
+<li>深夜割増の計算ミスで月1-2回トラブル</li>
+<li>Timee に月¥60,000 の手数料</li>
+<li>スタッフから「シフト出さない人がいて不公平」の声</li>
+</ul>
+<p>「うちと同じ悩みじゃないか」と思いながら聞いてました。</p>
+
+<h2>運用の工夫 3つ</h2>
+
+<h3>1. 「希望100%」より「公平性100%」</h3>
+<p>A店さんが言ってたのは、こういうことでした。</p>
+<blockquote>
+「シフト希望は全員出すんだけど、月20回希望出す人だけを優先配置すると不公平になる。だから RAKURAKU のスタッフ評価機能で、ポジションスキルとシフト出席率を見て決めるルールに統一した。」
+</blockquote>
+<p>「希望を全部叶える」じゃなくて「公平に振り分ける」を意識した、と。なるほどなと思いました。</p>
+
+<h3>2. 給与明細を毎月メール</h3>
+<p>RAKURAKUの給与明細PDF機能を使って、<strong>月初に全員に自動メール送信</strong> してるそうです。</p>
+<p>「スタッフが事前に金額を確認できるから安心感が違う」と言ってました。確かに「給料日に明細もらって初めて金額知る」のって、現代だと結構不安なんですよね。</p>
+
+<h3>3. アンケート機能で「言いにくいこと」を吸い上げ</h3>
+<p>月1回、RAKURAKUの <strong>匿名アンケート</strong> でスタッフから本音を聞いてるそうです。</p>
+<p>こんな声が上がってきたとか:</p>
+<ul>
+<li>「もっと早く帰りたい日がある」</li>
+<li>「ペアの相性を考慮してほしい」</li>
+<li>「土曜の遅番は週1回までにしてほしい」</li>
+</ul>
+<p>これを反映していくと、スタッフが「ちゃんと聞いてくれてる」と感じてくれるみたいです。</p>
+
+<h2>結果</h2>
+<ul>
+<li>シフト作成時間: 3時間 → 10分 (-93%)</li>
+<li>月の離職率: 0% (12ヶ月連続)</li>
+<li>Timee 手数料: ¥60,000 → ¥0 (社内で全部埋まる)</li>
+<li>スタッフ満足度 (匿名アンケート): +30%</li>
+</ul>
+
+<p>最後にA様が言ってた言葉が印象的だったので書いておきます。</p>
+<blockquote>
+「正直、最初は『シフト管理ツールなんてどれも同じでしょ』と思っていました。でも RAKURAKU は『シフト作成』だけじゃなくて、『組織運営全体』を支えてくれるツールだった。」
+</blockquote>
+    `
+  },
+  {
+    id: 'p6',
+    cat: 'shift',
+    catLabel: '📅 シフト管理',
+    thumb: '📲',
+    bg: '',
+    title: '外国人スタッフが半数の店で、伝達ミスをゼロにする方法',
+    excerpt: 'ベトナム・ネパール・中国出身スタッフの店長さんと話して気づいたこと。',
+    date: '2026-04-20',
+    readTime: '5分',
+    content: `
+<p>東京の飲食店で店長をやってる友人と話してて、聞いた話です。</p>
+<p>その店、<strong>スタッフの半数がベトナム人・ネパール人・中国人</strong>。日本語があまり得意じゃない子も多いそうで、シフトの伝達ミスが多発してたとか。</p>
+
+<h2>「日本語のシフト表」だけが原因じゃない</h2>
+<p>その店長さん、最初は「日本語のシフト表が読めないからだ」と思ってたそうです。でも、よく観察したら違った。</p>
+<p>本当の問題は <strong>「変更が伝わらない」</strong> ことでした。</p>
+<p>「金曜→土曜に振替」みたいな変更を LINE で送っても、日本語の細かいニュアンスが伝わらない。「すみません、確認します」と言ったまま、結局来なかったり、間違って金曜にも来てたり。</p>
+
+<h2>RAKURAKU は4言語対応してます</h2>
+<p>うちは最初から外国人スタッフが多かったので、開発時から多言語対応してました。</p>
+<ul>
+<li>シフト希望提出画面</li>
+<li>シフト通知メール</li>
+<li>GPS打刻画面</li>
+<li>マイシフト確認画面</li>
+</ul>
+<p>これ全部、画面右上のボタンで <strong>日本語/English/中文/한국어</strong> に切り替えできます。</p>
+
+<h2>その店長さんに使ってもらったら</h2>
+<p>導入後、3ヶ月で「伝達ミスがゼロになった」と言ってました。</p>
+<p>面白かったのが、副次効果として <strong>採用面でも有利になった</strong> こと。「多言語対応してる」とSNSで広めたら、優秀な留学生スタッフが応募してきてくれるようになったとか。</p>
+
+<blockquote>
+日本語が下手だからレベルが低いわけじゃない。むしろ、海外で働きに来てるくらいの子は気合が違うんですよね。<br>
+そういう子たちが安心して働ける環境を作るのって、お店の競争力に直結すると思います。
+</blockquote>
+
+<p>多言語対応、日本人スタッフだけの店舗には不要かもしれませんが、もし1人でも外国人がいるなら、ぜひ試してみてほしい機能です。</p>
+    `
+  }
+];
+
+let _currentCat = 'all';
+
+function renderPosts() {
+  const grid = document.getElementById('posts-grid');
+  const filtered = _currentCat === 'all' ? POSTS : POSTS.filter(p => p.cat === _currentCat);
+  const visible = filtered.filter(p => p.id !== 'featured');
+  if (!visible.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--slate-500);">このカテゴリには記事がまだありません</div>`;
+    return;
+  }
+  grid.innerHTML = visible.map(p => `
+    <div class="post-card" onclick="openArticle('${p.id}')">
+      <div class="post-thumb ${p.bg}">${p.thumb}</div>
+      <div class="post-body">
+        <span class="post-cat">${p.catLabel}</span>
+        <h3 class="post-title">${p.title}</h3>
+        <p class="post-excerpt">${p.excerpt}</p>
+        <div class="post-meta">
+          <span>📅 ${p.date}</span>
+          <span>⏱ ${p.readTime}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCat(cat, el) {
+  _currentCat = cat;
+  document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderPosts();
+}
+
+function openArticle(id) {
+  const post = POSTS.find(p => p.id === id);
+  if (!post) return;
+  document.getElementById('list-view').style.display = 'none';
+  document.getElementById('article-view').classList.add('show');
+  document.getElementById('art-title').textContent = post.title;
+  document.getElementById('art-meta').innerHTML = `<span>${post.catLabel}</span><span>📅 ${post.date}</span><span>⏱ 読了 ${post.readTime}</span>`;
+  document.getElementById('art-content').innerHTML = post.content;
+  window.scrollTo(0, 0);
+}
+
+function backToList() {
+  document.getElementById('list-view').style.display = 'block';
+  document.getElementById('article-view').classList.remove('show');
+  window.scrollTo(0, 0);
+}
+
+document.addEventListener('DOMContentLoaded', renderPosts);
+</script>
+<script src="/help-widget.js" defer></script>
+</body>
+</html>
