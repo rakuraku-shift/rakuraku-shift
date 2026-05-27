@@ -3085,7 +3085,91 @@
       <div style="font-size:11px;color:var(--slate-500);text-align:center;margin-bottom:14px;font-weight:600;" data-i18n="eval.position">ポジション別 5段階評価</div>
       <div id="se-positions"></div>
       <button class="edit-btn save" onclick="saveStaffEval()" style="margin-top:14px;" data-i18n="eval.save_btn">💾 評価を保存</button>
+      <button class="edit-btn" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;margin-top:8px;" onclick="openPersonalPayroll()">💴 このスタッフの個人給与を見る</button>
       <button class="edit-btn cancel" onclick="closeStaffEval()" data-i18n="common.close">閉じる</button>
+    </div>
+  </div>
+
+  <!-- ════════ 個人給与モーダル (パスワード保護) ════════ -->
+  <div class="staff-eval-modal" id="personal-payroll-modal" onclick="if(event.target===this)closePersonalPayroll()" style="z-index:1200;">
+    <div class="se-card" style="max-width:460px;">
+      <div style="font-size:18px;font-weight:900;text-align:center;margin-bottom:5px;color:#0F172A;">💴 個人給与</div>
+      <div id="pp-staff-name" style="font-size:14px;font-weight:700;color:var(--slate-500);text-align:center;margin-bottom:18px;"></div>
+
+      <!-- 初回パスワード設定 -->
+      <div id="pp-setup" style="display:none;">
+        <div style="padding:14px;background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border-radius:10px;border-left:4px solid #F59E0B;font-size:12px;color:#78350F;margin-bottom:14px;">
+          🔐 <strong>初回パスワード設定</strong><br>
+          給与情報を他人に見られないよう、<strong>4-12桁のパスワード</strong>を設定してください。<br>
+          このパスワードは <strong>あなたの端末にハッシュ化して保存</strong> されます。
+        </div>
+        <label style="font-size:11px;font-weight:800;color:var(--slate-700);">新しいパスワード (4-12文字)</label>
+        <input type="password" id="pp-set-pass1" class="wage-input" style="width:100%;margin-bottom:10px;padding:11px;" placeholder="例) 8765 / abc123" minlength="4" maxlength="12" />
+        <label style="font-size:11px;font-weight:800;color:var(--slate-700);">確認のためもう一度</label>
+        <input type="password" id="pp-set-pass2" class="wage-input" style="width:100%;margin-bottom:14px;padding:11px;" placeholder="同じパスワードを入力" minlength="4" maxlength="12" />
+        <button class="edit-btn save" onclick="setupPersonalPassword()" style="background:linear-gradient(135deg,#10B981,#059669);">🔐 パスワードを設定して給与を見る</button>
+      </div>
+
+      <!-- ログイン -->
+      <div id="pp-login" style="display:none;">
+        <div style="padding:14px;background:linear-gradient(135deg,#EEF2FF,#fff);border-radius:10px;border-left:4px solid #4F46E5;font-size:12px;color:#3730A3;margin-bottom:14px;">
+          🔒 <strong>給与情報の閲覧</strong><br>
+          設定済みの<strong>個人パスワード</strong>を入力してください。<br>
+          パスワードを忘れた場合は店長にリセットを依頼してください。
+        </div>
+        <label style="font-size:11px;font-weight:800;color:var(--slate-700);">パスワード</label>
+        <input type="password" id="pp-login-pass" class="wage-input" style="width:100%;margin-bottom:14px;padding:11px;" placeholder="パスワードを入力" maxlength="12" onkeydown="if(event.key==='Enter')loginPersonalPayroll()" />
+        <button class="edit-btn save" onclick="loginPersonalPayroll()">🔓 給与を見る</button>
+        <button class="edit-btn" style="background:#FEE2E2;color:#EF4444;margin-top:8px;font-size:11px;" onclick="resetPersonalPassword()">⚠ パスワードを忘れた (店長権限で再設定)</button>
+      </div>
+
+      <!-- 給与表示 -->
+      <div id="pp-result" style="display:none;">
+        <div style="text-align:center;margin-bottom:14px;padding:18px;background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-radius:14px;">
+          <div style="font-size:10px;font-weight:800;opacity:.9;letter-spacing:.04em;">今月の予想給与</div>
+          <div style="font-size:30px;font-weight:900;letter-spacing:-.02em;margin-top:4px;">¥<span id="pp-total">0</span></div>
+          <div style="font-size:10px;opacity:.85;margin-top:3px;" id="pp-month-label"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+          <div style="background:var(--slate-50);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--slate-500);font-weight:800;">勤務日数</div>
+            <div style="font-size:18px;font-weight:900;color:var(--indigo);"><span id="pp-days">0</span><span style="font-size:10px;color:var(--slate-500);">日</span></div>
+          </div>
+          <div style="background:var(--slate-50);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--slate-500);font-weight:800;">勤務時間</div>
+            <div style="font-size:18px;font-weight:900;color:var(--indigo);"><span id="pp-hours">0</span><span style="font-size:10px;color:var(--slate-500);">h</span></div>
+          </div>
+          <div style="background:var(--slate-50);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--slate-500);font-weight:800;">時給</div>
+            <div style="font-size:18px;font-weight:900;color:var(--slate-900);">¥<span id="pp-wage">0</span></div>
+          </div>
+          <div style="background:var(--slate-50);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--slate-500);font-weight:800;">深夜時間</div>
+            <div style="font-size:18px;font-weight:900;color:#F59E0B;"><span id="pp-night">0</span><span style="font-size:10px;color:var(--slate-500);">h</span></div>
+          </div>
+        </div>
+
+        <div style="background:var(--slate-50);border-radius:8px;padding:12px;font-size:11px;line-height:1.8;">
+          <div style="display:flex;justify-content:space-between;border-bottom:1px dashed var(--slate-200);padding-bottom:6px;margin-bottom:6px;">
+            <span style="color:var(--slate-500);">通常勤務 給与</span><span style="font-weight:800;">¥<span id="pp-normal">0</span></span>
+          </div>
+          <div style="display:flex;justify-content:space-between;border-bottom:1px dashed var(--slate-200);padding-bottom:6px;margin-bottom:6px;">
+            <span style="color:var(--slate-500);">深夜割増 (+25%)</span><span style="font-weight:800;color:#F59E0B;">¥<span id="pp-night-pay">0</span></span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:var(--slate-500);">先月実績</span><span style="font-weight:700;color:var(--slate-700);">¥<span id="pp-lastmonth">0</span></span>
+          </div>
+        </div>
+
+        <div style="font-size:9px;color:var(--slate-500);margin-top:10px;line-height:1.7;text-align:center;">
+          ※ 表示金額は予想値です。正式な給与は店長発行の <strong>給与明細PDF</strong> をご確認ください。<br>
+          ※ 控除前 (税金/社会保険料は含まれません)
+        </div>
+
+        <button class="edit-btn" style="background:var(--slate-100);color:var(--slate-700);margin-top:14px;" onclick="changePersonalPassword()">🔑 パスワード変更</button>
+        <button class="edit-btn cancel" onclick="closePersonalPayroll()" data-i18n="common.close">閉じる</button>
+      </div>
     </div>
   </div>
 
@@ -6289,6 +6373,274 @@
   }
 
   /* 個別メール送信 (mailto:) */
+  /* ════════════════════════════════════════════
+   * 個人給与表示 (パスワード保護)
+   * - 各スタッフ毎に SHA-256 ハッシュでパスワード保存
+   * - 認証成功時のみ本人の今月給与を表示
+   * - 店長権限でリセット可
+   ════════════════════════════════════════════ */
+  let _ppStaffName = null;
+
+  /* SHA-256 ハッシュ (Web Crypto API) */
+  async function _sha256(str) {
+    const buf = new TextEncoder().encode(str);
+    const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function _ppPassKey(name) {
+    /* 各店舗+スタッフ別 */
+    return _sk('pp_pass_' + name);
+  }
+  function _ppGetSavedHash(name) {
+    try { return storageGet(_ppPassKey(name)) || null; } catch(e) { return null; }
+  }
+  function _ppSaveHash(name, hash) {
+    try { storageSet(_ppPassKey(name), hash); } catch(e) {}
+  }
+  function _ppClearHash(name) {
+    try { storageRemove ? storageRemove(_ppPassKey(name)) : localStorage.removeItem(_ppPassKey(name)); } catch(e) {}
+  }
+
+  /* スタッフ評価モーダルから「給与を見る」ボタン → 起動 */
+  function openPersonalPayroll() {
+    if (!_evalCtxName) { showToast('⚠ スタッフが選択されていません'); return; }
+    _ppStaffName = _evalCtxName;
+    document.getElementById('pp-staff-name').textContent = _ppStaffName + ' さん';
+    document.getElementById('pp-setup').style.display = 'none';
+    document.getElementById('pp-login').style.display = 'none';
+    document.getElementById('pp-result').style.display = 'none';
+
+    const savedHash = _ppGetSavedHash(_ppStaffName);
+    if (savedHash) {
+      document.getElementById('pp-login').style.display = 'block';
+      document.getElementById('pp-login-pass').value = '';
+      setTimeout(() => document.getElementById('pp-login-pass').focus(), 200);
+    } else {
+      document.getElementById('pp-setup').style.display = 'block';
+      document.getElementById('pp-set-pass1').value = '';
+      document.getElementById('pp-set-pass2').value = '';
+    }
+    document.getElementById('personal-payroll-modal').classList.add('show');
+  }
+
+  function closePersonalPayroll() {
+    document.getElementById('personal-payroll-modal').classList.remove('show');
+    _ppStaffName = null;
+  }
+
+  async function setupPersonalPassword() {
+    const p1 = document.getElementById('pp-set-pass1').value;
+    const p2 = document.getElementById('pp-set-pass2').value;
+    if (!p1 || p1.length < 4 || p1.length > 12) {
+      showToast('⚠ パスワードは 4-12文字 で設定してください');
+      return;
+    }
+    if (p1 !== p2) {
+      showToast('⚠ パスワードが一致しません');
+      return;
+    }
+    const hash = await _sha256(p1 + ':' + _ppStaffName);
+    _ppSaveHash(_ppStaffName, hash);
+    showToast('🔐 パスワード設定完了');
+    document.getElementById('pp-setup').style.display = 'none';
+    _showPersonalPayrollResult();
+  }
+
+  async function loginPersonalPayroll() {
+    const p = document.getElementById('pp-login-pass').value;
+    if (!p) { showToast('⚠ パスワードを入力してください'); return; }
+    const hash = await _sha256(p + ':' + _ppStaffName);
+    const saved = _ppGetSavedHash(_ppStaffName);
+    if (hash !== saved) {
+      showToast('⚠ パスワードが間違っています');
+      document.getElementById('pp-login-pass').value = '';
+      return;
+    }
+    document.getElementById('pp-login').style.display = 'none';
+    _showPersonalPayrollResult();
+  }
+
+  function resetPersonalPassword() {
+    /* 店長権限 (PIN) で再設定可 */
+    const pin = prompt('🔐 店長の管理PINを入力してください\n(パスワード忘れたスタッフのリセット用)');
+    if (!pin) return;
+    const savedPin = (function() {
+      try { return storageGet(_sk('mgr_pin')) || '0000'; } catch(e) { return '0000'; }
+    })();
+    if (pin !== savedPin) {
+      showToast('⚠ 管理PINが違います');
+      return;
+    }
+    if (!confirm(`${_ppStaffName} さんのパスワードをリセットします。本人に新しいパスワードを設定してもらいます。`)) return;
+    _ppClearHash(_ppStaffName);
+    showToast('🔐 リセット完了 → 新パスワード設定画面へ');
+    document.getElementById('pp-login').style.display = 'none';
+    document.getElementById('pp-setup').style.display = 'block';
+    document.getElementById('pp-set-pass1').value = '';
+    document.getElementById('pp-set-pass2').value = '';
+  }
+
+  async function changePersonalPassword() {
+    if (!_ppStaffName) return;
+    const oldP = prompt('現在のパスワードを入力');
+    if (!oldP) return;
+    const oldHash = await _sha256(oldP + ':' + _ppStaffName);
+    if (oldHash !== _ppGetSavedHash(_ppStaffName)) {
+      showToast('⚠ 現在のパスワードが違います');
+      return;
+    }
+    const newP = prompt('新しいパスワード (4-12文字)');
+    if (!newP || newP.length < 4 || newP.length > 12) { showToast('⚠ 4-12文字で入力'); return; }
+    const newP2 = prompt('もう一度入力 (確認)');
+    if (newP !== newP2) { showToast('⚠ 一致しません'); return; }
+    const newHash = await _sha256(newP + ':' + _ppStaffName);
+    _ppSaveHash(_ppStaffName, newHash);
+    showToast('✅ パスワード変更完了');
+  }
+
+  /* 給与計算と表示 */
+  function _showPersonalPayrollResult() {
+    document.getElementById('pp-result').style.display = 'block';
+    const name = _ppStaffName;
+    const now = new Date();
+    const monthKey = now.toISOString().slice(0,7);
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString().slice(0,7);
+    document.getElementById('pp-month-label').textContent = `${now.getFullYear()}年${now.getMonth()+1}月 (確定までの予想)`;
+
+    /* スタッフ情報 (時給) */
+    let wage = 1200;
+    try {
+      const known = loadKnownWorkers();
+      if (known[name] && known[name].hourlyWage) wage = parseInt(known[name].hourlyWage) || 1200;
+    } catch(e) {}
+    /* マスタデータから時給取得試行 */
+    try {
+      if (typeof getMasterDefaultWage === 'function') {
+        const known = loadKnownWorkers();
+        const role = (known[name] && known[name].role) || 'hall';
+        const masterWage = getMasterDefaultWage(role);
+        if (masterWage && (!known[name] || !known[name].hourlyWage)) wage = masterWage;
+      }
+    } catch(e) {}
+
+    /* 出退勤データから集計 */
+    let totalMin = 0, nightMin = 0, dayCount = 0, lastMonthPay = 0;
+    let lastMonthMin = 0, lastMonthNightMin = 0;
+    try {
+      /* server から attendance 取得 */
+      fetch(`/api/attendance/month?shop=${encodeURIComponent(getShopId())}&month=${monthKey}`).then(r => r.json()).then(records => {
+        const byDay = {};
+        (records || []).filter(r => r.name === name).forEach(r => {
+          const day = new Date(r.ts).toISOString().slice(0,10);
+          if (!byDay[day]) byDay[day] = [];
+          byDay[day].push(r);
+        });
+
+        Object.values(byDay).forEach(recs => {
+          recs.sort((a,b) => a.ts - b.ts);
+          let inT = null;
+          recs.forEach(r => {
+            if (r.type === 'in') inT = r.ts;
+            else if (r.type === 'out' && inT) {
+              totalMin += Math.floor((r.ts - inT) / 60000);
+              nightMin += Math.floor(_ppCalcNightMs(inT, r.ts) / 60000);
+              inT = null;
+              dayCount++;
+            }
+          });
+        });
+
+        _ppRenderPayrollNumbers(name, wage, totalMin, nightMin, dayCount);
+
+        /* 先月もとってきて表示 */
+        return fetch(`/api/attendance/month?shop=${encodeURIComponent(getShopId())}&month=${lastMonth}`);
+      }).then(r => r ? r.json() : []).then(records => {
+        if (!records) return;
+        let lmTotal = 0, lmNight = 0;
+        const byDay = {};
+        (records || []).filter(r => r.name === name).forEach(r => {
+          const day = new Date(r.ts).toISOString().slice(0,10);
+          if (!byDay[day]) byDay[day] = [];
+          byDay[day].push(r);
+        });
+        Object.values(byDay).forEach(recs => {
+          recs.sort((a,b) => a.ts - b.ts);
+          let inT = null;
+          recs.forEach(r => {
+            if (r.type === 'in') inT = r.ts;
+            else if (r.type === 'out' && inT) {
+              lmTotal += Math.floor((r.ts - inT) / 60000);
+              lmNight += Math.floor(_ppCalcNightMs(inT, r.ts) / 60000);
+              inT = null;
+            }
+          });
+        });
+        const lmPay = Math.round((lmTotal - lmNight) / 60 * wage + lmNight / 60 * wage * 1.25);
+        document.getElementById('pp-lastmonth').textContent = lmPay.toLocaleString();
+      }).catch(() => {
+        /* server fallback: shift-data から推定 */
+        const subs = loadState();
+        const my = subs.find(s => s.name === name);
+        if (my) {
+          /* 提出データから今月のシフト時間を計算 */
+          const customTimes = my.customTimes || [];
+          let est = 0;
+          customTimes.forEach(t => {
+            const m = /(\d{1,2}):?(\d{0,2})\s*[~-〜]\s*(\d{1,2}):?(\d{0,2})/.exec(t);
+            if (m) {
+              const s = +m[1] * 60 + (+m[2] || 0);
+              let e = +m[3] * 60 + (+m[4] || 0);
+              if (e <= s) e += 24 * 60;
+              est += (e - s);
+            }
+          });
+          _ppRenderPayrollNumbers(name, wage, est, 0, my.dates ? my.dates.length : 0);
+        } else {
+          _ppRenderPayrollNumbers(name, wage, 0, 0, 0);
+        }
+      });
+    } catch(e) {
+      _ppRenderPayrollNumbers(name, wage, 0, 0, 0);
+    }
+  }
+
+  function _ppCalcNightMs(startTs, endTs) {
+    let total = 0;
+    const oneDay = 86400000;
+    let cur = startTs;
+    while (cur < endTs) {
+      const d = new Date(cur);
+      const dayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+      const night22 = dayStart + 22 * 3600 * 1000;
+      const night5n = dayStart + 29 * 3600 * 1000;
+      const segEnd = Math.min(endTs, dayStart + oneDay);
+      const o1 = Math.max(cur, night22);
+      const o2 = Math.min(segEnd, night5n);
+      if (o2 > o1) total += (o2 - o1);
+      const earlyEnd = dayStart + 5 * 3600 * 1000;
+      const e1 = Math.max(cur, dayStart);
+      const e2 = Math.min(segEnd, earlyEnd);
+      if (e2 > e1) total += (e2 - e1);
+      cur = segEnd;
+    }
+    return total;
+  }
+
+  function _ppRenderPayrollNumbers(name, wage, totalMin, nightMin, days) {
+    const normalMin = totalMin - nightMin;
+    const normalPay = Math.round(normalMin / 60 * wage);
+    const nightPay = Math.round(nightMin / 60 * wage * 1.25);
+    const total = normalPay + nightPay;
+    document.getElementById('pp-total').textContent = total.toLocaleString();
+    document.getElementById('pp-days').textContent = days;
+    document.getElementById('pp-hours').textContent = (totalMin / 60).toFixed(1);
+    document.getElementById('pp-night').textContent = (nightMin / 60).toFixed(1);
+    document.getElementById('pp-wage').textContent = wage.toLocaleString();
+    document.getElementById('pp-normal').textContent = normalPay.toLocaleString();
+    document.getElementById('pp-night-pay').textContent = nightPay.toLocaleString();
+  }
+
   function sendAdjustmentMail(date, period, name, email, currentTime, suggestedTime) {
     if (!email) { showToast('⚠️ メールアドレスが未登録です'); return; }
     const [y,m,d] = date.split('-').map(Number);
