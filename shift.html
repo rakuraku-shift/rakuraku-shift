@@ -2188,6 +2188,11 @@
     .adj-cands {
       display: flex; gap: 6px; overflow-x: auto; scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch; padding: 2px 0; scrollbar-width: thin;
+      max-width: 100%;
+    }
+    /* モバイルではより明確に横スクロール、デスクトップではwrap可能に */
+    @media (min-width: 880px) {
+      .chip-row { flex-wrap: wrap; overflow-x: visible; }
     }
     .scroll-x-staff::-webkit-scrollbar,
     .tc-staff-list::-webkit-scrollbar,
@@ -7336,7 +7341,7 @@ BAR EXCHANGEのシフト担当です。
       return '<div class="eval-staff-row">'+
         '<div class="eval-sr-top">'+
           '<div class="eval-sr-left"><div class="eval-sr-name">'+name+'</div><div class="eval-sr-stars">'+stars+'</div></div>'+
-          '<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;flex:1;padding:0 4px;">'+badges+'</div>'+
+          '<div class="chip-row" style="flex:1;padding:0 4px;align-items:center;">'+badges+'</div>'+
           '<button class="eval-edit-btn" onclick="openEvalOverlay(\''+safeName+'\')">評価する</button>'+
         '</div>'+
         (detail?'<div class="eval-detail">'+detail+'</div>':'')+
