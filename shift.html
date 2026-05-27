@@ -2607,13 +2607,15 @@
 
   <!-- リアルタイム出退勤ウィジェット -->
   <div id="rt-attendance-card" style="background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 4px 16px rgba(0,0,0,.04);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
       <div style="font-size:13px;font-weight:900;color:#0F172A;display:flex;align-items:center;gap:6px;" data-i18n="mgr.realtime_attendance">
         ⏰ 本日の出退勤（リアルタイム）
       </div>
-      <div style="font-size:10px;color:#64748B;font-weight:700;">
-        <a href="payroll.html" target="_blank" style="color:#4F46E5;text-decoration:none;margin-right:8px;" data-i18n="mgr.payroll">📋 給与明細</a>
+      <div style="font-size:10px;color:#64748B;font-weight:700;display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="payroll.html" target="_blank" style="color:#4F46E5;text-decoration:none;" data-i18n="mgr.payroll">📋 給与明細</a>
         <a href="monthly-report.html" target="_blank" style="color:#4F46E5;text-decoration:none;" data-i18n="mgr.monthly_report">📊 月次レポート</a>
+        <a href="#" onclick="event.preventDefault();openHolidayModal();" style="color:#F59E0B;text-decoration:none;font-weight:800;">🎌 祝日設定</a>
+        <a href="#" onclick="event.preventDefault();openAuditLog();" style="color:#64748B;text-decoration:none;font-weight:800;">📜 変更履歴</a>
       </div>
     </div>
     <div id="rt-attendance-list" style="font-size:12px;">
@@ -3013,8 +3015,36 @@
         <input type="time" id="edit-time-end" />
       </div>
       <button class="edit-btn save" onclick="saveEditTime()">💾 保存</button>
+      <button class="edit-btn" style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;margin-top:8px;" onclick="markAbsentFromEdit()">🆘 欠勤マーク → 代替募集</button>
       <button class="edit-btn delete" onclick="deleteEditTime()">🗑 この時間を削除</button>
       <button class="edit-btn cancel" onclick="closeEditTime()">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- ホリデー設定モーダル -->
+  <div class="edit-overlay" id="edit-holiday-overlay" onclick="if(event.target===this)closeHolidayModal()">
+    <div class="edit-card">
+      <h3>🎌 祝日・特別営業日 設定</h3>
+      <div class="sub">祝日マークを設定すると、該当日に🎌マーク表示+必要人員1.5倍</div>
+      <label>日付を選択 → 種別タップ</label>
+      <input type="date" id="holiday-date" />
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;">
+        <button class="edit-btn" style="background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;margin:0;" onclick="setHoliday('holiday')">🎌 祝日 (繁忙)</button>
+        <button class="edit-btn" style="background:linear-gradient(135deg,#06B6D4,#0891B2);color:#fff;margin:0;" onclick="setHoliday('quiet')">😴 閑散日</button>
+      </div>
+      <label>登録済み</label>
+      <div id="holiday-list" style="max-height:200px;overflow-y:auto;font-size:12px;padding:8px;background:var(--slate-50);border-radius:8px;"></div>
+      <button class="edit-btn cancel" onclick="closeHolidayModal()">閉じる</button>
+    </div>
+  </div>
+
+  <!-- 監査ログモーダル -->
+  <div class="edit-overlay" id="audit-log-overlay" onclick="if(event.target===this)closeAuditLog()">
+    <div class="edit-card" style="max-width:520px;">
+      <h3>📜 シフト変更履歴</h3>
+      <div class="sub">直近30件のシフト操作ログ（時間編集・欠勤マーク・必要人員変更 etc）</div>
+      <div id="audit-log-list" style="max-height:400px;overflow-y:auto;font-size:11px;line-height:1.6;padding:8px;background:var(--slate-50);border-radius:8px;font-family:'SF Mono',monospace;"></div>
+      <button class="edit-btn cancel" onclick="closeAuditLog()">閉じる</button>
     </div>
   </div>
 
@@ -5882,25 +5912,144 @@
     const start = document.getElementById('edit-time-start').value;
     const end   = document.getElementById('edit-time-end').value;
     if (!start || !end) { showToast('⚠ 開始/終了 両方入力してください'); return; }
-    /* スタッフ提出データを更新 */
     const subs = loadState();
     const idx = subs.findIndex(s => s.name === _editTimeCtx.name);
     if (idx >= 0) {
       subs[idx].customTimes = subs[idx].customTimes || [];
-      /* 旧時間を置換 */
       const oldTime = _editTimeCtx.timeText.replace(/[〜~]/, '-').replace(/\s/g,'');
       const newTime = start + '-' + end;
-      /* customTimes に新時間追加（旧プリセットは別途扱う） */
       subs[idx].customTimes = subs[idx].customTimes.filter(t => t.replace(/\s/g,'') !== oldTime);
       subs[idx].customTimes.push(newTime);
       saveState(subs);
+      _appendAuditLog('time_edit', { staff: _editTimeCtx.name, before: oldTime, after: newTime });
       showToast('✅ シフト時間を更新しました');
       closeEditTime();
-      /* 再生成 */
       if (typeof generateShift === 'function') setTimeout(generateShift, 200);
     } else {
       showToast('⚠ スタッフが見つかりません');
     }
+  }
+
+  /* ════════ TODO #2 完成: 個別スタッフ欠勤マーク + 自動代替募集 ════════ */
+  function markAbsentFromEdit() {
+    if (!_editTimeCtx) return closeEditTime();
+    const name = _editTimeCtx.name;
+    const time = _editTimeCtx.timeText;
+    if (!confirm(`${name} さんを「欠勤」として記録し、代替スタッフを募集モーダルを開きますか？\n対象シフト: ${time}`)) return;
+    /* 1. 欠勤履歴を記録 */
+    try {
+      const absences = JSON.parse(storageGet(_sk('absence_log')) || '[]');
+      const ctx = _editTimeCtx;
+      const today = new Date().toISOString().slice(0,10);
+      absences.push({ name, time, markedAt: Date.now(), date: today });
+      storageSet(_sk('absence_log'), JSON.stringify(absences));
+    } catch(e) {}
+    _appendAuditLog('absence_marked', { staff: name, time });
+    /* 2. シフトから削除 (customTimes から削除) */
+    const subs = loadState();
+    const idx = subs.findIndex(s => s.name === name);
+    if (idx >= 0) {
+      const oldTime = time.replace(/[〜~]/, '-').replace(/\s/g,'');
+      subs[idx].customTimes = (subs[idx].customTimes || []).filter(t => t.replace(/\s/g,'') !== oldTime);
+      saveState(subs);
+    }
+    closeEditTime();
+    showToast('🆘 欠勤マーク完了 → 代替募集を開きます');
+    /* 3. 当日の役職を推測して募集モーダル */
+    if (typeof openTimeeModalFor === 'function') {
+      const dateStr = new Date().toISOString().slice(0,10);
+      const role = (subs[idx] && subs[idx].role && subs[idx].role !== 'unassigned') ? subs[idx].role : 'hall';
+      setTimeout(() => openTimeeModalFor(dateStr, role), 400);
+    }
+    if (typeof generateShift === 'function') setTimeout(generateShift, 600);
+  }
+
+  /* ════════ ホリデー設定 ════════ */
+  function openHolidayModal() {
+    document.getElementById('holiday-date').value = new Date().toISOString().slice(0,10);
+    _renderHolidayList();
+    document.getElementById('edit-holiday-overlay').classList.add('show');
+  }
+  function closeHolidayModal() {
+    document.getElementById('edit-holiday-overlay').classList.remove('show');
+  }
+  function _loadHolidays() {
+    try { return JSON.parse(storageGet(_sk('holidays')) || '{}'); } catch(e) { return {}; }
+  }
+  function _saveHolidays(h) {
+    try { storageSet(_sk('holidays'), JSON.stringify(h)); } catch(e) {}
+  }
+  function setHoliday(type) {
+    const date = document.getElementById('holiday-date').value;
+    if (!date) { showToast('⚠ 日付を選択してください'); return; }
+    const h = _loadHolidays();
+    h[date] = type;
+    _saveHolidays(h);
+    _appendAuditLog('holiday_set', { date, type });
+    showToast(`✅ ${date} を${type === 'holiday' ? '🎌祝日' : '😴閑散日'}として設定`);
+    _renderHolidayList();
+    if (typeof generateShift === 'function') setTimeout(generateShift, 200);
+  }
+  function removeHoliday(date) {
+    const h = _loadHolidays();
+    delete h[date];
+    _saveHolidays(h);
+    _appendAuditLog('holiday_removed', { date });
+    showToast(`🗑 ${date} の設定を削除`);
+    _renderHolidayList();
+    if (typeof generateShift === 'function') setTimeout(generateShift, 200);
+  }
+  function _renderHolidayList() {
+    const h = _loadHolidays();
+    const entries = Object.entries(h).sort((a,b) => a[0].localeCompare(b[0]));
+    const el = document.getElementById('holiday-list');
+    if (!entries.length) { el.innerHTML = '<div style="color:var(--slate-400);text-align:center;padding:8px;">登録なし</div>'; return; }
+    el.innerHTML = entries.map(([date, type]) => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:1px solid var(--slate-100);">
+        <span>${date} ${type === 'holiday' ? '🎌 祝日' : '😴 閑散日'}</span>
+        <button onclick="removeHoliday('${date}')" style="background:#FEF2F2;color:#DC2626;border:none;padding:3px 8px;border-radius:4px;font-size:10px;cursor:pointer;font-weight:700;">削除</button>
+      </div>
+    `).join('');
+  }
+
+  /* ════════ 監査ログ (シフト変更履歴) ════════ */
+  const AUDIT_LOG_MAX = 100;
+  function _appendAuditLog(action, data) {
+    try {
+      const logs = JSON.parse(storageGet(_sk('audit_log')) || '[]');
+      logs.push({ action, data, ts: Date.now() });
+      const trimmed = logs.slice(-AUDIT_LOG_MAX);
+      storageSet(_sk('audit_log'), JSON.stringify(trimmed));
+    } catch(e) {}
+  }
+  function openAuditLog() {
+    const logs = (function(){ try { return JSON.parse(storageGet(_sk('audit_log')) || '[]'); } catch(e) { return []; } })();
+    const sorted = logs.slice().reverse().slice(0, 30);
+    const el = document.getElementById('audit-log-list');
+    if (!sorted.length) {
+      el.innerHTML = '<div style="text-align:center;color:var(--slate-400);padding:20px;">ログがまだありません</div>';
+    } else {
+      const ACT_LBL = {
+        time_edit: '⏰ 時間編集', absence_marked: '🆘 欠勤マーク',
+        holiday_set: '🎌 祝日設定', holiday_removed: '🗑 祝日削除',
+        need_edit: '👥 必要人員編集', shift_generated: '✨ シフト生成',
+      };
+      el.innerHTML = sorted.map(log => {
+        const d = new Date(log.ts);
+        const time = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        const lbl = ACT_LBL[log.action] || log.action;
+        const detail = JSON.stringify(log.data || {});
+        return `<div style="padding:6px 0;border-bottom:1px solid var(--slate-100);">
+          <span style="color:var(--slate-500);">${time}</span>
+          <span style="color:var(--indigo);font-weight:800;margin-left:6px;">${lbl}</span>
+          <div style="color:var(--slate-700);font-size:10px;margin-top:1px;">${detail}</div>
+        </div>`;
+      }).join('');
+    }
+    document.getElementById('audit-log-overlay').classList.add('show');
+  }
+  function closeAuditLog() {
+    document.getElementById('audit-log-overlay').classList.remove('show');
   }
   function deleteEditTime() {
     if (!_editTimeCtx) return closeEditTime();
@@ -5951,9 +6100,9 @@
     const overrides = _loadDayOverrides();
     overrides[_editNeedDate] = { morning: m, lunch: l, evening: e };
     _saveDayOverrides(overrides);
+    _appendAuditLog('need_edit', { date: _editNeedDate, morning: m, lunch: l, evening: e });
     showToast('✅ 必要人員を更新しました');
     closeEditNeed();
-    /* 再分析 */
     if (typeof generateShift === 'function') setTimeout(generateShift, 200);
   }
 
