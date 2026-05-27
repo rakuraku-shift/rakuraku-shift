@@ -52,6 +52,44 @@
 - ✅ #1 名前リスト水平スクロール class適用 (eval-staff-row + chip-row)
 - ✅ #6 shift.html i18n: 70+ keys + tt()自動翻訳 + 5モーダル data-i18n
 
+### ✨ 追加実装 (午後セッション)
+
+#### 🔗 マスタデータ → shift連携
+- ✅ shift.html が master-data.json を優先採用
+- ✅ master-data.html 保存時にサーバー同期
+- ✅ POS/シフトで時給/時間帯/休憩ルールを統一
+
+#### 📤 給与CSVエクスポート
+- ✅ payroll.html に 3形式 (freee/MF/汎用) ボタン追加
+- ✅ BOM付きで Excel 文字化け対策
+- ✅ TODO「給与ソフト連携」を CSV経由で完了
+
+#### 📚 コンテンツマーケ
+- ✅ blog.html: 6カテゴリ + 7記事 (特集記事 + 6本)
+- ✅ help.html FAQ拡充: 36 → 46項目 (👤スタッフ向け7 + LINE/freee/紹介3)
+
+#### 💾 オフライン強化
+- ✅ offline-sync.js: IndexedDB 自動バックアップ + キュー + ネットワークバッジ
+- ✅ shift/myshift/attendance で自動有効化
+- ✅ sw.js v4 にバンプ
+
+#### 📱 スタッフUX
+- ✅ staff-dashboard.html: 個人ホーム (KPI + 進捗バー + お知らせ + 次シフト)
+- ✅ manifest shortcut にマイダッシュボード追加
+- ✅ ボトムナビゲーション + 自動更新
+
+#### 💾 データ管理
+- ✅ data-export.html: 全データJSON DL + インポート + 削除
+- ✅ プレビュー → 確認 → 復元 のフロー
+
+#### 💬 サポート & 採用
+- ✅ help-widget.js: 全公開ページ右下に floating help button
+- ✅ careers.html: 3ポジション + 福利厚生8 + 選考フロー4
+- ✅ index.html フッターに 💼 採用情報
+
+#### 🌐 SEO
+- ✅ sitemap.xml 更新: 13URLに lastmod 付き
+
 
 
 ## 凡例
@@ -263,18 +301,49 @@
 ## 進捗率
 
 ```
-全体実装率: ★★★★★★★★★★ 95%
-（コア機能 + 運用機能 + 営業ページ + 本部機能 + 通知 + POS連携基盤 完成）
+全体実装率: ★★★★★★★★★★ 98%
+（コア機能 + 運用機能 + 営業ページ + 本部機能 + 通知 +
+ POS連携基盤 + 給与CSV + マスタ連携 + オフライン強化 +
+ 個人ダッシュボード + データバックアップ + サポート + 採用 完成）
 ```
 
-### 残り 5% の内訳
-- 給与ソフト完全連携 (freee/マネーフォワード - API化)
-- ネイティブアプリ化 (iOS/Android Capacitor wrapping)
+### 残り 2% の内訳
 - POSの自動定期取込 (cron + Square APIフル接続)
-- マスタデータ→実シフト 自動適用フロー (master-data.json → shift.html)
+- ネイティブアプリ化 (iOS/Android Capacitor wrapping)
+- freee/マネーフォワード API直接連携 (今はCSV経由)
 
 ### 残りタスクのうち、実装より「運用テスト」が必要なもの
 - 実店舗での 14日間トライアル → 本番フィードバック
 - LINE公式アカウント 接続 → 友だち1名で実通知テスト
 - メール送信 EMAIL_USER 環境変数設定 + Gmail App Password 設定
 - Stripe 本番審査通過後の課金フロー確認
+- 実 POSへの本番接続 (Square Token / スマレジ API認証)
+
+### 📁 全ファイル一覧 (2026-05-28 時点)
+**HTML ページ 30枚以上:**
+- index, about, help, getting-started, business-overview (営業)
+- shift, myshift, attendance, payroll, monthly-report (コア)
+- noru-admin, hq-dashboard, master-data, staff-monthly (管理)
+- demo-reservation, referral, case-studies, blog, careers (マーケ)
+- notification-settings, sales-import, announcements, data-export, staff-dashboard (運用)
+- 404, flyer, business-card, talk-script, checkout, payment-success, subscribe-success
+
+**JS モジュール:**
+- i18n.js (4言語 270+ keys)
+- offline-sync.js (IndexedDB + キュー)
+- help-widget.js (全ページfloating help)
+- sw.js v4 (キャッシュ + push通知)
+
+**サーバーAPI:**
+- /api/shop/:id/{snapshot,data,meta} (店舗データ同期)
+- /api/admin/{snapshot,data} (本社管理)
+- /api/attendance/{clock,today,month} (GPS打刻)
+- /api/change-request (休み変更届)
+- /api/subscribe/* + /webhook/stripe (Stripe決済)
+- /api/demo-reservation + /api/referral (マーケ)
+- /api/master-data/:shop (マスタ同期)
+- /api/hq/summary (本部KPI集計)
+- /api/notification/line/{connect,test,broadcast} (LINE)
+- /api/send-mail (汎用メール)
+- /api/announcements (お知らせ)
+- /api/sales/daily/:shop + /api/pos/connect (売上/POS)
