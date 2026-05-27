@@ -427,7 +427,7 @@
     if (!k) return false;
     if (_ADMIN_SYNC_KEYS.indexOf(k) >= 0) return true;
     /* 支払い状態キー (noru_pay_YYYY-MM_shopId) と売上キー (noru_admin_sales_*) も同期 */
-    return /^noru_pay_/.test(k) || /^noru_admin_sales_/.test(k);
+    return /^noru_pay_/.test(k) || /^noru_admin_sales_/.test(k) || k === 'noru_admin_shops';
   }
 
   function _syncAdminToServer(k, v){
@@ -530,6 +530,58 @@
 
   /* 起動時にサーバーからデータを取り込む（ログイン前でもOK） */
   bootstrapAdminFromServer().catch(function(){});
+
+  /* ════════════════════════════════════════════
+   * Socket.io リアルタイム反映 (Stripe webhook 経由の自動追加を検知)
+   ════════════════════════════════════════════ */
+  (function setupAdminSocketSync() {
+    var script = document.createElement('script');
+    script.src = '/socket.io/socket.io.js';
+    script.onload = function() {
+      try {
+        var socket = window.io();
+        socket.on('admin_data_updated', function(payload) {
+          if (!payload || !payload.key) return;
+          if (Date.now() < _adminSyncSuppress) return; /* 自分の操作は無視 */
+          /* localStorage に反映 */
+          try { localStorage.setItem(payload.key, payload.value); } catch(e) {}
+          /* 店舗追加の場合トースト + 再描画 */
+          if (payload.key === 'noru_admin_shops') {
+            try {
+              var oldShops = JSON.parse(_lastShopsSnap || '[]');
+              var newShops = JSON.parse(payload.value || '[]');
+              if (newShops.length > oldShops.length) {
+                /* 新規追加された店舗を検出 */
+                var added = newShops.find(function(s) {
+                  return !oldShops.find(function(o) { return o.shopId === s.shopId; });
+                });
+                if (added && added.autoAdded) {
+                  showAutoAddToast(added);
+                }
+              }
+              _lastShopsSnap = payload.value;
+            } catch(e) {}
+            if (typeof renderConsole === 'function') renderConsole();
+          }
+          console.log('[admin-socket] updated:', payload.key);
+        });
+        console.log('[admin-socket] connected');
+      } catch(e) { console.warn('[admin-socket] failed:', e.message); }
+    };
+    document.head.appendChild(script);
+  })();
+
+  var _lastShopsSnap = sg('noru_admin_shops') || '[]';
+
+  function showAutoAddToast(shop) {
+    var t = document.createElement('div');
+    t.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;background:linear-gradient(135deg,#10B981,#059669);color:#fff;padding:16px 22px;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.25);font-family:inherit;font-weight:800;font-size:13px;max-width:340px;animation:slide-in .3s;';
+    t.innerHTML = '🤖 <strong>Stripe 自動契約検知</strong><br>' +
+                  '<span style="font-size:12px;font-weight:600;opacity:.95;">' + (shop.name || shop.shopName || '?') + ' (' + shop.shopId + ') が追加されました</span>' +
+                  '<button onclick="this.parentElement.remove()" style="margin-top:8px;background:rgba(255,255,255,.2);border:none;color:#fff;padding:5px 10px;border-radius:6px;font-weight:800;font-size:11px;cursor:pointer;">閉じる</button>';
+    document.body.appendChild(t);
+    setTimeout(function() { if (t.parentNode) t.remove(); }, 12000);
+  }
 
   function adminLogin(){
     var inp = document.getElementById('admin-pw-input');
@@ -976,12 +1028,16 @@
           '<div id="sres-'+sid+'"></div>'+
         '</div>';
 
-      return '<div class="shop-card">'+
+      var autoBadge = s.autoAdded
+        ? '<span style="display:inline-block;margin-left:6px;padding:2px 7px;background:linear-gradient(135deg,#10B981,#059669);color:#fff;font-size:9px;font-weight:800;border-radius:8px;letter-spacing:.03em;">🤖 Stripe自動追加</span>'
+        : '';
+
+      return '<div class="shop-card"'+(s.autoAdded?' style="border-left:3px solid #10B981;"':'')+'>'+
         '<div class="sc-head">'+
           '<div class="sc-avatar" style="background:'+avatarColor+'">'+initials+'</div>'+
           '<div class="sc-info">'+
-            '<div class="sc-name">'+esc(s.name)+'</div>'+
-            '<div class="sc-meta">'+esc(s.contact||'')+(s.email?' &nbsp;·&nbsp; '+esc(s.email):'')+'</div>'+
+            '<div class="sc-name">'+esc(s.name||s.shopName||'')+autoBadge+'</div>'+
+            '<div class="sc-meta">'+esc(s.contact||'')+(s.email?' &nbsp;·&nbsp; '+esc(s.email):'')+(s.phone?' &nbsp;·&nbsp; '+esc(s.phone):'')+'</div>'+
           '</div>'+
           '<div class="sc-fee">¥'+Number(s.fee||0).toLocaleString()+'<span style="font-size:9px;color:var(--slate-5)">/月</span></div>'+
         '</div>'+

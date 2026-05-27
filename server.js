@@ -158,40 +158,138 @@ function generateLicenseCode(seed) {
   return [0, 4, 8, 12].map(i => hash.slice(i, i + 4)).join('-');
 }
 
-async function sendLicenseEmail(to, shopName, licenseCode) {
+async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
   if (!emailTransporter) {
     console.warn('[email] EMAIL_USER 未設定 — ライセンスコードメール送信スキップ');
     return;
   }
   const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+  const shopUrl = shopId ? `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/shift.html`;
+  const myShiftUrl = shopId ? `${baseUrl}/myshift.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/myshift.html`;
+  const attendanceUrl = shopId ? `${baseUrl}/attendance.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/attendance.html`;
+  const qrUrl = shopId
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=2&color=4F46E5&data=${encodeURIComponent(shopUrl)}`
+    : '';
+
   await emailTransporter.sendMail({
     from: process.env.EMAIL_USER,
     to,
-    subject: '[RAKURAKU] ご登録ありがとうございます — ライセンスコードのご案内',
+    subject: '[RAKURAKU] ご登録ありがとうございます — 店舗専用URLとQRコード',
     html: `
-      <div style="font-family:'Helvetica Neue',sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#1E293B;">
+      <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
         <h2 style="color:#4F46E5;margin:0 0 16px;">RAKURAKU へようこそ${shopName ? `（${shopName} 様）` : ''}</h2>
         <p>この度はご登録いただき、誠にありがとうございます。</p>
         <p><strong>14日間の無料トライアル</strong>が開始されました。期間中は一切料金が発生しません。</p>
+
+        ${shopId ? `
+        <div style="background:linear-gradient(135deg,#EEF2FF,#FAF5FF);border:2px solid #4F46E5;padding:20px;margin:24px 0;border-radius:12px;">
+          <div style="font-size:11px;color:#4F46E5;font-weight:800;letter-spacing:.04em;margin-bottom:6px;">🆔 ${shopName || 'お店'} 専用 店舗ID</div>
+          <div style="font-size:18px;font-weight:900;font-family:monospace;color:#1E293B;word-break:break-all;">${shopId}</div>
+          <div style="font-size:10px;color:#64748B;margin-top:6px;">※ この ID で${shopName || 'お店'}専用のデータ管理URLが発行されています</div>
+        </div>
+        ` : ''}
+
         <div style="background:#EEF2FF;border:2px dashed #4F46E5;padding:20px;margin:24px 0;text-align:center;border-radius:12px;">
           <div style="font-size:12px;color:#6B7280;margin-bottom:8px;letter-spacing:.05em;">ライセンスコード</div>
           <div style="font-size:22px;font-weight:900;letter-spacing:.1em;color:#1E293B;font-family:monospace;">${licenseCode}</div>
         </div>
-        <p>下記URLからログインしてご利用ください：</p>
-        <p style="text-align:center;margin:24px 0;">
-          <a href="${baseUrl}/shift.html" style="display:inline-block;background:#4F46E5;color:#fff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;">RAKURAKU を開く →</a>
+
+        <h3 style="color:#0F172A;margin-top:24px;font-size:16px;">🔗 店長専用URL (ブックマーク推奨)</h3>
+        <p style="background:#F8FAFC;border-left:4px solid #4F46E5;padding:12px;margin:12px 0;font-size:13px;word-break:break-all;font-family:monospace;color:#334155;">
+          ${shopUrl}
         </p>
+        <p style="text-align:center;margin:24px 0;">
+          <a href="${shopUrl}" style="display:inline-block;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;">📅 シフト管理を開く →</a>
+        </p>
+
+        ${qrUrl ? `
+        <h3 style="color:#0F172A;margin-top:32px;font-size:16px;">📱 スタッフ配布用 QRコード</h3>
+        <div style="background:#fff;border:1.5px solid #E2E8F0;padding:20px;border-radius:12px;text-align:center;margin:12px 0;">
+          <img src="${qrUrl}" alt="店舗専用QRコード" style="display:block;margin:0 auto;border-radius:8px;" width="200" height="200" />
+          <p style="font-size:12px;color:#64748B;margin-top:10px;">スタッフがこのQRを読み取ると ${shopName || 'お店'}専用のシフト提出画面にアクセスできます</p>
+          <p style="font-size:10px;color:#94A3B8;margin-top:6px;">※ 印刷して店内掲示 or LINE で配布</p>
+        </div>
+        ` : ''}
+
+        <h3 style="color:#0F172A;margin-top:32px;font-size:16px;">📲 スタッフ向け各種URL (LINE で共有してください)</h3>
+        <ul style="font-size:13px;line-height:2;padding-left:20px;">
+          <li><strong>シフト希望提出</strong>: <a href="${shopUrl}" style="color:#4F46E5;">${shopUrl}</a></li>
+          <li><strong>マイシフト確認</strong>: <a href="${myShiftUrl}" style="color:#4F46E5;">${myShiftUrl}</a></li>
+          <li><strong>GPS出退勤打刻</strong>: <a href="${attendanceUrl}" style="color:#4F46E5;">${attendanceUrl}</a></li>
+        </ul>
+
+        <h3 style="color:#0F172A;margin-top:32px;font-size:16px;">🚀 今日やる3つのこと</h3>
+        <ol style="font-size:13px;line-height:2;padding-left:20px;">
+          <li><a href="${baseUrl}/master-data.html?shop=${encodeURIComponent(shopId || '')}" style="color:#4F46E5;">マスタデータ設定</a> (時給/時間帯)</li>
+          <li><a href="${baseUrl}/tutorial.html" style="color:#4F46E5;">動画チュートリアル 1本目を視聴</a> (3分)</li>
+          <li>スタッフに上記QRを LINE で配布</li>
+        </ol>
+
         <hr style="border:none;border-top:1px solid #E2E8F0;margin:24px 0;" />
         <p style="font-size:12px;color:#94A3B8;line-height:1.7;">
           ※ 14日後に月額¥9,800（税込）の自動課金が開始されます。<br>
           ※ 解約はいつでも可能、翌月以降のご請求は発生しません。<br>
-          ※ ご不明な点は ${process.env.EMAIL_USER} / 📞 080-5168-3303 までお問い合わせください。<br>
+          ※ ご不明な点はこのメールに返信、または 📞 080-5168-3303 までお問い合わせください。<br>
           ※ 運営: RAKURAKU（代表 小泉 咲太）
         </p>
       </div>
     `,
   });
-  console.log(`[email] ライセンスコードを ${to} に送信`);
+  console.log(`[email] ライセンスコード + 店舗URL を ${to} に送信`);
+}
+
+/* ════════════════════════════════════════════
+ * shopId 自動生成 — 店舗名 → URLセーフな ID へ
+ * 例: "BAR LUMIERE 渋谷" → "bar-lumiere-3k7m"
+ *     "" (空) → "shop-3k7m"
+ ════════════════════════════════════════════ */
+function generateShopId(shopName, email) {
+  let slug = (shopName || '').toLowerCase()
+    .normalize('NFKD').replace(/[̀-ͯ]/g, '') /* 濁点等を除去 */
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 30);
+  if (!slug && email) {
+    slug = email.split('@')[0].toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 20);
+  }
+  if (!slug) slug = 'shop';
+  /* 既存IDとの衝突を避ける suffix */
+  const suffix = Date.now().toString(36).slice(-4);
+  return `${slug}-${suffix}`;
+}
+
+/* noru-admin の shops リストに自動追加 */
+function addShopToAdminList(shopData) {
+  const data = loadAdminData();
+  let shopsJson = data['noru_admin_shops'];
+  let shops = [];
+  if (shopsJson) {
+    try { shops = JSON.parse(shopsJson); } catch(e) { shops = []; }
+  }
+  /* shopId 重複チェック */
+  if (shops.find(s => s.shopId === shopData.shopId)) {
+    console.log(`[admin] shopId 既存 — スキップ: ${shopData.shopId}`);
+    return false;
+  }
+  shops.push({
+    shopId:      shopData.shopId,
+    name:        shopData.shopName || shopData.shopId, /* noru-admin は s.name を参照 */
+    shopName:    shopData.shopName, /* 互換性のため両方残す */
+    contact:     shopData.ownerName || '',
+    fee:         shopData.fee || 9800,
+    email:       shopData.email || '',
+    phone:       shopData.phone || '',
+    autoAdded:   true,
+    addedAt:     new Date().toISOString(),
+    source:      'stripe-webhook',
+    subscriptionId: shopData.subscriptionId || '',
+    customerId:  shopData.customerId || '',
+  });
+  setAdminKey('noru_admin_shops', JSON.stringify(shops));
+  console.log(`[admin] 店舗自動追加 — ${shopData.shopName} (${shopData.shopId})`);
+  /* Socket.io で noru-admin 開いている人に即時通知 */
+  try { io.emit('admin_data_updated', { key: 'noru_admin_shops', value: JSON.stringify(shops), ts: Date.now() }); } catch(e) {}
+  return true;
 }
 
 async function handleSubscriptionStarted(session) {
@@ -203,24 +301,34 @@ async function handleSubscriptionStarted(session) {
 
   const licenseCode = generateLicenseCode(email + shopName);
 
+  /* 🆔 shopId 自動生成 + noru-admin に追加 */
+  const shopId = generateShopId(shopName, email);
+  addShopToAdminList({
+    shopId, shopName, ownerName, email, phone,
+    subscriptionId: session.subscription,
+    customerId:     session.customer,
+    fee: 9800,
+  });
+
   saveSubscription({
     sessionId:      session.id,
     customerId:     session.customer,
     subscriptionId: session.subscription,
+    shopId, /* 紐付け */
     shopName, ownerName, email, phone,
     licenseCode,
     status:    'trialing',
     createdAt: new Date().toISOString(),
   });
 
-  console.log(`[stripe] サブスク開始 — ${shopName || '?'} (${email}) — code: ${licenseCode}`);
+  console.log(`[stripe] サブスク開始 — ${shopName || '?'} (${email}) → shopId: ${shopId} — code: ${licenseCode}`);
 
   if (email) {
-    try { await sendLicenseEmail(email, shopName, licenseCode); }
+    try { await sendLicenseEmail(email, shopName, licenseCode, shopId); }
     catch (e) { console.error('[email] 送信失敗:', e.message); }
 
     /* オンボーディング自動メール (Day1/3/7/14/30) をスケジュール */
-    try { scheduleOnboardingEmails(email, shopName, ownerName); }
+    try { scheduleOnboardingEmails(email, shopName, ownerName, shopId); }
     catch (e) { console.warn('[onboarding] schedule失敗:', e.message); }
   }
 }
@@ -232,23 +340,28 @@ const ONBOARDING_EMAILS = [
   {
     day: 1,
     subject: '[RAKURAKU] ようこそ! 今日やる3つのこと',
-    html: ({ shopName, ownerName }) => `
+    html: ({ shopName, ownerName, shopId }) => {
+      const base = 'https://rakuraku-shift-production.up.railway.app';
+      const sp = shopId ? `?shop=${encodeURIComponent(shopId)}` : '';
+      return `
       <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
         <h2 style="color:#4F46E5;">${ownerName || '店長'}様、ご登録ありがとうございます!</h2>
         <p>RAKURAKU 開発代表の小泉です。${shopName || 'お店'} でのご利用、心からお待ちしておりました。</p>
+        ${shopId ? `<p style="background:#EEF2FF;padding:12px;border-radius:8px;font-size:13px;">🆔 <strong>あなたの店舗ID:</strong> <code style="font-family:monospace;color:#4F46E5;">${shopId}</code><br>すべてのURLに自動的にこの ID が付与されています</p>` : ''}
         <h3 style="color:#0F172A;margin-top:24px;">🎯 今日やる3つのこと (合計15分)</h3>
         <ol>
           <li><strong>マスタデータを設定</strong> (5分) — ポジション・標準時給・時間帯テンプレを入力<br>
-              → <a href="https://rakuraku-shift-production.up.railway.app/master-data.html" style="color:#4F46E5;">マスタ管理を開く</a></li>
+              → <a href="${base}/master-data.html${sp}" style="color:#4F46E5;">マスタ管理を開く</a></li>
           <li><strong>スタッフを5名登録</strong> (5分) — QRコードを LINE で共有<br>
-              → <a href="https://rakuraku-shift-production.up.railway.app/shift.html" style="color:#4F46E5;">シフト画面で QR 生成</a></li>
+              → <a href="${base}/shift.html${sp}" style="color:#4F46E5;">シフト画面で QR 生成</a></li>
           <li><strong>動画チュートリアル 1本目を視聴</strong> (3分) — セットアップの完成形を確認<br>
-              → <a href="https://rakuraku-shift-production.up.railway.app/tutorial.html" style="color:#4F46E5;">動画を見る</a></li>
+              → <a href="${base}/tutorial.html" style="color:#4F46E5;">動画を見る</a></li>
         </ol>
         <p style="margin-top:24px;">何か不明点があれば、このメールに返信するだけで私 (小泉) に直接届きます。</p>
         <p style="color:#64748B;font-size:12px;margin-top:24px;">— 小泉 咲太 / 📞 080-5168-3303</p>
       </div>
-    `,
+    `;
+    },
   },
   {
     day: 3,
@@ -361,7 +474,7 @@ const ONBOARDING_EMAILS = [
   },
 ];
 
-function scheduleOnboardingEmails(email, shopName, ownerName) {
+function scheduleOnboardingEmails(email, shopName, ownerName, shopId) {
   if (!email) return;
   const now = Date.now();
   const file = path.join(DATA_DIR, 'scheduled-onboarding.json');
@@ -369,14 +482,14 @@ function scheduleOnboardingEmails(email, shopName, ownerName) {
   ONBOARDING_EMAILS.forEach(e => {
     all.push({
       id: 'ob' + now + '_' + e.day,
-      email, shopName, ownerName,
+      email, shopName, ownerName, shopId,
       day: e.day,
       scheduledAt: now + e.day * 86400000,
       sent: false,
     });
   });
   writeJSON(file, all);
-  console.log(`[onboarding] ${email} に ${ONBOARDING_EMAILS.length}通のメールをスケジュール`);
+  console.log(`[onboarding] ${email} に ${ONBOARDING_EMAILS.length}通のメールをスケジュール (shopId: ${shopId || '-'})`);
 }
 
 async function processScheduledOnboarding() {
@@ -395,7 +508,7 @@ async function processScheduledOnboarding() {
         from: process.env.EMAIL_USER,
         to: item.email,
         subject: template.subject,
-        html: template.html({ shopName: item.shopName, ownerName: item.ownerName }),
+        html: template.html({ shopName: item.shopName, ownerName: item.ownerName, shopId: item.shopId }),
       });
       item.sent = true;
       item.sentAt = now;
@@ -673,6 +786,53 @@ app.get('/health', (req, res) => {
     uptime: Math.floor((Date.now() - SERVER_START_TIME) / 1000),
     timestamp: new Date().toISOString(),
     version: '1.0.0',
+  });
+});
+
+/* ════════════════════════════════════════════
+ * テスト用: 店舗自動追加 を Stripe なしで確認できるエンドポイント
+ * 使い方: POST /api/admin/test-auto-add { shopName, email, ownerName }
+ * 本番運用時はこのエンドポイントを削除 or 認証で保護してください
+ ════════════════════════════════════════════ */
+app.post('/api/admin/test-auto-add', (req, res) => {
+  const { shopName, email, ownerName, phone } = req.body || {};
+  if (!shopName) return res.status(400).json({ error: 'shopName 必須' });
+
+  const shopId = generateShopId(shopName, email);
+  const licenseCode = generateLicenseCode(email + shopName);
+
+  const added = addShopToAdminList({
+    shopId, shopName, ownerName, email, phone,
+    subscriptionId: 'test_' + Date.now(),
+    customerId:     'cus_test_' + Date.now(),
+    fee: 9800,
+  });
+
+  saveSubscription({
+    sessionId: 'test_session_' + Date.now(),
+    customerId: 'cus_test_' + Date.now(),
+    subscriptionId: 'test_' + Date.now(),
+    shopId, shopName, ownerName, email, phone,
+    licenseCode,
+    status: 'trialing',
+    createdAt: new Date().toISOString(),
+  });
+
+  /* 歓迎メール + オンボーディングスケジュール */
+  if (email) {
+    sendLicenseEmail(email, shopName, licenseCode, shopId).catch(e => console.warn('[test-add] email:', e.message));
+    scheduleOnboardingEmails(email, shopName, ownerName, shopId);
+  }
+
+  const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+  res.json({
+    ok: true,
+    added,
+    shopId,
+    licenseCode,
+    shopUrl: `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}`,
+    qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=2&color=4F46E5&data=${encodeURIComponent(baseUrl + '/shift.html?shop=' + encodeURIComponent(shopId))}`,
+    message: '✅ テスト用店舗を自動追加しました。noru-admin を開いてご確認ください。',
   });
 });
 

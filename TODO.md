@@ -152,6 +152,39 @@
 - ✅ POST /api/status-subscribe — メール購読
 - ✅ 60秒ごとに自動更新
 
+#### 🤖 Stripe → 店舗自動追加フロー (2026-05-28 完成)
+新規契約から店舗運用開始までの完全自動化:
+
+1. **shopId 自動生成** (`generateShopId(shopName, email)`)
+   - 店舗名 → URL セーフな ID 化 (例: "BAR LUMIERE 渋谷" → `bar-lumiere-3k7m`)
+   - 空 → email prefix → 完全ランダムにフォールバック
+   - 4桁の時刻 suffix で重複回避
+
+2. **noru-admin への自動追加** (`addShopToAdminList()`)
+   - admin-data.json の `noru_admin_shops` キーに push
+   - 重複 shopId はスキップ
+   - autoAdded:true, source:'stripe-webhook' フラグ
+   - Socket.io で開いている管理画面に即時通知
+
+3. **歓迎メール大型化** (`sendLicenseEmail` 改修)
+   - 🆔 店舗ID表示
+   - 🔗 店長専用URL (`?shop=xxx` 付き)
+   - 📱 QR コード画像埋め込み (qrserver.com 経由)
+   - 📲 スタッフ向け3URL (シフト/マイシフト/打刻)
+   - 🚀 今日やる3つのこと
+
+4. **オンボーディング自動メール 5通の URL も shopId 付き**
+   - すべての URL に `?shop=xxx` が自動付与
+
+5. **noru-admin UI に反映**
+   - 自動追加された店舗は 🤖 緑バッジ + 左ボーダー緑
+   - Socket.io 経由でリアルタイム表示 (画面を開いたまま追加検知 → トースト)
+   - `_isAdminSyncKey` に `noru_admin_shops` 追加 (サーバー側書込みを許可)
+
+6. **テスト用エンドポイント**
+   - `POST /api/admin/test-auto-add { shopName, email, ownerName }` で Stripe なしで動作確認可能
+   - 本番運用時は削除 or 認証で保護推奨
+
 #### S5 🗺 パブリックロードマップ (roadmap.html)
 - ✅ 4列カンバン (アイデア/計画中/開発中/完成)
 - ✅ 機能ごとに優先度カラーバー
