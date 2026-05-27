@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>データバックアップ — RAKURAKU</title>
+<meta name="theme-color" content="#4F46E5">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:var(--slate-50);min-height:100vh;line-height:1.6;}
+
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
+  .nav-inner{max-width:840px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
+
+  .container{max-width:840px;margin:0 auto;padding:24px;}
+  .page-header{margin-bottom:22px;}
+  .page-header h1{font-size:26px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px;}
+  .page-header .sub{font-size:13px;color:var(--slate-500);font-weight:600;}
+
+  .card{background:#fff;border-radius:14px;padding:24px;border:1.5px solid var(--slate-100);box-shadow:0 4px 20px rgba(0,0,0,.04);margin-bottom:18px;}
+  .card h2{font-size:17px;font-weight:900;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+  .card-sub{font-size:13px;color:var(--slate-500);margin-bottom:18px;}
+
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+  @media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr);}}
+  .stat{background:linear-gradient(135deg,var(--slate-50),#fff);border-radius:10px;padding:14px;text-align:center;border:1.5px solid var(--slate-100);}
+  .stat .v{font-size:22px;font-weight:900;color:var(--indigo);letter-spacing:-.02em;}
+  .stat .l{font-size:10px;color:var(--slate-500);font-weight:800;margin-top:3px;}
+
+  .btn{padding:12px 20px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;border:none;transition:transform .12s;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.25);}
+  .btn-ghost{background:var(--slate-100);color:var(--slate-700);}
+  .btn-danger{background:#FEE2E2;color:var(--rose);}
+  .btn-block{display:block;width:100%;}
+
+  .file-drop{border:2.5px dashed var(--slate-200);border-radius:14px;padding:36px 20px;text-align:center;background:linear-gradient(135deg,var(--slate-50),#fff);cursor:pointer;transition:all .15s;}
+  .file-drop:hover{border-color:var(--indigo);background:var(--indigo-l);}
+  .file-drop .ic{font-size:46px;display:block;margin-bottom:10px;}
+  .file-drop .t{font-size:14px;font-weight:800;}
+  .file-drop .s{font-size:11px;color:var(--slate-500);margin-top:4px;}
+
+  .item-list{margin-top:14px;}
+  .item-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px dashed var(--slate-100);font-size:12px;}
+  .item-row:last-child{border-bottom:none;}
+  .item-row .n{font-weight:700;color:var(--slate-700);}
+  .item-row .v{font-weight:800;color:var(--indigo);font-variant-numeric:tabular-nums;}
+
+  .warning-box{background:#FFFBEB;border-left:4px solid var(--amber);padding:14px 16px;border-radius:0 10px 10px 0;font-size:12px;color:var(--slate-700);line-height:1.7;margin-top:14px;}
+  .info-box{background:#EFF6FF;border-left:4px solid var(--indigo);padding:14px 16px;border-radius:0 10px 10px 0;font-size:12px;color:var(--slate-700);line-height:1.7;margin-top:14px;}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;padding:13px 24px;border-radius:24px;font-size:13px;font-weight:700;display:none;z-index:1000;}
+  .toast.show{display:block;}
+
+  .preview-area{background:var(--slate-50);border-radius:10px;padding:14px;margin-top:12px;max-height:220px;overflow-y:auto;font-family:'SF Mono',monospace;font-size:10px;color:var(--slate-700);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU バックアップ</span></a>
+    <a href="/shift.html" style="font-size:12px;color:var(--slate-500);font-weight:700;">← シフト画面</a>
+  </div>
+</header>
+
+<div class="container">
+
+<div class="page-header">
+  <h1>💾 データバックアップ・移行</h1>
+  <p class="sub">全データを安全にエクスポート/インポート — 機種変更や月次バックアップに</p>
+</div>
+
+<!-- 現在のデータ量 -->
+<div class="card">
+  <h2>📊 現在保存されているデータ</h2>
+  <div class="stats-row">
+    <div class="stat"><div class="v" id="s-staff">0</div><div class="l">登録スタッフ</div></div>
+    <div class="stat"><div class="v" id="s-shifts">0</div><div class="l">シフト記録</div></div>
+    <div class="stat"><div class="v" id="s-attend">0</div><div class="l">出退勤記録</div></div>
+    <div class="stat"><div class="v" id="s-sales">0</div><div class="l">売上記録</div></div>
+  </div>
+  <div class="item-list" id="item-list"></div>
+</div>
+
+<!-- エクスポート -->
+<div class="card">
+  <h2>📤 データをエクスポート</h2>
+  <p class="card-sub">全データを JSON ファイルとしてダウンロード。Google Drive 等にバックアップしておくと安心です。</p>
+
+  <button class="btn btn-primary btn-block" onclick="exportAll()">💾 全データを JSON でダウンロード</button>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+    <button class="btn btn-ghost" onclick="exportShifts()">📅 シフトのみ</button>
+    <button class="btn btn-ghost" onclick="exportAttendance()">⏰ 出退勤のみ</button>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 推奨頻度:</strong> 月1回 (給与確定後) + 重要操作の前<br>
+    <strong>📁 保存先例:</strong> Google Drive / iCloud / Dropbox / USB
+  </div>
+</div>
+
+<!-- インポート -->
+<div class="card">
+  <h2>📥 データをインポート</h2>
+  <p class="card-sub">エクスポートした JSON ファイルから復元。機種変更・PC新調・障害復旧 に使用します。</p>
+
+  <div class="file-drop" onclick="document.getElementById('import-file').click()" id="drop-area">
+    <span class="ic">📂</span>
+    <div class="t">JSON ファイルをドラッグ or タップで選択</div>
+    <div class="s">RAKURAKU でエクスポートしたファイルのみ対応</div>
+  </div>
+  <input type="file" id="import-file" accept=".json" style="display:none;" onchange="previewImport(this.files[0])" />
+
+  <div id="import-preview" style="display:none;margin-top:14px;">
+    <h3 style="font-size:13px;font-weight:800;margin-bottom:8px;">📋 取込内容プレビュー</h3>
+    <div class="preview-area" id="preview-content"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+      <button class="btn btn-ghost" onclick="cancelImport()">キャンセル</button>
+      <button class="btn btn-primary" onclick="doImport()">✅ 復元する</button>
+    </div>
+  </div>
+
+  <div class="warning-box">
+    <strong>⚠ 注意:</strong><br>
+    インポートすると現在のデータが <strong>上書き</strong> されます。事前にエクスポートで現在のデータを保存しておくことを強く推奨します。
+  </div>
+</div>
+
+<!-- 削除/リセット -->
+<div class="card" style="border-color:#FEE2E2;">
+  <h2 style="color:var(--rose);">🗑 すべてのデータを削除</h2>
+  <p class="card-sub">店舗を移転 / 廃業 / 完全リセット したい場合に使用。<strong>取り消しできません</strong>。</p>
+
+  <button class="btn btn-danger btn-block" onclick="deleteAll()">⚠ 全データを削除する</button>
+
+  <div class="warning-box">
+    <strong>削除されるデータ:</strong> シフト・出退勤・スタッフ評価・売上記録・お知らせ・通知設定<br>
+    <strong>削除されないデータ:</strong> サーバー側のアカウント情報 (Stripe課金等)
+  </div>
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function getAllData() {
+  const data = {};
+  const meta = {
+    exportedAt: new Date().toISOString(),
+    version: '1.0',
+    source: 'RAKURAKU',
+    keys: 0,
+  };
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('rakuraku-') || k.startsWith('noru-')) {
+      try { data[k] = localStorage.getItem(k); meta.keys++; } catch(e) {}
+    }
+  });
+  return { meta, data };
+}
+
+function renderStats() {
+  let staff = 0, shifts = 0, attendance = 0, sales = 0;
+  try {
+    const sd = JSON.parse(localStorage.getItem('rakuraku-shift-data') || '{}');
+    staff = (sd.staffs || sd.staff || []).length;
+    shifts = (sd.generatedShifts || sd.shifts || []).length;
+  } catch(e) {}
+  try {
+    attendance = (JSON.parse(localStorage.getItem('rakuraku-attendance') || '[]')).length;
+  } catch(e) {}
+  try {
+    sales = Object.keys(JSON.parse(localStorage.getItem('rakuraku-sales-data') || '{}')).length;
+  } catch(e) {}
+  document.getElementById('s-staff').textContent = staff;
+  document.getElementById('s-shifts').textContent = shifts;
+  document.getElementById('s-attend').textContent = attendance;
+  document.getElementById('s-sales').textContent = sales;
+
+  /* 詳細リスト */
+  const list = document.getElementById('item-list');
+  const dataKeys = Object.keys(localStorage).filter(k => k.startsWith('rakuraku-') || k.startsWith('noru-'));
+  if (dataKeys.length) {
+    list.innerHTML = dataKeys.slice(0, 20).map(k => {
+      const v = localStorage.getItem(k) || '';
+      const sizeKB = (v.length / 1024).toFixed(2);
+      return `<div class="item-row"><span class="n">${escapeHtml(k)}</span><span class="v">${sizeKB} KB</span></div>`;
+    }).join('') + (dataKeys.length > 20 ? `<div style="text-align:center;padding:8px;font-size:11px;color:var(--slate-500);">他 ${dataKeys.length - 20} 件</div>` : '');
+  } else {
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--slate-500);font-size:12px;">データがありません</div>';
+  }
+}
+
+function exportAll() {
+  const pkg = getAllData();
+  downloadJSON(pkg, `rakuraku-backup-full-${new Date().toISOString().slice(0,10)}.json`);
+  showToast(`💾 ${pkg.meta.keys} 件のデータをエクスポート`);
+}
+
+function exportShifts() {
+  const data = {};
+  ['rakuraku-shift-data', 'rakuraku-shift-staff_evals_v2'].forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v) data[k] = v;
+  });
+  downloadJSON({ meta: { exportedAt: new Date().toISOString(), type: 'shifts' }, data }, `rakuraku-shifts-${new Date().toISOString().slice(0,10)}.json`);
+  showToast('📅 シフトデータをエクスポート');
+}
+
+function exportAttendance() {
+  const data = {};
+  ['rakuraku-attendance'].forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v) data[k] = v;
+  });
+  downloadJSON({ meta: { exportedAt: new Date().toISOString(), type: 'attendance' }, data }, `rakuraku-attendance-${new Date().toISOString().slice(0,10)}.json`);
+  showToast('⏰ 出退勤データをエクスポート');
+}
+
+function downloadJSON(obj, filename) {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+let _importData = null;
+function previewImport(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      _importData = JSON.parse(e.target.result);
+      const dataKeys = Object.keys(_importData.data || {});
+      const preview = `\n📅 エクスポート日時: ${_importData.meta?.exportedAt || '不明'}\n📦 種別: ${_importData.meta?.type || 'full'}\n📊 件数: ${dataKeys.length}\n\nデータキー一覧:\n${dataKeys.slice(0, 30).map(k => '  • ' + k).join('\n')}${dataKeys.length > 30 ? `\n  ...他 ${dataKeys.length - 30} 件` : ''}`;
+      document.getElementById('preview-content').textContent = preview;
+      document.getElementById('import-preview').style.display = 'block';
+      showToast('📋 プレビュー表示');
+    } catch(e) {
+      showToast('⚠ JSON 解析失敗: ' + e.message);
+      _importData = null;
+    }
+  };
+  reader.readAsText(file);
+}
+
+function doImport() {
+  if (!_importData) return;
+  if (!confirm('現在のデータを上書きします。本当に取込みますか？\n(事前にエクスポートで保存しておくことを推奨)')) return;
+  let imported = 0;
+  Object.entries(_importData.data || {}).forEach(([k, v]) => {
+    try { localStorage.setItem(k, v); imported++; } catch(e) {}
+  });
+  showToast(`✅ ${imported} 件のデータを復元しました`);
+  document.getElementById('import-preview').style.display = 'none';
+  _importData = null;
+  renderStats();
+  /* オフライン同期にもバックアップ */
+  if (window.RakuOffline) window.RakuOffline.backup();
+}
+
+function cancelImport() {
+  _importData = null;
+  document.getElementById('import-preview').style.display = 'none';
+  document.getElementById('import-file').value = '';
+  showToast('キャンセルしました');
+}
+
+function deleteAll() {
+  const confirmed = prompt('全データを削除するには、下に「削除します」と入力してください');
+  if (confirmed !== '削除します') {
+    showToast('キャンセルしました');
+    return;
+  }
+  Object.keys(localStorage).filter(k => k.startsWith('rakuraku-') || k.startsWith('noru-')).forEach(k => {
+    try { localStorage.removeItem(k); } catch(e) {}
+  });
+  showToast('🗑 全データを削除しました');
+  setTimeout(() => location.reload(), 1500);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+document.addEventListener('DOMContentLoaded', renderStats);
+</script>
+<script src="/offline-sync.js"></script>
+</body>
+</html>
