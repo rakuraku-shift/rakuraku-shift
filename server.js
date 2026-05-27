@@ -1281,6 +1281,43 @@ app.post('/api/shop/:shopId/data', (req, res) => {
 });
 
 // ── 店舗メタ情報 API（shift.html が店舗名等を取得） ────────────
+/* 店舗GPS位置をワンタップ登録 (attendance画面の現在地ボタンから呼ばれる) */
+app.post('/api/shop/:shopId/gps-setup', (req, res) => {
+  const shopId = req.params.shopId;
+  const { latitude, longitude, allowedRadiusMeters } = req.body || {};
+  if (typeof latitude !== 'number' || typeof longitude !== 'number') {
+    return res.status(400).json({ error: 'latitude, longitude (number) 必須' });
+  }
+  /* admin shops に upsert */
+  const data = loadAdminData();
+  let shops = [];
+  try {
+    const raw = data['noru_admin_shops'];
+    shops = typeof raw === 'string' ? JSON.parse(raw) : (raw || []);
+  } catch(e) {}
+  let target = shops.find(s => s.shopId === shopId);
+  if (!target) {
+    target = {
+      shopId,
+      name: shopId,
+      shopName: shopId,
+      fee: 9800,
+      autoAdded: false,
+      addedAt: new Date().toISOString(),
+      source: 'gps-setup',
+    };
+    shops.push(target);
+  }
+  target.latitude = latitude;
+  target.longitude = longitude;
+  target.allowedRadiusMeters = allowedRadiusMeters || 200;
+  target.gpsUpdatedAt = new Date().toISOString();
+  setAdminKey('noru_admin_shops', JSON.stringify(shops));
+  io.emit('admin_data_updated', { key: 'noru_admin_shops', value: JSON.stringify(shops), ts: Date.now() });
+  console.log(`[gps-setup] ${shopId} → ${latitude}, ${longitude} (radius: ${allowedRadiusMeters || 200}m)`);
+  res.json({ ok: true, shop: target });
+});
+
 app.get('/api/shop/:shopId/meta', (req, res) => {
   const meta = getShopMetaById(req.params.shopId);
   if (!meta) {

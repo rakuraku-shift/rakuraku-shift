@@ -123,12 +123,21 @@
   </div>
 
   <!-- GPS status -->
-  <div class="gps-card">
+  <div class="gps-card" id="gps-card-wrap">
     <div class="gps-icon loading" id="gps-icon">📍</div>
     <div class="gps-text">
       <div class="gps-status" id="gps-status" data-i18n="att.gps_loading">位置情報を取得中...</div>
       <div class="gps-detail" id="gps-detail" data-i18n="att.gps_loading_sub">GPS を有効にしてください</div>
     </div>
+  </div>
+
+  <!-- 店舗GPS未設定時の警告 + ワンタップ設定ボタン -->
+  <div id="gps-setup-warn" style="display:none;background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border:1.5px solid #F59E0B;border-radius:12px;padding:14px 16px;margin-bottom:14px;font-size:12px;color:#78350F;line-height:1.7;">
+    ⚠️ <strong>店舗位置が未設定です。</strong><br>
+    現在GPS範囲外判定が無効になっています。店長は <a href="/noru-admin.html" target="_blank" style="color:#B45309;font-weight:800;">noru-admin</a> から店舗の緯度経度を設定してください。<br>
+    <button onclick="setupShopGpsFromCurrent()" style="margin-top:10px;padding:9px 14px;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border:none;border-radius:8px;font-weight:800;font-size:12px;cursor:pointer;font-family:inherit;">
+      📍 現在地を店舗位置として登録 (店長のみ)
+    </button>
   </div>
 
   <!-- Status -->
@@ -289,9 +298,15 @@
       icon.className = 'gps-icon ok';
       icon.textContent = '📍';
       status.textContent = _t('att.gps_ready');
-      detail.textContent = `±${Math.round(_currentPosition.accuracy)}m`;
+      detail.textContent = `±${Math.round(_currentPosition.accuracy)}m / 店舗GPS未設定`;
+      /* 店舗GPS未設定の場合、警告UIを表示 */
+      const warn = document.getElementById('gps-setup-warn');
+      if (warn) warn.style.display = 'block';
       return;
     }
+    /* 店舗GPS設定済みなら警告を隠す */
+    const warn = document.getElementById('gps-setup-warn');
+    if (warn) warn.style.display = 'none';
     const allowedRadius = (_shopMeta && _shopMeta.allowedRadiusMeters) || ALLOWED_RADIUS_METERS;
     if (dist <= allowedRadius) {
       icon.className = 'gps-icon ok';
@@ -307,6 +322,47 @@
   }
   /* 言語切替に反応してGPS表示も再描画 */
   window.addEventListener('rakuraku-lang-changed', updateGPSStatus);
+
+  /* ════════════════════════════════════════════
+   * 店長専用: 現在地を店舗位置として登録 (簡易フロー)
+   ════════════════════════════════════════════ */
+  async function setupShopGpsFromCurrent() {
+    if (!_currentPosition) {
+      alert('⚠ まずGPSの取得を完了してください (画面上部の📍マーク確認)');
+      return;
+    }
+    /* 簡易認証: 店舗ID + 簡単な合言葉確認 */
+    const pin = prompt('🔒 店長確認用PINを入力してください (デフォルト: 0000)\n本格運用時は noru-admin から正確な緯度経度を設定してください。');
+    if (pin === null) return;
+    const expectedPin = '0000'; /* デフォルト */
+    if (pin !== expectedPin) {
+      alert('⚠ PINが違います。noru-admin からの設定を推奨します。');
+      return;
+    }
+    if (!confirm(`現在地を ${SHOP_ID} の店舗位置として登録します:\n緯度: ${_currentPosition.lat.toFixed(6)}\n経度: ${_currentPosition.lng.toFixed(6)}\n許容半径: 200m\n\nよろしいですか?`)) return;
+    try {
+      const res = await fetch('/api/shop/' + encodeURIComponent(SHOP_ID) + '/gps-setup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          latitude: _currentPosition.lat,
+          longitude: _currentPosition.lng,
+          allowedRadiusMeters: 200,
+        }),
+      });
+      if (res.ok) {
+        showToast('✅ 店舗位置を登録しました', 'success');
+        /* 再ロード */
+        try { _shopMeta = await (await fetch(`/api/shop/${encodeURIComponent(SHOP_ID)}/meta`)).json(); } catch(e) {}
+        updateGPSStatus();
+      } else {
+        showToast('⚠ 登録失敗', 'error');
+      }
+    } catch(e) {
+      showToast('⚠ ' + e.message, 'error');
+    }
+  }
+  window.setupShopGpsFromCurrent = setupShopGpsFromCurrent;
 
   /* ══════════════════════════════════════════
      打刻アクション

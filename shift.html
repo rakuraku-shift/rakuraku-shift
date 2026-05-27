@@ -2181,6 +2181,65 @@
     /* スワイプによる戻る/進むの誤動作防止（カードスクロール時） */
     .shift-grid-wrap { overscroll-behavior-x: contain; }
 
+    /* ════════════════════════════════════════════
+     * SmartNews 風タブナビゲーション (シフト管理画面内のサブセクション切替)
+     ════════════════════════════════════════════ */
+    .mgr-tabs {
+      display: flex; gap: 4px; overflow-x: auto; overflow-y: hidden;
+      background: #fff; border-bottom: 2px solid var(--slate-100);
+      padding: 0 12px; scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .mgr-tabs::-webkit-scrollbar { display: none; }
+    .mgr-tab {
+      flex-shrink: 0; padding: 13px 16px;
+      font-size: 13px; font-weight: 800; color: var(--slate-500);
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; transition: color .15s;
+      position: relative; white-space: nowrap;
+      display: flex; align-items: center; gap: 5px;
+      min-width: max-content;
+    }
+    .mgr-tab:hover { color: var(--indigo); }
+    .mgr-tab.active {
+      color: var(--indigo);
+    }
+    .mgr-tab.active::after {
+      content: ''; position: absolute; left: 8px; right: 8px; bottom: -2px;
+      height: 3px; background: linear-gradient(135deg, var(--indigo), var(--purple));
+      border-radius: 3px 3px 0 0;
+    }
+    .mgr-tab .mgr-tab-badge {
+      display: inline-block; background: var(--rose); color: #fff;
+      font-size: 9px; font-weight: 900; padding: 1px 6px;
+      border-radius: 10px; margin-left: 3px; min-width: 16px; text-align: center;
+    }
+    .mgr-tab .mgr-tab-ic { font-size: 16px; }
+    @media (max-width: 480px) {
+      .mgr-tab { padding: 12px 12px; font-size: 12px; }
+      .mgr-tab .mgr-tab-ic { font-size: 14px; }
+    }
+
+    /* 各セクションは data-mgr-section 属性で識別 */
+    /* デフォルトでは「ダッシュボード」だけ表示。他は非表示 */
+    body[data-mgr-active="dashboard"] [data-mgr-section]:not([data-mgr-section~="dashboard"]) { display: none !important; }
+    body[data-mgr-active="shifts"]    [data-mgr-section]:not([data-mgr-section~="shifts"])    { display: none !important; }
+    body[data-mgr-active="staff"]     [data-mgr-section]:not([data-mgr-section~="staff"])     { display: none !important; }
+    body[data-mgr-active="payroll"]   [data-mgr-section]:not([data-mgr-section~="payroll"])   { display: none !important; }
+    body[data-mgr-active="deadline"]  [data-mgr-section]:not([data-mgr-section~="deadline"])  { display: none !important; }
+    body[data-mgr-active="survey"]    [data-mgr-section]:not([data-mgr-section~="survey"])    { display: none !important; }
+    body[data-mgr-active="all"]       [data-mgr-section]                                       { display: block; }
+    /* 提出/アンケート画面ではタブを表示しない */
+    .screen:not(#screen-manager) .mgr-tabs { display: none; }
+    body:not([data-mgr-active]) .mgr-tabs { display: none; }
+    /* 印刷時は全部表示 + タブ非表示 */
+    @media print {
+      [data-mgr-section] { display: block !important; }
+      .mgr-tabs { display: none !important; }
+    }
+
     /* 名前が多い時の横スクロール表示（共通） */
     .scroll-x-staff,
     .tc-staff-list,
@@ -2610,8 +2669,35 @@
     </div>
   </div>
 
+  <!-- ════════════════════════════════════════════
+   * SmartNews 風タブナビゲーション (画面を切り替えて見やすく)
+   ════════════════════════════════════════════ -->
+  <nav class="mgr-tabs" role="tablist" aria-label="シフト管理メニュー">
+    <button class="mgr-tab active" onclick="switchMgrTab('dashboard')" data-tab="dashboard" role="tab" aria-selected="true">
+      <span class="mgr-tab-ic">🏠</span><span>ダッシュボード</span>
+    </button>
+    <button class="mgr-tab" onclick="switchMgrTab('shifts')" data-tab="shifts" role="tab" aria-selected="false">
+      <span class="mgr-tab-ic">📅</span><span>シフト管理</span>
+    </button>
+    <button class="mgr-tab" onclick="switchMgrTab('staff')" data-tab="staff" role="tab" aria-selected="false">
+      <span class="mgr-tab-ic">👥</span><span>スタッフ</span>
+    </button>
+    <button class="mgr-tab" onclick="switchMgrTab('payroll')" data-tab="payroll" role="tab" aria-selected="false">
+      <span class="mgr-tab-ic">💴</span><span>給与・売上</span>
+    </button>
+    <button class="mgr-tab" onclick="switchMgrTab('deadline')" data-tab="deadline" role="tab" aria-selected="false">
+      <span class="mgr-tab-ic">⏰</span><span>締切・リマインド</span>
+    </button>
+    <button class="mgr-tab" onclick="switchMgrTab('survey')" data-tab="survey" role="tab" aria-selected="false">
+      <span class="mgr-tab-ic">📊</span><span>アンケート</span>
+    </button>
+    <button class="mgr-tab" onclick="switchMgrTab('all')" data-tab="all" role="tab" aria-selected="false" style="color:var(--slate-400);">
+      <span class="mgr-tab-ic">📋</span><span>全表示</span>
+    </button>
+  </nav>
+
   <!-- リアルタイム出退勤ウィジェット -->
-  <div id="rt-attendance-card" style="background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 4px 16px rgba(0,0,0,.04);">
+  <div id="rt-attendance-card" data-mgr-section="dashboard shifts" style="background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 4px 16px rgba(0,0,0,.04);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
       <div style="font-size:13px;font-weight:900;color:#0F172A;display:flex;align-items:center;gap:6px;" data-i18n="mgr.realtime_attendance">
         ⏰ 本日の出退勤（リアルタイム）
@@ -2641,8 +2727,8 @@
     </div>
   </div>
 
-  <!-- ─── Month Navigation ─── -->
-  <div class="month-nav-row">
+  <!-- ─── Month Navigation ─── (常時表示) -->
+  <div class="month-nav-row" data-mgr-section="dashboard shifts staff payroll deadline survey">
     <button class="month-nav-btn" onclick="changeViewMonth(-1)">‹ 前月</button>
     <div class="month-nav-center">
       <div class="month-nav-label" id="month-nav-label">2026年5月</div>
@@ -2653,7 +2739,7 @@
   </div>
 
   <!-- KPI stats -->
-  <div class="stats-row">
+  <div class="stats-row" data-mgr-section="dashboard">
     <div class="stat-card">
       <span class="stat-icon">👥</span>
       <div class="stat-num" id="stat-staff">0</div>
@@ -2674,7 +2760,7 @@
   <div class="screen-padded">
 
   <!-- Warn banner (unassigned slots) -->
-  <div id="warn-banner">
+  <div id="warn-banner" data-mgr-section="dashboard shifts">
     <div class="wb-icon">⚠️</div>
     <div class="wb-text" id="warn-text">人手不足の日程があります。</div>
     <div class="wb-buttons">
@@ -2684,7 +2770,7 @@
   </div>
 
   <!-- 内部募集ステータスカード -->
-  <div id="recruit-status-card">
+  <div id="recruit-status-card" data-mgr-section="dashboard shifts">
     <div class="rs-header">
       <span class="rs-badge">募集中</span>
       <span class="rs-close" onclick="closeRecruitStatus()">✕ 終了する</span>
@@ -2698,7 +2784,7 @@
   </div>
 
   <!-- 締切・リマインド -->
-  <div class="card" id="reminder-card">
+  <div class="card" id="reminder-card" data-mgr-section="deadline">
     <div class="section-title" style="margin-bottom:14px;">⏰ 締切・リマインド管理</div>
 
     <!-- 締切設定 -->
@@ -2787,7 +2873,7 @@
   </div>
 
   <!-- Submissions -->
-  <div class="card" id="submissions-card">
+  <div class="card" id="submissions-card" data-mgr-section="shifts">
     <div class="section-hdr">
       <div class="section-title">📥 提出一覧</div>
       <button class="btn-danger-ghost" onclick="clearAll()">リセット</button>
@@ -2798,7 +2884,7 @@
   </div>
 
   <!-- Staff Registry（登録メール一覧） -->
-  <div class="card" id="registry-card">
+  <div class="card" id="registry-card" data-mgr-section="staff">
     <div class="section-hdr">
       <div class="section-title">📇 スタッフ登録メール一覧</div>
       <button class="reg-refresh" onclick="loadRegistrySection()">🔄 更新</button>
@@ -2812,7 +2898,7 @@
   </div>
 
   <!-- ─── 売上管理 ─── -->
-  <div class="card" id="sales-card" style="margin-top:12px;">
+  <div class="card" id="sales-card" data-mgr-section="payroll" style="margin-top:12px;">
     <div class="section-hdr" style="margin-bottom:12px;">
       <div class="section-title">💰 売上管理</div>
       <span id="sales-month-badge" style="font-size:10px;font-weight:800;color:var(--indigo);background:var(--indigo-l);padding:3px 10px;border-radius:20px;">今月</span>
@@ -2840,7 +2926,7 @@
   </div>
 
   <!-- 💴 給与計算カード（深夜割増自動計算） -->
-  <div class="card" id="payroll-card" style="margin-top:12px;">
+  <div class="card" id="payroll-card" data-mgr-section="payroll" style="margin-top:12px;">
     <div class="section-hdr" style="margin-bottom:8px;">
       <div class="section-title">💴 給与計算</div>
       <span id="payroll-month-badge" style="font-size:10px;font-weight:800;color:var(--indigo);background:var(--indigo-l);padding:3px 10px;border-radius:20px;">今月</span>
@@ -2871,7 +2957,7 @@
 
   <!-- Staff Evaluation（管理者のみ） -->
   <!-- 旧スタッフ評価カードは削除。生成シフトの名前タップで評価する方式に変更 -->
-  <div class="card" id="staff-eval-card" style="margin-top:12px;display:none;">
+  <div class="card" id="staff-eval-card" data-mgr-section="staff" style="margin-top:12px;display:none;">
     <div id="staff-eval-list"></div>
   </div>
   <div style="background:linear-gradient(135deg,#EEF2FF,#FAF5FF);border:1.5px dashed #A5B4FC;border-radius:12px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--indigo);font-weight:700;line-height:1.7;">
@@ -2879,7 +2965,7 @@
   </div>
 
   <!-- Survey results (read-only) -->
-  <div class="card" id="survey-results-card" style="margin-top:12px;">
+  <div class="card" id="survey-results-card" data-mgr-section="survey" style="margin-top:12px;">
     <div class="section-hdr">
       <div class="section-title">⭐ アンケート結果</div>
       <span class="srv-readonly-badge">🔒 読み取り専用</span>
@@ -2890,7 +2976,7 @@
   </div>
 
   <!-- Shift rules (朝/昼/夜 下限〜上限) -->
-  <div class="card" id="rule-section">
+  <div class="card" id="rule-section" data-mgr-section="shifts">
     <div class="section-title" style="margin-bottom:4px;">⚙️ シフトルール</div>
     <div style="font-size:11px;color:var(--slate-400);margin-bottom:14px;">各時間帯の<strong>下限〜上限</strong>を設定してください。下限未達なら警告、上限超は要調整。</div>
 
@@ -3007,7 +3093,7 @@
   </div>
 
   <!-- Generated shift card -->
-  <div class="card" id="generated-card" style="display:none;">
+  <div class="card" id="generated-card" data-mgr-section="shifts" style="display:none;">
     <!-- Print-only header -->
     <div id="print-header" style="display:none;margin-bottom:16px;border-bottom:2px solid var(--slate-200);padding-bottom:12px;">
       <div style="font-size:18pt;font-weight:800;" id="print-title">シフト表</div>
@@ -3180,7 +3266,7 @@
     </div>
   </div>
 
-  <div class="card" id="adjustment-card" style="display:none;margin-top:12px;">
+  <div class="card" id="adjustment-card" data-mgr-section="shifts" style="display:none;margin-top:12px;">
     <div class="section-hdr" style="margin-bottom:6px;">
       <div class="section-title">📧 シフト調整依頼</div>
       <span id="adj-count-badge" style="font-size:10px;font-weight:800;color:var(--amber);background:var(--amber-l);padding:3px 10px;border-radius:20px;"></span>
@@ -4327,6 +4413,41 @@
   }
 
   /* ── Tabs ── */
+  /* ════════════════════════════════════════════
+   * SmartNews 風タブ切替 (シフト管理内のサブセクション)
+   ════════════════════════════════════════════ */
+  function switchMgrTab(tab) {
+    document.body.setAttribute('data-mgr-active', tab);
+    document.querySelectorAll('.mgr-tab').forEach(btn => {
+      const active = btn.dataset.tab === tab;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    /* 選択を記憶 */
+    try { localStorage.setItem('rakuraku-mgr-tab', tab); } catch(e) {}
+    /* スクロールトップへ (UXのため) */
+    const screen = document.getElementById('screen-manager');
+    if (screen) {
+      const tabsBar = document.querySelector('.mgr-tabs');
+      if (tabsBar) tabsBar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    /* 該当タブの動的レンダリングを再実行 */
+    if (tab === 'staff' && typeof renderStaffEval === 'function') { try { renderStaffEval(); } catch(e) {} }
+    if (tab === 'survey' && typeof loadSurveyResults === 'function') { try { loadSurveyResults(); } catch(e) {} }
+    if (tab === 'payroll' && typeof renderPayrollCard === 'function') { try { renderPayrollCard(); } catch(e) {} }
+  }
+  /* 初回ロード時に保存された選択を復元 (デフォルト: dashboard) */
+  document.addEventListener('DOMContentLoaded', function() {
+    let savedTab = 'dashboard';
+    try { savedTab = localStorage.getItem('rakuraku-mgr-tab') || 'dashboard'; } catch(e) {}
+    document.body.setAttribute('data-mgr-active', savedTab);
+    document.querySelectorAll('.mgr-tab').forEach(btn => {
+      const active = btn.dataset.tab === savedTab;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+  });
+
   function switchTab(tab) {
     // マネージャーはPIN認証が必要
     if (tab === 'manager' && !isManagerAuthed()) {

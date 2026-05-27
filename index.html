@@ -415,41 +415,96 @@
 <section id="pricing" class="pricing">
   <div class="container">
     <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;">PRICING</span>
-    <h2 class="section-title">シンプルな月額制</h2>
-    <p class="section-sub">店舗単位の定額制。スタッフ数・利用回数に関係なく、月額固定で安心。</p>
-    <div class="price-card">
-      <span class="price-badge">⭐ 全店舗共通プラン</span>
-      <div class="price-plan">スタンダード</div>
-      <div class="trial-banner">
-        <div class="trial-banner-title">🎁 まずは 14日間 無料でお試し</div>
-        <div class="trial-banner-sub">クレカ登録不要 ・ 自動課金なし ・ いつでも解約OK</div>
+    <h2 class="section-title">あなたの店舗に合うプランを</h2>
+    <p class="section-sub">月払い・年払いから選べる。年払いなら<strong style="color:var(--indigo);">2ヶ月分お得 + 限定特典</strong>。</p>
+
+    <!-- 2プラン並列表示 -->
+    <div style="display:grid;grid-template-columns:1fr 1.15fr;gap:18px;margin-top:30px;max-width:920px;margin-left:auto;margin-right:auto;">
+
+      <!-- 月払いプラン -->
+      <div class="price-card" style="margin:0;">
+        <span class="price-badge" style="background:var(--slate-100);color:var(--slate-700);">📅 月払いプラン</span>
+        <div class="price-plan">スタンダード (月払い)</div>
+        <div class="trial-banner">
+          <div class="trial-banner-title">🎁 14日間 無料でお試し</div>
+          <div class="trial-banner-sub">クレカ登録不要 ・ いつでも解約OK</div>
+        </div>
+        <div class="price-amount">
+          <span class="yen">¥</span>9,800<span class="per">/月（税込）</span>
+        </div>
+        <div class="price-tax">※ 初期費用 無料 / 縛りなし</div>
+        <ul class="price-features">
+          <li>スタッフ数 無制限</li>
+          <li>シフト自動生成・深夜割増</li>
+          <li>売上 × 人件費率 分析</li>
+          <li>スタッフ評価機能</li>
+          <li>3段階自動募集 (Timee代替)</li>
+          <li>多言語対応 (日/英/中/韓)</li>
+        </ul>
+        <a href="#" onclick="event.preventDefault();openSubModal('monthly');" class="btn-primary" style="width:100%;justify-content:center;background:var(--slate-600);">🎁 月払いで始める</a>
+        <div class="price-note">いつでも解約可能。違約金なし。</div>
       </div>
-      <div class="price-amount">
-        <span class="yen">¥</span>9,800<span class="per">/月（税込）</span>
-      </div>
-      <div class="price-tax">※ 初期費用 無料 / 契約期間の縛りなし</div>
-      <div class="price-annual">
-        <span class="price-annual-label">年払いなら</span>
-        <span class="price-annual-amount">¥98,000<span class="price-annual-per">/年</span><span class="price-annual-save">2ヶ月分お得</span></span>
-      </div>
-      <ul class="price-features">
-        <li>スタッフ数 無制限</li>
-        <li>シフト提出・自動生成 無制限</li>
-        <li>深夜割増・給与計算 込み</li>
-        <li>売上管理・人件費率分析</li>
-        <li>スタッフ評価機能</li>
-        <li>調整依頼メール送信機能</li>
-        <li>PWA対応（ホーム画面追加可）</li>
-        <li>月次バージョンアップ無料</li>
-      </ul>
-      <a href="#" onclick="event.preventDefault();openSubModal();" class="btn-primary" style="width:100%;justify-content:center;">🎁 14日間無料で始める</a>
-      <div class="price-note">
-        ※ 14日間の無料期間中はご請求が一切発生しません。<br>
-        ※ お申し込み後、専用URLとライセンスコードを即時メールでお送りします。<br>
-        ※ 期間終了後は月次自動引落（クレジットカード / 銀行振込対応）。<br>
-        ※ いつでも解約可能。違約金一切ありません。
+
+      <!-- 年払いプラン (推奨) -->
+      <div class="price-card" style="margin:0;border:3px solid var(--indigo);box-shadow:0 16px 60px rgba(79,70,229,.25);position:relative;background:linear-gradient(180deg,#fff,#FAFBFF);">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;padding:6px 18px;border-radius:18px;font-size:11px;font-weight:900;letter-spacing:.05em;box-shadow:0 4px 12px rgba(245,158,11,.4);white-space:nowrap;">🏆 一番選ばれている</div>
+        <span class="price-badge" style="background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;">⭐ 年払いプラン (おすすめ)</span>
+        <div class="price-plan" style="color:var(--indigo);">スタンダード (年払い)</div>
+        <div class="trial-banner" style="background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border:1.5px solid #FBBF24;">
+          <div class="trial-banner-title" style="color:#92400E;">🎁 14日間 無料 + 年払い特典</div>
+          <div class="trial-banner-sub" style="color:#78350F;">トライアル満了時に年払い選択で適用</div>
+        </div>
+        <div class="price-amount" style="color:var(--indigo);">
+          <span class="yen">¥</span>98,000<span class="per">/年（税込）</span>
+        </div>
+        <div style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;padding:10px 14px;border-radius:10px;text-align:center;font-weight:900;font-size:13px;margin:10px 0 14px;letter-spacing:.02em;">
+          💰 月換算 ¥8,167 — <strong>毎月 ¥1,633 お得</strong> (年¥19,600 = 2ヶ月分)
+        </div>
+        <div class="price-tax" style="color:var(--indigo);font-weight:700;">※ 1年契約 / 12ヶ月分一括払い</div>
+        <ul class="price-features">
+          <li><strong style="color:var(--indigo);">月払いの全機能 +</strong></li>
+          <li>🎁 <strong>2ヶ月分の料金がお得</strong> (年¥19,600節約)</li>
+          <li>🎁 <strong>初期セットアップ無料サポート</strong> (通常¥30,000)</li>
+          <li>🎁 <strong>優先メールサポート</strong> (24時間以内返信保証)</li>
+          <li>🎁 <strong>スタッフ向け説明会</strong> 1回 無料 (Zoom 30分)</li>
+          <li>🎁 <strong>機能要望 優先実装</strong> 投票で月1件</li>
+          <li>🎁 <strong>カスタムロゴ表示</strong> 給与明細PDFに自店ロゴ</li>
+        </ul>
+        <a href="#" onclick="event.preventDefault();openSubModal('annual');" class="btn-primary" style="width:100%;justify-content:center;background:linear-gradient(135deg,var(--indigo),var(--purple));font-size:15px;padding:14px;font-weight:900;">⭐ 年払いで始める (おすすめ)</a>
+        <div class="price-note">
+          ※ 14日間トライアル後、年払いを選択 → 自動で特典が適用<br>
+          ※ 中途解約時は残月数を月額換算で返金 (最大 ¥9,800/月)<br>
+          ※ 法人決済・銀行振込・請求書払い 対応
+        </div>
       </div>
     </div>
+
+    <!-- 年払い vs 月払い 比較 -->
+    <div style="max-width:920px;margin:40px auto 0;background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.04);">
+      <h3 style="font-size:16px;font-weight:900;margin-bottom:16px;text-align:center;">💡 年払いを選んだら、こんなにお得</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;font-size:12px;">
+        <div style="text-align:center;padding:18px;background:linear-gradient(135deg,#ECFDF5,#fff);border-radius:10px;border:1.5px solid #BBF7D0;">
+          <div style="font-size:28px;font-weight:900;color:#059669;letter-spacing:-.02em;">¥19,600</div>
+          <div style="font-size:11px;color:#047857;font-weight:800;margin-top:3px;">年間 節約額</div>
+          <div style="font-size:10px;color:#6B7280;margin-top:3px;">月払いだと年¥117,600 → 年払い¥98,000</div>
+        </div>
+        <div style="text-align:center;padding:18px;background:linear-gradient(135deg,#EEF2FF,#fff);border-radius:10px;border:1.5px solid #C7D2FE;">
+          <div style="font-size:28px;font-weight:900;color:var(--indigo);letter-spacing:-.02em;">¥30,000</div>
+          <div style="font-size:11px;color:#3730A3;font-weight:800;margin-top:3px;">セットアップ費用 無料</div>
+          <div style="font-size:10px;color:#6B7280;margin-top:3px;">通常¥30,000 → 年払いで無料</div>
+        </div>
+        <div style="text-align:center;padding:18px;background:linear-gradient(135deg,#FAF5FF,#fff);border-radius:10px;border:1.5px solid #E9D5FF;">
+          <div style="font-size:28px;font-weight:900;color:var(--purple);letter-spacing:-.02em;">¥49,600</div>
+          <div style="font-size:11px;color:#6B21A8;font-weight:800;margin-top:3px;">初年度 合計お得額</div>
+          <div style="font-size:10px;color:#6B7280;margin-top:3px;">節約 + 特典 = 約5ヶ月分</div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--slate-500);text-align:center;margin-top:14px;line-height:1.7;">
+        🎯 月¥9,800の節約 = スタッフ1人 約8時間分の人件費。<br>
+        浮いたお金で <strong>新人研修</strong> や <strong>店舗備品</strong> に投資できます。
+      </p>
+    </div>
+
   </div>
 </section>
 
@@ -723,8 +778,8 @@
         <input type="tel" id="sub-phone" placeholder="サポート連絡用" autocomplete="tel" />
       </label>
       <div class="sub-plan-toggle">
-        <label class="sub-plan-opt"><input type="radio" name="sub-plan" value="monthly" checked /><span>月払い<br>¥9,800/月</span></label>
-        <label class="sub-plan-opt"><input type="radio" name="sub-plan" value="annual" /><span>年払い ¥98,000<br><em>2ヶ月分お得</em></span></label>
+        <label class="sub-plan-opt"><input type="radio" name="sub-plan" value="monthly" /><span>月払い<br>¥9,800/月</span></label>
+        <label class="sub-plan-opt" style="border-color:var(--indigo);background:linear-gradient(135deg,#EEF2FF,#FAF5FF);position:relative;"><input type="radio" name="sub-plan" value="annual" checked /><span style="color:var(--indigo);">⭐ 年払い ¥98,000<br><em style="color:var(--emerald);">2ヶ月分お得+特典5つ</em></span><span style="position:absolute;top:-8px;right:-6px;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;font-size:8px;font-weight:900;padding:2px 7px;border-radius:8px;">人気</span></label>
       </div>
       <button type="submit" class="sub-submit" id="sub-submit-btn">🎁 次へ進む（Stripe決済ページへ）</button>
       <p class="sub-fine">送信後、Stripeの安全な決済ページが開きます。<br>クレカ情報入力後、14日間は一切ご請求が発生しません。</p>
@@ -759,9 +814,17 @@
   });
 
   /* ─── Subscribe Modal ─── */
-  function openSubModal() {
+  function openSubModal(preselectPlan) {
     document.getElementById('sub-modal').classList.add('show');
     document.body.style.overflow = 'hidden';
+    /* 年/月払いを事前選択 */
+    if (preselectPlan === 'annual') {
+      var annualRadio = document.querySelector('input[name="sub-plan"][value="annual"]');
+      if (annualRadio) annualRadio.checked = true;
+    } else if (preselectPlan === 'monthly') {
+      var monthlyRadio = document.querySelector('input[name="sub-plan"][value="monthly"]');
+      if (monthlyRadio) monthlyRadio.checked = true;
+    }
     setTimeout(function(){ document.getElementById('sub-shop').focus(); }, 80);
   }
   function closeSubModal() {
