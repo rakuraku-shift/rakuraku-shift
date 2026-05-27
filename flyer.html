@@ -139,7 +139,7 @@
 <!-- ════════ TOOLBAR（画面のみ） ════════ -->
 <div class="toolbar">
   <h1>📄 RAKURAKU 営業チラシ — A4両面印刷用</h1>
-  <label>QR配信URL: <input type="text" id="url-input" value="https://rakuraku.app" onchange="updateQR()"></label>
+  <label>QR配信URL: <input type="text" id="url-input" value="https://rakuraku-shift-production.up.railway.app" onchange="updateQR()"></label>
   <button onclick="window.print()">🖨️ 印刷 / PDF保存</button>
   <span class="hint">Cmd+P → 「両面印刷」設定推奨 / 余白「なし」 / カラー印刷</span>
 </div>
@@ -205,14 +205,14 @@
       <div class="trial-cta-sub">クレカ登録不要 ・ 自動課金なし<br>いつでも解約OK ・ 違約金なし</div>
     </div>
     <div class="trial-cta-qr">
-      <img class="qr-img" src="" alt="QR" />
+      <img class="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=0&color=4F46E5&data=https%3A%2F%2Frakuraku-shift-production.up.railway.app" alt="QRコード" onerror="this.style.background='#EEF2FF';this.style.display='flex';this.alt='QR読込失敗 - インターネット接続確認';" />
       <div class="trial-cta-qr-lbl">スマホでスキャン<br>↑ いますぐ申込</div>
     </div>
   </div>
 
   <div class="front-footer">
     <div>📨 <span class="ff-contact">koizumishota0323@gmail.com</span></div>
-    <div>🌐 <span class="ff-url" id="url-display-front">rakuraku.app</span></div>
+    <div>🌐 <span class="ff-url" id="url-display-front">rakuraku-shift-production.up.railway.app</span></div>
   </div>
 </div>
 
@@ -305,11 +305,11 @@
       <div class="bf-cta">🎁 いますぐ 14日間 無料で試す</div>
       <div class="bf-contact">
         <div><span class="ic">📨</span>koizumishota0323@gmail.com</div>
-        <div><span class="ic">🌐</span><span id="url-display-back">rakuraku.app</span></div>
+        <div><span class="ic">🌐</span><span id="url-display-back">rakuraku-shift-production.up.railway.app</span></div>
       </div>
     </div>
     <div class="bf-right">
-      <img class="qr-img" src="" alt="QR" />
+      <img class="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=0&color=4F46E5&data=https%3A%2F%2Frakuraku-shift-production.up.railway.app" alt="QRコード" onerror="this.style.background='#EEF2FF';this.style.display='flex';this.alt='QR読込失敗 - インターネット接続確認';" />
       <div class="bf-right-lbl">スマホでスキャン</div>
     </div>
   </div>
@@ -317,12 +317,16 @@
 
 <script>
   /* QR コード生成（qrserver.com API 経由） */
+  const DEFAULT_URL = 'https://rakuraku-shift-production.up.railway.app';
   function updateQR() {
-    const url = document.getElementById('url-input').value.trim() || 'https://rakuraku.app';
-    const qrFront = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}&margin=0&color=4F46E5`;
-    document.querySelectorAll('.qr-img').forEach(img => { img.src = qrFront; });
-    document.getElementById('url-display-front').textContent = url.replace(/^https?:\/\//, '');
-    document.getElementById('url-display-back').textContent  = url.replace(/^https?:\/\//, '');
+    const url = (document.getElementById('url-input').value || '').trim() || DEFAULT_URL;
+    const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=0&color=4F46E5&data=${encodeURIComponent(url)}`;
+    document.querySelectorAll('.qr-img').forEach(img => { img.src = qrSrc; });
+    const display = url.replace(/^https?:\/\//, '');
+    const fEl = document.getElementById('url-display-front');
+    const bEl = document.getElementById('url-display-back');
+    if (fEl) fEl.textContent = display;
+    if (bEl) bEl.textContent = display;
   }
 
   /* URL パラメータから初期 URL を取得（?url=https://... で指定可能） */
