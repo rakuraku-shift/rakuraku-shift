@@ -111,14 +111,14 @@
 
 <div class="grid">
   <div class="stat-card">
-    <div class="label">直近 24時間 稼働率</div>
-    <div class="value green" id="uptime-24h">100.000%</div>
-    <div class="sub">SLA 99.9% 目標</div>
+    <div class="label">稼働開始から</div>
+    <div class="value green" id="uptime-since">— 日</div>
+    <div class="sub">サーバー起動からの経過時間</div>
   </div>
   <div class="stat-card">
-    <div class="label">直近 30日 稼働率</div>
-    <div class="value green" id="uptime-30d">99.95%</div>
-    <div class="sub">月間 SLA 達成中</div>
+    <div class="label">本セッション稼働率</div>
+    <div class="value green" id="uptime-session">100.0%</div>
+    <div class="sub">ブラウザ計測 (実測値)</div>
   </div>
   <div class="stat-card">
     <div class="label">平均応答時間</div>
@@ -128,20 +128,12 @@
 </div>
 
 <div class="card">
-  <h2>🔍 各サービスの状態</h2>
+  <h2>🔍 各サービスの状態 (リアルタイム)</h2>
   <div id="services"></div>
-</div>
-
-<div class="card">
-  <h2>📊 直近 90日の稼働状況</h2>
-  <div style="font-size:11px;color:var(--slate-500);margin-bottom:8px;font-weight:700;">本日まで (右側が今日)</div>
-  <div class="uptime-bar" id="uptime-bar"></div>
-  <div class="uptime-meta">
-    <span>90日前</span>
-    <span>60日前</span>
-    <span>30日前</span>
-    <span>今日</span>
-  </div>
+  <p style="font-size:10px;color:var(--slate-500);margin-top:14px;line-height:1.7;font-weight:600;">
+    ※ 60秒ごとに自動チェック。本ページを開いている間の実測値のみ表示します。<br>
+    ※ 障害発生時はメール通知 (下記より購読可能)。
+  </p>
 </div>
 
 <div class="card">
@@ -251,31 +243,18 @@ function renderHistoryStats() {
   try {
     const history = JSON.parse(localStorage.getItem('rakuraku-status-history') || '[]');
     if (!history.length) return;
-    /* 24時間以内 = ms 24*3600*1000 */
-    const now = Date.now();
-    const recent24h = history.filter(h => (now - h.ts) < 86400000);
-    if (recent24h.length > 0) {
-      const upCount = recent24h.filter(h => h.up).length;
-      const pct = (upCount / recent24h.length * 100).toFixed(3);
-      document.getElementById('uptime-24h').textContent = pct + '%';
-    }
+    const upCount = history.filter(h => h.up).length;
+    const pct = (upCount / history.length * 100).toFixed(1);
+    document.getElementById('uptime-session').textContent = pct + '%';
   } catch(e) {}
-}
-
-function renderUptimeBar() {
-  /* 90日分の擬似履歴 (実装は localStorage + サーバーログ統合が理想) */
-  const bar = document.getElementById('uptime-bar');
-  bar.innerHTML = '';
-  const today = new Date();
-  for (let i = 89; i >= 0; i--) {
-    const cell = document.createElement('div');
-    cell.className = 'uptime-cell';
-    /* 仮: 100% up と表示 */
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    cell.title = d.toLocaleDateString('ja-JP') + ' — 正常稼働 100%';
-    bar.appendChild(cell);
-  }
+  /* サーバー稼働時間取得 */
+  fetch('/health').then(r => r.json()).then(d => {
+    if (d.uptime) {
+      const days = Math.floor(d.uptime / 86400);
+      const hours = Math.floor((d.uptime % 86400) / 3600);
+      document.getElementById('uptime-since').textContent = days > 0 ? `${days}日 ${hours}h` : `${hours}h`;
+    }
+  }).catch(()=>{});
 }
 
 function renderIncidents() {
@@ -322,7 +301,6 @@ function escapeHtml(s) {
 
 document.addEventListener('DOMContentLoaded', () => {
   refresh();
-  renderUptimeBar();
   renderIncidents();
   renderHistoryStats();
   /* 60秒ごとに自動更新 */

@@ -221,7 +221,7 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
         <h3 style="color:#0F172A;margin-top:32px;font-size:16px;">🚀 今日やる3つのこと</h3>
         <ol style="font-size:13px;line-height:2;padding-left:20px;">
           <li><a href="${baseUrl}/master-data.html?shop=${encodeURIComponent(shopId || '')}" style="color:#4F46E5;">マスタデータ設定</a> (時給/時間帯)</li>
-          <li><a href="${baseUrl}/tutorial.html" style="color:#4F46E5;">動画チュートリアル 1本目を視聴</a> (3分)</li>
+          <li><a href="${baseUrl}/getting-started.html" style="color:#4F46E5;">3分セットアップガイドを読む</a></li>
           <li>スタッフに上記QRを LINE で配布</li>
         </ol>
 
@@ -354,8 +354,8 @@ const ONBOARDING_EMAILS = [
               → <a href="${base}/master-data.html${sp}" style="color:#4F46E5;">マスタ管理を開く</a></li>
           <li><strong>スタッフを5名登録</strong> (5分) — QRコードを LINE で共有<br>
               → <a href="${base}/shift.html${sp}" style="color:#4F46E5;">シフト画面で QR 生成</a></li>
-          <li><strong>動画チュートリアル 1本目を視聴</strong> (3分) — セットアップの完成形を確認<br>
-              → <a href="${base}/tutorial.html" style="color:#4F46E5;">動画を見る</a></li>
+          <li><strong>3分セットアップガイドを読む</strong> — 画面ごとの操作手順<br>
+              → <a href="${base}/getting-started.html" style="color:#4F46E5;">ガイドを開く</a></li>
         </ol>
         <p style="margin-top:24px;">何か不明点があれば、このメールに返信するだけで私 (小泉) に直接届きます。</p>
         <p style="color:#64748B;font-size:12px;margin-top:24px;">— 小泉 咲太 / 📞 080-5168-3303</p>
@@ -381,7 +381,7 @@ const ONBOARDING_EMAILS = [
           💡 <strong>5名のスタッフが提出すると</strong>、自動シフト生成が体感できます。<br>
           まずは 1サイクル試して効果を実感してみてください。
         </p>
-        <p>📺 <a href="https://rakuraku-shift-production.up.railway.app/tutorial.html" style="color:#4F46E5;">動画チュートリアル 全5本</a></p>
+        <p>❓ <a href="https://rakuraku-shift-production.up.railway.app/help.html" style="color:#4F46E5;">FAQ・ヘルプ</a></p>
         <p style="color:#64748B;font-size:12px;margin-top:24px;">困った時は: <a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a></p>
       </div>
     `,

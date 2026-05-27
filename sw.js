@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v5 — スケール準備ページ追加 */
-var CACHE = 'rakuraku-v5';
+/* RAKURAKU Service Worker v6 — 正直版 (フィクションページ削除) */
+var CACHE = 'rakuraku-v6';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -12,13 +12,11 @@ var ASSETS = [
   '/hq-dashboard.html',
   '/demo-reservation.html',
   '/referral.html',
-  '/case-studies.html',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',
   '/i18n.js',
   '/offline-sync.js',
-  '/blog.html',
   '/notification-settings.html',
   '/sales-import.html',
   '/announcements.html',
@@ -26,7 +24,6 @@ var ASSETS = [
   '/data-export.html',
   '/careers.html',
   '/help-widget.js',
-  '/tutorial.html',
   '/roadmap.html',
   '/status.html',
   '/churn-survey.html'
