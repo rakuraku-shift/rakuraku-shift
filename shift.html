@@ -8166,45 +8166,50 @@ BAR EXCHANGEのシフト担当です。
     } catch(e) {}
   })();
 
-  /* ── Demo seed（提出データが空のときだけ川北サンプルを注入） ── */
-  (function seedDemoData() {
+  /* ── Demo seed は削除済み (本番運用時はデフォルトで空) ──
+   * 過去にデモデータが入っている店舗は localStorage をクリア:
+   * デモデータ自動クリア (shop=demo-shop 以外はクリア)
+   */
+  (function clearDemoData() {
     try {
+      var shopId = getShopId();
+      /* shop=demo-shop の時だけデモを残す (営業デモ用) */
+      if (shopId === 'demo-shop') return;
+      /* それ以外の店舗で「過去のデモデータ」が残っていれば削除 */
       var existing = JSON.parse(storageGet(_sk('shift_submissions')) || '[]');
-      if (existing.length > 0) return; // already have data
+      var demoNames = ['古関','はるか','おうすけ','じゅな','みなみ','松本ゆうき','いづみ','なつき','おとは','ののか','しゅうへい','あいり'];
+      var filtered = existing.filter(function(e) { return e && e.name && demoNames.indexOf(e.name) < 0; });
+      if (filtered.length !== existing.length) {
+        saveState(filtered);
+        console.log('[init] デモデータ ' + (existing.length - filtered.length) + ' 件を自動削除');
+      }
     } catch(e) {}
+  })();
 
-    var shopId = getShopId();
-    var at     = new Date().toISOString();
+  /* ── デモシード (営業時のデモ表示用: shop=demo-shop のみ) ── */
+  (function seedDemoForDemoShop() {
+    try {
+      if (getShopId() !== 'demo-shop') return; /* デモ専用URLでのみ実行 */
+      var existing = JSON.parse(storageGet(_sk('shift_submissions')) || '[]');
+      if (existing.length > 0) return; /* 既にデータあり */
 
-    var DEMO = [
-      { name:'古関',      role:'kitchen', dates:['2026-06-01','2026-06-03','2026-06-04','2026-06-05','2026-06-06','2026-06-07'], customTimes:['17:00〜23:00'] },
-      { name:'はるか',    role:'hall',    dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-05'],                            customTimes:['9:00〜15:00']  },
-      { name:'おうすけ',  role:'kitchen', dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-06','2026-06-07'], customTimes:['11:00〜17:00'] },
-      { name:'じゅな',    role:'hall',    dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-05','2026-06-06','2026-06-07'], customTimes:['9:00〜16:00'] },
-      { name:'みなみ',    role:'hall',    dates:['2026-06-03','2026-06-04','2026-06-05','2026-06-06','2026-06-07'],               customTimes:['16:00〜23:00'] },
-      { name:'松本ゆうき',role:'kitchen', dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-06','2026-06-07'],               customTimes:['16:00〜23:00'] },
-      { name:'いづみ',    role:'cashier', dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-05','2026-06-06'], customTimes:['9:00〜17:00']  },
-      { name:'なつき',    role:'hall',    dates:['2026-06-01','2026-06-03','2026-06-04','2026-06-05','2026-06-07'],               customTimes:['15:00〜23:00'] },
-      { name:'おとは',    role:'hall',    dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-05','2026-06-06','2026-06-07'], customTimes:['9:00〜14:00'] },
-      { name:'ののか',    role:'hall',    dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-05','2026-06-06'], customTimes:['17:00〜23:00'] },
-      { name:'しゅうへい',role:'kitchen', dates:['2026-06-01','2026-06-02','2026-06-04','2026-06-05','2026-06-07'],               customTimes:['18:00〜23:00'] },
-      { name:'あいり',    role:'hall',    dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-06','2026-06-07'], customTimes:['18:30〜23:00'] },
-    ];
-
-    var entries = DEMO.map(function(d) {
-      return { name:d.name, role:d.role, email:'', dates:d.dates, times:[], customTimes:d.customTimes, submittedAt:at, shopId:shopId };
-    });
-
-    saveState(entries);
-
-    // シフトルール（朝2・昼3・夜5）も初期設定
-    if (!storageGet(_sk('noru_time_rules'))) {
-      saveTimeRules({
-        morning: { min:2, max:4 },
-        lunch:   { min:3, max:5 },
-        evening: { min:5, max:8 }
+      var at = new Date().toISOString();
+      var DEMO = [
+        { name:'スタッフA', role:'kitchen', dates:['2026-06-01','2026-06-03','2026-06-04','2026-06-05','2026-06-06','2026-06-07'], customTimes:['17:00〜23:00'] },
+        { name:'スタッフB', role:'hall',    dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-05'],                            customTimes:['9:00〜15:00']  },
+        { name:'スタッフC', role:'kitchen', dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-06','2026-06-07'], customTimes:['11:00〜17:00'] },
+        { name:'スタッフD', role:'hall',    dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-05','2026-06-06','2026-06-07'], customTimes:['9:00〜16:00'] },
+        { name:'スタッフE', role:'hall',    dates:['2026-06-03','2026-06-04','2026-06-05','2026-06-06','2026-06-07'],               customTimes:['16:00〜23:00'] },
+        { name:'スタッフF', role:'cashier', dates:['2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-05','2026-06-06'], customTimes:['9:00〜17:00']  },
+      ];
+      var entries = DEMO.map(function(d) {
+        return { name:d.name, role:d.role, email:'', dates:d.dates, times:[], customTimes:d.customTimes, submittedAt:at, shopId:'demo-shop' };
       });
-    }
+      saveState(entries);
+      if (!storageGet(_sk('noru_time_rules'))) {
+        saveTimeRules({ morning:{min:2,max:4}, lunch:{min:3,max:5}, evening:{min:5,max:8} });
+      }
+    } catch(e) {}
   })();
 
   /* ── Init ── */
