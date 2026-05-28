@@ -1102,9 +1102,10 @@
 </div>
 
 <!-- ════════ COOKIE CONSENT BANNER ════════ -->
-<div class="cookie-banner" id="cookie-banner">
+<div class="cookie-banner" id="cookie-banner" role="region" aria-label="Cookie 同意">
   <div class="cookie-banner-text">🍪 当サイトは、サービス品質向上のため Cookie を使用します。利用を続けることで <a href="#" onclick="event.preventDefault();openOverlay('privacy');">プライバシーポリシー</a> に同意したものとみなします。</div>
-  <button class="cookie-banner-btn" onclick="acceptCookies()">同意</button>
+  <button class="cookie-banner-btn" onclick="acceptCookies()" aria-label="Cookieに同意">同意</button>
+  <button onclick="acceptCookies(true)" aria-label="Cookieを拒否" style="padding:8px 14px;background:transparent;color:#94A3B8;border:1.5px solid #475569;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">拒否</button>
 </div>
 
 <!-- ════════ Subscribe Modal ════════ -->
@@ -1149,14 +1150,14 @@
 </div>
 
 <script>
-  /* Cookie 同意 */
-  function acceptCookies() {
-    try { localStorage.setItem('rakuraku_cookie_accepted', '1'); } catch(e) {}
+  /* Cookie 同意 (accept = '1', decline = '0') */
+  function acceptCookies(decline) {
+    try { localStorage.setItem('rakuraku_cookie_accepted', decline ? '0' : '1'); } catch(e) {}
     document.getElementById('cookie-banner').classList.remove('show');
   }
   (function showCookieBanner(){
     try {
-      if (!localStorage.getItem('rakuraku_cookie_accepted')) {
+      if (localStorage.getItem('rakuraku_cookie_accepted') == null) {
         setTimeout(function(){ document.getElementById('cookie-banner').classList.add('show'); }, 1200);
       }
     } catch(e) {}
