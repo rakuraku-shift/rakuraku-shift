@@ -19,7 +19,7 @@ Disallow: /payment-success.html
 Disallow: /worker-dashboard.html
 Disallow: /admin-settings.html
 
-# 旧プロジェクト残骸
+# 旧プロジェクト残骸 (顧客非公開)
 Disallow: /order.html
 Disallow: /kitchen.html
 Disallow: /pos.html
@@ -28,6 +28,6 @@ Disallow: /customer.html
 Disallow: /table-qr.html
 Disallow: /tables.html
 Disallow: /gacha.html
-Disallow: /demo.html
+# 注: /demo.html は機能デモとして公開中なので Allow
 
 Sitemap: https://rakuraku-shift-production.up.railway.app/sitemap.xml
