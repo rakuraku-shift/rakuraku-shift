@@ -13,32 +13,107 @@ const stripe = process.env.STRIPE_SECRET_KEY
   ? require('stripe')(process.env.STRIPE_SECRET_KEY)
   : null;
 
-// ── Nodemailer (optional — requires EMAIL_USER in .env) ──
+// ── メール送信: Resend API (HTTPS) を優先・Nodemailer (SMTP) をフォールバック ──
+// Railway 等のクラウド環境では SMTP がブロックされることがあるため、HTTPS API 優先
+const _httpsModule = require('https');
+const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
+const RESEND_FROM = process.env.RESEND_FROM || 'RAKURAKU <onboarding@resend.dev>'; // 検証済みドメインがあれば変更
+
 const nodemailer = process.env.EMAIL_USER ? require('nodemailer') : null;
 const _smtpPort = parseInt(process.env.SMTP_PORT || '465');
-const emailTransporter = nodemailer
+const _smtpTransporter = nodemailer
   ? nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: _smtpPort,
-      secure: (_smtpPort === 465),  // 465 = SSL, 587 = STARTTLS
+      secure: (_smtpPort === 465),
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-      /* Railway 等のクラウド環境向け接続パラメータ */
-      connectionTimeout: 30000,    // 30秒 (デフォルト10秒は短すぎる)
-      greetingTimeout:   30000,
-      socketTimeout:     60000,
-      pool: true,                  // コネクションプーリング有効
-      maxConnections: 3,
-      maxMessages: 100,
-      tls: {
-        rejectUnauthorized: false, // Railway の証明書チェーン問題回避
-      },
+      connectionTimeout: 15000,
+      greetingTimeout:   15000,
+      socketTimeout:     30000,
+      tls: { rejectUnauthorized: false },
     })
   : null;
+
+/* Resend API でメール送信 (HTTPS・Railway で確実に動く) */
+function sendViaResend({ to, subject, html, text }) {
+  return new Promise((resolve, reject) => {
+    if (!RESEND_API_KEY) return reject(new Error('RESEND_API_KEY 未設定'));
+    const body = JSON.stringify({
+      from: RESEND_FROM,
+      to: Array.isArray(to) ? to : [to],
+      subject,
+      html: html || undefined,
+      text: text || undefined,
+    });
+    const req = _httpsModule.request({
+      hostname: 'api.resend.com',
+      path: '/emails',
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + RESEND_API_KEY,
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(body),
+      },
+    }, (response) => {
+      let buf = '';
+      response.on('data', c => buf += c);
+      response.on('end', () => {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          resolve(JSON.parse(buf));
+        } else {
+          reject(new Error(`Resend ${response.statusCode}: ${buf}`));
+        }
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+}
+
+/* 統一メール送信 API: Resend → SMTP の順でフォールバック */
+const emailTransporter = (RESEND_API_KEY || _smtpTransporter) ? {
+  async sendMail({ from, to, subject, html, text }) {
+    /* Resend 優先 */
+    if (RESEND_API_KEY) {
+      try {
+        const r = await sendViaResend({ to, subject, html, text });
+        console.log(`[email] Resend 送信成功 → ${to} (id: ${r.id})`);
+        return r;
+      } catch (e) {
+        console.warn(`[email] Resend失敗 → SMTPに切替: ${e.message}`);
+      }
+    }
+    /* SMTP フォールバック */
+    if (_smtpTransporter) {
+      const r = await _smtpTransporter.sendMail({
+        from: from || process.env.EMAIL_USER,
+        to, subject, html, text,
+      });
+      console.log(`[email] SMTP 送信成功 → ${to}`);
+      return r;
+    }
+    throw new Error('メール送信手段がありません (RESEND_API_KEY または EMAIL_USER 必要)');
+  },
+  async verify() {
+    if (RESEND_API_KEY) {
+      /* Resend は実送信せず疎通確認用 endpoint なし → 軽量チェック */
+      return Promise.resolve(true);
+    }
+    return _smtpTransporter ? _smtpTransporter.verify() : Promise.reject(new Error('未設定'));
+  }
+} : null;
+
 if (emailTransporter) {
-  console.log(`[email] Nodemailer 設定: ${process.env.SMTP_HOST || 'smtp.gmail.com'}:${_smtpPort} (secure=${_smtpPort === 465})`);
+  if (RESEND_API_KEY) {
+    console.log(`[email] Resend API 優先 (from: ${RESEND_FROM})`);
+    if (_smtpTransporter) console.log(`[email] SMTP フォールバック: ${process.env.SMTP_HOST || 'smtp.gmail.com'}:${_smtpPort}`);
+  } else {
+    console.log(`[email] SMTP のみ: ${process.env.SMTP_HOST || 'smtp.gmail.com'}:${_smtpPort}`);
+  }
 }
 
 // In-memory checkout sessions: sessionId → { tableNo, orders, total, stripeUrl, status, createdAt }
@@ -1320,9 +1395,12 @@ app.get('/api/email/diagnose', async (req, res) => {
   const result = {
     timestamp: new Date().toISOString(),
     emailConfigured: !!emailTransporter,
+    resendEnabled: !!RESEND_API_KEY,
+    resendFrom: RESEND_API_KEY ? RESEND_FROM : null,
+    smtpEnabled: !!_smtpTransporter,
     emailUser: process.env.EMAIL_USER ? process.env.EMAIL_USER.replace(/(.{3}).+(@.+)/, '$1***$2') : null,
     smtpHost: process.env.SMTP_HOST || 'smtp.gmail.com',
-    smtpPort: process.env.SMTP_PORT || '587',
+    smtpPort: process.env.SMTP_PORT || '465',
     recentSubscriptions: [],
     advice: [],
   };
