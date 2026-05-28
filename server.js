@@ -1299,6 +1299,107 @@ app.get('/api/stripe/diagnose', (req, res) => {
   }
 });
 
+/* ════════════════════════════════════════════
+ * 🩺 メール & Webhook 診断エンドポイント
+ ════════════════════════════════════════════ */
+app.get('/api/email/diagnose', async (req, res) => {
+  const result = {
+    timestamp: new Date().toISOString(),
+    emailConfigured: !!emailTransporter,
+    emailUser: process.env.EMAIL_USER ? process.env.EMAIL_USER.replace(/(.{3}).+(@.+)/, '$1***$2') : null,
+    smtpHost: process.env.SMTP_HOST || 'smtp.gmail.com',
+    smtpPort: process.env.SMTP_PORT || '587',
+    recentSubscriptions: [],
+    advice: [],
+  };
+
+  if (!emailTransporter) {
+    result.advice.push('❌ EMAIL_USER または EMAIL_PASS が未設定');
+    return res.json(result);
+  }
+
+  /* 直近のサブスク作成履歴 */
+  try {
+    const subs = readJSON(SUBSCRIPTIONS_FILE, []);
+    result.recentSubscriptions = subs.slice(-5).map(s => ({
+      shopName: s.shopName,
+      email: s.email ? s.email.replace(/(.{3}).+(@.+)/, '$1***$2') : null,
+      shopId: s.shopId,
+      status: s.status,
+      createdAt: s.createdAt,
+    }));
+  } catch(e) {}
+
+  /* SMTP 接続テスト */
+  try {
+    await emailTransporter.verify();
+    result.smtpConnectionTest = '✅ SMTP 接続OK';
+  } catch(e) {
+    result.smtpConnectionTest = '❌ ' + e.message;
+    if (e.message.includes('Invalid login')) {
+      result.advice.push('❌ Gmail App Password が間違っています (16文字の半角英数字のみ)');
+    }
+    if (e.message.includes('Less secure')) {
+      result.advice.push('❌ Gmail の「安全性の低いアプリ」アクセスが必要 → 代わりに App Password を使用');
+    }
+  }
+
+  /* テストメール送信エンドポイント (GET ?send=true&to=test@example.com) */
+  if (req.query.send === 'true' && req.query.to) {
+    const to = req.query.to;
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to,
+        subject: '[RAKURAKU] 📧 メール送信テスト',
+        html: `<h2>✅ メール送信成功</h2><p>このメールが届けば、RAKURAKU のメール送信機能は正常です。</p><p>送信時刻: ${new Date().toLocaleString('ja-JP')}</p>`,
+      });
+      result.testEmailSent = `✅ ${to} にテストメール送信成功`;
+    } catch(e) {
+      result.testEmailSent = `❌ 送信失敗: ${e.message}`;
+    }
+  } else {
+    result.howToTest = `テストメール送信: /api/email/diagnose?send=true&to=あなたのメール`;
+  }
+
+  res.json(result);
+});
+
+/* Stripe Webhook 受信履歴を確認 */
+app.get('/api/webhook/diagnose', (req, res) => {
+  const result = {
+    timestamp: new Date().toISOString(),
+    webhookSecretConfigured: !!process.env.STRIPE_WEBHOOK_SECRET,
+    webhookSecretLength: (process.env.STRIPE_WEBHOOK_SECRET || '').length,
+    expectedEndpoint: (process.env.BASE_URL || 'https://rakuraku-shift-production.up.railway.app') + '/webhook/stripe',
+    recentSubscriptions: [],
+    advice: [],
+  };
+  try {
+    const subs = readJSON(SUBSCRIPTIONS_FILE, []);
+    result.totalSubscriptions = subs.length;
+    result.recentSubscriptions = subs.slice(-3).map(s => ({
+      shopName: s.shopName,
+      shopId: s.shopId,
+      status: s.status,
+      createdAt: s.createdAt,
+      hasShopId: !!s.shopId,
+    }));
+    if (subs.length === 0) {
+      result.advice.push('⚠ サブスク作成履歴ゼロ — Webhook が一度も発火していない可能性');
+      result.advice.push('💡 Stripe ダッシュボード → Webhooks → 該当エンドポイント → 「最近のイベント」で配信ログを確認');
+    }
+  } catch(e) {}
+
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    result.advice.push('❌ STRIPE_WEBHOOK_SECRET が未設定');
+  } else if ((process.env.STRIPE_WEBHOOK_SECRET || '').length < 50) {
+    result.advice.push('⚠ STRIPE_WEBHOOK_SECRET が短すぎる (正しくは whsec_ で始まる60文字以上)');
+  }
+
+  res.json(result);
+});
+
 // ── RAKURAKU サブスクリプション API ────────────
 app.post('/api/subscribe/create', async (req, res) => {
   if (!stripe) return res.status(503).json({ error: 'Stripe is not configured. Set STRIPE_SECRET_KEY in .env' });
