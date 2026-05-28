@@ -198,7 +198,18 @@
       const res = await fetch('/api/shop/' + encodeURIComponent(SHOP_ID) + '/snapshot');
       if (!res.ok) return;
       const data = await res.json();
-      try { _shiftMaster = JSON.parse(data['shift_master'] || '{}'); } catch(e) { _shiftMaster = {}; }
+      /* 新キー (確定シフト) を優先、旧キー shift_master はフォールバック */
+      let parsed = null;
+      try { parsed = JSON.parse(data['confirmed_shifts'] || 'null'); } catch(e) { parsed = null; }
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        _shiftMaster = parsed;
+      } else {
+        try {
+          const legacy = JSON.parse(data['shift_master'] || '{}');
+          /* shift_master が配列 (スタッフ名簿) の場合はシフト表ではないので空とみなす */
+          _shiftMaster = (legacy && typeof legacy === 'object' && !Array.isArray(legacy)) ? legacy : {};
+        } catch(e) { _shiftMaster = {}; }
+      }
     } catch(e) {}
   }
   async function loadChangeRequests() {
@@ -383,7 +394,10 @@
     socket.on('connect', () => socket.emit('shop_join', { shopId: SHOP_ID }));
     socket.on('shop_data_updated', async (payload) => {
       if (payload.shopId !== SHOP_ID) return;
-      if (payload.key === 'shift_master') { await loadShiftData(); render(); showToast('📡 シフトが更新されました'); }
+      if (payload.key === 'confirmed_shifts' || payload.key === 'shift_master') {
+        await loadShiftData(); render();
+        showToast('📡 シフトが更新されました');
+      }
     });
     socket.on('change_request_updated', async (payload) => {
       if (payload.shopId !== SHOP_ID) return;

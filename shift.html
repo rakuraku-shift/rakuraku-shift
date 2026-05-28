@@ -3165,8 +3165,8 @@
   <!-- Sticky print bar -->
   <div id="print-bar">
     <div>
-      <div class="pb-label">📆 シフト表が生成されました</div>
-      <div class="pb-sub" id="print-bar-sub">印刷・全員通知できます</div>
+      <div class="pb-label">📆 シフトを確定 → スタッフへ公開済</div>
+      <div class="pb-sub" id="print-bar-sub">マイシフト画面に反映済 · 印刷・全員通知できます</div>
     </div>
     <div style="display:flex;gap:6px;">
       <button id="print-bar-btn" onclick="printShift()">🖨️ 印刷</button>
@@ -3183,7 +3183,22 @@
     </div>
 
     <div class="section-hdr" style="margin-bottom:8px;">
-      <div class="section-title">📆 生成されたシフト</div>
+      <div class="section-title">📆 確定したシフト</div>
+    </div>
+
+    <!-- 公開ステータスバナー -->
+    <div style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border-left:3px solid #10B981;padding:10px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#047857;margin-bottom:10px;line-height:1.7;font-weight:800;">
+      ✅ <strong>スタッフ全員のマイシフト画面に公開中</strong> — タップ編集すれば即時反映されます
+    </div>
+
+    <!-- ✅ シフト確定ボタン (大きく目立つように) -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+      <button onclick="broadcastShiftConfirm()" style="padding:14px 16px;background:linear-gradient(135deg,#10B981,#059669);color:#fff;border:none;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer;font-family:inherit;letter-spacing:.02em;box-shadow:0 6px 18px rgba(16,185,129,.35);display:flex;align-items:center;justify-content:center;gap:6px;">
+        ✅ シフト確定 → 全員通知
+      </button>
+      <button onclick="printShift()" style="padding:14px 16px;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;border:none;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer;font-family:inherit;letter-spacing:.02em;box-shadow:0 6px 18px rgba(79,70,229,.3);display:flex;align-items:center;justify-content:center;gap:6px;">
+        🖨️ 印刷プレビュー
+      </button>
     </div>
 
     <!-- タップヒント -->
@@ -3720,6 +3735,7 @@
     'shift_submissions',
     'shift_history',
     'shift_master',
+    'confirmed_shifts',
     'shift_deadline',
     'noru_time_rules',
     'staff_master',
@@ -5584,32 +5600,64 @@
     _lastSchedule = schedule; // カレンダー描画と編集に必要
     renderAdjustmentCard(shortages);
 
-    /* 生成シフトのバーをクリック編集可能に */
+    /* 🆕 確定シフトをサーバーに保存 → アルバイトの「マイシフト」画面に即時反映 */
+    try { _persistConfirmedShifts(schedule); } catch(e) { console.warn('[confirmed_shifts] persist失敗:', e); }
+
+    /* 生成シフトのセルをクリック編集可能に (実際にレンダリングされた .cell-work / .col-name / th.sg-date-head に対応) */
     setTimeout(function() {
-      document.querySelectorAll('.tc-bar:not(.tc-unknown)').forEach(function(bar) {
+      var root = document.getElementById('generated-content');
+      if (!root) return;
+
+      /* 時間セルタップ → 時間編集 */
+      root.querySelectorAll('td.cell-work').forEach(function(cell) {
+        cell.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var name = this.getAttribute('data-staff') || '';
+          var time = this.getAttribute('data-time') || '';
+          if (name && time) openEditTime(name, time, this);
+        });
+      });
+
+      /* スタッフ名タップ → 評価/給与モーダル */
+      root.querySelectorAll('td.sg-staff-cell').forEach(function(cell) {
+        cell.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var name = this.getAttribute('data-staff') || '';
+          if (name && typeof openStaffEval === 'function') openStaffEval(name);
+        });
+      });
+
+      /* 日付ヘッダタップ → 必要人員編集 */
+      root.querySelectorAll('th.sg-date-head').forEach(function(th) {
+        th.addEventListener('click', function() {
+          var date = this.getAttribute('data-date') || '';
+          if (date && typeof openEditNeed === 'function') openEditNeed(date);
+        });
+      });
+
+      /* 旧 .tc-bar 系（タイムチャート使用時のフォールバック） */
+      root.querySelectorAll('.tc-bar:not(.tc-unknown)').forEach(function(bar) {
         bar.classList.add('editable');
         bar.addEventListener('click', function(e) {
           e.stopPropagation();
-          const nameEl = this.closest('.tc-row')?.querySelector('.tc-staff-name');
-          const name = nameEl ? nameEl.textContent.trim() : '';
-          const timeText = this.querySelector('.tc-btime')?.textContent.trim() || '';
+          var nameEl = this.closest('.tc-row')?.querySelector('.tc-staff-name');
+          var name = nameEl ? nameEl.textContent.trim() : '';
+          var timeText = this.querySelector('.tc-btime')?.textContent.trim() || '';
           openEditTime(name, timeText, this);
         });
       });
-      /* スタッフ名タップで評価モーダル */
-      document.querySelectorAll('.tc-staff-name').forEach(function(el) {
+      root.querySelectorAll('.tc-staff-name').forEach(function(el) {
         el.addEventListener('click', function(e) {
           e.stopPropagation();
-          openStaffEval(this.textContent.trim());
+          if (typeof openStaffEval === 'function') openStaffEval(this.textContent.trim());
         });
       });
-      /* 日付ヘッダタップで必要人員編集 */
-      document.querySelectorAll('.tc-section-date').forEach(function(el) {
+      root.querySelectorAll('.tc-section-date').forEach(function(el) {
         el.style.cursor = 'pointer';
         el.title = 'クリックで必要人員を編集';
         el.addEventListener('click', function() {
-          const date = el.dataset.date || '';
-          if (date) openEditNeed(date);
+          var date = el.dataset.date || '';
+          if (date && typeof openEditNeed === 'function') openEditNeed(date);
         });
       });
     }, 100);
@@ -5631,17 +5679,17 @@
     const POS_ICONS = { hall:'🏃', kitchen:'🍳', cashier:'🧾' };
     const POS_COLORS = { hall:'#F97316', kitchen:'#22C55E', cashier:'#3B82F6', unassigned:'#94A3B8' };
 
-    // ヘッダー行（日付列）
+    // ヘッダー行（日付列） — タップで必要人員編集
     const thCols = allDates.map(date => {
       const [y,m,d] = date.split('-').map(Number);
       const dow = new Date(y,m-1,d).getDay();
-      let cls = '';
-      if (dow===6) cls = ' col-sat';
-      if (dow===0) cls = ' col-sun';
-      return `<th class="${cls.trim()}">${m}/${d}<br><span style="font-size:8px;font-weight:600;opacity:.85;">${DOW[dow]}</span></th>`;
+      let cls = 'sg-date-head';
+      if (dow===6) cls += ' col-sat';
+      if (dow===0) cls += ' col-sun';
+      return `<th class="${cls}" data-date="${date}" style="cursor:pointer;" title="クリックで必要人員を編集">${m}/${d}<br><span style="font-size:8px;font-weight:600;opacity:.85;">${DOW[dow]}</span><span style="font-size:9px;opacity:.6;margin-left:2px;">✏️</span></th>`;
     }).join('');
 
-    // スタッフ行（ポジションアイコン + 色付き）
+    // スタッフ行（ポジションアイコン + 色付き） — 名前タップで評価/給与, 時間タップで編集
     const staffRows = allStaff.map(name => {
       const w = known[name] || {};
       const pos = (w.positions && w.positions[0]) || (w.role !== 'unassigned' ? w.role : 'unassigned') || 'unassigned';
@@ -5649,11 +5697,12 @@
       const posColor = POS_COLORS[pos] || POS_COLORS.unassigned;
       const cells = allDates.map(date => {
         const slot = schedule[date][name];
-        if (!slot) return `<td class="cell-off">休み</td>`;
-        return `<td class="cell-work" style="border-left:3px solid ${posColor}33;">${slot.display}</td>`;
+        if (!slot) return `<td class="cell-off" data-date="${date}" data-staff="${escapeHtml(name)}">休み</td>`;
+        const tm = String(slot.display || '').replace(/"/g,'&quot;');
+        return `<td class="cell-work" data-date="${date}" data-staff="${escapeHtml(name)}" data-time="${tm}" style="border-left:3px solid ${posColor}33;cursor:pointer;" title="タップで時間変更・削除・欠勤マーク">${slot.display}<span style="font-size:9px;opacity:.55;margin-left:3px;">✏️</span></td>`;
       }).join('');
-      const nameHtml = `<span style="display:inline-block;width:6px;height:14px;background:${posColor};border-radius:2px;vertical-align:middle;margin-right:5px;"></span>${posIcon}${name}`;
-      return `<tr><td class="col-name">${nameHtml}</td>${cells}</tr>`;
+      const nameHtml = `<span style="display:inline-block;width:6px;height:14px;background:${posColor};border-radius:2px;vertical-align:middle;margin-right:5px;"></span>${posIcon}${name}<span style="font-size:9px;opacity:.5;margin-left:3px;">👤</span>`;
+      return `<tr><td class="col-name sg-staff-cell" data-staff="${escapeHtml(name)}" style="cursor:pointer;" title="タップで評価・個人給与確認">${nameHtml}</td>${cells}</tr>`;
     }).join('');
 
     // フッター行（朝/昼/夜 カウント）
@@ -7421,6 +7470,36 @@ ${slotLines}
   function saveDeadline(v)  { try { storageSet(_sk('shift_deadline'), v || ''); } catch(e) {} }
   function loadMaster()     { try { return JSON.parse(storageGet(_sk('shift_master')) || '[]'); } catch(e) { return []; } }
   function saveMaster(d)    { try { storageSet(_sk('shift_master'), JSON.stringify(d)); } catch(e) {} }
+
+  /* ──────────────────────────────────────────
+     確定シフト永続化 (アルバイト画面 myshift.html が読む)
+     形式: { "2026-05-28": [{ name, time, role }, ...], ... }
+  ────────────────────────────────────────── */
+  function _persistConfirmedShifts(schedule) {
+    if (!schedule || typeof schedule !== 'object') return;
+    var known = {};
+    try { known = loadKnownWorkers() || {}; } catch(e) {}
+    var out = {};
+    Object.keys(schedule).forEach(function(date) {
+      var dayData = schedule[date];
+      if (!dayData || typeof dayData !== 'object') return;
+      var arr = [];
+      Object.keys(dayData).forEach(function(name) {
+        var slot = dayData[name];
+        if (!slot) return; // 休み
+        var w = known[name] || {};
+        var role = (w.positions && w.positions[0]) || (w.role && w.role !== 'unassigned' ? w.role : '');
+        arr.push({
+          name: name,
+          time: slot.display || '出勤',
+          period: slot.period || '',
+          role: role || '',
+        });
+      });
+      if (arr.length) out[date] = arr;
+    });
+    try { storageSet(_sk('confirmed_shifts'), JSON.stringify(out)); } catch(e) {}
+  }
 
   // ── Deadline banner (スタッフ画面) ──
   let _dlTimer = null;
