@@ -766,6 +766,23 @@ app.get('/api/churn-survey', (req, res) => {
 
 app.use(express.json({ limit: '6mb' }));
 
+/* ════════════════════════════════════════════
+ * 🔒 noru-admin.html へのアクセスログ (誰がアクセスしたか追跡)
+ * 代表専用ページなので、不審なアクセスを検知できるように
+ ════════════════════════════════════════════ */
+app.use((req, res, next) => {
+  if (req.path === '/noru-admin.html' || req.path === '/noru-admin') {
+    const ip = req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'unknown';
+    const ua = req.headers['user-agent'] || 'unknown';
+    const ts = new Date().toISOString();
+    console.log(`[ADMIN-ACCESS] ${ts} | IP: ${ip} | UA: ${ua.slice(0, 80)}`);
+    /* レスポンスヘッダー: 検索エンジンに絶対インデックスさせない */
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+  }
+  next();
+});
+
 // ルートディレクトリの全ファイルを配信（HTML, CSS, JS など）
 app.use(express.static(path.join(__dirname)));
 // public/ も引き続き配信

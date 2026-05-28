@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-  <title>RAKURAKU Admin Console</title>
+  <title>—</title>
+  <!-- 🔒 検索エンジン完全除外 (代表専用) -->
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+  <meta name="googlebot" content="noindex,nofollow,noarchive">
+  <meta name="bingbot" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#070C1A">
@@ -460,7 +465,9 @@
      ADMIN AUTH
   ═══════════════════════════════════ */
   var _adminAuthed = false;
-  var DEFAULT_PW   = 'NORU2025';
+  /* 🔒 デフォルトPW (初回ログイン後、必ず変更してください) */
+  /* 代表 (恋ちゃん) 専用 — お客様には絶対に伝えない */
+  var DEFAULT_PW   = 'KOIZUMI-RAKU-2026';
 
   /* 🔒 セキュリティ: 5回失敗で運営に通知 */
   var _SECURITY_EMAIL = 'koizumishota0323@gmail.com'; // 運営の通報先

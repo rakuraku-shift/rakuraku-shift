@@ -6,6 +6,32 @@
 
 ---
 
+## 🚨 セキュリティ最重要事項 (絶対守る)
+
+### 🔒 `/noru-admin.html` は **代表 (恋ちゃん) 専用**
+
+- **絶対にお客様にURLを教えない**
+- **絶対にスタッフにパスワードを共有しない**
+- **デフォルトPW: `KOIZUMI-RAKU-2026`** → 初回ログイン後 **必ず変更** すること
+- 全店舗の課金状況・売上・個人情報が見えるため、漏洩は致命的
+
+### 公開してOKなURL (お客様にOK)
+- `/` (トップ)
+- `/help.html`
+- `/getting-started.html`
+- `/shift.html?shop=xxx` (店舗専用URL)
+- `/myshift.html?shop=xxx`
+- `/attendance.html?shop=xxx`
+- `/payroll.html` (店長専用)
+- 他の営業ページ全般
+
+### 絶対に教えてはいけないURL
+- ❌ `/noru-admin.html` ← **代表専用**
+- ❌ `/sitemap-view.html` ← 管理者用全URL一覧
+- ❌ `/data-export.html` ← データ書き出し (誤削除リスク)
+
+---
+
 ## 🔴 P0: 営業開始 24時間以内に必須
 
 ### 1. Railway 環境変数の設定 (所要 10分)

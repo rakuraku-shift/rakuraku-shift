@@ -1,10 +1,33 @@
 User-agent: *
 Allow: /
+
+# 🔒 代表専用ページ (絶対にインデックスさせない)
 Disallow: /noru-admin.html
+Disallow: /noru-admin
+Disallow: /sitemap-view.html
+Disallow: /data-export.html
+Disallow: /churn-survey.html
+
+# API系
 Disallow: /api/
+Disallow: /webhook/
 Disallow: /data/
+
+# 内部ファイル
 Disallow: /subscribe-success.html
+Disallow: /payment-success.html
 Disallow: /worker-dashboard.html
 Disallow: /admin-settings.html
+
+# 旧プロジェクト残骸
+Disallow: /order.html
+Disallow: /kitchen.html
+Disallow: /pos.html
+Disallow: /menu-admin.html
+Disallow: /customer.html
+Disallow: /table-qr.html
+Disallow: /tables.html
+Disallow: /gacha.html
+Disallow: /demo.html
 
 Sitemap: https://rakuraku-shift-production.up.railway.app/sitemap.xml
