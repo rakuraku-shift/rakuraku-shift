@@ -251,6 +251,8 @@
     <div class="lg-label">管理者パスワード</div>
     <input id="admin-pw-input" class="lg-input" type="password"
       placeholder="パスワードを入力"
+      autocomplete="current-password"
+      aria-label="管理者パスワード"
       onkeydown="if(event.key==='Enter')adminLogin()">
     <div class="lg-error" id="lg-error"></div>
     <button class="lg-btn" onclick="adminLogin()">ログイン →</button>
