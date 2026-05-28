@@ -30,8 +30,10 @@
   .h-name strong{font-size:14px;color:#fff;display:block;letter-spacing:-.01em;}
   .h-title{font-size:22px;font-weight:900;letter-spacing:-.02em;}
   .h-sub{font-size:11px;color:rgba(255,255,255,.8);font-weight:600;margin-top:2px;}
-  .quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 18px;background:#fff;border-bottom:1px solid var(--slate-100);}
-  .qa-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 10px;border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;text-decoration:none;color:#fff;letter-spacing:.02em;}
+  .quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 18px;background:#fff;border-bottom:1px solid var(--slate-100);}
+  /* 拇指1タップで押せるサイズ: min-height 48px 確保 (iOS HIG 推奨44px+α) */
+  .qa-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:16px 10px;min-height:52px;border:none;border-radius:12px;font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;text-decoration:none;color:#fff;letter-spacing:.02em;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s, box-shadow .12s;}
+  .qa-btn:active{transform:scale(.97);box-shadow:0 2px 6px rgba(0,0,0,.06);}
   .qa-clock{background:linear-gradient(135deg,var(--emerald),#059669);}
   .qa-change{background:linear-gradient(135deg,var(--amber),#D97706);}
   .container{max-width:480px;margin:0 auto;padding:14px 16px 80px;}

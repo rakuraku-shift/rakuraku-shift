@@ -249,6 +249,40 @@
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">QRコードを読み取っても画面が表示されない</div>
     <div class="faq-a">QRコードに埋め込まれているURLが古い場合があります。サポート (koizumishota0323@gmail.com) までご連絡いただければ最新QRを再送します。<br>または、登録メールに記載のURLを直接ブラウザに貼り付けてアクセスをお試しください。</div>
   </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">スマホで「位置情報が取得できません」と出る</div>
+    <div class="faq-a">スマホの設定 → ブラウザ → 位置情報サービスを <strong>「許可」</strong> に変更してください。<br>
+      <strong>iPhone Safari:</strong> 設定 → Safari → 位置情報 → 「確認」または「許可」<br>
+      <strong>Android Chrome:</strong> 設定 → サイトの設定 → 位置情報 → ブロックされたサイトに RAKURAKU があれば許可に変更<br>
+      ※ 位置情報がOFFでも打刻はできますが、店舗外打刻のアラートが店長に飛びます。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">給与計算が間違っている気がする</div>
+    <div class="faq-a">給与計算は以下のルールで自動計算しています：<br>
+      • <strong>通常時給</strong>: マスタ管理で設定した時給 × 勤務時間<br>
+      • <strong>深夜割増</strong>: 22:00〜翌5:00 は時給×1.25倍 (労基法第37条準拠)<br>
+      • <strong>休憩控除</strong>: 6時間超で45分、8時間超で60分を自動控除<br>
+      もし金額が違うと思われたら、出退勤打刻履歴と希望時間が一致しているかご確認ください。<br>
+      解決しない場合は <a href="mailto:koizumishota0323@gmail.com">サポート</a> までスクリーンショットをお送りください。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">シフト提出した日時を後から変更したい</div>
+    <div class="faq-a">スタッフ自身がシフト提出画面で <strong>同じ日時をもう一度提出</strong> すると上書きされます。<br>
+      シフト確定後の変更は「<strong>休み変更届</strong>」(マイシフト画面) から店長に申請してください。店長承認後に変更が反映されます。
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">複数の端末で同時に編集すると競合しますか？</div>
+    <div class="faq-a">Socket.io によるリアルタイム同期で、複数端末からの編集はすぐに全端末に反映されます。最後に書き込まれた内容が正となります (Last-Write-Wins)。<br>
+      同じシフトを2人が同時に編集している場合、後から保存した方が優先されますので、店長同士で運用ルールを決めてご利用ください。
+    </div>
+  </div>
 </div>
 
 <!-- 機能 -->

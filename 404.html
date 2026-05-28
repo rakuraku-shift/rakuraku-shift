@@ -47,6 +47,13 @@
     <a href="/" class="btn btn-primary">🏠 トップへ戻る</a>
     <a href="/help.html" class="btn btn-secondary">❓ ヘルプ・FAQ</a>
   </div>
+
+  <!-- 検索バー (Google サイト内検索) -->
+  <form onsubmit="event.preventDefault();var q=document.getElementById('s404').value.trim();if(q)window.location.href='https://www.google.com/search?q=site%3Arakuraku-shift-production.up.railway.app+'+encodeURIComponent(q);" style="margin-top:24px;display:flex;gap:8px;max-width:420px;margin-left:auto;margin-right:auto;">
+    <input type="search" id="s404" placeholder="🔍 探しているページを検索…" aria-label="サイト内検索" style="flex:1;padding:12px 16px;border:1.5px solid #E2E8F0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;" />
+    <button type="submit" style="padding:12px 20px;background:var(--indigo);color:#fff;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-family:inherit;font-size:13px;">検索</button>
+  </form>
+
   <div class="nav-grid">
     <a href="/getting-started.html" class="nav-card">
       <span class="ic">🚀</span>

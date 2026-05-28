@@ -80,6 +80,8 @@
   /* 記事詳細ビュー */
   .article-view{display:none;max-width:760px;margin:0 auto;}
   .article-view.show{display:block;}
+  /* スクロール進捗インディケーター (記事閲覧時のみ表示) */
+  .reading-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--indigo),var(--purple));z-index:9999;width:0%;transition:width .1s linear;pointer-events:none;}
   .article-header{margin-bottom:24px;}
   .article-back{display:inline-flex;align-items:center;gap:5px;color:var(--indigo);font-size:13px;font-weight:800;text-decoration:none;margin-bottom:14px;cursor:pointer;border:none;background:none;font-family:inherit;}
   .article-title{font-size:32px;font-weight:900;line-height:1.3;letter-spacing:-.02em;margin-bottom:10px;}
@@ -155,6 +157,9 @@
 </div>
 
 <!-- 記事詳細ビュー -->
+<!-- スクロール進捗インディケーター (記事閲覧時のみ) -->
+<div class="reading-progress" id="reading-progress" style="display:none;"></div>
+
 <div class="article-view" id="article-view">
   <button class="article-back" onclick="backToList()">← 記事一覧に戻る</button>
   <div class="article-header">
@@ -527,6 +532,107 @@ Timeeを否定したいわけじゃないです。本当に助かる場面もあ
 
 <p>多言語対応、日本人スタッフだけの店舗には不要かもしれませんが、もし1人でも外国人がいるなら、ぜひ試してみてほしい機能です。</p>
     `
+  },
+  {
+    id: 'p7',
+    cat: 'hr',
+    catLabel: '👥 人材確保',
+    thumb: '💔',
+    bg: 'bg2',
+    title: '「辞めます」と言われた時に、店長がやるべきこと・やってはいけないこと',
+    excerpt: '20人以上の退職を見送ってきて学んだ、引き留めではなく「次に繋ぐ」スタッフ離職対応。',
+    date: '2026-04-15',
+    readTime: '6分',
+    content: `
+<p>飲食店をやってると、必ず通る道があります。「店長、ちょっとお話があるんですけど…」</p>
+<p>大半は退職の相談です。私もこの2年で20人以上のスタッフを送り出してきました。最初は本当に動揺してたんですが、ある時から「<strong>退職対応こそ店長の腕の見せ所</strong>」と思うようになりました。</p>
+
+<h2>やってはいけないこと</h2>
+<ul>
+<li><strong>「なんで?」と理由を執拗に問い詰める</strong> — スタッフは決めて言いに来てる。ここで詰めても気まずいだけ</li>
+<li><strong>時給アップで引き留める</strong> — 続けてもらえても、同じスタッフの中で不公平感が出る</li>
+<li><strong>「他のスタッフに伝えるな」と口止めする</strong> — 知れ渡ったとき信頼を失う</li>
+<li><strong>シフトを減らして圧をかける</strong> — 最悪のパターン。スタッフ業界は狭いので評判が回る</li>
+</ul>
+
+<h2>やるべきこと</h2>
+<p>私が学んだのは、こういう順番です:</p>
+<ol>
+<li><strong>「お疲れさま」と笑顔で受け止める</strong> — まずこれだけ</li>
+<li><strong>「いつまで?」と退職日を確定</strong> — 1ヶ月前ルールを丁寧に説明</li>
+<li><strong>「最後に何かしてほしいことある?」と聞く</strong> — 送別会・推薦状・有給消化など</li>
+<li><strong>「次のシフト後輩に教えてあげて」と引き継ぎ依頼</strong> — 円満退社の象徴</li>
+<li><strong>「また飲みに来てね」で締める</strong> — 元スタッフは最高のお客様候補</li>
+</ol>
+
+<h2>RAKURAKU のスタッフ評価機能が役に立つ</h2>
+<p>RAKURAKU を使ってると、各スタッフの「強み」がデータで蓄積されてます。<br>
+退職の連絡を受けたら、その子の評価データを見て「ホールでお客さんへの対応が本当に上手だった」「キッチンで他の子の見本だった」と <strong>具体的に褒めて見送る</strong> ことができます。</p>
+
+<blockquote>
+退職スタッフ「最後にこんな細かいところまで覚えててくれたんですね…」と泣いてくれた子もいました。<br>
+これってRAKURAKUがあったから言えた一言です。
+</blockquote>
+
+<p>飲食店のスタッフは、辞めても店のファンであり続けてくれます。<br>
+そういう関係を作れる店長になれるよう、私も日々勉強です。</p>
+    `
+  },
+  {
+    id: 'p8',
+    cat: 'cost',
+    catLabel: '💴 コスト削減',
+    thumb: '📊',
+    bg: 'bg3',
+    title: '人件費率 30% を切るために、店長が見るべき5つの数字',
+    excerpt: 'うちが35%→27%まで下げた時に、どの数字を毎日見てたか正直に書きます。',
+    date: '2026-04-10',
+    readTime: '7分',
+    content: `
+<p>飲食店経営の本やセミナーで必ず出てくる「人件費率30%以内」。</p>
+<p>うちは正直、開業1年目は <strong>35-40%</strong> で推移してました。利益がほぼ無い。続けるのが本当にキツかった。</p>
+<p>でも今は <strong>27%前後</strong> で安定してます。何が変わったか、見てる数字を全部書きます。</p>
+
+<h2>① 時間帯別の売上 ÷ スタッフ人時</h2>
+<p>これが一番大事。「いつが過剰人員なのか」が一発で分かります。</p>
+<p>例えばうちの場合:</p>
+<ul>
+<li>17:00-20:00: 売上¥40,000 / 人時8 → <strong>¥5,000/人時</strong> (普通)</li>
+<li>20:00-23:00: 売上¥120,000 / 人時12 → <strong>¥10,000/人時</strong> (◎)</li>
+<li>23:00-翌2:00: 売上¥30,000 / 人時10 → <strong>¥3,000/人時</strong> (✕ 過剰)</li>
+</ul>
+<p>明らかに深夜帯が過剰でした。23時以降を3人→2人に減らしたら、月¥60,000浮きました。</p>
+
+<h2>② 売上前年比 vs 人件費前年比</h2>
+<p>売上が前年同月比+10%なのに、人件費が+15%増えてたら、何かおかしい。</p>
+<p>うちは「<strong>人件費の伸び率は売上の伸び率以下</strong>」を絶対ルールにしてます。</p>
+
+<h2>③ Timee/シェアフル等の外部募集費</h2>
+<p>これが10万円超えてる店舗、結構あると思います。</p>
+<p>RAKURAKU の社内募集機能で、80-90% は社内で埋められるようになりました。<br>
+うちは <strong>外部募集費が月¥50,000 → ¥8,000</strong> まで下がりました。</p>
+
+<h2>④ 深夜割増の総額</h2>
+<p>22時以降のシフトは時給×1.25倍。これが地味に効いてきます。</p>
+<p>うちは閉店を1時から24時に1時間繰り上げました。<br>
+売上は5%しか下がらなかったのに、<strong>人件費は12%下がりました</strong>。</p>
+
+<h2>⑤ スタッフ1人あたりの月間勤務時間</h2>
+<p>「働きすぎ」も「働かなさすぎ」も問題です。</p>
+<p>働きすぎ → 疲弊して離職 → 採用コスト発生 → 結局高くつく<br>
+働かなさすぎ → モチベ低下 → 別の店に流れる</p>
+<p>うちの理想は「<strong>1人月60-100時間</strong>」のレンジに収めること。</p>
+
+<h2>RAKURAKU の月次レポート機能</h2>
+<p>この5つの数字、全部 RAKURAKU の月次レポート画面で一発で見れます。<br>
+売上を CSV インポートすると、自動で人件費率を計算してくれるので、ぜひ試してみてください。</p>
+
+<blockquote>
+人件費を下げるって、スタッフを「使い倒す」ことじゃないんです。<br>
+「<strong>適正な人数を、適正な時間帯に配置する</strong>」、それだけ。<br>
+ちゃんと数字を見ていれば、必ず下がります。
+</blockquote>
+    `
   }
 ];
 
@@ -600,6 +706,20 @@ function backToList() {
 }
 
 document.addEventListener('DOMContentLoaded', renderPosts);
+
+/* スクロール進捗インディケーター (記事閲覧時のみ) */
+window.addEventListener('scroll', function() {
+  const bar = document.getElementById('reading-progress');
+  const article = document.getElementById('article-view');
+  if (!bar || !article || !article.classList.contains('show')) {
+    if (bar) bar.style.display = 'none';
+    return;
+  }
+  bar.style.display = 'block';
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+  bar.style.width = Math.min(100, Math.max(0, pct)) + '%';
+});
 </script>
 <script src="/help-widget.js" defer></script>
 </body>
