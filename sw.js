@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v9 — 全面 a11y 対応 / JSON-LD 8 種 / 88 batches brushup */
-var CACHE = 'rakuraku-v9';
+/* RAKURAKU Service Worker v10 — 業界別LP 3種 + 料金シミュレーター + 価格改定 ¥4,990 */
+var CACHE = 'rakuraku-v10';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
