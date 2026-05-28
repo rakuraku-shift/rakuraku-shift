@@ -17,6 +17,7 @@
     --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
   body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
 
   /* ─── HEADER ─── */
