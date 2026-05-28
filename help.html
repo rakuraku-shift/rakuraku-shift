@@ -102,6 +102,14 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } html { scroll-behavior:auto !important; } }
+  /* 印刷用スタイル (FAQ を紙で配布する場合) */
+  @media print {
+    .nav, .search-box, .category-nav, .contact-card, .footer, #rakuraku-help-widget { display:none !important; }
+    .faq-item { page-break-inside: avoid; }
+    .faq-item .faq-a { max-height:none !important; padding-top:8px !important; display:block !important; }
+    .hero { padding:0 0 10px; }
+    body { background:#fff; color:#000; }
+  }
   :root{
     --indigo:#4F46E5; --indigo-d:#3730A3; --indigo-l:#EEF2FF;
     --purple:#7C3AED; --emerald:#10B981; --emerald-l:#ECFDF5;
