@@ -2913,9 +2913,10 @@
 
   <!-- Staff Registry（登録メール一覧） -->
   <div class="card" id="registry-card" data-mgr-section="staff">
-    <div class="section-hdr">
-      <div class="section-title">📇 スタッフ登録メール一覧</div>
+    <div class="section-hdr" style="display:flex;align-items:center;gap:8px;">
+      <div class="section-title" style="flex:1;">📇 スタッフ登録メール一覧</div>
       <button class="reg-refresh" onclick="loadRegistrySection()">🔄 更新</button>
+      <button onclick="clearAllStaffRegistry()" style="padding:6px 12px;background:#FEE2E2;color:#DC2626;border:1.5px solid #FCA5A5;border-radius:6px;font-size:10px;font-weight:800;cursor:pointer;font-family:inherit;">🗑 全削除</button>
     </div>
     <div style="font-size:11px;color:var(--slate-400);margin-bottom:2px;">
       アルバイトがシフト提出時に登録したメールアドレス。内部募集・リマインドに使用されます。
@@ -5028,6 +5029,31 @@
   function saveKnownWorkers(d) {
     try { storageSet(_sk('known_workers'), JSON.stringify(d)); } catch(e) {}
   }
+
+  /* スタッフ登録メール一覧を全削除 (店長が手動で実行) */
+  function clearAllStaffRegistry() {
+    var count = Object.keys(loadKnownWorkers()).length;
+    if (count === 0) {
+      showToast('登録スタッフは既に空です');
+      return;
+    }
+    if (!confirm('⚠ スタッフ登録メール一覧を全部削除します (' + count + ' 名)。\n\n削除後は元に戻せません。シフト提出データ自体は残ります。\n\n本当に削除しますか?')) return;
+    try {
+      saveKnownWorkers({});
+      /* スタッフ評価も削除 (関連データ) */
+      storageSet(_sk('staff_evals_v2'), '{}');
+      /* 個人給与パスワードも削除 */
+      Object.keys(localStorage).forEach(function(k) {
+        if (k.indexOf(getShopId() + '_pp_pass_') === 0) localStorage.removeItem(k);
+      });
+      showToast('🗑 ' + count + '名のスタッフ登録を削除しました');
+      if (typeof loadRegistrySection === 'function') loadRegistrySection();
+      if (typeof renderStaffEval === 'function') renderStaffEval();
+    } catch(e) {
+      alert('削除失敗: ' + e.message);
+    }
+  }
+  window.clearAllStaffRegistry = clearAllStaffRegistry;
 
   // 名前入力イベント（デバウンス付き）
   var _nameInputTimer = null;
@@ -8195,14 +8221,40 @@ BAR EXCHANGEのシフト担当です。
       var shopId = getShopId();
       /* shop=demo-shop の時だけデモを残す (営業デモ用) */
       if (shopId === 'demo-shop') return;
-      /* それ以外の店舗で「過去のデモデータ」が残っていれば削除 */
-      var existing = JSON.parse(storageGet(_sk('shift_submissions')) || '[]');
       var demoNames = ['古関','はるか','おうすけ','じゅな','みなみ','松本ゆうき','いづみ','なつき','おとは','ののか','しゅうへい','あいり'];
+
+      /* ① シフト提出からデモ削除 */
+      var existing = JSON.parse(storageGet(_sk('shift_submissions')) || '[]');
       var filtered = existing.filter(function(e) { return e && e.name && demoNames.indexOf(e.name) < 0; });
       if (filtered.length !== existing.length) {
         saveState(filtered);
-        console.log('[init] デモデータ ' + (existing.length - filtered.length) + ' 件を自動削除');
+        console.log('[init] シフト提出からデモ ' + (existing.length - filtered.length) + ' 件を削除');
       }
+
+      /* ② スタッフ登録メール一覧 (known_workers) からデモ削除 */
+      try {
+        var known = JSON.parse(storageGet(_sk('known_workers')) || '{}');
+        var deleted = 0;
+        demoNames.forEach(function(n) {
+          if (known[n]) { delete known[n]; deleted++; }
+        });
+        if (deleted > 0) {
+          storageSet(_sk('known_workers'), JSON.stringify(known));
+          console.log('[init] スタッフ登録一覧からデモ ' + deleted + ' 件を削除');
+        }
+      } catch(e) {}
+
+      /* ③ スタッフ評価 (staff_evals_v2) からもデモ削除 */
+      try {
+        var evals = JSON.parse(storageGet(_sk('staff_evals_v2')) || '{}');
+        var ed = 0;
+        demoNames.forEach(function(n) {
+          if (evals[n]) { delete evals[n]; ed++; }
+        });
+        if (ed > 0) {
+          storageSet(_sk('staff_evals_v2'), JSON.stringify(evals));
+        }
+      } catch(e) {}
     } catch(e) {}
   })();
 
