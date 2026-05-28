@@ -121,6 +121,12 @@
   /* アクセシビリティ: Skip to main content link */
   .skip-link{position:absolute;top:-100px;left:0;background:#0F172A;color:#fff;padding:12px 20px;z-index:99999;font-weight:800;border-radius:0 0 8px 0;transition:top .2s;text-decoration:none;}
   .skip-link:focus{top:0;outline:3px solid #FCD34D;outline-offset:-3px;}
+  /* トップに戻るボタン (一定スクロール後に表示) */
+  .scroll-top-btn{position:fixed;bottom:80px;right:18px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(79,70,229,.4);font-size:18px;display:none;align-items:center;justify-content:center;z-index:90;transition:transform .2s, opacity .2s;font-family:inherit;}
+  .scroll-top-btn.visible{display:flex;}
+  .scroll-top-btn:hover{transform:translateY(-3px);}
+  .scroll-top-btn:focus{outline:3px solid #FCD34D;outline-offset:3px;}
+  @media(max-width:768px){.scroll-top-btn{bottom:90px;}}
   :root{
     --indigo:#4F46E5; --indigo-d:#3730A3; --indigo-l:#EEF2FF;
     --purple:#7C3AED; --slate-900:#0F172A; --slate-700:#334155;
@@ -1044,6 +1050,9 @@
 </footer>
 </main>
 
+<!-- ↑ トップに戻るボタン -->
+<button class="scroll-top-btn" id="scroll-top-btn" aria-label="ページ上部へスクロール" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
 <!-- ════════ Terms Overlay ════════ -->
 <div class="overlay" id="overlay-terms" onclick="if(event.target===this)closeOverlay()">
   <div class="overlay-card">
@@ -1270,6 +1279,25 @@
       }
     });
   });
+
+  /* トップに戻るボタン: 一定スクロール後に表示 */
+  (function() {
+    var btn = document.getElementById('scroll-top-btn');
+    if (!btn) return;
+    var lastY = 0, ticking = false;
+    function onScroll() {
+      var y = window.scrollY || window.pageYOffset;
+      if (y > 600) btn.classList.add('visible');
+      else btn.classList.remove('visible');
+      ticking = false;
+    }
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
 </script>
 <script src="/help-widget.js" defer></script>
 </body>
