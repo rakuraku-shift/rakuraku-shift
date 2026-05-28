@@ -2897,11 +2897,64 @@
     </div>
   </div>
 
-  <!-- ─── 売上管理 ─── -->
+  <!-- ════════ 💴 給与・売上 KPI サマリ (タブ最上部) ════════ -->
+  <div class="card" data-mgr-section="payroll" style="margin-top:12px;background:linear-gradient(135deg,#FAF5FF,#EEF2FF);border:1.5px solid #C7D2FE;">
+    <div class="section-title" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+      <span>📊 今月のお金まわり ひと目チェック</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;" id="payroll-kpi-grid">
+      <div style="background:#fff;border-radius:10px;padding:14px;text-align:center;border:1.5px solid var(--slate-100);">
+        <div style="font-size:9px;font-weight:800;color:var(--slate-500);letter-spacing:.04em;">💰 売上実績</div>
+        <div style="font-size:22px;font-weight:900;color:var(--slate-900);margin-top:3px;letter-spacing:-.02em;"><span id="kpi-sales-actual">—</span></div>
+        <div style="font-size:9px;color:var(--slate-500);font-weight:700;margin-top:2px;">万円 (今月)</div>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:14px;text-align:center;border:1.5px solid var(--slate-100);">
+        <div style="font-size:9px;font-weight:800;color:var(--slate-500);letter-spacing:.04em;">💴 予想給与</div>
+        <div style="font-size:22px;font-weight:900;color:var(--indigo);margin-top:3px;letter-spacing:-.02em;">¥<span id="kpi-payroll-total">—</span></div>
+        <div style="font-size:9px;color:var(--slate-500);font-weight:700;margin-top:2px;">全スタッフ合計</div>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:14px;text-align:center;border:1.5px solid var(--slate-100);">
+        <div style="font-size:9px;font-weight:800;color:var(--slate-500);letter-spacing:.04em;">📊 人件費率</div>
+        <div style="font-size:22px;font-weight:900;margin-top:3px;letter-spacing:-.02em;"><span id="kpi-cost-rate">—</span><span style="font-size:13px;color:var(--slate-500);">%</span></div>
+        <div style="font-size:9px;color:var(--slate-500);font-weight:700;margin-top:2px;" id="kpi-cost-rate-judge">目安 25-35%</div>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:14px;text-align:center;border:1.5px solid var(--slate-100);">
+        <div style="font-size:9px;font-weight:800;color:var(--slate-500);letter-spacing:.04em;">🎯 目標達成率</div>
+        <div style="font-size:22px;font-weight:900;color:var(--slate-900);margin-top:3px;letter-spacing:-.02em;"><span id="kpi-target-rate">—</span><span style="font-size:13px;color:var(--slate-500);">%</span></div>
+        <div style="font-size:9px;color:var(--slate-500);font-weight:700;margin-top:2px;">対 目標売上</div>
+      </div>
+    </div>
+
+    <!-- 詳細ページへのリンク -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+      <a href="payroll.html" target="_blank" style="padding:11px;background:#fff;color:var(--indigo);text-decoration:none;text-align:center;border-radius:8px;font-size:11px;font-weight:800;border:1.5px solid #C7D2FE;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:18px;">📋</span>
+        <span>給与明細PDF</span>
+      </a>
+      <a href="monthly-report.html" target="_blank" style="padding:11px;background:#fff;color:var(--indigo);text-decoration:none;text-align:center;border-radius:8px;font-size:11px;font-weight:800;border:1.5px solid #C7D2FE;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:18px;">📊</span>
+        <span>月次レポート</span>
+      </a>
+      <a href="sales-import.html" target="_blank" style="padding:11px;background:#fff;color:#F59E0B;text-decoration:none;text-align:center;border-radius:8px;font-size:11px;font-weight:800;border:1.5px solid #FED7AA;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:18px;">💰</span>
+        <span>日別売上取込</span>
+      </a>
+      <a href="staff-monthly.html" target="_blank" style="padding:11px;background:#fff;color:var(--indigo);text-decoration:none;text-align:center;border-radius:8px;font-size:11px;font-weight:800;border:1.5px solid #C7D2FE;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:18px;">📈</span>
+        <span>スタッフ別月次</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ─── 売上管理 (月次の概算入力) ─── -->
   <div class="card" id="sales-card" data-mgr-section="payroll" style="margin-top:12px;">
     <div class="section-hdr" style="margin-bottom:12px;">
-      <div class="section-title">💰 売上管理</div>
+      <div class="section-title">💰 売上管理 (月次概算)</div>
       <span id="sales-month-badge" style="font-size:10px;font-weight:800;color:var(--indigo);background:var(--indigo-l);padding:3px 10px;border-radius:20px;">今月</span>
+    </div>
+
+    <div style="font-size:11px;color:var(--slate-500);margin-bottom:12px;line-height:1.6;">
+      💡 月次の目標と実績だけ簡易入力。日別の詳細は <a href="sales-import.html" target="_blank" style="color:#F59E0B;font-weight:700;">売上取込ページ</a> から
     </div>
 
     <div class="sales-input-grid">
@@ -7892,6 +7945,55 @@ BAR EXCHANGEのシフト担当です。
         ? '<div style="font-size:10px;color:var(--slate-500);margin-top:6px;text-align:center;">🌙 月内深夜時間合計: '+totalNightHours.toFixed(1)+'h（+25%割増適用済み）</div>'
         : '') +
       costRateHtml;
+
+    /* ════ KPI サマリ更新 (タブ最上部の4カード) ════ */
+    try { updatePayrollKpi(grandTotal, actual, costRate, salesData); } catch(e) {}
+  }
+
+  /* ════════════════════════════════════════════
+   * 給与・売上 タブ最上部の KPI 4カード更新
+   ════════════════════════════════════════════ */
+  function updatePayrollKpi(payrollTotal, actualYen, costRate, salesData) {
+    var actualEl = document.getElementById('kpi-sales-actual');
+    var payEl = document.getElementById('kpi-payroll-total');
+    var rateEl = document.getElementById('kpi-cost-rate');
+    var rateJudge = document.getElementById('kpi-cost-rate-judge');
+    var targetEl = document.getElementById('kpi-target-rate');
+    if (!actualEl) return;
+
+    /* 売上 (万円) */
+    var actualMan = (salesData && salesData.actual) ? salesData.actual : 0;
+    actualEl.textContent = actualMan > 0 ? actualMan.toLocaleString() : '—';
+
+    /* 給与 */
+    payEl.textContent = payrollTotal > 0 ? payrollTotal.toLocaleString() : '—';
+
+    /* 人件費率 */
+    if (costRate !== null) {
+      rateEl.textContent = costRate.toFixed(1);
+      var color = costRate < 25 ? '#10B981' : costRate < 35 ? '#10B981' : costRate < 50 ? '#F59E0B' : '#EF4444';
+      var judge = costRate < 25 ? '🌟 優良 (25%未満)' : costRate < 35 ? '✅ 適正 (目安内)' : costRate < 50 ? '⚠ やや高め (要改善)' : '🚨 危険 (要見直し)';
+      rateEl.style.color = color;
+      rateJudge.textContent = judge;
+      rateJudge.style.color = color;
+      rateJudge.style.fontWeight = '800';
+    } else {
+      rateEl.textContent = '—';
+      rateEl.style.color = '';
+      rateJudge.textContent = '目安 25-35%';
+      rateJudge.style.color = '';
+    }
+
+    /* 目標達成率 */
+    var targetMan = (salesData && salesData.target) ? salesData.target : 0;
+    if (targetMan > 0 && actualMan > 0) {
+      var rate = (actualMan / targetMan * 100);
+      targetEl.textContent = rate.toFixed(0);
+      targetEl.style.color = rate >= 100 ? '#10B981' : rate >= 80 ? '#F59E0B' : '#EF4444';
+    } else {
+      targetEl.textContent = '—';
+      targetEl.style.color = '';
+    }
   }
 
   /* 割増賃金情報パネルの開閉 */
