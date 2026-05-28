@@ -110,6 +110,12 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;scroll-padding-top:80px;}
+  /* アクセシビリティ: キーボードフォーカス可視化 (Tab で見える) */
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 3px solid #4F46E5;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
   /* アクセシビリティ: モーション軽減モード対応 (前庭機能障害・乗り物酔い対策) */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
