@@ -76,7 +76,7 @@ PORT=3000
 | `demo-reservation.html` | デモ予約フォーム (バリデーション強化) |
 | `referral.html` | 紹介プログラム |
 | `case-studies.html` | 導入事例 (9店舗詳細 + 8名のオーナーの声) |
-| `blog.html` | ブログ 8記事 (関連記事/シェア/Article JSON-LD) |
+| `blog.html` | ブログ 9記事 (関連記事/シェア/Article JSON-LD) — 「Timee vs RAKURAKU 完全比較」追加 |
 | `careers.html` | 採用情報 (JobPosting JSON-LD) |
 | `roadmap.html` | お客様の声 + 機能投票 |
 | `status.html` | リアルタイム稼働状況 |

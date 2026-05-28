@@ -117,4 +117,10 @@
     <priority>0.88</priority>
     <lastmod>2026-05-28</lastmod>
   </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/free-templates.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-05-28</lastmod>
+  </url>
 </urlset>
