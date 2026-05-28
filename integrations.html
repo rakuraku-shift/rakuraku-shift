@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>連携サービス | RAKURAKU シフト管理</title>
+<meta name="description" content="freee / 弥生 / マネフォ / LINE / Slack / Google など、RAKURAKU が連携する 20+ サービスを紹介。">
+<meta name="theme-color" content="#7C3AED">
+<link rel="canonical" href="https://rakuraku-shift.com/integrations.html">
+<meta property="og:title" content="連携サービス | RAKURAKU">
+<meta property="og:description" content="freee / 弥生 / LINE / Slack など 20+ 連携">
+<meta property="og:image" content="https://rakuraku-shift.com/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="RAKURAKU 連携サービス">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"ホーム","item":"https://rakuraku-shift.com/"},
+  {"@type":"ListItem","position":2,"name":"連携サービス","item":"https://rakuraku-shift.com/integrations.html"}
+]}
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;line-height:1.7;color:#333;background:#fafafa}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#7C3AED;color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid #7C3AED;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+header{background:linear-gradient(135deg,#7C3AED,#A855F7);color:#fff;padding:60px 20px;text-align:center}
+header h1{font-size:2.5em;margin-bottom:10px}
+nav.bc{padding:15px 20px;background:#fff;border-bottom:1px solid #eee}
+nav.bc a{color:#7C3AED;text-decoration:none}
+main{max-width:1100px;margin:30px auto;padding:0 20px}
+.category{background:#fff;padding:30px;margin-bottom:25px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.category h2{color:#7C3AED;margin-bottom:15px;font-size:1.4em;padding-bottom:10px;border-bottom:2px solid #7C3AED}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:15px}
+.svc{background:#FAF5FF;padding:20px;border-radius:10px;border-left:4px solid #7C3AED;display:flex;align-items:flex-start;gap:12px}
+.svc .icon{font-size:2em}
+.svc .info{flex:1}
+.svc h3{color:#7C3AED;margin-bottom:5px;font-size:1.05em}
+.svc p{font-size:.85em;color:#666}
+.status{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7em;font-weight:bold;margin-top:5px}
+.status.ready{background:#DCFCE7;color:#16A34A}
+.status.beta{background:#FEF3C7;color:#92400E}
+.status.planned{background:#DBEAFE;color:#1E40AF}
+footer{background:#333;color:#fff;padding:40px 20px;text-align:center;margin-top:40px}
+footer a{color:#7C3AED;margin:0 10px}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+<header>
+  <h1>🔌 連携サービス</h1>
+  <p>使い慣れたツールと RAKURAKU を繋ぐ</p>
+</header>
+<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; 連携サービス</nav>
+
+<main id="main">
+
+<section class="category">
+  <h2>💰 会計・給与計算</h2>
+  <div class="grid">
+    <div class="svc"><span class="icon">📊</span><div class="info"><h3>freee 給与</h3><p>CSV エクスポート対応</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">📒</span><div class="info"><h3>弥生給与</h3><p>CSV エクスポート対応</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">💹</span><div class="info"><h3>マネーフォワード給与</h3><p>CSV / API 対応</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🧾</span><div class="info"><h3>SmartHR</h3><p>従業員情報同期</p><span class="status beta">ベータ版</span></div></div>
+  </div>
+</section>
+
+<section class="category">
+  <h2>💬 コミュニケーション</h2>
+  <div class="grid">
+    <div class="svc"><span class="icon">💚</span><div class="info"><h3>LINE</h3><p>シフト確定通知 / 打刻リマインド</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">💼</span><div class="info"><h3>Slack</h3><p>店舗チームに通知配信</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">📨</span><div class="info"><h3>Chatwork</h3><p>シフトボット連携</p><span class="status beta">ベータ版</span></div></div>
+    <div class="svc"><span class="icon">📲</span><div class="info"><h3>SMS (Twilio)</h3><p>重要通知のフォールバック</p><span class="status ready">利用可能</span></div></div>
+  </div>
+</section>
+
+<section class="category">
+  <h2>📅 カレンダー</h2>
+  <div class="grid">
+    <div class="svc"><span class="icon">📆</span><div class="info"><h3>Google カレンダー</h3><p>シフト自動同期</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🍎</span><div class="info"><h3>Apple カレンダー</h3><p>iCal フィード対応</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🌐</span><div class="info"><h3>Outlook</h3><p>iCal フィード対応</p><span class="status ready">利用可能</span></div></div>
+  </div>
+</section>
+
+<section class="category">
+  <h2>💳 決済・経理</h2>
+  <div class="grid">
+    <div class="svc"><span class="icon">🟦</span><div class="info"><h3>Stripe</h3><p>サブスクリプション課金</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🍊</span><div class="info"><h3>Square</h3><p>POS 売上連携</p><span class="status beta">ベータ版</span></div></div>
+    <div class="svc"><span class="icon">🟧</span><div class="info"><h3>AirREGI</h3><p>レジ売上自動取込</p><span class="status planned">予定</span></div></div>
+  </div>
+</section>
+
+<section class="category">
+  <h2>🌐 その他</h2>
+  <div class="grid">
+    <div class="svc"><span class="icon">🤖</span><div class="info"><h3>Zapier</h3><p>2000+ アプリ連携</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">📥</span><div class="info"><h3>Google スプレッドシート</h3><p>シフト表自動出力</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🔗</span><div class="info"><h3>Make (Integromat)</h3><p>カスタム自動化</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">📡</span><div class="info"><h3>Webhook</h3><p>カスタム連携 (REST)</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🔑</span><div class="info"><h3>API (REST + GraphQL)</h3><p>自社システム統合</p><span class="status ready">利用可能</span></div></div>
+  </div>
+</section>
+
+<div style="background:linear-gradient(135deg,#7C3AED,#A855F7);color:#fff;padding:30px;border-radius:12px;text-align:center;margin-top:30px">
+  <h2 style="color:#fff;margin-bottom:10px">必要な連携が見つからない?</h2>
+  <p style="margin:15px 0">REST API・Webhook でカスタム連携を作れます</p>
+  <a href="/api-docs.html" style="display:inline-block;background:#fff;color:#7C3AED;padding:12px 30px;border-radius:8px;text-decoration:none;font-weight:bold">API ドキュメント →</a>
+</div>
+</main>
+
+<footer>
+  <p><a href="/">ホーム</a> | <a href="/api-docs.html">API</a> | <a href="/features/">機能一覧</a> | <a href="/help.html">FAQ</a></p>
+  <p style="margin-top:15px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
+</footer>
+<script src="/help-widget.js" defer></script>
+</body>
+</html>
