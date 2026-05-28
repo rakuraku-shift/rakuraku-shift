@@ -27,8 +27,8 @@
 
   html,body{font-family:'Noto Sans JP','Inter',-apple-system,sans-serif;color:var(--slate-900);background:#E5E7EB;line-height:1.5;-webkit-font-smoothing:antialiased;}
 
-  /* ────── ツールバー（画面のみ） ────── */
-  .toolbar{position:sticky;top:0;z-index:1000;background:#0F172A;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.3);}
+  /* ────── ツールバー（画面のみ・先頭に固定表示、スクロール追従なし） ────── */
+  .toolbar{position:relative;z-index:1;background:#0F172A;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.3);}
   .toolbar h1{font-size:14px;font-weight:800;}
   .toolbar input{padding:6px 10px;border:none;border-radius:6px;font-size:12px;font-family:inherit;width:280px;}
   .toolbar button{padding:7px 16px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:800;font-size:12px;font-family:inherit;}
