@@ -157,20 +157,20 @@
 
   <!-- Action buttons -->
   <div class="actions">
-    <button class="btn-act btn-clockin" id="btn-clockin" onclick="clockAction('in')">
-      <div class="ic">⏰</div>
+    <button class="btn-act btn-clockin" id="btn-clockin" onclick="clockAction('in')" aria-label="出勤を打刻">
+      <div class="ic" aria-hidden="true">⏰</div>
       <span data-i18n="att.btn_in">出勤</span>
     </button>
-    <button class="btn-act btn-clockout" id="btn-clockout" onclick="clockAction('out')" disabled>
-      <div class="ic">🏁</div>
+    <button class="btn-act btn-clockout" id="btn-clockout" onclick="clockAction('out')" disabled aria-label="退勤を打刻">
+      <div class="ic" aria-hidden="true">🏁</div>
       <span data-i18n="att.btn_out">退勤</span>
     </button>
-    <button class="btn-act btn-break-start" id="btn-break-start" onclick="clockAction('break_start')" disabled>
-      <div class="ic">☕</div>
+    <button class="btn-act btn-break-start" id="btn-break-start" onclick="clockAction('break_start')" disabled aria-label="休憩開始を打刻">
+      <div class="ic" aria-hidden="true">☕</div>
       <span data-i18n="att.btn_break_start">休憩開始</span>
     </button>
-    <button class="btn-act btn-break-end" id="btn-break-end" onclick="clockAction('break_end')" disabled>
-      <div class="ic">▶️</div>
+    <button class="btn-act btn-break-end" id="btn-break-end" onclick="clockAction('break_end')" disabled aria-label="休憩終了を打刻">
+      <div class="ic" aria-hidden="true">▶️</div>
       <span data-i18n="att.btn_break_end">休憩終了</span>
     </button>
   </div>
