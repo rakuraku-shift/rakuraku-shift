@@ -2894,7 +2894,8 @@
       <div class="notify-section-label" style="margin-bottom:8px;">🔒 PINコード変更</div>
       <div class="pin-change-row">
         <input type="password" id="pin-new-input" maxlength="4" pattern="[0-9]{4}"
-               placeholder="新しいPIN（4桁）" inputmode="numeric" />
+               placeholder="新しいPIN（4桁）" inputmode="numeric"
+               autocomplete="new-password" aria-label="新しい店長PIN" />
         <button class="btn-pin-save" onclick="saveNewPin()">変更する</button>
         <button class="btn-pin-save" style="background:var(--slate-200);color:var(--slate-600);"
                 onclick="lockManagerAndGoHome()">🔒 ロック</button>
