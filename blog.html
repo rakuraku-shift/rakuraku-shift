@@ -4,6 +4,35 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <title>ブログ — RAKURAKU シフト管理SaaS</title>
+<!-- パンくずリスト構造化データ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://rakuraku-shift-production.up.railway.app/" },
+    { "@type": "ListItem", "position": 2, "name": "ブログ", "item": "https://rakuraku-shift-production.up.railway.app/blog.html" }
+  ]
+}
+</script>
+<!-- Blog 全体の Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "RAKURAKU ブログ",
+  "description": "飲食店・バー経営者向け シフト管理・人材確保・人件費削減のノウハウブログ",
+  "url": "https://rakuraku-shift-production.up.railway.app/blog.html",
+  "publisher": {
+    "@type": "Organization",
+    "name": "RAKURAKU",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://rakuraku-shift-production.up.railway.app/icon-512.png"
+    }
+  }
+}
+</script>
 <meta name="description" content="飲食店・バー経営者向け シフト管理・人材確保・人件費削減のノウハウブログ。代表 小泉 咲太が現場で考えていることを書いています。" />
 <meta name="theme-color" content="#4F46E5">
 <link rel="apple-touch-icon" href="/icon-192.png">
@@ -174,6 +203,15 @@
     </div>
   </div>
   <div class="article-content" id="art-content"></div>
+
+  <!-- シェアボタン -->
+  <div style="margin-top:30px;padding:18px;background:var(--slate-50);border-radius:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <span style="font-size:13px;font-weight:800;color:var(--slate-700);">📤 この記事をシェア:</span>
+    <a id="share-x" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:#000;color:#fff;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:800;text-decoration:none;">𝕏 (Twitter)</a>
+    <a id="share-fb" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:#1877F2;color:#fff;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:800;text-decoration:none;">Facebook</a>
+    <a id="share-line" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:#06C755;color:#fff;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:800;text-decoration:none;">LINE</a>
+    <button id="share-copy" onclick="copyArticleUrl()" style="display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--slate-700);padding:8px 14px;border-radius:20px;font-size:12px;font-weight:800;border:1.5px solid var(--slate-200);cursor:pointer;font-family:inherit;">🔗 URLコピー</button>
+  </div>
 
   <!-- 関連記事 -->
   <div id="related-articles" style="margin-top:40px;border-top:1px solid var(--slate-100);padding-top:30px;">
@@ -696,8 +734,51 @@ function openArticle(id) {
     `).join('');
   }
 
+  /* シェアボタン URL 設定 */
+  const articleUrl = location.origin + '/blog.html#' + id;
+  const shareText = post.title + ' - RAKURAKU ブログ';
+  const eX = document.getElementById('share-x');
+  const eFB = document.getElementById('share-fb');
+  const eLINE = document.getElementById('share-line');
+  if (eX) eX.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(articleUrl);
+  if (eFB) eFB.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
+  if (eLINE) eLINE.href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(articleUrl);
+
+  /* URL hash 更新 (ブラウザバック対応) */
+  try { history.pushState({ articleId: id }, '', '#' + id); } catch(e) {}
+
   window.scrollTo(0, 0);
 }
+
+function copyArticleUrl() {
+  const url = location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.getElementById('share-copy');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ コピーしました';
+      setTimeout(() => { btn.innerHTML = orig; }, 2000);
+    }).catch(() => alert('URL: ' + url));
+  } else {
+    prompt('URL をコピーしてください:', url);
+  }
+}
+
+/* URL hash で記事を直接開く */
+window.addEventListener('load', function() {
+  const hash = location.hash.slice(1);
+  if (hash) {
+    const post = POSTS.find(p => p.id === hash);
+    if (post) setTimeout(() => openArticle(hash), 50);
+  }
+});
+window.addEventListener('popstate', function(e) {
+  if (e.state && e.state.articleId) {
+    openArticle(e.state.articleId);
+  } else {
+    backToList();
+  }
+});
 
 function backToList() {
   document.getElementById('list-view').style.display = 'block';

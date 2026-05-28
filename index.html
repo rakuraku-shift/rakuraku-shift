@@ -108,6 +108,16 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;scroll-padding-top:80px;}
+  /* アクセシビリティ: モーション軽減モード対応 (前庭機能障害・乗り物酔い対策) */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+      scroll-behavior: auto !important;
+    }
+    html { scroll-behavior: auto !important; }
+  }
   /* アクセシビリティ: Skip to main content link */
   .skip-link{position:absolute;top:-100px;left:0;background:#0F172A;color:#fff;padding:12px 20px;z-index:99999;font-weight:800;border-radius:0 0 8px 0;transition:top .2s;text-decoration:none;}
   .skip-link:focus{top:0;outline:3px solid #FCD34D;outline-offset:-3px;}

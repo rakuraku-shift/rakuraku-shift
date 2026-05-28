@@ -9,6 +9,34 @@
 <meta property="og:description" content="バー・飲食店オーナー向け 3ステップ導入ガイド"/>
 <meta property="og:type" content="website"/>
 <meta property="og:locale" content="ja_JP"/>
+<!-- パンくずリスト構造化データ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://rakuraku-shift-production.up.railway.app/" },
+    { "@type": "ListItem", "position": 2, "name": "3分で始める", "item": "https://rakuraku-shift-production.up.railway.app/getting-started.html" }
+  ]
+}
+</script>
+<!-- HowTo 構造化データ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "RAKURAKU を3分で始める方法",
+  "description": "バー・飲食店オーナーが RAKURAKU シフト管理SaaS を 3分で導入するステップ",
+  "totalTime": "PT3M",
+  "step": [
+    { "@type": "HowToStep", "name": "14日間無料トライアル開始", "text": "トップページの「14日間無料で試す」ボタンから店舗情報を入力" },
+    { "@type": "HowToStep", "name": "登録メールを確認", "text": "店舗ID・店長専用URL・QRコード画像を含むメールが届きます" },
+    { "@type": "HowToStep", "name": "QRコードをスタッフに配布", "text": "LINE/印刷/メールでスタッフにQRを共有" },
+    { "@type": "HowToStep", "name": "スタッフがシフト提出", "text": "スタッフはQRから名前・希望日時を入力するだけ" },
+    { "@type": "HowToStep", "name": "ワンタップでシフト生成", "text": "店長は管理画面の「シフト作成」ボタン1回で完成" }
+  ]
+}
+</script>
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="icon" href="/icon-192.png">
 <meta name="theme-color" content="#4F46E5">

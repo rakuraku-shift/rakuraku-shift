@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>500 — サーバーエラー | RAKURAKU</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<meta name="theme-color" content="#EF4444">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--red:#EF4444;--red-d:#DC2626;--slate-900:#0F172A;--slate-500:#64748B;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(135deg,#FEF2F2 0%,#FFF1F2 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .wrap{max-width:520px;text-align:center;}
+  .code{font-size:120px;font-weight:900;line-height:1;letter-spacing:-.04em;background:linear-gradient(135deg,var(--red),var(--red-d));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px;}
+  h1{font-size:28px;font-weight:900;letter-spacing:-.01em;margin-bottom:12px;}
+  p{font-size:15px;color:var(--slate-500);line-height:1.8;margin-bottom:24px;}
+  .info{background:#fff;border:1.5px solid #FECACA;border-radius:12px;padding:18px;text-align:left;margin-bottom:24px;font-size:13px;line-height:1.8;color:#7F1D1D;font-weight:600;}
+  .info .h{font-weight:900;margin-bottom:6px;font-size:14px;}
+  .info ul{padding-left:20px;}
+  .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .btn{display:inline-block;padding:14px 28px;border-radius:12px;font-size:14px;font-weight:800;text-decoration:none;cursor:pointer;border:none;font-family:inherit;}
+  .btn-primary{background:linear-gradient(135deg,var(--red),var(--red-d));color:#fff;box-shadow:0 8px 24px rgba(239,68,68,.3);}
+  .btn-secondary{background:#fff;color:var(--slate-900);border:1.5px solid #E2E8F0;}
+  .links{margin-top:24px;font-size:12px;color:var(--slate-500);}
+  .links a{color:var(--red);text-decoration:none;font-weight:700;margin:0 8px;}
+  @media(max-width:480px){.code{font-size:90px;} h1{font-size:22px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="code">500</div>
+  <h1>サーバーエラーが発生しました</h1>
+  <p>申し訳ありません。一時的なシステムエラーです。<br>少し時間をおいてからもう一度お試しください。</p>
+
+  <div class="info">
+    <div class="h">⚙️ お試しいただきたいこと</div>
+    <ul>
+      <li>数分待ってからページを再読み込み (Cmd/Ctrl+R)</li>
+      <li>ブラウザのキャッシュをクリアして再読み込み (Cmd/Ctrl+Shift+R)</li>
+      <li>別のブラウザでアクセス</li>
+      <li>稼働状況ページで障害情報を確認</li>
+    </ul>
+  </div>
+
+  <div class="btns">
+    <button onclick="location.reload()" class="btn btn-primary">🔄 再読み込み</button>
+    <a href="/status.html" class="btn btn-secondary">📊 稼働状況を見る</a>
+  </div>
+
+  <div class="links">
+    <a href="/">🏠 トップ</a>·
+    <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】500エラー報告">📨 サポートに連絡</a>·
+    <a href="tel:08051683303">📞 080-5168-3303</a>
+  </div>
+</div>
+</body>
+</html>

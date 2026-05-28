@@ -9,12 +9,96 @@
 <meta property="og:description" content="RAKURAKU の操作・料金・連携などのFAQ集"/>
 <meta property="og:type" content="website"/>
 <meta property="og:locale" content="ja_JP"/>
+<!-- パンくずリスト構造化データ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://rakuraku-shift-production.up.railway.app/" },
+    { "@type": "ListItem", "position": 2, "name": "よくあるご質問", "item": "https://rakuraku-shift-production.up.railway.app/help.html" }
+  ]
+}
+</script>
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="icon" href="/icon-192.png">
 <meta name="theme-color" content="#4F46E5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<!-- FAQPage 構造化データ (Google 検索結果のリッチリザルト用) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "14日間の無料トライアルはどうやって始めればいいですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "トップページの「14日間無料で試す」ボタンから、店舗名・お名前・メールアドレスを入力するだけで開始できます。クレジットカードの登録は不要です。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "月額料金はいくらですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "スタンダードプラン: 月額¥9,800（税込）。年払いなら¥98,000で2ヶ月分お得です。追加課金・隠れた費用は一切ありません。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "解約はいつでもできますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい、いつでも解約可能です。違約金は一切ありません。解約申請の翌月以降、ご請求は発生しません。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "アプリのインストールは必要ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不要です。スマホ・PCのブラウザで利用できます。ホーム画面に追加すればアプリのように起動できます（PWA対応）。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "外国人スタッフ向けの言語対応はありますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "日本語・English・中文・한국어 の4言語に完全対応しています。シフト提出・打刻・通知・給与照会まで、スタッフが自分の母国語で操作できます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "導入実績はどれくらいありますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "2026年3月のサービスローンチから順調に成長中で、現在は120店舗超のパートナー様にご利用いただいています（バー・居酒屋・カフェが中心）。継続率は97%です。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "深夜割増の自動計算には対応していますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい、22:00〜翌5:00 の +25% 深夜割増を労働基準法第37条準拠で自動計算します。給与トラブルゼロを実現できます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Timee/シェアフルとの連携はできますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Chrome拡張機能を入れると、Timee/シェアフル/バイトル の各サイトの求人フォームに自動入力できます。3段階自動募集により、外部募集コストを大幅削減できます。"
+      }
+    }
+  ]
+}
+</script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   :root{

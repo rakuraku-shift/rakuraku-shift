@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>503 — メンテナンス中 | RAKURAKU</title>
+<meta name="robots" content="noindex,nofollow"/>
+<meta http-equiv="refresh" content="60">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<meta name="theme-color" content="#F59E0B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--amber:#F59E0B;--amber-d:#D97706;--slate-900:#0F172A;--slate-500:#64748B;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(135deg,#FFFBEB 0%,#FEF3C7 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .wrap{max-width:520px;text-align:center;}
+  .code{font-size:120px;font-weight:900;line-height:1;letter-spacing:-.04em;background:linear-gradient(135deg,var(--amber),var(--amber-d));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px;}
+  h1{font-size:28px;font-weight:900;letter-spacing:-.01em;margin-bottom:12px;}
+  p{font-size:15px;color:var(--slate-500);line-height:1.8;margin-bottom:24px;}
+  .info{background:#fff;border:1.5px solid #FDE68A;border-radius:12px;padding:18px;margin-bottom:24px;font-size:13px;line-height:1.8;color:#78350F;font-weight:600;}
+  .info .h{font-weight:900;margin-bottom:6px;font-size:14px;}
+  .auto-refresh{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--amber-d);background:#FFFBEB;padding:8px 14px;border-radius:20px;font-weight:700;border:1px solid #FDE68A;}
+  .pulse{width:8px;height:8px;background:var(--amber);border-radius:50%;animation:pulse 1.5s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+  .btn{display:inline-block;padding:12px 24px;border-radius:10px;font-size:13px;font-weight:800;text-decoration:none;cursor:pointer;border:none;font-family:inherit;}
+  .btn-primary{background:linear-gradient(135deg,var(--amber),var(--amber-d));color:#fff;}
+  .btn-secondary{background:#fff;color:var(--slate-900);border:1.5px solid #E2E8F0;}
+  .links{margin-top:20px;font-size:12px;color:var(--slate-500);}
+  .links a{color:var(--amber-d);text-decoration:none;font-weight:700;margin:0 8px;}
+  @media (prefers-reduced-motion: reduce) { .pulse{animation:none;} }
+  @media(max-width:480px){.code{font-size:90px;} h1{font-size:22px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="code">503</div>
+  <h1>🛠 メンテナンス中</h1>
+  <p>現在、RAKURAKU はメンテナンスを実施しています。<br>ご不便をおかけして申し訳ございません。</p>
+
+  <div class="info">
+    <div class="h">⏰ 通常メンテナンス時間</div>
+    深夜時間帯（02:00〜05:00 JST）に実施することが多いです。<br>
+    緊急メンテナンスの場合、最新情報は<strong>稼働状況ページ</strong>でお知らせします。
+  </div>
+
+  <div class="auto-refresh">
+    <span class="pulse"></span>
+    60秒後に自動再読み込みされます…
+  </div>
+
+  <div class="btns">
+    <button onclick="location.reload()" class="btn btn-primary">🔄 すぐに再読み込み</button>
+    <a href="/status.html" class="btn btn-secondary">📊 稼働状況</a>
+  </div>
+
+  <div class="links">
+    <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】503エラー報告">📨 サポート</a>·
+    <a href="tel:08051683303">📞 080-5168-3303</a>
+  </div>
+</div>
+</body>
+</html>
