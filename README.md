@@ -84,13 +84,71 @@ PORT=3000
 | `business-card.html` | 名刺デザイン (A4 10面付け) |
 | `talk-script.html` | 飛び込み営業トーク台本 (A4 1枚) |
 
-### 業界別 LP ・ ツール
+### 業界別 LP (全 8 業態)
 | ファイル | 用途 |
 |---|---|
 | `bar.html` | バー業界専用 LP (HUB/キャストバー特化・ダークテーマ+ゴールド) |
 | `izakaya.html` | 居酒屋業態専用 LP (大型店/チェーン対応・ブラウン+オレンジ) |
 | `cafe.html` | カフェ業態専用 LP (早朝/留学生対応・エメラルドグリーン) |
-| `pricing-simulator.html` | 料金シミュレーター (3スライダーでリアルタイム年間節約額) |
+| `lounge.html` | 会員制ラウンジ専用 LP (VIP指名管理・紫×金) |
+| `snack.html` | スナック専用 LP (ママ運営/LINE完結・ピンク×ローズ) |
+| `karaoke.html` | カラオケ専用 LP (24h/チェーン・ブルー×シアン) |
+| `club.html` | ナイトクラブ専用 LP (DJ/バウンサー・パープル×ネオン) |
+| `dining-bar.html` | ダイニングバー専用 LP (多能工対応・シアン×ティール) |
+
+### 競合比較 LP (3 種)
+| ファイル | 用途 |
+|---|---|
+| `vs-airshift.html` | vs Airシフト 詳細比較 (大型チェーン vs 個人店) |
+| `vs-shiftee.html` | vs Shiftee 比較 (多機能 vs 飲食特化) |
+| `vs-freee.html` | vs freee 比較 (補完関係・両方推奨) |
+
+### 機能特化 LP
+| ファイル | 用途 |
+|---|---|
+| `features/index.html` | 機能一覧ハブ (8 機能カードグリッド) |
+| `features/gps.html` | GPS 打刻機能 (位置精度±50m / プライバシー設計) |
+| `features/labor-law.html` | 労基法自動チェック 8 項目 (社労士監修) |
+| `features/multi-language.html` | 多言語 (日英中韓越 5 言語) |
+
+### ナレッジ・コンテンツ
+| ファイル | 用途 |
+|---|---|
+| `guide.html` | 完全ガイド 2026 (8章 30+表 経営ノウハウ) |
+| `glossary.html` | 用語集 (50+ 用語 5 カテゴリ 検索付き) |
+| `pricing-simulator.html` | 節約額シミュレーター |
+| `pricing.html` | 料金プラン (月/年 + 競合比較 + FAQ + 返金保証) |
+| `testimonials.html` | お客様の声 16 件 (業態フィルタ + AggregateRating 4.8) |
+| `free-templates.html` | 無料 Excel テンプレート DL |
+| `tutorials.html` | 動画チュートリアル 32 本 (5 カテゴリ) |
+| `mobile-app.html` | PWA インストールガイド (3 OS) |
+| `webinar.html` | 無料ウェビナー (4 開催予定 + 過去 6 件) |
+| `changelog.html` | 更新履歴 (v2.0.0 〜 v2.5.0) |
+| `community.html` | コミュニティ (LINE/Slack/YouTube) |
+| `onboarding.html` | 5 分で始める 3 ステップガイド |
+
+### Enterprise / B2B
+| ファイル | 用途 |
+|---|---|
+| `enterprise.html` | 大規模チェーン向け Enterprise プラン (10 店舗以上 / SLA 99.99%) |
+| `partner-program.html` | パートナープログラム (Bronze〜Platinum 4 ティア) |
+| `integrations.html` | 連携サービス 20+ (freee/弥生/LINE/Slack/Stripe/Zapier 他) |
+| `api-docs.html` | API ドキュメント (REST v1) |
+| `security.html` | セキュリティ・コンプライアンス (GDPR/個人情報保護法) |
+
+### PR / メディア
+| ファイル | 用途 |
+|---|---|
+| `press-release.html` | プレスリリース 5 件 |
+| `media-kit.html` | メディアキット (ファクトシート + 紹介文 3 種) |
+| `search.html` | サイト内検索 (全 36 ページ横断 + WebSite SearchAction schema) |
+
+### 法的ページ (Stripe 審査必須)
+| ファイル | 用途 |
+|---|---|
+| `legal/terms.html` | 利用規約 |
+| `legal/privacy.html` | プライバシーポリシー |
+| `legal/specified-commercial.html` | 特定商取引法に基づく表記 |
 
 ### システムページ
 | ファイル | 用途 |
@@ -99,6 +157,7 @@ PORT=3000
 | `500.html` | 500 サーバーエラー |
 | `503.html` | 503 メンテナンス (60秒自動再読込) |
 | `sitemap-view.html` | 管理用全ページ一覧 |
+| `stripe-setup-guide.html` | 社内専用 Stripe セットアップ手順書 (noindex) |
 
 ### サーバー & PWA
 | ファイル | 用途 |
