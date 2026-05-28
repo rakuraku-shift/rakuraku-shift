@@ -247,6 +247,38 @@ function generateLicenseCode(seed) {
   return [0, 4, 8, 12].map(i => hash.slice(i, i + 4)).join('-');
 }
 
+/* ════════════════════════════════════════════
+ * 6桁月次ライセンスコード生成 (shift.html / noru-admin.html と同じアルゴリズム)
+ * 毎月変わる店舗専用コード — 店長が管理画面にログインする際に必要
+ ════════════════════════════════════════════ */
+const _NORU_SECRET = 'NORU_PF_2025_BAR';
+function generateMonthlyLicenseCode(shopId, monthKey) {
+  if (!shopId || !monthKey) return '------';
+  const str = _NORU_SECRET + '::' + shopId + '::' + monthKey;
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) + h) ^ str.charCodeAt(i);
+    h = h >>> 0;
+  }
+  const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let k = 0; k < 6; k++) {
+    code += CHARS[h % CHARS.length];
+    h = Math.floor(h / CHARS.length);
+  }
+  return code;
+}
+function _currentMonthKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+function _nextMonthKey() {
+  const d = new Date();
+  let y = d.getFullYear(), m = d.getMonth() + 2;
+  if (m > 12) { m = 1; y++; }
+  return y + '-' + String(m).padStart(2, '0');
+}
+
 async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
   if (!emailTransporter) {
     console.warn('[email] EMAIL_USER 未設定 — ライセンスコードメール送信スキップ');
@@ -260,10 +292,18 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
     ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=2&color=4F46E5&data=${encodeURIComponent(shopUrl)}`
     : '';
 
+  /* 🆕 6桁の月次ライセンスコード (シフト管理画面へのログインに必要) */
+  const thisMonth = _currentMonthKey();
+  const nextMonth = _nextMonthKey();
+  const monthlyCodeNow  = shopId ? generateMonthlyLicenseCode(shopId, thisMonth) : '------';
+  const monthlyCodeNext = shopId ? generateMonthlyLicenseCode(shopId, nextMonth) : '------';
+  const [thisY, thisM] = thisMonth.split('-');
+  const [nextY, nextM] = nextMonth.split('-');
+
   await emailTransporter.sendMail({
     from: process.env.EMAIL_USER,
     to,
-    subject: '[RAKURAKU] ご登録ありがとうございます — 店舗専用URLとQRコード',
+    subject: '[RAKURAKU] ご登録ありがとうございます — 6桁ログインコード + 専用URL',
     html: `
       <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
         <h2 style="color:#4F46E5;margin:0 0 16px;">RAKURAKU へようこそ${shopName ? `（${shopName} 様）` : ''}</h2>
@@ -278,9 +318,34 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
         </div>
         ` : ''}
 
-        <div style="background:#EEF2FF;border:2px dashed #4F46E5;padding:20px;margin:24px 0;text-align:center;border-radius:12px;">
-          <div style="font-size:12px;color:#6B7280;margin-bottom:8px;letter-spacing:.05em;">ライセンスコード</div>
-          <div style="font-size:22px;font-weight:900;letter-spacing:.1em;color:#1E293B;font-family:monospace;">${licenseCode}</div>
+        <!-- 🔐 6桁ログインコード (毎月変わる店長専用パスワード) -->
+        ${shopId ? `
+        <div style="background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border:3px solid #F59E0B;padding:24px;margin:24px 0;border-radius:14px;">
+          <div style="text-align:center;margin-bottom:14px;">
+            <div style="font-size:24px;margin-bottom:6px;">🔐</div>
+            <div style="font-size:14px;color:#92400E;font-weight:900;">店長専用 ログインコード (毎月変わります)</div>
+          </div>
+          <div style="background:#fff;border-radius:10px;padding:18px;text-align:center;margin-bottom:12px;">
+            <div style="font-size:11px;color:#B45309;font-weight:800;letter-spacing:.04em;margin-bottom:4px;">📅 ${parseInt(thisY)}年${parseInt(thisM)}月分</div>
+            <div style="font-size:36px;font-weight:900;letter-spacing:.3em;color:#78350F;font-family:'Courier New',monospace;">${monthlyCodeNow}</div>
+          </div>
+          <div style="background:#fff;border-radius:10px;padding:14px;text-align:center;opacity:.85;">
+            <div style="font-size:10px;color:#B45309;font-weight:800;letter-spacing:.04em;margin-bottom:3px;">📅 ${parseInt(nextY)}年${parseInt(nextM)}月分 (先行発行)</div>
+            <div style="font-size:24px;font-weight:900;letter-spacing:.25em;color:#78350F;font-family:'Courier New',monospace;">${monthlyCodeNext}</div>
+          </div>
+          <div style="font-size:11px;color:#78350F;margin-top:14px;line-height:1.7;background:rgba(245,158,11,.1);padding:10px;border-radius:8px;">
+            💡 <strong>このコードはシフト管理画面に初回ログインする際に必要です</strong><br>
+            ※ コードはお店ごと / 月ごとに固有です (他店では使えません)<br>
+            ※ 翌月になったら新しいコードを使用してください<br>
+            ※ コードを忘れた場合: <a href="mailto:koizumishota0323@gmail.com" style="color:#B45309;">代表 (小泉) へ連絡</a>
+          </div>
+        </div>
+        ` : ''}
+
+        <div style="background:#EEF2FF;border:2px dashed #4F46E5;padding:18px;margin:24px 0;text-align:center;border-radius:12px;">
+          <div style="font-size:11px;color:#6B7280;margin-bottom:6px;letter-spacing:.05em;">永続ライセンスコード (Stripe決済用)</div>
+          <div style="font-size:18px;font-weight:900;letter-spacing:.1em;color:#1E293B;font-family:monospace;">${licenseCode}</div>
+          <div style="font-size:10px;color:#94A3B8;margin-top:6px;">※ 課金管理用。通常は使いません</div>
         </div>
 
         <h3 style="color:#0F172A;margin-top:24px;font-size:16px;">🔗 店長専用URL (ブックマーク推奨)</h3>
@@ -1496,6 +1561,19 @@ app.get('/api/webhook/diagnose', (req, res) => {
  * 🔁 歓迎メール再送 API (代表専用)
  * 過去の登録者にメール再送 + オンボーディング自動メール再スケジュール
  ════════════════════════════════════════════ */
+
+/* 6桁ライセンスコード確認API (店舗ID指定で即取得) */
+app.get('/api/admin/license-code/:shopId', (req, res) => {
+  const shopId = req.params.shopId;
+  if (!shopId) return res.status(400).json({ error: 'shopId 必須' });
+  res.json({
+    shopId,
+    currentMonth: _currentMonthKey(),
+    currentCode: generateMonthlyLicenseCode(shopId, _currentMonthKey()),
+    nextMonth: _nextMonthKey(),
+    nextCode: generateMonthlyLicenseCode(shopId, _nextMonthKey()),
+  });
+});
 
 /* 全サブスク一覧 (再送先選択用) */
 app.get('/api/admin/subscriptions', (req, res) => {
