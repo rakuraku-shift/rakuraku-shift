@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5 分で始める RAKURAKU | オンボーディング</title>
+<meta name="description" content="登録から実運用まで 5 分で完了するインタラクティブガイド。3 ステップで RAKURAKU を使い始めよう。">
+<meta name="theme-color" content="#22C55E">
+<link rel="canonical" href="https://rakuraku-shift.com/onboarding.html">
+<meta property="og:title" content="5 分で始める | RAKURAKU">
+<meta property="og:description" content="3 ステップで RAKURAKU を使い始めよう">
+<meta property="og:image" content="https://rakuraku-shift.com/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="RAKURAKU オンボーディング">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"HowTo","name":"RAKURAKU を 5 分で始める","totalTime":"PT5M","step":[
+  {"@type":"HowToStep","name":"アカウント作成","text":"メールアドレスで登録 (1 分)"},
+  {"@type":"HowToStep","name":"店舗情報入力","text":"店舗名・住所・業態を入力 (2 分)"},
+  {"@type":"HowToStep","name":"スタッフ招待","text":"スタッフの LINE / メールで招待 (2 分)"}
+]}
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;line-height:1.7;color:#333;background:#fafafa}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#22C55E;color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid #22C55E;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+header{background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff;padding:50px 20px;text-align:center}
+header h1{font-size:2.4em;margin-bottom:10px}
+nav.bc{padding:15px 20px;background:#fff;border-bottom:1px solid #eee}
+nav.bc a{color:#22C55E;text-decoration:none}
+.progress{max-width:800px;margin:30px auto;padding:0 20px;display:flex;justify-content:space-between;gap:10px}
+.progress .step-dot{flex:1;height:8px;background:#E5E7EB;border-radius:4px;position:relative}
+.progress .step-dot.done{background:#22C55E}
+.progress .step-dot.active{background:#22C55E}
+.progress .step-label{position:absolute;top:15px;left:50%;transform:translateX(-50%);font-size:.8em;color:#666;font-weight:bold;white-space:nowrap}
+.progress .step-dot.done .step-label,.progress .step-dot.active .step-label{color:#22C55E}
+main{max-width:800px;margin:60px auto;padding:0 20px}
+.step{background:#fff;padding:40px;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,.06);margin-bottom:25px;display:none}
+.step.active{display:block;animation:fadeIn .4s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.step-num{display:inline-block;background:#22C55E;color:#fff;padding:5px 15px;border-radius:20px;font-weight:bold;margin-bottom:15px}
+.step h2{color:#22C55E;margin-bottom:15px;font-size:1.5em}
+.step p{margin-bottom:15px}
+.step ul{padding-left:25px;margin-bottom:15px}
+.step li{margin:5px 0}
+.form-group{margin:20px 0}
+.form-group label{display:block;font-weight:bold;margin-bottom:8px;color:#333}
+.form-group input,.form-group select{width:100%;padding:12px 16px;border:2px solid #E5E7EB;border-radius:8px;font-size:1em;font-family:inherit}
+.form-group input:focus,.form-group select:focus{border-color:#22C55E;outline:none}
+.btn-group{display:flex;justify-content:space-between;margin-top:30px;gap:10px}
+.btn{padding:14px 30px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:1em}
+.btn.next{background:#22C55E;color:#fff}
+.btn.back{background:#E5E7EB;color:#333}
+.btn:hover{opacity:.9}
+.complete-icon{font-size:4em;text-align:center;margin:20px 0}
+.tip{background:#F0FDF4;border-left:4px solid #22C55E;padding:15px;border-radius:6px;margin:15px 0}
+footer{background:#333;color:#fff;padding:30px 20px;text-align:center;margin-top:40px}
+footer a{color:#22C55E;margin:0 10px}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+<header>
+  <h1>🚀 5 分で始める RAKURAKU</h1>
+  <p>3 ステップで使い始め完了</p>
+</header>
+<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; オンボーディング</nav>
+
+<div class="progress" aria-label="進捗">
+  <div class="step-dot active" id="dot1"><span class="step-label">1. 登録</span></div>
+  <div class="step-dot"  id="dot2"><span class="step-label">2. 店舗</span></div>
+  <div class="step-dot"  id="dot3"><span class="step-label">3. スタッフ</span></div>
+  <div class="step-dot"  id="dot4"><span class="step-label">完了</span></div>
+</div>
+
+<main id="main">
+
+<section class="step active" id="step1">
+  <span class="step-num">STEP 1 / 3</span>
+  <h2>👤 アカウント作成 (1 分)</h2>
+  <p>メールアドレスとパスワードを入力してアカウントを作成します。</p>
+  <div class="form-group">
+    <label for="email">メールアドレス</label>
+    <input type="email" id="email" autocomplete="email" placeholder="owner@example.com">
+  </div>
+  <div class="form-group">
+    <label for="password">パスワード (8 文字以上)</label>
+    <input type="password" id="password" autocomplete="new-password" placeholder="パスワード">
+  </div>
+  <div class="tip">💡 クレジットカード登録は不要。14 日間完全無料です。</div>
+  <div class="btn-group">
+    <span></span>
+    <button class="btn next" onclick="next(1)">次へ →</button>
+  </div>
+</section>
+
+<section class="step" id="step2">
+  <span class="step-num">STEP 2 / 3</span>
+  <h2>🏪 店舗情報入力 (2 分)</h2>
+  <p>運営している店舗の情報を入力してください。後から追加・変更可能です。</p>
+  <div class="form-group">
+    <label for="storename">店舗名</label>
+    <input type="text" id="storename" placeholder="例: BAR RAKURAKU">
+  </div>
+  <div class="form-group">
+    <label for="storetype">業態</label>
+    <select id="storetype">
+      <option>バー</option><option>居酒屋</option><option>カフェ</option>
+      <option>ラウンジ</option><option>スナック</option><option>カラオケ</option>
+      <option>クラブ</option><option>ダイニングバー</option><option>その他</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="address">店舗住所</label>
+    <input type="text" id="address" autocomplete="street-address" placeholder="例: 東京都港区赤坂 1-1-1">
+  </div>
+  <div class="tip">💡 GPS 打刻を使う場合、住所から自動で緯度経度を取得します。</div>
+  <div class="btn-group">
+    <button class="btn back" onclick="back(2)">← 戻る</button>
+    <button class="btn next" onclick="next(2)">次へ →</button>
+  </div>
+</section>
+
+<section class="step" id="step3">
+  <span class="step-num">STEP 3 / 3</span>
+  <h2>👥 スタッフ招待 (2 分)</h2>
+  <p>スタッフの LINE またはメールアドレスで招待します。一括登録も可能です。</p>
+  <div class="form-group">
+    <label for="staff1">スタッフ 1 のメール / LINE</label>
+    <input type="email" id="staff1" autocomplete="email" placeholder="staff1@example.com">
+  </div>
+  <div class="form-group">
+    <label for="staff2">スタッフ 2 のメール / LINE (任意)</label>
+    <input type="email" id="staff2" autocomplete="email" placeholder="staff2@example.com">
+  </div>
+  <div class="form-group">
+    <label for="staff3">スタッフ 3 のメール / LINE (任意)</label>
+    <input type="email" id="staff3" autocomplete="email" placeholder="staff3@example.com">
+  </div>
+  <div class="tip">💡 後からマイページで CSV 一括登録もできます (10 名以上のお店向け)。</div>
+  <div class="btn-group">
+    <button class="btn back" onclick="back(3)">← 戻る</button>
+    <button class="btn next" onclick="next(3)">登録完了 ✓</button>
+  </div>
+</section>
+
+<section class="step" id="step4">
+  <div class="complete-icon">🎉</div>
+  <h2 style="text-align:center">登録完了!</h2>
+  <p style="text-align:center;font-size:1.1em;margin:20px 0">14 日間の無料トライアルが開始されました</p>
+  <div class="tip">
+    <strong>次にやること:</strong>
+    <ul>
+      <li>シフト表の初期テンプレートを作成</li>
+      <li>スタッフに招待メールが届いているか確認</li>
+      <li>初回シフトを作成して確定通知を送る</li>
+    </ul>
+  </div>
+  <div class="btn-group">
+    <a href="/shift.html" class="btn next" style="text-decoration:none;text-align:center;flex:1">シフト管理画面へ →</a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><a href="/">ホーム</a> | <a href="/getting-started.html">詳細ガイド</a> | <a href="/help.html">FAQ</a> | <a href="/demo-reservation.html">個別デモ</a></p>
+  <p style="margin-top:15px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
+</footer>
+
+<script>
+function showStep(n){
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+  for(let i=1;i<=4;i++){
+    const dot = document.getElementById('dot'+i);
+    if(i<n) dot.className='step-dot done';
+    else if(i===n) dot.className='step-dot active';
+    else dot.className='step-dot';
+    // re-add label
+    const labels=['1. 登録','2. 店舗','3. スタッフ','完了'];
+    dot.innerHTML='<span class="step-label">'+labels[i-1]+'</span>';
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function next(cur){ showStep(cur+1); }
+function back(cur){ showStep(cur-1); }
+</script>
+<script src="/help-widget.js" defer></script>
+</body>
+</html>
