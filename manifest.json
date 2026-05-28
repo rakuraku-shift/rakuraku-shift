@@ -1,7 +1,7 @@
 {
   "name": "RAKURAKU シフト管理",
   "short_name": "RAKURAKU",
-  "description": "バー・飲食店向けシフト管理プラットフォーム — 1タップシフト作成・GPS打刻・3段階自動募集",
+  "description": "バー・飲食店向けシフト管理プラットフォーム — 120店舗+導入実績・1タップシフト作成・GPS打刻・3段階自動募集",
   "start_url": "/shift.html",
   "scope": "/",
   "display": "standalone",
