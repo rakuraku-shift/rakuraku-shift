@@ -462,15 +462,30 @@
     /* ── Sales Card ── */
     .sales-input-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
     .sales-field-label { font-size:10px; font-weight:800; color:var(--slate-500); letter-spacing:.04em; margin-bottom:6px; }
-    .sales-field-inner { display:flex; align-items:center; gap:5px; }
+    .sales-field-inner {
+      display:flex; align-items:center; gap:5px;
+      max-width:100%; min-width:0; overflow:hidden;
+    }
     .sales-num-input {
-      flex:1; padding:10px 8px; border:1.5px solid var(--slate-200);
-      border-radius:var(--radius-sm); font-size:16px; font-weight:800;
+      flex:1; min-width:0; width:100%; max-width:100%;
+      padding:10px 8px; border:1.5px solid var(--slate-200);
+      border-radius:var(--radius-sm); font-size:15px; font-weight:800;
       font-family:inherit; outline:none; background:var(--slate-50);
       text-align:right; color:var(--slate-900); transition:border-color .15s;
+      box-sizing:border-box; overflow:hidden; text-overflow:ellipsis;
+      /* number input の上下矢印を消す (スペース節約) */
+      -moz-appearance:textfield;
+    }
+    .sales-num-input::-webkit-outer-spin-button,
+    .sales-num-input::-webkit-inner-spin-button {
+      -webkit-appearance:none; margin:0;
     }
     .sales-num-input:focus { border-color:var(--indigo); background:var(--white); }
-    .sales-unit { font-size:11px; color:var(--slate-500); white-space:nowrap; font-weight:600; }
+    .sales-unit { font-size:11px; color:var(--slate-500); white-space:nowrap; font-weight:600; flex-shrink:0; }
+    @media(max-width:480px){
+      .sales-num-input { font-size:14px; padding:9px 6px; }
+      .sales-unit { font-size:10px; }
+    }
     .sales-save-btn {
       width:100%; padding:11px; border:none; border-radius:var(--radius-sm);
       background:var(--indigo); color:#fff; font-size:13px; font-weight:700;
