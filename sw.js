@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v11 — Wave1-8 完了: 業界別LP 5種 + 競合比較 3種 + ガイド/用語集/PR/Media Kit + features/ + Stripe手順書 */
-var CACHE = 'rakuraku-v11';
+/* RAKURAKU Service Worker v12 — Wave1-36 完了: 業界別8 + 競合3 + features/ + 法的3 + Enterprise/Partner/Search/Community/Onboarding/Tutorials/Mobile/Webinar/Pricing/Testimonials/Changelog */
+var CACHE = 'rakuraku-v12';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -30,6 +30,23 @@ var ASSETS = [
   '/features/gps.html',
   '/features/labor-law.html',
   '/features/multi-language.html',
+  '/legal/terms.html',
+  '/legal/privacy.html',
+  '/legal/specified-commercial.html',
+  '/security.html',
+  '/integrations.html',
+  '/api-docs.html',
+  '/search.html',
+  '/community.html',
+  '/onboarding.html',
+  '/enterprise.html',
+  '/partner-program.html',
+  '/tutorials.html',
+  '/mobile-app.html',
+  '/webinar.html',
+  '/pricing.html',
+  '/testimonials.html',
+  '/changelog.html',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',
