@@ -104,6 +104,7 @@
           <a href="/izakaya.html" class="rhw-link"><span class="ic">🍺</span><div><div>居酒屋専用LP</div><div class="desc">大型店/チェーン</div></div></a>
           <a href="/cafe.html" class="rhw-link"><span class="ic">☕</span><div><div>カフェ専用LP</div><div class="desc">早朝/留学生対応</div></div></a>
           <a href="/pricing-simulator.html" class="rhw-link"><span class="ic">💰</span><div><div>節約額シミュレーター</div><div class="desc">年間いくら節約？</div></div></a>
+          <a href="/free-templates.html" class="rhw-link"><span class="ic">🎁</span><div><div>無料テンプレート</div><div class="desc">Excel シフト表 DL</div></div></a>
         </div>
         <div class="rhw-section">
           <div class="rhw-section-t">⚡ よく使う</div>
