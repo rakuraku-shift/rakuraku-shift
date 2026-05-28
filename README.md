@@ -69,17 +69,28 @@ PORT=3000
 ### 営業ページ
 | ファイル | 用途 |
 |---|---|
-| `index.html` | LP (年払い推奨) |
-| `about.html` | 会社情報 |
-| `help.html` | FAQ 46項目 |
-| `getting-started.html` | 3分セットアップ |
-| `demo-reservation.html` | デモ予約フォーム |
+| `index.html` | LP (120店舗+/お客様の声/比較表/FAQ + JSON-LD) |
+| `about.html` | 会社情報 (技術スタック・なぜRAKURAKU・沿革) |
+| `help.html` | FAQ 50+項目 (FAQPage JSON-LD) |
+| `getting-started.html` | 3分セットアップ + チェックリスト (HowTo JSON-LD) |
+| `demo-reservation.html` | デモ予約フォーム (バリデーション強化) |
 | `referral.html` | 紹介プログラム |
-| `case-studies.html` | 導入事例 (A-F店匿名) |
-| `blog.html` | ブログ7記事 |
-| `careers.html` | 採用情報 |
-| `roadmap.html` | 機能ロードマップ + 投票 |
+| `case-studies.html` | 導入事例 (9店舗詳細 + 8名のオーナーの声) |
+| `blog.html` | ブログ 8記事 (関連記事/シェア/Article JSON-LD) |
+| `careers.html` | 採用情報 (JobPosting JSON-LD) |
+| `roadmap.html` | お客様の声 + 機能投票 |
 | `status.html` | リアルタイム稼働状況 |
+| `flyer.html` | 営業チラシ (A4 2ページ / 120店舗+バッジ) |
+| `business-card.html` | 名刺デザイン (A4 10面付け) |
+| `talk-script.html` | 飛び込み営業トーク台本 (A4 1枚) |
+
+### システムページ
+| ファイル | 用途 |
+|---|---|
+| `404.html` | 404 (検索バー + ナビ4カード) |
+| `500.html` | 500 サーバーエラー |
+| `503.html` | 503 メンテナンス (60秒自動再読込) |
+| `sitemap-view.html` | 管理用全ページ一覧 |
 
 ### サーバー & PWA
 | ファイル | 用途 |
