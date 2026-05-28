@@ -833,7 +833,10 @@ function backToList() {
   document.title = 'ブログ — RAKURAKU シフト管理SaaS';
   const oldSchema = document.getElementById('article-schema');
   if (oldSchema) oldSchema.remove();
-  try { history.pushState({}, '', '/blog.html'); } catch(e) {}
+  /* URL の hash をクリア (履歴は積まない) */
+  try {
+    if (location.hash) history.replaceState({}, '', '/blog.html');
+  } catch(e) {}
   window.scrollTo(0, 0);
 }
 
