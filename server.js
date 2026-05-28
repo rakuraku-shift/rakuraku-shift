@@ -1227,6 +1227,78 @@ app.get('/api/checkout/info/:sessionId', (req, res) => {
   res.json(data);
 });
 
+// ── 🩺 Stripe 環境変数 診断エンドポイント ────────────
+/* ブラウザで /api/stripe/diagnose にアクセスすると、何が設定されてないか分かる
+   キーの値そのものは伏字化して安全 */
+app.get('/api/stripe/diagnose', (req, res) => {
+  const mask = (v) => {
+    if (!v) return null;
+    if (v.length < 12) return '***短すぎ***';
+    return v.slice(0, 8) + '...' + v.slice(-4);
+  };
+  const check = (name, val, expectedPrefix) => {
+    if (!val) return { name, status: '❌ 未設定', value: null, issue: 'Railway Variables に追加してください' };
+    if (val.startsWith('"') || val.endsWith('"') || val.startsWith("'") || val.endsWith("'")) {
+      return { name, status: '⚠ 引用符あり', value: mask(val), issue: 'クオートを削除してください' };
+    }
+    if (val !== val.trim()) {
+      return { name, status: '⚠ 前後にスペース', value: mask(val), issue: '前後のスペース/改行を削除' };
+    }
+    if (expectedPrefix && !val.startsWith(expectedPrefix)) {
+      return { name, status: `⚠ プレフィックス違い`, value: mask(val), issue: `${expectedPrefix} で始まる値が必要 (現在: ${val.slice(0,8)}...)` };
+    }
+    return { name, status: '✅ OK', value: mask(val), issue: null };
+  };
+
+  const sk = process.env.STRIPE_SECRET_KEY || '';
+  const isTest = sk.startsWith('sk_test_');
+  const isLive = sk.startsWith('sk_live_');
+  const isRestricted = sk.startsWith('rk_');
+  const mode = isTest ? 'TEST' : isLive ? 'LIVE' : isRestricted ? 'RESTRICTED' : 'UNKNOWN';
+
+  const diagnose = {
+    timestamp: new Date().toISOString(),
+    stripeMode: mode,
+    stripeReady: !!stripe,
+    variables: [
+      check('STRIPE_SECRET_KEY', process.env.STRIPE_SECRET_KEY, 'sk_'),
+      check('STRIPE_PUBLISHABLE_KEY', process.env.STRIPE_PUBLISHABLE_KEY, 'pk_'),
+      check('STRIPE_PRICE_ID_MONTHLY', process.env.STRIPE_PRICE_ID_MONTHLY, 'price_'),
+      check('STRIPE_PRICE_ID_ANNUAL', process.env.STRIPE_PRICE_ID_ANNUAL, 'price_'),
+      check('STRIPE_WEBHOOK_SECRET', process.env.STRIPE_WEBHOOK_SECRET, 'whsec_'),
+      check('BASE_URL', process.env.BASE_URL, 'http'),
+      check('EMAIL_USER', process.env.EMAIL_USER, null),
+      check('EMAIL_PASS', process.env.EMAIL_PASS, null),
+      check('LICENSE_SECRET', process.env.LICENSE_SECRET, null),
+    ],
+    advice: [],
+  };
+
+  if (!stripe) diagnose.advice.push('❌ STRIPE_SECRET_KEY が設定されていません → 決済不可');
+  if (isRestricted) diagnose.advice.push('⚠ rk_ (制限付きキー) を使用中 → sk_ (標準キー) を推奨');
+  if (isTest) diagnose.advice.push('⚠ テストモードです → 本番でカード課金したい場合 sk_live_ を使用');
+  if (!process.env.STRIPE_PRICE_ID_MONTHLY && !process.env.STRIPE_PRICE_ID_ANNUAL) {
+    diagnose.advice.push('❌ Price ID が両方未設定 → Stripe商品カタログで作成');
+  }
+  if (!process.env.BASE_URL) diagnose.advice.push('⚠ BASE_URL 未設定 → メール本文のリンクが壊れる');
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) diagnose.advice.push('⚠ メール認証情報未設定 → 歓迎メール送信されない');
+
+  /* Stripe API への実接続テスト */
+  if (stripe) {
+    stripe.balance.retrieve().then(() => {
+      diagnose.stripeConnectionTest = '✅ Stripe API 接続OK';
+      res.json(diagnose);
+    }).catch(err => {
+      diagnose.stripeConnectionTest = '❌ ' + (err.message || err.code || 'Unknown error');
+      diagnose.advice.push('❌ Stripe API 接続失敗: ' + err.message);
+      res.json(diagnose);
+    });
+  } else {
+    diagnose.stripeConnectionTest = '⏭ STRIPE_SECRET_KEY 未設定のためスキップ';
+    res.json(diagnose);
+  }
+});
+
 // ── RAKURAKU サブスクリプション API ────────────
 app.post('/api/subscribe/create', async (req, res) => {
   if (!stripe) return res.status(503).json({ error: 'Stripe is not configured. Set STRIPE_SECRET_KEY in .env' });
