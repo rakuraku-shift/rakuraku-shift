@@ -99,11 +99,18 @@
           <input type="text" class="rhw-search" placeholder="🔍 質問を検索 (例: 料金, 解約, 多言語)" oninput="window.rhwSearch(this.value)" />
         </div>
         <div class="rhw-section">
+          <div class="rhw-section-t">🎯 業界別ページ</div>
+          <a href="/bar.html" class="rhw-link"><span class="ic">🍸</span><div><div>バー専用LP</div><div class="desc">HUB/キャストバー</div></div></a>
+          <a href="/izakaya.html" class="rhw-link"><span class="ic">🍺</span><div><div>居酒屋専用LP</div><div class="desc">大型店/チェーン</div></div></a>
+          <a href="/cafe.html" class="rhw-link"><span class="ic">☕</span><div><div>カフェ専用LP</div><div class="desc">早朝/留学生対応</div></div></a>
+          <a href="/pricing-simulator.html" class="rhw-link"><span class="ic">💰</span><div><div>節約額シミュレーター</div><div class="desc">年間いくら節約？</div></div></a>
+        </div>
+        <div class="rhw-section">
           <div class="rhw-section-t">⚡ よく使う</div>
           <a href="/getting-started.html" class="rhw-link"><span class="ic">🚀</span><div><div>3分で始める</div><div class="desc">セットアップガイド</div></div></a>
           <a href="/help.html" class="rhw-link"><span class="ic">❓</span><div><div>よくある質問</div><div class="desc">FAQ 50+ 項目</div></div></a>
           <a href="/blog.html" class="rhw-link"><span class="ic">📚</span><div><div>ブログ</div><div class="desc">運営ノウハウ</div></div></a>
-          <a href="/case-studies.html" class="rhw-link"><span class="ic">📊</span><div><div>導入事例</div><div class="desc">他店の効果</div></div></a>
+          <a href="/case-studies.html" class="rhw-link"><span class="ic">📊</span><div><div>導入事例</div><div class="desc">12店舗の効果</div></div></a>
           <a href="/roadmap.html" class="rhw-link"><span class="ic">🗺</span><div><div>機能ロードマップ</div><div class="desc">要望投稿可</div></div></a>
           <a href="/status.html" class="rhw-link"><span class="ic">🚦</span><div><div>稼働状況</div><div class="desc">リアルタイム</div></div></a>
         </div>
