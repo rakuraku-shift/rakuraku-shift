@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v10 — 業界別LP 3種 + 料金シミュレーター + 価格改定 ¥4,990 */
-var CACHE = 'rakuraku-v10';
+/* RAKURAKU Service Worker v11 — Wave1-8 完了: 業界別LP 5種 + 競合比較 3種 + ガイド/用語集/PR/Media Kit + features/ + Stripe手順書 */
+var CACHE = 'rakuraku-v11';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -14,6 +14,22 @@ var ASSETS = [
   '/referral.html',
   '/case-studies.html',
   '/blog.html',
+  '/guide.html',
+  '/glossary.html',
+  '/press-release.html',
+  '/media-kit.html',
+  '/lounge.html',
+  '/snack.html',
+  '/karaoke.html',
+  '/club.html',
+  '/dining-bar.html',
+  '/vs-airshift.html',
+  '/vs-shiftee.html',
+  '/vs-freee.html',
+  '/features/',
+  '/features/gps.html',
+  '/features/labor-law.html',
+  '/features/multi-language.html',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',

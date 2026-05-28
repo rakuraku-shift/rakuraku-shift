@@ -103,8 +103,20 @@
           <a href="/bar.html" class="rhw-link"><span class="ic">🍸</span><div><div>バー専用LP</div><div class="desc">HUB/キャストバー</div></div></a>
           <a href="/izakaya.html" class="rhw-link"><span class="ic">🍺</span><div><div>居酒屋専用LP</div><div class="desc">大型店/チェーン</div></div></a>
           <a href="/cafe.html" class="rhw-link"><span class="ic">☕</span><div><div>カフェ専用LP</div><div class="desc">早朝/留学生対応</div></div></a>
+          <a href="/lounge.html" class="rhw-link"><span class="ic">💎</span><div><div>ラウンジ専用LP</div><div class="desc">会員制/VIP</div></div></a>
+          <a href="/snack.html" class="rhw-link"><span class="ic">🌸</span><div><div>スナック専用LP</div><div class="desc">ママ運営/LINE完結</div></div></a>
+          <a href="/karaoke.html" class="rhw-link"><span class="ic">🎤</span><div><div>カラオケ専用LP</div><div class="desc">24h/チェーン</div></div></a>
+          <a href="/club.html" class="rhw-link"><span class="ic">🪩</span><div><div>クラブ専用LP</div><div class="desc">DJ/バウンサー</div></div></a>
+          <a href="/dining-bar.html" class="rhw-link"><span class="ic">🍽</span><div><div>ダイニングバー</div><div class="desc">多能工対応</div></div></a>
           <a href="/pricing-simulator.html" class="rhw-link"><span class="ic">💰</span><div><div>節約額シミュレーター</div><div class="desc">年間いくら節約？</div></div></a>
           <a href="/free-templates.html" class="rhw-link"><span class="ic">🎁</span><div><div>無料テンプレート</div><div class="desc">Excel シフト表 DL</div></div></a>
+        </div>
+        <div class="rhw-section">
+          <div class="rhw-section-t">📚 ナレッジ / ガイド</div>
+          <a href="/guide.html" class="rhw-link"><span class="ic">📖</span><div><div>完全ガイド 2026</div><div class="desc">8章 経営ノウハウ</div></div></a>
+          <a href="/glossary.html" class="rhw-link"><span class="ic">📚</span><div><div>用語集 50+</div><div class="desc">労基/SaaS用語</div></div></a>
+          <a href="/features/" class="rhw-link"><span class="ic">⚙️</span><div><div>機能一覧</div><div class="desc">全 8 機能</div></div></a>
+          <a href="/vs-airshift.html" class="rhw-link"><span class="ic">🆚</span><div><div>競合比較</div><div class="desc">Airシフト/Shiftee/freee</div></div></a>
         </div>
         <div class="rhw-section">
           <div class="rhw-section-t">⚡ よく使う</div>
