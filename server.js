@@ -15,17 +15,31 @@ const stripe = process.env.STRIPE_SECRET_KEY
 
 // ── Nodemailer (optional — requires EMAIL_USER in .env) ──
 const nodemailer = process.env.EMAIL_USER ? require('nodemailer') : null;
+const _smtpPort = parseInt(process.env.SMTP_PORT || '465');
 const emailTransporter = nodemailer
   ? nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: (process.env.SMTP_PORT === '465'),
+      port: _smtpPort,
+      secure: (_smtpPort === 465),  // 465 = SSL, 587 = STARTTLS
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      /* Railway 等のクラウド環境向け接続パラメータ */
+      connectionTimeout: 30000,    // 30秒 (デフォルト10秒は短すぎる)
+      greetingTimeout:   30000,
+      socketTimeout:     60000,
+      pool: true,                  // コネクションプーリング有効
+      maxConnections: 3,
+      maxMessages: 100,
+      tls: {
+        rejectUnauthorized: false, // Railway の証明書チェーン問題回避
+      },
     })
   : null;
+if (emailTransporter) {
+  console.log(`[email] Nodemailer 設定: ${process.env.SMTP_HOST || 'smtp.gmail.com'}:${_smtpPort} (secure=${_smtpPort === 465})`);
+}
 
 // In-memory checkout sessions: sessionId → { tableNo, orders, total, stripeUrl, status, createdAt }
 const checkoutSessions = new Map();
