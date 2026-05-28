@@ -755,6 +755,44 @@ function openArticle(id) {
   /* URL hash 更新 (ブラウザバック対応) */
   try { history.pushState({ articleId: id }, '', '#' + id); } catch(e) {}
 
+  /* 動的 Article JSON-LD 追加 (Google ニュース・リッチリザルト対応) */
+  try {
+    const oldSchema = document.getElementById('article-schema');
+    if (oldSchema) oldSchema.remove();
+    const schema = document.createElement('script');
+    schema.type = 'application/ld+json';
+    schema.id = 'article-schema';
+    schema.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      'headline': post.title,
+      'description': post.excerpt || '',
+      'datePublished': post.date,
+      'dateModified': post.date,
+      'author': {
+        '@type': 'Person',
+        'name': '小泉 咲太',
+        'url': 'https://rakuraku-shift-production.up.railway.app/about.html'
+      },
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'RAKURAKU',
+        'logo': {
+          '@type': 'ImageObject',
+          'url': 'https://rakuraku-shift-production.up.railway.app/icon-512.png'
+        }
+      },
+      'mainEntityOfPage': {
+        '@type': 'WebPage',
+        '@id': articleUrl
+      }
+    });
+    document.head.appendChild(schema);
+
+    /* ページタイトルも記事に合わせて更新 (SEO + UX) */
+    document.title = post.title + ' — RAKURAKU ブログ';
+  } catch(e) { console.warn('[schema] update failed:', e); }
+
   window.scrollTo(0, 0);
 }
 
@@ -791,6 +829,11 @@ window.addEventListener('popstate', function(e) {
 function backToList() {
   document.getElementById('list-view').style.display = 'block';
   document.getElementById('article-view').classList.remove('show');
+  /* タイトル & schema を一覧用に戻す */
+  document.title = 'ブログ — RAKURAKU シフト管理SaaS';
+  const oldSchema = document.getElementById('article-schema');
+  if (oldSchema) oldSchema.remove();
+  try { history.pushState({}, '', '/blog.html'); } catch(e) {}
   window.scrollTo(0, 0);
 }
 
