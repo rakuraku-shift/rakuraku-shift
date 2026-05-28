@@ -4568,9 +4568,19 @@
   /* 旧 renderCalendar エイリアス（他箇所から呼ばれる） */
   function renderCalendar() { renderDateStrip(); }
 
+  /* 再描画時の月変化を判定するため、前回描画した月を記憶 */
+  let _lastRenderedYear = null;
+  let _lastRenderedMonth = null;
+
   function renderDateStrip() {
     document.getElementById('cal-title').textContent = `${currentYear}年 ${currentMonth + 1}月`;
     const strip = document.getElementById('date-strip');
+    const outer = document.getElementById('date-strip-outer');
+
+    /* 同じ月を再描画する場合は スクロール位置を保持 (タップ毎にリセットさせない) */
+    const isSameMonth = (_lastRenderedYear === currentYear && _lastRenderedMonth === currentMonth);
+    const preserveScrollLeft = isSameMonth && outer ? outer.scrollLeft : null;
+
     strip.innerHTML = '';
 
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -4630,17 +4640,29 @@
       strip.appendChild(el);
     }
 
-    /* 今日 or 最初の選択可能日をストリップ中央付近にスクロール */
-    const target = todayEl || firstSelectableEl;
-    if (target) {
+    /* スクロール位置: 同じ月の再描画なら保持 / 月変わりなら今日付近にセンタリング */
+    if (preserveScrollLeft !== null) {
+      /* 同じ月の再描画 (日付タップ等) → スクロール位置をそのまま維持 */
       requestAnimationFrame(() => {
-        const outer = document.getElementById('date-strip-outer');
-        const outerW = outer.clientWidth;
-        const elLeft = target.offsetLeft;
-        const elW    = target.offsetWidth;
-        outer.scrollLeft = elLeft - outerW / 2 + elW / 2;
+        if (outer) outer.scrollLeft = preserveScrollLeft;
       });
+    } else {
+      /* 初回描画 or 月切替 → 今日 or 最初の選択可能日にスクロール */
+      const target = todayEl || firstSelectableEl;
+      if (target) {
+        requestAnimationFrame(() => {
+          if (!outer) return;
+          const outerW = outer.clientWidth;
+          const elLeft = target.offsetLeft;
+          const elW    = target.offsetWidth;
+          outer.scrollLeft = elLeft - outerW / 2 + elW / 2;
+        });
+      }
     }
+
+    /* 描画後に月を記録 (次回比較用) */
+    _lastRenderedYear = currentYear;
+    _lastRenderedMonth = currentMonth;
   }
   /* ════════════════════════════════════════
      名前サジェスト（オートコンプリート）
