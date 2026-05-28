@@ -258,4 +258,34 @@
     <priority>0.5</priority>
     <lastmod>2026-05-29</lastmod>
   </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/security.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/integrations.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/api-docs.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.65</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/search.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/community.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
 </urlset>
