@@ -1072,7 +1072,7 @@
         '<div class="sc-qr-section">'+
           '<div style="font-size:9px;font-weight:700;color:var(--slate-5);letter-spacing:.08em;margin-bottom:8px;">📱 QRコード（スタッフ配布用）</div>'+
           '<div class="sc-qr-row">'+
-            '<div class="sc-qr-img"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&color=4F46E5&data='+encodeURIComponent(window.location.origin+'/shift.html?shop='+encodeURIComponent(s.shopId))+'" alt="QR" /></div>'+
+            '<div class="sc-qr-img"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&color=4F46E5&data='+encodeURIComponent(window.location.origin+'/shift.html?shop='+encodeURIComponent(s.shopId))+'" alt="店舗専用QRコード (スマホで読み取り)" /></div>'+
             '<div class="sc-qr-actions">'+
               '<button class="sc-qr-btn sc-qr-btn--download" onclick="downloadShopQR(\''+encodeURIComponent(s.shopId)+'\',\''+esc(s.shopName||s.shopId)+'\')">⬇️ PNG ダウンロード</button>'+
               '<button class="sc-qr-btn sc-qr-btn--print" onclick="printShopQR(\''+encodeURIComponent(s.shopId)+'\',\''+esc(s.shopName||s.shopId)+'\')">🖨️ A4印刷（店内掲示用）</button>'+
@@ -1137,7 +1137,7 @@
       '<div class="logo">RAKURAKU</div>'+
       '<div class="shop-name">'+esc(shopName)+'</div>'+
       '<div class="title">📱 シフト希望は <strong>このQRコード</strong> から</div>'+
-      '<div class="qr-frame"><img src="'+qrSrc+'" alt="QR"></div>'+
+      '<div class="qr-frame"><img src="'+qrSrc+'" alt="店舗専用QRコード (スマホで読み取り)"></div>'+
       '<div class="steps">'+
         '<div class="steps-title">📋 スタッフのみなさんへ</div>'+
         '<ol>'+
