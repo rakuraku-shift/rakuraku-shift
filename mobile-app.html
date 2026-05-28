@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>スマホアプリ (PWA) | RAKURAKU シフト管理</title>
+<meta name="description" content="iOS/Android アプリストア不要で使える RAKURAKU PWA。インストール方法・オフライン対応・プッシュ通知を解説。">
+<meta name="theme-color" content="#8B5CF6">
+<link rel="canonical" href="https://rakuraku-shift.com/mobile-app.html">
+<meta property="og:title" content="スマホアプリ (PWA) | RAKURAKU">
+<meta property="og:description" content="App Store/Play 不要 — ブラウザから 5 秒でインストール">
+<meta property="og:image" content="https://rakuraku-shift.com/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="RAKURAKU PWA アプリ">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"ホーム","item":"https://rakuraku-shift.com/"},
+  {"@type":"ListItem","position":2,"name":"スマホアプリ","item":"https://rakuraku-shift.com/mobile-app.html"}
+]}
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;line-height:1.7;color:#333;background:#fafafa}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#8B5CF6;color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid #8B5CF6;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+header{background:linear-gradient(135deg,#8B5CF6,#A78BFA);color:#fff;padding:60px 20px;text-align:center}
+header h1{font-size:2.5em;margin-bottom:10px}
+nav.bc{padding:15px 20px;background:#fff;border-bottom:1px solid #eee}
+nav.bc a{color:#8B5CF6;text-decoration:none}
+main{max-width:900px;margin:30px auto;padding:0 20px}
+.section{background:#fff;padding:30px;margin-bottom:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section h2{color:#8B5CF6;margin-bottom:15px;padding-bottom:8px;border-bottom:2px solid #8B5CF6}
+.os-tabs{display:flex;gap:10px;margin-bottom:20px}
+.os-tab{flex:1;padding:15px;background:#F3E8FF;border:2px solid #DDD6FE;border-radius:8px;text-align:center;cursor:pointer;font-weight:bold;color:#7C3AED}
+.os-tab.active{background:#8B5CF6;color:#fff;border-color:#8B5CF6}
+.os-content{display:none}
+.os-content.active{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.step{background:#F8FAFC;padding:18px;margin:10px 0;border-radius:8px;border-left:4px solid #8B5CF6;display:flex;gap:15px;align-items:flex-start}
+.step .num{background:#8B5CF6;color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px}
+.feat .item{background:#F3E8FF;padding:18px;border-radius:8px;text-align:center}
+.feat .icon{font-size:2em;margin-bottom:8px}
+.feat h3{color:#7C3AED;font-size:1em;margin-bottom:5px}
+.feat p{font-size:.85em;color:#666}
+.qa{background:#FEF3C7;padding:15px;border-radius:8px;border-left:4px solid #F59E0B;margin:15px 0}
+footer{background:#333;color:#fff;padding:30px 20px;text-align:center;margin-top:40px}
+footer a{color:#A78BFA;margin:0 10px}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+<header>
+  <h1>📱 スマホアプリ (PWA)</h1>
+  <p>App Store/Play Store 不要 — 5 秒でインストール</p>
+</header>
+<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; スマホアプリ</nav>
+
+<main id="main">
+
+<section class="section">
+  <h2>🚀 RAKURAKU が PWA を選ぶ理由</h2>
+  <div class="feat">
+    <div class="item"><div class="icon">⚡</div><h3>即時インストール</h3><p>アプリストア承認待ちなし</p></div>
+    <div class="item"><div class="icon">💾</div><h3>容量わずか 5MB</h3><p>普通のアプリの 10 分の 1</p></div>
+    <div class="item"><div class="icon">🔄</div><h3>自動アップデート</h3><p>常に最新版</p></div>
+    <div class="item"><div class="icon">📶</div><h3>オフライン動作</h3><p>電波弱くてもシフト確認</p></div>
+    <div class="item"><div class="icon">🔔</div><h3>プッシュ通知</h3><p>シフト確定を即通知</p></div>
+    <div class="item"><div class="icon">🔐</div><h3>同等のセキュリティ</h3><p>ネイティブアプリと同じ</p></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>📲 インストール方法</h2>
+  <div class="os-tabs">
+    <div class="os-tab active" onclick="switchOS('ios',this)">🍎 iPhone</div>
+    <div class="os-tab" onclick="switchOS('android',this)">🤖 Android</div>
+    <div class="os-tab" onclick="switchOS('windows',this)">💻 Windows / Mac</div>
+  </div>
+
+  <div class="os-content active" id="ios">
+    <div class="step"><div class="num">1</div><div><strong>Safari でアクセス</strong><br>https://rakuraku-shift.com/ を Safari で開く (Chrome 不可)</div></div>
+    <div class="step"><div class="num">2</div><div><strong>共有ボタンをタップ</strong><br>画面下部の <strong>□↑ アイコン</strong> をタップ</div></div>
+    <div class="step"><div class="num">3</div><div><strong>「ホーム画面に追加」を選択</strong><br>メニューを下にスクロールして見つける</div></div>
+    <div class="step"><div class="num">4</div><div><strong>「追加」をタップ</strong><br>右上の「追加」ボタンで完了</div></div>
+    <div class="step"><div class="num">5</div><div><strong>ホーム画面から起動</strong><br>通常のアプリと同じように起動できます</div></div>
+    <div class="qa">📝 <strong>iOS 16.4 以降</strong>でプッシュ通知に対応。「設定 → 通知」から RAKURAKU を有効化してください。</div>
+  </div>
+
+  <div class="os-content" id="android">
+    <div class="step"><div class="num">1</div><div><strong>Chrome でアクセス</strong><br>https://rakuraku-shift.com/ を Chrome で開く</div></div>
+    <div class="step"><div class="num">2</div><div><strong>右上メニューを開く</strong><br>「⋮」(3 点リーダー) をタップ</div></div>
+    <div class="step"><div class="num">3</div><div><strong>「アプリをインストール」を選択</strong><br>もしくは「ホーム画面に追加」</div></div>
+    <div class="step"><div class="num">4</div><div><strong>確認ダイアログで「インストール」</strong><br>これでアプリ一覧に追加されます</div></div>
+    <div class="qa">🔔 通知許可は初回起動時にダイアログで聞かれます。「許可」を選択してください。</div>
+  </div>
+
+  <div class="os-content" id="windows">
+    <div class="step"><div class="num">1</div><div><strong>Chrome / Edge でアクセス</strong><br>https://rakuraku-shift.com/ を開く</div></div>
+    <div class="step"><div class="num">2</div><div><strong>アドレスバー右端のインストールアイコン</strong><br>「↓」または「⊕」アイコンをクリック</div></div>
+    <div class="step"><div class="num">3</div><div><strong>「インストール」をクリック</strong><br>デスクトップにショートカット作成</div></div>
+    <div class="qa">💻 Mac/Windows でも完全に動作。タブを開きっぱなしせずに独立したウィンドウで使えます。</div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>🔋 オフライン対応</h2>
+  <p>地下のバー・厨房など電波の弱いところでも、過去のシフトデータをキャッシュから表示可能。打刻も一時保存され、電波復帰時に自動送信されます。</p>
+  <ul style="padding-left:25px;margin-top:10px">
+    <li>過去 30 日分のシフト確認</li>
+    <li>オフライン打刻 (復帰時 sync)</li>
+    <li>FAQ 閲覧</li>
+  </ul>
+</section>
+
+<section class="section">
+  <h2>🆚 ネイティブアプリとの比較</h2>
+  <table style="width:100%;border-collapse:collapse">
+    <thead><tr style="background:#8B5CF6;color:#fff"><th style="padding:10px;text-align:left">項目</th><th style="padding:10px">PWA (RAKURAKU)</th><th style="padding:10px">ネイティブ</th></tr></thead>
+    <tbody>
+      <tr><td style="padding:10px;border-bottom:1px solid #eee">インストール</td><td style="padding:10px;text-align:center;border-bottom:1px solid #eee">5 秒</td><td style="padding:10px;text-align:center;border-bottom:1px solid #eee">30 秒〜数分</td></tr>
+      <tr><td style="padding:10px;border-bottom:1px solid #eee">容量</td><td style="padding:10px;text-align:center;border-bottom:1px solid #eee">5MB</td><td style="padding:10px;text-align:center;border-bottom:1px solid #eee">50MB+</td></tr>
+      <tr><td style="padding:10px;border-bottom:1px solid #eee">アップデート</td><td style="padding:10px;text-align:center;border-bottom:1px solid #eee">自動</td><td style="padding:10px;text-align:center;border-bottom:1px solid #eee">手動</td></tr>
+      <tr><td style="padding:10px;border-bottom:1px solid #eee">プッシュ通知</td><td style="padding:10px;text-align:center;border-bottom:1px solid #eee">○</td><td style="padding:10px;text-align:center;border-bottom:1px solid #eee">○</td></tr>
+      <tr><td style="padding:10px;border-bottom:1px solid #eee">オフライン</td><td style="padding:10px;text-align:center;border-bottom:1px solid #eee">○</td><td style="padding:10px;text-align:center;border-bottom:1px solid #eee">○</td></tr>
+      <tr><td style="padding:10px">カメラ</td><td style="padding:10px;text-align:center">○ (QR読取)</td><td style="padding:10px;text-align:center">○</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div style="background:linear-gradient(135deg,#8B5CF6,#A78BFA);color:#fff;padding:40px;border-radius:12px;text-align:center;margin-top:30px">
+  <h2 style="color:#fff;margin-bottom:10px">今すぐスマホで試す</h2>
+  <p>QR コードを読み取って 5 秒でインストール</p>
+  <p style="margin-top:15px;font-size:.9em;opacity:.9">スマホで <strong>https://rakuraku-shift.com/</strong> を開いてください</p>
+</div>
+
+</main>
+
+<footer>
+  <p><a href="/">ホーム</a> | <a href="/tutorials.html">動画</a> | <a href="/help.html">FAQ</a> | <a href="/about.html">サービス</a></p>
+  <p style="margin-top:15px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
+</footer>
+
+<script>
+function switchOS(os,btn){
+  document.querySelectorAll('.os-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.os-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById(os).classList.add('active');
+}
+</script>
+<script src="/help-widget.js" defer></script>
+</body>
+</html>
