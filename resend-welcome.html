@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>歓迎メール再送 — RAKURAKU (代表専用)</title>
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#4F46E5">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;
+        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:var(--slate-50);min-height:100vh;line-height:1.7;}
+
+  .nav{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:18px 24px;}
+  .nav-inner{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+
+  .container{max-width:900px;margin:0 auto;padding:30px 24px;}
+
+  .warning{background:#FEE2E2;border:1.5px solid var(--rose);border-radius:12px;padding:16px 20px;margin-bottom:24px;font-size:13px;color:#7F1D1D;font-weight:700;}
+
+  .card{background:#fff;border-radius:14px;padding:24px;margin-bottom:18px;border:1.5px solid var(--slate-100);box-shadow:0 4px 16px rgba(0,0,0,.04);}
+  .card h2{font-size:16px;font-weight:900;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+
+  .sub-item{display:flex;justify-content:space-between;align-items:center;padding:14px;border:1.5px solid var(--slate-100);border-radius:10px;margin-bottom:8px;background:var(--slate-50);}
+  .sub-info{flex:1;}
+  .sub-name{font-size:14px;font-weight:900;}
+  .sub-meta{font-size:11px;color:var(--slate-500);margin-top:3px;}
+  .sub-meta code{background:#fff;padding:2px 7px;border-radius:5px;font-size:10px;color:var(--indigo);}
+
+  .btn{padding:9px 16px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;border:none;}
+  .btn-primary{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;}
+  .btn-danger{background:linear-gradient(135deg,var(--rose),#DC2626);color:#fff;}
+  .btn-block{display:block;width:100%;padding:14px;font-size:14px;}
+
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:11px;font-weight:800;color:var(--slate-700);margin-bottom:5px;}
+  .field input{width:100%;padding:11px 13px;border:1.5px solid var(--slate-200);border-radius:8px;font-size:13px;font-family:inherit;background:var(--slate-50);outline:none;}
+
+  .result{padding:14px;border-radius:10px;margin-top:12px;font-size:12px;font-weight:700;line-height:1.7;display:none;}
+  .result.ok{background:#DCFCE7;color:#15803D;display:block;}
+  .result.err{background:#FEE2E2;color:#991B1B;display:block;}
+
+  .empty{text-align:center;padding:30px;color:var(--slate-500);font-size:13px;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo">📧 歓迎メール再送ツール</div>
+    <a href="/noru-admin.html" style="color:#fff;font-size:12px;text-decoration:none;font-weight:700;">← 管理画面</a>
+  </div>
+</header>
+
+<div class="container">
+
+<div class="warning">
+  🔒 <strong>代表 (恋ちゃん) 専用</strong> — お客様にURLを教えないでください。
+</div>
+
+<!-- 個別再送 -->
+<div class="card">
+  <h2>🎯 個別に再送 (推奨)</h2>
+  <div class="field">
+    <label>店舗ID または メールアドレス</label>
+    <input type="text" id="target-input" placeholder="例: rose-vlii もしくは customer@example.com" />
+  </div>
+  <button class="btn btn-primary btn-block" onclick="resendOne()">📨 この登録者に再送</button>
+  <div class="result" id="result-one"></div>
+</div>
+
+<!-- サブスク一覧 -->
+<div class="card">
+  <h2>📋 登録者一覧 (クリックで再送)</h2>
+  <div id="sub-list">
+    <div class="empty">読み込み中...</div>
+  </div>
+</div>
+
+<!-- 全員に再送 -->
+<div class="card" style="border:2px solid var(--rose);background:#FEF2F2;">
+  <h2 style="color:var(--rose);">⚠ 全員に一括再送 (注意)</h2>
+  <p style="font-size:12px;color:#991B1B;margin-bottom:12px;">
+    全登録者に歓迎メールを再送します。<strong>誤って実行すると重複メールが届きます</strong>。<br>
+    確認のため、下に <code>SEND-ALL</code> と入力してから実行してください。
+  </p>
+  <div class="field">
+    <label>確認テキスト</label>
+    <input type="text" id="confirm-all" placeholder="SEND-ALL と入力" />
+  </div>
+  <button class="btn btn-danger btn-block" onclick="resendAll()">⚠ 全員に再送する</button>
+  <div class="result" id="result-all"></div>
+</div>
+
+</div>
+
+<script>
+async function loadSubs() {
+  try {
+    const res = await fetch('/api/admin/subscriptions');
+    const subs = await res.json();
+    const list = document.getElementById('sub-list');
+    if (!subs.length) {
+      list.innerHTML = '<div class="empty">📭 登録者がまだいません</div>';
+      return;
+    }
+    list.innerHTML = subs.map(s => `
+      <div class="sub-item">
+        <div class="sub-info">
+          <div class="sub-name">${escapeHtml(s.shopName || '無名店')}</div>
+          <div class="sub-meta">
+            📧 ${escapeHtml(s.email || '-')} ·
+            <code>${escapeHtml(s.shopId || '-')}</code> ·
+            ${new Date(s.createdAt).toLocaleString('ja-JP')}
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="resendOneById('${s.shopId}','${s.shopName}')">📨 再送</button>
+      </div>
+    `).join('');
+  } catch(e) {
+    document.getElementById('sub-list').innerHTML = '<div class="empty">⚠ エラー: ' + e.message + '</div>';
+  }
+}
+
+async function resendOne() {
+  const target = document.getElementById('target-input').value.trim();
+  if (!target) return alert('店舗ID or メール を入力してください');
+  const isEmail = target.includes('@');
+  await doResend(isEmail ? { email: target } : { shopId: target }, 'result-one');
+}
+
+async function resendOneById(shopId, shopName) {
+  if (!confirm(`「${shopName}」に歓迎メールを再送します。よろしいですか?`)) return;
+  await doResend({ shopId }, 'result-one');
+}
+
+async function doResend(payload, resultId) {
+  const el = document.getElementById(resultId);
+  el.className = 'result';
+  el.style.display = 'block';
+  el.textContent = '送信中...';
+  try {
+    const res = await fetch('/api/admin/resend-welcome', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      el.className = 'result ok';
+      el.innerHTML = '✅ ' + data.message + '<br>📧 送信先: <strong>' + data.sent.to + '</strong> (' + data.sent.shopName + ')';
+    } else {
+      el.className = 'result err';
+      el.textContent = '❌ ' + (data.error || 'エラー');
+    }
+  } catch(e) {
+    el.className = 'result err';
+    el.textContent = '❌ ' + e.message;
+  }
+}
+
+async function resendAll() {
+  if (document.getElementById('confirm-all').value !== 'SEND-ALL') {
+    return alert('「SEND-ALL」と入力してください');
+  }
+  if (!confirm('本当に全登録者に再送しますか?')) return;
+  const el = document.getElementById('result-all');
+  el.className = 'result';
+  el.style.display = 'block';
+  el.textContent = '送信中...';
+  try {
+    const res = await fetch('/api/admin/resend-welcome-all', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok) {
+      el.className = 'result ok';
+      el.innerHTML = `✅ ${data.success} / ${data.total} 件 送信成功<br>
+        ${data.results.map(r => `${r.status} ${r.shopName} (${r.email})`).join('<br>')}`;
+    } else {
+      el.className = 'result err';
+      el.textContent = '❌ ' + (data.error || 'エラー');
+    }
+  } catch(e) {
+    el.className = 'result err';
+    el.textContent = '❌ ' + e.message;
+  }
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+document.addEventListener('DOMContentLoaded', loadSubs);
+</script>
+</body>
+</html>

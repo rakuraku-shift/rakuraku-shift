@@ -1492,6 +1492,95 @@ app.get('/api/webhook/diagnose', (req, res) => {
   res.json(result);
 });
 
+/* ════════════════════════════════════════════
+ * 🔁 歓迎メール再送 API (代表専用)
+ * 過去の登録者にメール再送 + オンボーディング自動メール再スケジュール
+ ════════════════════════════════════════════ */
+
+/* 全サブスク一覧 (再送先選択用) */
+app.get('/api/admin/subscriptions', (req, res) => {
+  try {
+    const subs = readJSON(SUBSCRIPTIONS_FILE, []);
+    res.json(subs.map((s, idx) => ({
+      index: idx,
+      shopName: s.shopName,
+      shopId: s.shopId,
+      ownerName: s.ownerName,
+      email: s.email,
+      phone: s.phone,
+      licenseCode: s.licenseCode,
+      status: s.status,
+      createdAt: s.createdAt,
+    })));
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+/* 歓迎メール再送 */
+app.post('/api/admin/resend-welcome', async (req, res) => {
+  const { shopId, email } = req.body || {};
+  try {
+    const subs = readJSON(SUBSCRIPTIONS_FILE, []);
+    /* shopId か email で検索 */
+    const target = subs.find(s =>
+      (shopId && s.shopId === shopId) ||
+      (email && s.email === email)
+    );
+    if (!target) {
+      return res.status(404).json({ error: '該当する登録が見つかりません', searched: { shopId, email } });
+    }
+    if (!target.email) {
+      return res.status(400).json({ error: 'メールアドレスが登録されていません' });
+    }
+    /* 再送 */
+    await sendLicenseEmail(target.email, target.shopName, target.licenseCode, target.shopId);
+    /* オンボーディング自動メールも再スケジュール (今日から Day 1/3/7/14/30) */
+    if (typeof scheduleOnboardingEmails === 'function') {
+      try { scheduleOnboardingEmails(target.email, target.shopName, target.ownerName, target.shopId); }
+      catch(e) { console.warn('[resend] onboarding schedule失敗:', e.message); }
+    }
+    console.log(`[resend-welcome] ${target.shopName} (${target.email}) に再送完了`);
+    res.json({
+      ok: true,
+      message: '✅ 歓迎メールを再送しました + オンボーディング5通もスケジュール',
+      sent: {
+        to: target.email,
+        shopName: target.shopName,
+        shopId: target.shopId,
+      },
+    });
+  } catch(e) {
+    console.error('[resend-welcome]', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+/* 全登録者に再送 (バッチ) */
+app.post('/api/admin/resend-welcome-all', async (req, res) => {
+  try {
+    const subs = readJSON(SUBSCRIPTIONS_FILE, []);
+    const targets = subs.filter(s => s.email);
+    const results = [];
+    for (const s of targets) {
+      try {
+        await sendLicenseEmail(s.email, s.shopName, s.licenseCode, s.shopId);
+        results.push({ shopName: s.shopName, email: s.email, status: '✅' });
+      } catch(e) {
+        results.push({ shopName: s.shopName, email: s.email, status: '❌', error: e.message });
+      }
+    }
+    res.json({
+      ok: true,
+      total: targets.length,
+      success: results.filter(r => r.status === '✅').length,
+      results,
+    });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ── RAKURAKU サブスクリプション API ────────────
 app.post('/api/subscribe/create', async (req, res) => {
   if (!stripe) return res.status(503).json({ error: 'Stripe is not configured. Set STRIPE_SECRET_KEY in .env' });
