@@ -381,7 +381,7 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
 
         <hr style="border:none;border-top:1px solid #E2E8F0;margin:24px 0;" />
         <p style="font-size:12px;color:#94A3B8;line-height:1.7;">
-          ※ 14日後に月額¥9,800（税込）の自動課金が開始されます。<br>
+          ※ 14日後に月額¥4,990（税込）の自動課金が開始されます。<br>
           ※ 解約はいつでも可能、翌月以降のご請求は発生しません。<br>
           ※ ご不明な点はこのメールに返信、または 📞 080-5168-3303 までお問い合わせください。<br>
           ※ 運営: RAKURAKU（代表 小泉 咲太）
@@ -430,7 +430,7 @@ function addShopToAdminList(shopData) {
     name:        shopData.shopName || shopData.shopId, /* noru-admin は s.name を参照 */
     shopName:    shopData.shopName, /* 互換性のため両方残す */
     contact:     shopData.ownerName || '',
-    fee:         shopData.fee || 9800,
+    fee:         shopData.fee || 4990,
     email:       shopData.email || '',
     phone:       shopData.phone || '',
     autoAdded:   true,
@@ -461,7 +461,7 @@ async function handleSubscriptionStarted(session) {
     shopId, shopName, ownerName, email, phone,
     subscriptionId: session.subscription,
     customerId:     session.customer,
-    fee: 9800,
+    fee: 4990,
   });
 
   saveSubscription({
@@ -583,13 +583,13 @@ const ONBOARDING_EMAILS = [
         </ul>
 
         <h3>📌 継続いただける場合</h3>
-        <p>特に何もしていただく必要はありません。<br>15日目から <strong>月額 ¥9,800 (税込)</strong> の課金が開始します。</p>
+        <p>特に何もしていただく必要はありません。<br>15日目から <strong>月額 ¥4,990 (税込)</strong> の課金が開始します。</p>
 
         <h3>解約をご希望の場合</h3>
         <p>このメールに <strong>「解約希望」</strong> と返信していただくか、<a href="https://rakuraku-shift-production.up.railway.app/help.html" style="color:#4F46E5;">ヘルプ</a> から解約手続きをお願いします。<br>解約理由をお聞かせいただければ、改善の参考にさせていただきます。</p>
 
         <p style="background:#DCFCE7;padding:14px;border-radius:8px;margin-top:18px;">
-          💴 <strong>年払いプラン (¥98,000・2ヶ月分お得)</strong> もご用意しています。<br>
+          💴 <strong>年払いプラン (¥49,900・2ヶ月分お得)</strong> もご用意しています。<br>
           長く使う予定があれば年払いが断然お得です。
         </p>
         <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 咲太 / koizumishota0323@gmail.com</p>
@@ -976,7 +976,7 @@ app.post('/api/admin/test-auto-add', (req, res) => {
     shopId, shopName, ownerName, email, phone,
     subscriptionId: 'test_' + Date.now(),
     customerId:     'cus_test_' + Date.now(),
-    fee: 9800,
+    fee: 4990,
   });
 
   saveSubscription({
@@ -1798,7 +1798,7 @@ app.post('/api/shop/:shopId/gps-setup', (req, res) => {
       shopId,
       name: shopId,
       shopName: shopId,
-      fee: 9800,
+      fee: 4990,
       autoAdded: false,
       addedAt: new Date().toISOString(),
       source: 'gps-setup',
@@ -2293,8 +2293,8 @@ app.get('/api/hq/summary', (req, res) => {
       ok: true,
       shopCount: enriched.length,
       totals,
-      mrr: totals.paid * 9800,
-      arr: totals.paid * 9800 * 12,
+      mrr: totals.paid * 4990,
+      arr: totals.paid * 4990 * 12,
       shops: enriched,
     });
   } catch(e) {

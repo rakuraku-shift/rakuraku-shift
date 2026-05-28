@@ -394,7 +394,7 @@ function renderBilling() {
     document.getElementById('bv-' + k).textContent = v;
     document.getElementById('bf-' + k).style.width = (v / total * 100) + '%';
   });
-  const mrr = paid * 9800;
+  const mrr = paid * 4990;
   const arr = mrr * 12;
   document.getElementById('mrr-value').textContent = `¥${mrr.toLocaleString()}`;
   document.getElementById('arr-value').textContent = `¥${arr.toLocaleString()}`;

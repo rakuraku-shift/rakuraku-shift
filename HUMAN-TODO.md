@@ -75,8 +75,8 @@ BASE_URL=https://rakuraku-shift-production.up.railway.app
 1. https://dashboard.stripe.com/ にログイン
 2. 右上の「テスト/本番」トグルを「本番」に切替
 3. 「商品」→「商品を追加」で2つ作成:
-   - **月額プラン**: ¥9,800/月 (recurring monthly) → Price ID をメモ
-   - **年額プラン**: ¥98,000/年 (recurring yearly) → Price ID をメモ
+   - **月額プラン**: ¥4,990/月 (recurring monthly) → Price ID をメモ
+   - **年額プラン**: ¥49,900/年 (recurring yearly) → Price ID をメモ
 4. 「開発者」→「APIキー」で本番の `sk_live_` と `pk_live_` を取得
 5. 「開発者」→「Webhook」→ エンドポイント追加:
    - URL: `https://rakuraku-shift-production.up.railway.app/webhook/stripe`

@@ -20,7 +20,7 @@ RAKURAKUは
 ✅ 店長はワンタップでシフト表完成
 ✅ 不足コマはTimee/シェアフルへワンタップ配信
 
-月¥9,800、14日間無料・クレカ登録不要でお試しいただけます。
+月¥4,990、14日間無料・クレカ登録不要でお試しいただけます。
 → https://rakuraku-shift-production.up.railway.app
 
 ご興味あればお気軽にどうぞ！
@@ -55,7 +55,7 @@ https://rakuraku-shift-production.up.railway.app
 ### 件名候補
 
 ```
-【月¥9,800】バー・飲食店専門のシフト管理アプリ「RAKURAKU」のご案内
+【月¥4,990】バー・飲食店専門のシフト管理アプリ「RAKURAKU」のご案内
 ```
 
 ```
@@ -69,7 +69,7 @@ https://rakuraku-shift-production.up.railway.app
 ### 本文
 
 ```
-件名: 【月¥9,800】バー・飲食店専門のシフト管理アプリ「RAKURAKU」のご案内
+件名: 【月¥4,990】バー・飲食店専門のシフト管理アプリ「RAKURAKU」のご案内
 
 ご担当者様
 
@@ -94,7 +94,7 @@ https://rakuraku-shift-production.up.railway.app
    ※ Chrome拡張機能で求人内容を自動入力
 
 ▼ 料金
-月額 ¥9,800（税込）/ 1店舗
+月額 ¥4,990（税込）/ 1店舗
 ・初期費用 0円
 ・契約期間の縛りなし
 ・違約金なし
@@ -132,7 +132,7 @@ RAKURAKU
 ✅ 深夜割増 自動計算
 ✅ 不足コマは Timee/シェアフル へワンタップ配信
 
-月¥9,800・14日無料・クレカ不要
+月¥4,990・14日無料・クレカ不要
 👉 https://rakuraku-shift-production.up.railway.app
 
 #バー #飲食店 #シフト管理 #個人店応援
@@ -186,7 +186,7 @@ https://rakuraku-shift-production.up.railway.app
 
 ①スタッフはスマホで希望提出、店長は1タップでシフト完成
 ②不足コマはTimeeに自動配信、Timee手数料を月数万円削減できます  
-③月¥9,800、14日間無料・クレカ登録不要
+③月¥4,990、14日間無料・クレカ登録不要
 
 詳細をメールでお送りしてもよろしいでしょうか？」
 ```
