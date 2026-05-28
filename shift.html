@@ -659,8 +659,24 @@
     .tc-bar.tc-unknown {
       opacity:.55; background:linear-gradient(135deg,#94A3B8,#64748B); color:#fff;
     }
-    .tc-bar.editable::after { content:'✏️'; position:absolute; top:-1px; right:-1px; font-size:9px; opacity:0; transition:opacity .15s; }
-    .tc-bar.editable:hover::after { opacity:1; }
+    .tc-bar.editable {
+      cursor:pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15), inset 0 -2px 0 rgba(255,255,255,.25);
+    }
+    .tc-bar.editable::after {
+      content:'✏️';
+      position:absolute; top:-2px; right:-2px;
+      font-size:11px;
+      background:#fff;
+      border-radius:50%;
+      width:18px; height:18px;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 2px 4px rgba(0,0,0,.2);
+      opacity:0.95;  /* 常時表示で「タップ可能」を伝える */
+    }
+    .tc-bar.editable:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,.2); }
+    .tc-bar.editable:hover::after { opacity:1; transform:scale(1.15); }
+    .tc-bar.editable:active { transform:scale(.96); }
     .tc-staff-name { cursor:pointer; transition:color .15s; }
     .tc-staff-name:hover { color:var(--indigo); text-decoration:underline; }
 
@@ -2711,31 +2727,28 @@
     </button>
   </nav>
 
-  <!-- リアルタイム出退勤ウィジェット -->
+  <!-- リアルタイム出退勤ウィジェット (シンプル化) -->
   <div id="rt-attendance-card" data-mgr-section="dashboard shifts" style="background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 4px 16px rgba(0,0,0,.04);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
       <div style="font-size:13px;font-weight:900;color:#0F172A;display:flex;align-items:center;gap:6px;" data-i18n="mgr.realtime_attendance">
         ⏰ 本日の出退勤（リアルタイム）
       </div>
-      <div style="font-size:10px;color:#64748B;font-weight:700;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <a href="payroll.html" target="_blank" style="color:#4F46E5;text-decoration:none;" data-i18n="mgr.payroll">📋 給与</a>
-        <a href="monthly-report.html" target="_blank" style="color:#4F46E5;text-decoration:none;" data-i18n="mgr.monthly_report">📊 月次</a>
-        <a href="master-data.html" target="_blank" style="color:#4F46E5;text-decoration:none;">⚙️ マスタ</a>
-        <a href="sales-import.html" target="_blank" style="color:#F59E0B;text-decoration:none;">💰 売上</a>
-        <a href="announcements.html" target="_blank" style="color:#7C3AED;text-decoration:none;">📢 お知らせ</a>
-        <span style="color:#CBD5E1;">|</span>
-        <a href="#" onclick="event.preventDefault();openHolidayModal();" style="color:#F59E0B;text-decoration:none;">🎌 祝日</a>
-        <a href="#" onclick="event.preventDefault();openAuditLog();" style="color:#64748B;text-decoration:none;">📜 履歴</a>
-        <details style="display:inline-block;margin-left:auto;">
-          <summary style="cursor:pointer;color:#94A3B8;font-size:10px;list-style:none;">⚙ その他 ▾</summary>
-          <div style="position:absolute;background:#fff;border:1.5px solid #E2E8F0;border-radius:8px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:5px;z-index:50;margin-top:4px;">
-            <a href="staff-monthly.html" target="_blank" style="color:#4F46E5;text-decoration:none;padding:4px 10px;white-space:nowrap;">📈 スタッフ月次</a>
-            <a href="notification-settings.html" target="_blank" style="color:#06C755;text-decoration:none;padding:4px 10px;white-space:nowrap;">🔔 通知設定</a>
-            <a href="data-export.html" target="_blank" style="color:#10B981;text-decoration:none;padding:4px 10px;white-space:nowrap;">💾 バックアップ</a>
-            <a href="hq-dashboard.html" target="_blank" style="color:#7C3AED;text-decoration:none;padding:4px 10px;white-space:nowrap;">🏢 本部DB</a>
-          </div>
-        </details>
-      </div>
+      <!-- ハンバーガーメニュー (全機能リンクは折りたたみ) -->
+      <details style="position:relative;">
+        <summary style="cursor:pointer;list-style:none;padding:6px 12px;background:var(--slate-100);border-radius:8px;font-size:11px;font-weight:800;color:var(--slate-700);user-select:none;">☰ メニュー</summary>
+        <div style="position:absolute;right:0;top:calc(100% + 4px);background:#fff;border:1.5px solid #E2E8F0;border-radius:10px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.12);display:grid;grid-template-columns:1fr 1fr;gap:4px;z-index:50;min-width:280px;">
+          <a href="payroll.html" target="_blank" style="color:#4F46E5;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background=''">📋 給与明細</a>
+          <a href="monthly-report.html" target="_blank" style="color:#4F46E5;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background=''">📊 月次レポート</a>
+          <a href="master-data.html" target="_blank" style="color:#4F46E5;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background=''">⚙️ マスタ</a>
+          <a href="sales-import.html" target="_blank" style="color:#F59E0B;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#FFFBEB'" onmouseout="this.style.background=''">💰 売上</a>
+          <a href="announcements.html" target="_blank" style="color:#7C3AED;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#FAF5FF'" onmouseout="this.style.background=''">📢 お知らせ</a>
+          <a href="notification-settings.html" target="_blank" style="color:#06C755;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F0FDF4'" onmouseout="this.style.background=''">🔔 通知設定</a>
+          <a href="#" onclick="event.preventDefault();openHolidayModal();" style="color:#F59E0B;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#FFFBEB'" onmouseout="this.style.background=''">🎌 祝日</a>
+          <a href="#" onclick="event.preventDefault();openAuditLog();" style="color:#64748B;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background=''">📜 履歴</a>
+          <a href="data-export.html" target="_blank" style="color:#10B981;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F0FDF4'" onmouseout="this.style.background=''">💾 バックアップ</a>
+          <a href="staff-monthly.html" target="_blank" style="color:#4F46E5;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background=''">📈 スタッフ月次</a>
+        </div>
+      </details>
     </div>
     <div id="rt-attendance-list" style="font-size:12px;">
       <div style="color:#64748B;text-align:center;padding:10px;font-weight:600;" data-i18n="common.loading">読み込み中…</div>
@@ -3168,8 +3181,15 @@
       <div style="font-size:10pt;color:var(--slate-500);margin-top:4px;" id="print-date"></div>
     </div>
 
-    <div class="section-hdr" style="margin-bottom:14px;">
+    <div class="section-hdr" style="margin-bottom:8px;">
       <div class="section-title">📆 生成されたシフト</div>
+    </div>
+
+    <!-- タップヒント -->
+    <div style="background:linear-gradient(135deg,#EEF2FF,#FAF5FF);border-left:3px solid #4F46E5;padding:10px 14px;border-radius:0 8px 8px 0;font-size:11px;color:#3730A3;margin-bottom:14px;line-height:1.7;font-weight:700;">
+      💡 <strong>時間バー (色付き)</strong> をタップ → 時間変更/削除/欠勤マーク<br>
+      💡 <strong>スタッフ名</strong> をタップ → 評価入力 + 個人給与確認<br>
+      💡 <strong>日付ヘッダ</strong> をタップ → 必要人員の変更
     </div>
 
     <div style="overflow-x:auto;" id="generated-content"></div>
