@@ -163,9 +163,9 @@
     <div class="modal-title" data-i18n="my.modal_title">🆘 休み変更届</div>
     <div class="modal-sub" data-i18n="my.modal_sub">出勤予定日を急遽休みたい場合に提出</div>
     <div class="modal-warn" data-i18n="my.modal_warn">⚠️ なるべく早めの申請をお願いします。代替スタッフの手配が必要なため、店長判断で承認/却下されます。</div>
-    <div class="modal-field"><label data-i18n="my.field_date">休みたい日</label><input type="date" id="ch-date" /></div>
-    <div class="modal-field"><label data-i18n="my.field_reason">理由</label>
-      <select id="ch-reason">
+    <div class="modal-field"><label for="ch-date" data-i18n="my.field_date">休みたい日</label><input type="date" id="ch-date" required aria-required="true" /></div>
+    <div class="modal-field"><label for="ch-reason" data-i18n="my.field_reason">理由</label>
+      <select id="ch-reason" required aria-required="true">
         <option value="" data-i18n="my.reason_choose">選択してください</option>
         <option value="体調不良" data-i18n="my.reason_sick">体調不良</option>
         <option value="家庭の事情" data-i18n="my.reason_family">家庭の事情</option>
@@ -174,7 +174,7 @@
         <option value="その他" data-i18n="my.reason_other">その他</option>
       </select>
     </div>
-    <div class="modal-field"><label data-i18n="my.field_note">詳細・補足（任意）</label><textarea id="ch-note" placeholder="..."></textarea></div>
+    <div class="modal-field"><label for="ch-note" data-i18n="my.field_note">詳細・補足（任意）</label><textarea id="ch-note" placeholder="..."></textarea></div>
     <button class="modal-btn submit" onclick="submitChangeRequest()" data-i18n="my.modal_submit">📨 変更届を提出する</button>
     <button class="modal-btn cancel" onclick="closeChangeModal()" data-i18n="common.cancel">キャンセル</button>
   </div>
