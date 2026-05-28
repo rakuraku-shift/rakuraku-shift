@@ -1078,16 +1078,36 @@
     var err = document.getElementById('sub-error');
     var orig = btn.innerHTML;
     err.classList.remove('show'); err.textContent = '';
+
+    var shopName  = document.getElementById('sub-shop').value.trim();
+    var ownerName = document.getElementById('sub-owner').value.trim();
+    var email     = document.getElementById('sub-email').value.trim();
+    var phone     = document.getElementById('sub-phone').value.trim();
+    var plan      = document.querySelector('input[name="sub-plan"]:checked');
+
+    /* クライアントサイドバリデーション (個別エラー表示) */
+    function showErr(msg, focusId) {
+      err.textContent = msg;
+      err.classList.add('show');
+      if (focusId) { var el = document.getElementById(focusId); if (el) el.focus(); }
+    }
+    if (!shopName) { showErr('⚠️ 店舗名を入力してください', 'sub-shop'); return; }
+    if (!ownerName) { showErr('⚠️ オーナー名を入力してください', 'sub-owner'); return; }
+    if (!email) { showErr('⚠️ メールアドレスを入力してください', 'sub-email'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showErr('⚠️ メールアドレスの形式が正しくありません (例: example@gmail.com)', 'sub-email');
+      return;
+    }
+    if (phone && !/^[\d\-+()\s]{10,15}$/.test(phone)) {
+      showErr('⚠️ 電話番号の形式が正しくありません', 'sub-phone');
+      return;
+    }
+    if (!plan) { showErr('⚠️ プランを選択してください'); return; }
+
     btn.disabled = true;
-    btn.innerHTML = '処理中…';
+    btn.innerHTML = '⏳ 処理中…';
     try {
-      var payload = {
-        shopName:  document.getElementById('sub-shop').value.trim(),
-        ownerName: document.getElementById('sub-owner').value.trim(),
-        email:     document.getElementById('sub-email').value.trim(),
-        phone:     document.getElementById('sub-phone').value.trim(),
-        plan:      document.querySelector('input[name="sub-plan"]:checked').value,
-      };
+      var payload = { shopName, ownerName, email, phone, plan: plan.value };
       var res = await fetch('/api/subscribe/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1098,7 +1118,7 @@
       if (!data.url) throw new Error('Stripe URLが取得できませんでした');
       window.location.href = data.url;
     } catch (e) {
-      err.textContent = 'エラー: ' + e.message;
+      err.textContent = 'エラー: ' + e.message + ' (お困りの場合は koizumishota0323@gmail.com までご連絡ください)';
       err.classList.add('show');
       btn.disabled = false;
       btn.innerHTML = orig;
