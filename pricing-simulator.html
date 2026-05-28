@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>料金シミュレーター — あなたの店舗ならいくら節約？ | RAKURAKU</title>
+<meta name="description" content="RAKURAKU 導入であなたの店舗が年間いくら節約できるか即座にシミュレート。Timee手数料・シフト作成時間を入力するだけ。"/>
+<meta name="theme-color" content="#4F46E5">
+<link rel="icon" href="/icon-192.png">
+<meta property="og:title" content="料金シミュレーター — RAKURAKU"/>
+<meta property="og:description" content="あなたの店舗の年間節約額を即座にシミュレート"/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://rakuraku-shift-production.up.railway.app/icon-512.png"/>
+<meta property="og:locale" content="ja_JP"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"ホーム","item":"https://rakuraku-shift-production.up.railway.app/"},
+  {"@type":"ListItem","position":2,"name":"料金シミュレーター","item":"https://rakuraku-shift-production.up.railway.app/pricing-simulator.html"}
+]}
+</script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #4F46E5;outline-offset:2px;border-radius:4px;}
+  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;
+       --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(180deg,var(--slate-50),#fff);line-height:1.7;min-height:100vh;}
+  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;padding:0 24px;}
+  .nav-inner{max-width:820px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;text-decoration:none;color:var(--slate-900);}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;}
+
+  .container{max-width:820px;margin:0 auto;padding:30px 24px 80px;}
+  .hero{text-align:center;margin-bottom:30px;}
+  .hero-eyebrow{display:inline-block;background:var(--indigo-l);color:var(--indigo);font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:.04em;margin-bottom:14px;}
+  .hero h1{font-size:32px;font-weight:900;letter-spacing:-.02em;line-height:1.25;margin-bottom:10px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:14px;color:var(--slate-500);font-weight:600;}
+  @media(max-width:640px){.hero h1{font-size:24px;}}
+
+  .card{background:#fff;border-radius:18px;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,.06);border:1.5px solid var(--slate-100);margin-bottom:18px;}
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:13px;font-weight:900;color:var(--slate-900);margin-bottom:6px;}
+  .field .hint{font-size:11px;color:var(--slate-500);margin-bottom:8px;font-weight:600;}
+  .input-row{display:flex;gap:10px;align-items:center;}
+  .input-row input[type="range"]{flex:1;height:6px;-webkit-appearance:none;appearance:none;background:var(--slate-200);border-radius:3px;outline:none;}
+  .input-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--indigo);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 8px rgba(79,70,229,.3);}
+  .input-row .value{font-size:16px;font-weight:900;color:var(--indigo);min-width:90px;text-align:right;font-variant-numeric:tabular-nums;}
+
+  .result{background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-radius:18px;padding:32px;text-align:center;box-shadow:0 12px 40px rgba(16,185,129,.3);}
+  .result-label{font-size:11px;font-weight:900;letter-spacing:.08em;opacity:.9;margin-bottom:8px;}
+  .result-amount{font-size:48px;font-weight:900;letter-spacing:-.02em;line-height:1;}
+  .result-period{font-size:14px;opacity:.9;margin-top:6px;font-weight:700;}
+  .result-breakdown{margin-top:20px;background:rgba(255,255,255,.15);border-radius:12px;padding:16px;font-size:12px;line-height:1.9;backdrop-filter:blur(8px);}
+  .result-breakdown .row{display:flex;justify-content:space-between;}
+  .result-breakdown .row .v{font-weight:900;font-variant-numeric:tabular-nums;}
+
+  .cta-card{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-radius:18px;padding:32px;text-align:center;margin-top:20px;}
+  .cta-card h3{font-size:20px;font-weight:900;margin-bottom:8px;}
+  .cta-card p{font-size:13px;opacity:.9;margin-bottom:20px;}
+  .btn{display:inline-block;padding:14px 28px;background:#fff;color:var(--indigo);border-radius:12px;font-size:14px;font-weight:900;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.15);}
+  .footer{text-align:center;padding:24px;font-size:11px;color:var(--slate-500);}
+  .footer a{color:var(--indigo);font-weight:700;text-decoration:none;margin:0 6px;}
+</style>
+</head>
+<body>
+
+<nav aria-label="サイトナビゲーション" class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;text-decoration:none;">← トップへ</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<nav aria-label="パンくず" style="font-size:12px;color:#64748B;font-weight:600;margin-bottom:14px;">
+  <a href="/" style="color:#4F46E5;text-decoration:none;">ホーム</a>
+  <span style="margin:0 8px;color:#CBD5E1;">›</span>
+  <span style="color:#0F172A;font-weight:700;" aria-current="page">料金シミュレーター</span>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow">💰 RAKURAKU 価値試算ツール</div>
+  <h1>あなたの店舗、<br><span class="grad">年間いくら節約？</span></h1>
+  <p>3 つのスライダーを動かすだけで、年間の節約額が即座に分かります。</p>
+</section>
+
+<div class="card">
+
+  <div class="field">
+    <label for="timee-cost">📤 現在の Timee/シェアフル 月額手数料</label>
+    <div class="hint">外部募集サービスに月いくら払っていますか？</div>
+    <div class="input-row">
+      <input type="range" id="timee-cost" min="0" max="100000" step="5000" value="40000" aria-label="Timee月額手数料" />
+      <span class="value" id="timee-value">¥40,000</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="shift-hours">⏰ 月のシフト作成にかかる時間</label>
+    <div class="hint">店長が月にシフト作成に費やしている時間 (時給 ¥3,000 換算で計算)</div>
+    <div class="input-row">
+      <input type="range" id="shift-hours" min="0" max="20" step="1" value="3" aria-label="シフト作成時間" />
+      <span class="value" id="hours-value">3 時間</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="staff-count">👥 スタッフ数</label>
+    <div class="hint">アルバイトを含む総スタッフ数</div>
+    <div class="input-row">
+      <input type="range" id="staff-count" min="1" max="50" step="1" value="10" aria-label="スタッフ数" />
+      <span class="value" id="staff-value">10 名</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="result" role="region" aria-live="polite" aria-label="シミュレーション結果">
+  <div class="result-label">🎉 年間 節約額</div>
+  <div class="result-amount" id="annual-saving">¥427,200</div>
+  <div class="result-period">/ 年 (RAKURAKU 月額 ¥4,990 を差し引いた純節約)</div>
+  <div class="result-breakdown">
+    <div class="row"><span>Timee 削減 (80%カット)</span><span class="v" id="brk-timee">¥384,000</span></div>
+    <div class="row"><span>シフト作成時間削減</span><span class="v" id="brk-time">¥99,000</span></div>
+    <div class="row"><span>RAKURAKU 年額</span><span class="v" id="brk-cost">−¥59,880</span></div>
+    <div class="row" style="border-top:1.5px solid rgba(255,255,255,.3);margin-top:8px;padding-top:8px;font-size:14px;"><span><strong>純節約 (年間)</strong></span><span class="v" id="brk-net">¥423,120</span></div>
+  </div>
+</div>
+
+<div class="cta-card">
+  <h3>14日間 無料で実際に試してみる</h3>
+  <p>クレカ登録不要・自動課金なし・違約金ゼロ。<br>シミュレーション通りの効果が出るか、まずは実際に試してみてください。</p>
+  <a href="/?utm_source=pricing_simulator" class="btn">🎁 14日間 無料トライアル</a>
+</div>
+
+<div class="footer">
+  <div style="margin-bottom:8px;">
+    <a href="/">トップ</a>·
+    <a href="/case-studies.html">導入事例</a>·
+    <a href="/help.html">FAQ</a>·
+    <a href="/demo-reservation.html">デモ予約</a>
+  </div>
+  RAKURAKU / 代表 小泉 咲太 · &copy; 2026 RAKURAKU. All rights reserved.<br>
+  ※ シミュレーション結果は概算です。実際の節約額は店舗状況により異なります。
+</div>
+
+</div>
+
+<script>
+  /* 即時計算 */
+  function calc() {
+    const timee = parseInt(document.getElementById('timee-cost').value);
+    const hours = parseInt(document.getElementById('shift-hours').value);
+    const staff = parseInt(document.getElementById('staff-count').value);
+
+    /* 表示更新 */
+    document.getElementById('timee-value').textContent = '¥' + timee.toLocaleString();
+    document.getElementById('hours-value').textContent = hours + ' 時間';
+    document.getElementById('staff-value').textContent = staff + ' 名';
+
+    /* 計算 */
+    const timeeSavedMonthly = timee * 0.8; /* 80% カット (社内募集機能で) */
+    const timeSavedMonthly = hours * 3000; /* 時給 ¥3,000 換算 */
+    const rakurakuYearly = 4990 * 12;
+    const annualGross = (timeeSavedMonthly + timeSavedMonthly) * 12;
+    const annualNet = annualGross - rakurakuYearly;
+
+    /* 表示 */
+    document.getElementById('annual-saving').textContent = '¥' + Math.max(0, annualNet).toLocaleString();
+    document.getElementById('brk-timee').textContent = '¥' + (timeeSavedMonthly * 12).toLocaleString();
+    document.getElementById('brk-time').textContent = '¥' + (timeSavedMonthly * 12).toLocaleString();
+    document.getElementById('brk-cost').textContent = '−¥' + rakurakuYearly.toLocaleString();
+    document.getElementById('brk-net').textContent = '¥' + Math.max(0, annualNet).toLocaleString();
+  }
+
+  ['timee-cost', 'shift-hours', 'staff-count'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calc);
+  });
+
+  calc();
+</script>
+<script src="/help-widget.js" defer></script>
+</body>
+</html>

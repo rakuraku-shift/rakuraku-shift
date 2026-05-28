@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>居酒屋専用シフト管理SaaS — 飲み放題・大型店舗対応 | RAKURAKU</title>
+<meta name="description" content="居酒屋 (チェーン店・個人店・大型店) 向けシフト管理 RAKURAKU。週末ピーク・宴会対応・ホール/キッチン分業に最適。月¥4,990・14日無料。"/>
+<meta name="keywords" content="居酒屋,シフト管理,飲み放題,宴会,大型店舗,ホール,キッチン"/>
+<meta name="theme-color" content="#F59E0B">
+<link rel="icon" href="/icon-192.png">
+<meta property="og:title" content="居酒屋専用シフト管理 — RAKURAKU"/>
+<meta property="og:description" content="居酒屋業態に特化したシフト管理SaaS。週末ピーク・宴会対応・大型店マッチ"/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://rakuraku-shift-production.up.railway.app/icon-512.png"/>
+<meta property="og:locale" content="ja_JP"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="居酒屋専用シフト管理 — RAKURAKU"/>
+<meta name="twitter:image" content="https://rakuraku-shift-production.up.railway.app/icon-512.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"ホーム","item":"https://rakuraku-shift-production.up.railway.app/"},
+  {"@type":"ListItem","position":2,"name":"居酒屋専用","item":"https://rakuraku-shift-production.up.railway.app/izakaya.html"}
+]}
+</script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}}
+  a:focus-visible,button:focus-visible{outline:3px solid #F59E0B;outline-offset:2px;border-radius:4px;}
+  :root{--amber:#F59E0B;--orange:#EA580C;--red:#EF4444;--emerald:#10B981;
+       --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:#fff;line-height:1.7;}
+  .hero{background:linear-gradient(135deg,#7C2D12,#9A3412,#C2410C);color:#fff;padding:60px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{content:'🍺';position:absolute;top:20px;left:30px;font-size:80px;opacity:.1;}
+  .hero::after{content:'🍢';position:absolute;bottom:20px;right:30px;font-size:80px;opacity:.1;}
+  .hero-eyebrow{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);color:#FDE68A;font-size:12px;font-weight:900;padding:6px 16px;border-radius:20px;letter-spacing:.06em;margin-bottom:18px;}
+  .hero h1{font-size:42px;font-weight:900;letter-spacing:-.02em;line-height:1.2;margin-bottom:14px;}
+  .hero h1 .grad{background:linear-gradient(135deg,#FDE68A,#F59E0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:15px;color:rgba(255,255,255,.85);max-width:600px;margin:0 auto 28px;font-weight:600;}
+  .hero-cta{display:inline-flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:30px;}
+  .btn{padding:14px 28px;border-radius:12px;font-size:14px;font-weight:900;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+  .btn-primary{background:linear-gradient(135deg,#FDE68A,#F59E0B);color:#7C2D12;box-shadow:0 8px 24px rgba(245,158,11,.4);}
+  .btn-secondary{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3);}
+  .stats{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;max-width:680px;margin:0 auto;}
+  .stat{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:14px 24px;}
+  .stat .v{font-size:24px;font-weight:900;color:#FDE68A;line-height:1;}
+  .stat .l{font-size:10px;color:rgba(255,255,255,.7);margin-top:4px;font-weight:700;}
+  @media(max-width:640px){.hero h1{font-size:30px;}}
+
+  .container{max-width:1000px;margin:0 auto;padding:0 24px;}
+  section{padding:60px 0;}
+  section:nth-child(even){background:#FFFBEB;}
+  h2{font-size:30px;font-weight:900;text-align:center;letter-spacing:-.02em;margin-bottom:14px;}
+  h2 .grad{background:linear-gradient(135deg,var(--amber),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .lead{text-align:center;font-size:14px;color:var(--slate-500);max-width:680px;margin:0 auto 40px;font-weight:600;}
+
+  .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+  .feature{background:#fff;border:1.5px solid var(--slate-200);border-radius:14px;padding:24px;text-align:center;transition:transform .2s, box-shadow .2s;}
+  .feature:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(245,158,11,.15);border-color:var(--amber);}
+  .feature .ic{font-size:42px;margin-bottom:10px;}
+  .feature h3{font-size:14px;font-weight:900;margin-bottom:6px;}
+  .feature p{font-size:12px;color:var(--slate-500);font-weight:600;}
+
+  .cta{background:linear-gradient(135deg,#7C2D12,#C2410C);color:#fff;padding:50px 24px;text-align:center;border-radius:18px;margin:40px 0;}
+  .cta h3{font-size:24px;font-weight:900;margin-bottom:10px;}
+  .cta p{font-size:14px;color:rgba(255,255,255,.85);margin-bottom:24px;}
+
+  footer{background:#0F172A;color:#fff;padding:30px 24px;text-align:center;font-size:11px;}
+  footer a{color:#FDE68A;text-decoration:none;margin:0 8px;font-weight:700;}
+</style>
+</head>
+<body>
+
+<nav aria-label="パンくず" style="background:#7C2D12;color:#fff;padding:12px 24px;font-size:12px;font-weight:600;">
+  <a href="/" style="color:#FDE68A;text-decoration:none;">ホーム</a>
+  <span style="margin:0 8px;opacity:.5;">›</span>
+  <span aria-current="page">居酒屋専用</span>
+</nav>
+
+<header class="hero">
+  <div class="hero-eyebrow">🍺 居酒屋業態専用</div>
+  <h1>居酒屋の<span class="grad">シフト作成、<br>90分→3分に。</span></h1>
+  <p>週末ピーク・宴会・忘年会シーズン・GW...<br>居酒屋ならではの「読めない来客数」を、データで予測できるシフト管理SaaS。</p>
+  <div class="hero-cta">
+    <a href="/?utm_source=izakaya_lp" class="btn btn-primary">🎁 14日間 無料で試す</a>
+    <a href="/demo-reservation.html?segment=izakaya" class="btn btn-secondary">📅 デモを予約</a>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">82%</div><div class="l">時間削減</div></div>
+    <div class="stat"><div class="v">3段階</div><div class="l">自動募集</div></div>
+    <div class="stat"><div class="v">¥4,990</div><div class="l">月額 (税込)</div></div>
+  </div>
+</header>
+
+<section>
+  <div class="container">
+    <h2>居酒屋運営の <span class="grad">6 つの強み</span></h2>
+    <p class="lead">居酒屋業態の課題に特化した機能群</p>
+    <div class="features">
+      <div class="feature"><div class="ic">🍻</div><h3>飲み放題営業対応</h3><p>2h/3h/食べ放題プラン別の人員シフト最適化</p></div>
+      <div class="feature"><div class="ic">📊</div><h3>来客数予測</h3><p>過去の売上データから曜日別ピーク人員を自動推定</p></div>
+      <div class="feature"><div class="ic">🎉</div><h3>宴会繁忙期対応</h3><p>忘年会・歓送迎会シーズンの臨時人員確保が瞬時</p></div>
+      <div class="feature"><div class="ic">🏃</div><h3>ホール/キッチン分業</h3><p>ポジション別評価でスタッフを最適配置</p></div>
+      <div class="feature"><div class="ic">⚡</div><h3>急な欠勤対応</h3><p>3段階自動募集で 30 分以内に代替確保</p></div>
+      <div class="feature"><div class="ic">💴</div><h3>人件費率の見える化</h3><p>売上 × 人件費を一画面で。月末まで赤字に気づかないリスクゼロ</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>導入店舗の <span class="grad">リアルな効果</span></h2>
+    <p class="lead">居酒屋 G様 (千葉県・スタッフ22名) の事例</p>
+    <div style="max-width:760px;margin:0 auto;background:#fff;border:1.5px solid var(--slate-200);border-radius:14px;padding:30px;">
+      <p style="font-size:14px;line-height:1.9;color:var(--slate-700);">
+        「うちは30年Excelでやってきたから半信半疑だったけど、紙の希望表を写真で送ってもらって店長が入力するだけでも超ラク。
+        <strong>シフト作成時間: 3時間 → 15分</strong> に。70代の常連バイトでも続けられてる。」
+      </p>
+      <div style="margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;text-align:center;">
+        <div style="background:#FFFBEB;border-radius:10px;padding:16px;">
+          <div style="font-size:24px;font-weight:900;color:var(--orange);">3時間→15分</div>
+          <div style="font-size:10px;color:var(--slate-500);font-weight:800;margin-top:4px;">月次シフト作成</div>
+        </div>
+        <div style="background:#FFFBEB;border-radius:10px;padding:16px;">
+          <div style="font-size:24px;font-weight:900;color:var(--orange);">100%</div>
+          <div style="font-size:10px;color:var(--slate-500);font-weight:800;margin-top:4px;">70代バイト継続</div>
+        </div>
+        <div style="background:#FFFBEB;border-radius:10px;padding:16px;">
+          <div style="font-size:24px;font-weight:900;color:var(--orange);">¥0</div>
+          <div style="font-size:10px;color:var(--slate-500);font-weight:800;margin-top:4px;">追加コスト</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta">
+      <h3>🍺 居酒屋専用シフト管理を、14日間 無料で。</h3>
+      <p>クレカ登録不要・自動課金なし・違約金ゼロ。</p>
+      <a href="/?utm_source=izakaya_lp_bottom" class="btn btn-primary">🎁 今すぐ 14日間 無料で試す</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div style="margin-bottom:8px;">
+    <a href="/">トップ</a>·
+    <a href="/bar.html">バー向け</a>·
+    <a href="/cafe.html">カフェ向け</a>·
+    <a href="/case-studies.html">導入事例</a>·
+    <a href="/help.html">FAQ</a>·
+    <a href="/demo-reservation.html">デモ予約</a>
+  </div>
+  RAKURAKU / 代表 小泉 咲太 · &copy; 2026 RAKURAKU. All rights reserved.
+</footer>
+
+<script src="/help-widget.js" defer></script>
+</body>
+</html>
