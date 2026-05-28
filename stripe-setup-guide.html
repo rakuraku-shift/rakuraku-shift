@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Stripe セットアップ手順書 (社内) | RAKURAKU 管理</title>
+<meta name="description" content="管理者向け Stripe 設定手順書。Price ID 作成・Webhook・テスト環境の完全ガイド。">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;color:#333;line-height:1.7;background:#fafafa;padding:20px}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#635BFF;color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid #635BFF;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.container{max-width:1000px;margin:0 auto;background:#fff;padding:40px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+h1{color:#635BFF;border-bottom:3px solid #635BFF;padding-bottom:10px;margin-bottom:20px}
+h2{color:#635BFF;margin:30px 0 15px;font-size:1.5em}
+h3{margin:20px 0 10px;color:#333}
+.step{background:#F5F4FF;padding:20px;margin:15px 0;border-radius:8px;border-left:5px solid #635BFF}
+.step strong{color:#635BFF}
+code{background:#272d3a;color:#9be59f;padding:3px 8px;border-radius:4px;font-family:Menlo,monospace;font-size:.92em}
+pre{background:#272d3a;color:#fff;padding:20px;border-radius:8px;overflow-x:auto;margin:15px 0;font-family:Menlo,monospace;font-size:.88em;line-height:1.5}
+.warning{background:#fff3cd;border-left:5px solid #ff9800;padding:15px 20px;margin:20px 0;border-radius:6px}
+.success{background:#d4edda;border-left:5px solid #28a745;padding:15px 20px;margin:20px 0;border-radius:6px}
+.badge{display:inline-block;background:#635BFF;color:#fff;padding:3px 10px;border-radius:4px;font-size:.8em;margin-right:5px}
+table{width:100%;border-collapse:collapse;margin:15px 0}
+th,td{padding:10px;border:1px solid #ddd;text-align:left}
+th{background:#635BFF;color:#fff}
+ol{padding-left:25px}
+ol li{margin:8px 0}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+<div class="container" id="main">
+<h1>🔧 Stripe セットアップ手順書 (社内専用)</h1>
+<p><span class="badge">CONFIDENTIAL</span> 本ページは社内専用です。検索エンジンには公開していません。</p>
+
+<h2>📋 セットアップ全体像</h2>
+<ol>
+  <li>Stripe アカウント作成 (本人確認・税情報)</li>
+  <li>Product (商品) 作成</li>
+  <li>Price ID 発行 (月額 ¥4,990 / 年額 ¥49,900)</li>
+  <li>Webhook 設定 (subscription.created / .updated / .deleted)</li>
+  <li>環境変数を Railway に登録</li>
+  <li>テスト環境で決済 → 本番モード切替</li>
+</ol>
+
+<h2>1️⃣ Product 作成</h2>
+<div class="step">
+  <strong>Dashboard → 商品 → 商品を追加</strong>
+  <ul>
+    <li>商品名: <code>RAKURAKU シフト管理</code></li>
+    <li>説明: <code>飲食店向けシフト管理 SaaS</code></li>
+    <li>画像: icon-512.png をアップロード</li>
+  </ul>
+</div>
+
+<h2>2️⃣ Price ID 発行</h2>
+<div class="step">
+  <strong>月額プラン</strong>
+  <ul>
+    <li>金額: <code>4990 JPY</code></li>
+    <li>請求期間: <code>月次</code></li>
+    <li>無料トライアル: <code>14 日間</code></li>
+    <li>Price ID をコピー → <code>STRIPE_PRICE_ID_MONTHLY</code></li>
+  </ul>
+</div>
+<div class="step">
+  <strong>年額プラン</strong>
+  <ul>
+    <li>金額: <code>49900 JPY</code></li>
+    <li>請求期間: <code>年次</code></li>
+    <li>無料トライアル: <code>14 日間</code></li>
+    <li>Price ID をコピー → <code>STRIPE_PRICE_ID_YEARLY</code></li>
+  </ul>
+</div>
+
+<div class="warning">
+  ⚠️ <strong>重要</strong>: 過去の Price ID (¥9,800 / ¥98,000) は<strong>アーカイブせずに残す</strong>。既存契約者の請求はその Price ID で継続されるため。
+</div>
+
+<h2>3️⃣ Webhook 設定</h2>
+<div class="step">
+  <strong>Dashboard → Webhook → エンドポイントを追加</strong>
+  <ul>
+    <li>URL: <code>https://rakuraku-shift.com/api/stripe/webhook</code></li>
+    <li>監視イベント:</li>
+  </ul>
+  <pre>checkout.session.completed
+customer.subscription.created
+customer.subscription.updated
+customer.subscription.deleted
+invoice.payment_succeeded
+invoice.payment_failed</pre>
+  <p>Webhook 署名シークレットをコピー → <code>STRIPE_WEBHOOK_SECRET</code></p>
+</div>
+
+<h2>4️⃣ 環境変数</h2>
+<table>
+  <thead><tr><th>変数名</th><th>値</th><th>環境</th></tr></thead>
+  <tbody>
+    <tr><td><code>STRIPE_SECRET_KEY</code></td><td>sk_live_xxx</td><td>本番</td></tr>
+    <tr><td><code>STRIPE_PUBLISHABLE_KEY</code></td><td>pk_live_xxx</td><td>本番</td></tr>
+    <tr><td><code>STRIPE_PRICE_ID_MONTHLY</code></td><td>price_xxx</td><td>本番</td></tr>
+    <tr><td><code>STRIPE_PRICE_ID_YEARLY</code></td><td>price_xxx</td><td>本番</td></tr>
+    <tr><td><code>STRIPE_WEBHOOK_SECRET</code></td><td>whsec_xxx</td><td>本番</td></tr>
+    <tr><td><code>STRIPE_TEST_SECRET_KEY</code></td><td>sk_test_xxx</td><td>テスト</td></tr>
+  </tbody>
+</table>
+
+<h2>5️⃣ Railway へ登録</h2>
+<pre>railway variables set STRIPE_SECRET_KEY=sk_live_xxx
+railway variables set STRIPE_PRICE_ID_MONTHLY=price_xxx
+railway variables set STRIPE_PRICE_ID_YEARLY=price_xxx
+railway variables set STRIPE_WEBHOOK_SECRET=whsec_xxx
+railway up</pre>
+
+<h2>6️⃣ テスト決済</h2>
+<div class="step">
+  <strong>テストカード番号</strong>
+  <ul>
+    <li>成功: <code>4242 4242 4242 4242</code></li>
+    <li>失敗: <code>4000 0000 0000 0002</code></li>
+    <li>3D セキュア要求: <code>4000 0027 6000 3184</code></li>
+    <li>有効期限・CVC: 任意の未来日付・任意 3 桁</li>
+  </ul>
+</div>
+
+<h2>7️⃣ 本番モード切替チェックリスト</h2>
+<ol>
+  <li>✅ 本人確認 (運転免許 / マイナンバーカード)</li>
+  <li>✅ 銀行口座登録 (入金先)</li>
+  <li>✅ 特定商取引法表記の公開 (/legal/specified-commercial.html)</li>
+  <li>✅ プライバシーポリシー公開</li>
+  <li>✅ 利用規約公開</li>
+  <li>✅ Webhook の本番 URL 接続テスト</li>
+  <li>✅ 環境変数の本番キー切替確認</li>
+</ol>
+
+<div class="success">
+  ✅ <strong>切替完了後</strong>: テスト決済で実際にカードを切り、Dashboard で入金記録が出ることを確認。問題なければサービス開始。
+</div>
+
+<h2>📞 トラブルシューティング</h2>
+<table>
+  <thead><tr><th>症状</th><th>原因</th><th>対処</th></tr></thead>
+  <tbody>
+    <tr><td>Webhook 401</td><td>署名シークレット不一致</td><td>Railway の STRIPE_WEBHOOK_SECRET 再確認</td></tr>
+    <tr><td>決済画面で 500</td><td>Price ID 誤り</td><td>Dashboard でアーカイブされていないか確認</td></tr>
+    <tr><td>3D セキュア失敗</td><td>カード会社制限</td><td>別カードで再試行</td></tr>
+  </tbody>
+</table>
+
+<p style="margin-top:40px;text-align:center;color:#666;font-size:.9em">© 2026 RAKURAKU — 社内ドキュメント</p>
+</div>
+</body>
+</html>
