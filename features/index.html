@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>機能一覧 | RAKURAKU シフト管理</title>
+<meta name="description" content="GPS打刻・労基法アラート・多言語対応など、RAKURAKU の全機能を一覧で紹介。">
+<meta name="theme-color" content="#4A90E2">
+<link rel="canonical" href="https://rakuraku-shift.com/features/">
+<meta property="og:title" content="機能一覧 | RAKURAKU">
+<meta property="og:description" content="RAKURAKU の全機能を一覧で紹介">
+<meta property="og:image" content="https://rakuraku-shift.com/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="RAKURAKU 機能一覧">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;line-height:1.7;color:#333;background:#fafafa}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#4A90E2;color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid #4A90E2;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+header{background:linear-gradient(135deg,#4A90E2,#357ABD);color:#fff;padding:60px 20px;text-align:center}
+header h1{font-size:2.5em}
+nav.bc{padding:15px 20px;background:#fff;border-bottom:1px solid #eee}
+nav.bc a{color:#4A90E2;text-decoration:none}
+main{max-width:1000px;margin:30px auto;padding:0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.card{background:#fff;padding:30px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s}
+.card:hover{transform:translateY(-4px)}
+.card .icon{font-size:2.5em;margin-bottom:10px}
+.card h2{color:#4A90E2;margin-bottom:10px;font-size:1.3em}
+.card a{color:#4A90E2;text-decoration:none;font-weight:bold;margin-top:15px;display:inline-block}
+footer{background:#333;color:#fff;padding:30px 20px;text-align:center;margin-top:40px}
+footer a{color:#4A90E2;margin:0 10px}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+<header>
+  <h1>⚙️ 機能一覧</h1>
+  <p>RAKURAKU の全機能を見る</p>
+</header>
+<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; 機能</nav>
+
+<main id="main">
+<div class="grid">
+  <div class="card">
+    <div class="icon">📍</div>
+    <h2>GPS 打刻</h2>
+    <p>位置情報で不正打刻を完全防止。店舗から半径 50m 内のみ打刻可能。</p>
+    <a href="/features/gps.html">詳細を見る →</a>
+  </div>
+  <div class="card">
+    <div class="icon">⚖️</div>
+    <h2>労基法自動チェック</h2>
+    <p>深夜手当・残業・休憩を自動アラート。社労士監修の 8 項目チェック。</p>
+    <a href="/features/labor-law.html">詳細を見る →</a>
+  </div>
+  <div class="card">
+    <div class="icon">🌐</div>
+    <h2>多言語対応</h2>
+    <p>日英中韓越 5 言語。外国人スタッフもストレスなく利用可能。</p>
+    <a href="/features/multi-language.html">詳細を見る →</a>
+  </div>
+  <div class="card">
+    <div class="icon">📱</div>
+    <h2>PWA / オフライン対応</h2>
+    <p>スマホ完結・電波弱いところでも打刻可能。</p>
+    <a href="/about.html#pwa">詳細を見る →</a>
+  </div>
+  <div class="card">
+    <div class="icon">💰</div>
+    <h2>給与計算 自動連携</h2>
+    <p>freee / 弥生 / マネフォ への CSV 出力対応。</p>
+    <a href="/about.html#payroll">詳細を見る →</a>
+  </div>
+  <div class="card">
+    <div class="icon">📊</div>
+    <h2>売上連動シフト</h2>
+    <p>過去売上から必要人時を自動計算。人件費率最適化。</p>
+    <a href="/about.html#sales">詳細を見る →</a>
+  </div>
+  <div class="card">
+    <div class="icon">🏪</div>
+    <h2>多店舗一括管理</h2>
+    <p>本部ダッシュボードで複数店舗を一覧。スタッフ貸し借りもワンクリック。</p>
+    <a href="/about.html#multi">詳細を見る →</a>
+  </div>
+  <div class="card">
+    <div class="icon">📞</div>
+    <h2>LINE 通知連携</h2>
+    <p>シフト確定 → LINE で自動通知。既読確認も可能。</p>
+    <a href="/about.html#line">詳細を見る →</a>
+  </div>
+</div>
+</main>
+
+<footer>
+  <p><a href="/">ホーム</a> | <a href="/about.html">サービス紹介</a> | <a href="/pricing-simulator.html">料金</a> | <a href="/help.html">ヘルプ</a></p>
+  <p style="margin-top:15px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
+</footer>
+<script src="/help-widget.js" defer></script>
+</body>
+</html>

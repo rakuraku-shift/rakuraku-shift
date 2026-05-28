@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>労基法自動チェック機能 | RAKURAKU シフト管理</title>
+<meta name="description" content="深夜手当・残業・休憩時間を自動検知。労働基準法違反のリスクを未然に防ぐ RAKURAKU の労基法アラート機能。">
+<meta name="theme-color" content="#C62828">
+<link rel="canonical" href="https://rakuraku-shift.com/features/labor-law.html">
+<meta property="og:title" content="労基法自動チェック | RAKURAKU">
+<meta property="og:description" content="深夜・残業・休憩を自動アラート">
+<meta property="og:image" content="https://rakuraku-shift.com/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="RAKURAKU 労基法アラート">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"ホーム","item":"https://rakuraku-shift.com/"},
+  {"@type":"ListItem","position":2,"name":"機能","item":"https://rakuraku-shift.com/features/"},
+  {"@type":"ListItem","position":3,"name":"労基法対応","item":"https://rakuraku-shift.com/features/labor-law.html"}
+]}
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;color:#333;line-height:1.7;background:#fafafa}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#C62828;color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid #C62828;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+header{background:linear-gradient(135deg,#C62828,#E53935);color:#fff;padding:60px 20px;text-align:center}
+header h1{font-size:2.5em;margin-bottom:10px}
+nav.bc{padding:15px 20px;background:#fff;border-bottom:1px solid #eee}
+nav.bc a{color:#C62828;text-decoration:none}
+main{max-width:900px;margin:0 auto;padding:30px 20px}
+.feature{background:#fff;padding:30px;margin-bottom:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.feature h2{color:#C62828;margin-bottom:15px}
+.feature ul,.feature ol{padding-left:25px}
+.feature li{margin:8px 0}
+table{width:100%;border-collapse:collapse;margin:20px 0}
+th,td{padding:12px;border:1px solid #ddd;text-align:left}
+th{background:#C62828;color:#fff}
+tr:nth-child(even){background:#f9f9f9}
+.warn{background:#ffebee;border-left:5px solid #C62828;padding:15px 20px;margin:20px 0;border-radius:6px}
+.cta{background:linear-gradient(135deg,#C62828,#E53935);color:#fff;padding:30px;border-radius:10px;text-align:center;margin-top:30px}
+.cta a{display:inline-block;background:#fff;color:#C62828;padding:12px 30px;border-radius:6px;text-decoration:none;font-weight:bold;margin-top:10px}
+footer{background:#333;color:#fff;padding:30px 20px;text-align:center;margin-top:40px}
+footer a{color:#C62828;margin:0 8px}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+<header>
+  <h1>⚖️ 労基法自動チェック</h1>
+  <p>知らずに違反、はもう終わり</p>
+</header>
+<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; <a href="/about.html">機能</a> &gt; 労基法対応</nav>
+
+<main id="main">
+<section class="feature">
+  <h2>⚠️ 「知らなかった」では済まされない</h2>
+  <p>労働基準法違反は、<strong>労働者からの未払い残業代請求</strong>や<strong>労基署からの是正勧告</strong>に繋がります。深夜営業の多いバー・スナック・クラブ業界では特にリスクが高く、しかし管理者が法律を完全に把握するのは現実的ではありません。</p>
+  <div class="warn">
+    📊 厚生労働省の統計では、2025 年の飲食業界における労基法違反摘発件数は前年比 18% 増。深夜手当の未払いが最多の違反理由。
+  </div>
+</section>
+
+<section class="feature">
+  <h2>🤖 自動チェック対象 (8 項目)</h2>
+  <table>
+    <thead><tr><th>チェック項目</th><th>違反基準</th><th>アラート</th></tr></thead>
+    <tbody>
+      <tr><td>1 日の労働時間</td><td>8 時間超</td><td>シフト作成時に警告</td></tr>
+      <tr><td>週の労働時間</td><td>40 時間超</td><td>週次サマリー</td></tr>
+      <tr><td>休憩時間 (6h超)</td><td>45分未満</td><td>シフト確定時に警告</td></tr>
+      <tr><td>休憩時間 (8h超)</td><td>60分未満</td><td>シフト確定時に警告</td></tr>
+      <tr><td>深夜時間帯 (22:00-5:00)</td><td>25%割増未計算</td><td>給与計算時に自動付与</td></tr>
+      <tr><td>法定休日</td><td>週1日の休日なし</td><td>週次警告</td></tr>
+      <tr><td>月60h超の時間外</td><td>50%割増未計算</td><td>給与計算時に自動付与</td></tr>
+      <tr><td>連続勤務日数</td><td>7日超</td><td>シフト作成時に警告</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="feature">
+  <h2>📋 自動生成される労務帳票</h2>
+  <ul>
+    <li><strong>労働時間集計表</strong> (月次・個人別)</li>
+    <li><strong>36 協定適用時間レポート</strong></li>
+    <li><strong>有給取得状況一覧</strong></li>
+    <li><strong>深夜・残業手当計算明細</strong></li>
+  </ul>
+</section>
+
+<section class="feature">
+  <h2>🧑‍⚖️ 社労士監修</h2>
+  <p>本機能は <strong>東京労務協会監修</strong>。年に 1 回、法改正に合わせてアラート閾値を自動アップデートします。</p>
+</section>
+
+<div class="cta">
+  <h2 style="color:#fff;margin-bottom:10px">労基法リスクをゼロに</h2>
+  <p>14 日間無料、クレジットカード不要</p>
+  <a href="/signup">無料登録</a>
+</div>
+</main>
+
+<footer>
+  <p><a href="/">ホーム</a> | <a href="/about.html">サービス</a> | <a href="/features/gps.html">GPS打刻</a> | <a href="/features/multi-language.html">多言語</a></p>
+  <p style="margin-top:10px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
+</footer>
+<script src="/help-widget.js" defer></script>
+</body>
+</html>
