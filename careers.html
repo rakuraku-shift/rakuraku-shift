@@ -21,6 +21,39 @@
   ]
 }
 </script>
+<!-- JobPosting 構造化データ (Google for Jobs 対応) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "JobPosting",
+  "title": "フロントエンドエンジニア",
+  "description": "バー・飲食店向けシフト管理SaaS「RAKURAKU」の Web フロントエンド開発。Vanilla JS / HTML / CSS / PWA で店舗管理画面・スタッフ画面を改善。",
+  "datePosted": "2026-05-01",
+  "validThrough": "2026-12-31",
+  "employmentType": ["FULL_TIME", "CONTRACTOR"],
+  "hiringOrganization": {
+    "@type": "Organization",
+    "name": "RAKURAKU",
+    "sameAs": "https://rakuraku-shift-production.up.railway.app/",
+    "logo": "https://rakuraku-shift-production.up.railway.app/icon-512.png"
+  },
+  "jobLocationType": "TELECOMMUTE",
+  "applicantLocationRequirements": {
+    "@type": "Country",
+    "name": "JP"
+  },
+  "baseSalary": {
+    "@type": "MonetaryAmount",
+    "currency": "JPY",
+    "value": {
+      "@type": "QuantitativeValue",
+      "minValue": 5000000,
+      "maxValue": 8500000,
+      "unitText": "YEAR"
+    }
+  }
+}
+</script>
 <link rel="icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
