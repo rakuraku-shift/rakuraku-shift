@@ -3303,9 +3303,9 @@
           このパスワードは <strong>あなたの端末にハッシュ化して保存</strong> されます。
         </div>
         <label style="font-size:11px;font-weight:800;color:var(--slate-700);">新しいパスワード (4-12文字)</label>
-        <input type="password" id="pp-set-pass1" class="wage-input" style="width:100%;margin-bottom:10px;padding:11px;" placeholder="例) 8765 / abc123" minlength="4" maxlength="12" />
+        <input type="password" id="pp-set-pass1" class="wage-input" style="width:100%;margin-bottom:10px;padding:11px;" placeholder="例) 8765 / abc123" minlength="4" maxlength="12" autocomplete="new-password" aria-label="新しい給与照会パスワード" />
         <label style="font-size:11px;font-weight:800;color:var(--slate-700);">確認のためもう一度</label>
-        <input type="password" id="pp-set-pass2" class="wage-input" style="width:100%;margin-bottom:14px;padding:11px;" placeholder="同じパスワードを入力" minlength="4" maxlength="12" />
+        <input type="password" id="pp-set-pass2" class="wage-input" style="width:100%;margin-bottom:14px;padding:11px;" placeholder="同じパスワードを入力" minlength="4" maxlength="12" autocomplete="new-password" aria-label="パスワード確認" />
         <button class="edit-btn save" onclick="setupPersonalPassword()" style="background:linear-gradient(135deg,#10B981,#059669);">🔐 パスワードを設定して給与を見る</button>
       </div>
 
@@ -3317,7 +3317,7 @@
           パスワードを忘れた場合は店長にリセットを依頼してください。
         </div>
         <label style="font-size:11px;font-weight:800;color:var(--slate-700);">パスワード</label>
-        <input type="password" id="pp-login-pass" class="wage-input" style="width:100%;margin-bottom:14px;padding:11px;" placeholder="パスワードを入力" maxlength="12" onkeydown="if(event.key==='Enter')loginPersonalPayroll()" />
+        <input type="password" id="pp-login-pass" class="wage-input" style="width:100%;margin-bottom:14px;padding:11px;" placeholder="パスワードを入力" maxlength="12" autocomplete="current-password" aria-label="給与照会パスワード" onkeydown="if(event.key==='Enter')loginPersonalPayroll()" />
         <button class="edit-btn save" onclick="loginPersonalPayroll()">🔓 給与を見る</button>
         <button class="edit-btn" style="background:#FEE2E2;color:#EF4444;margin-top:8px;font-size:11px;" onclick="resetPersonalPassword()">⚠ パスワードを忘れた (店長権限で再設定)</button>
       </div>
