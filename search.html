@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>サイト内検索 | RAKURAKU シフト管理</title>
+<meta name="description" content="RAKURAKU の全ページから情報を検索。FAQ・ブログ・機能・用語集を横断検索。">
+<meta name="theme-color" content="#4F46E5">
+<link rel="canonical" href="https://rakuraku-shift.com/search.html">
+<meta property="og:title" content="サイト内検索 | RAKURAKU">
+<meta property="og:description" content="全ページ横断検索">
+<meta property="og:image" content="https://rakuraku-shift.com/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="RAKURAKU 検索">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","url":"https://rakuraku-shift.com/","potentialAction":{"@type":"SearchAction","target":"https://rakuraku-shift.com/search.html?q={search_term_string}","query-input":"required name=search_term_string"}}
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;line-height:1.7;color:#333;background:#fafafa}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#4F46E5;color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid #4F46E5;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+header{background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:50px 20px;text-align:center}
+header h1{font-size:2em;margin-bottom:20px}
+.search-box{max-width:600px;margin:0 auto;display:flex;gap:10px}
+.search-box input{flex:1;padding:14px 20px;border:none;border-radius:30px;font-size:1.1em;outline:none}
+.search-box button{background:#fff;color:#4F46E5;border:none;padding:14px 30px;border-radius:30px;font-weight:bold;cursor:pointer}
+nav.bc{padding:15px 20px;background:#fff;border-bottom:1px solid #eee}
+nav.bc a{color:#4F46E5;text-decoration:none}
+main{max-width:900px;margin:30px auto;padding:0 20px}
+.suggest{background:#fff;padding:25px;border-radius:12px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.suggest h2{color:#4F46E5;margin-bottom:15px;font-size:1.2em}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tags a{background:#EEF2FF;color:#4F46E5;padding:6px 14px;border-radius:20px;text-decoration:none;font-size:.9em;font-weight:bold}
+.tags a:hover{background:#4F46E5;color:#fff}
+.results{background:#fff;padding:25px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.result{padding:15px 0;border-bottom:1px solid #eee}
+.result:last-child{border-bottom:none}
+.result h3{color:#4F46E5;margin-bottom:5px}
+.result a{color:#4F46E5;text-decoration:none}
+.result a:hover{text-decoration:underline}
+.result .url{color:#16A34A;font-size:.85em;margin-bottom:5px}
+.result p{font-size:.95em;color:#555}
+.no-results{text-align:center;padding:40px 0;color:#666}
+footer{background:#333;color:#fff;padding:30px 20px;text-align:center;margin-top:40px}
+footer a{color:#4F46E5;margin:0 10px}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+<header>
+  <h1>🔍 サイト内検索</h1>
+  <div class="search-box">
+    <label for="q-input" class="visually-hidden" style="position:absolute;left:-9999px">検索キーワード</label>
+    <input type="search" id="q-input" placeholder="検索したいキーワード (例: 料金, 解約, 多言語)" oninput="search(this.value)" autofocus>
+    <button onclick="search(document.getElementById('q-input').value)">検索</button>
+  </div>
+</header>
+<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; 検索</nav>
+
+<main id="main">
+
+<div class="suggest">
+  <h2>💡 よく検索されるキーワード</h2>
+  <div class="tags">
+    <a href="?q=料金" onclick="event.preventDefault();search('料金')">料金</a>
+    <a href="?q=解約" onclick="event.preventDefault();search('解約')">解約</a>
+    <a href="?q=GPS" onclick="event.preventDefault();search('GPS')">GPS</a>
+    <a href="?q=労基" onclick="event.preventDefault();search('労基')">労基</a>
+    <a href="?q=多言語" onclick="event.preventDefault();search('多言語')">多言語</a>
+    <a href="?q=Stripe" onclick="event.preventDefault();search('Stripe')">Stripe</a>
+    <a href="?q=ブログ" onclick="event.preventDefault();search('ブログ')">ブログ</a>
+    <a href="?q=テンプレ" onclick="event.preventDefault();search('テンプレ')">テンプレ</a>
+    <a href="?q=競合" onclick="event.preventDefault();search('競合')">競合</a>
+    <a href="?q=人件費" onclick="event.preventDefault();search('人件費')">人件費</a>
+    <a href="?q=深夜手当" onclick="event.preventDefault();search('深夜手当')">深夜手当</a>
+    <a href="?q=セキュリティ" onclick="event.preventDefault();search('セキュリティ')">セキュリティ</a>
+  </div>
+</div>
+
+<div class="results" id="results-container">
+  <p style="color:#666;text-align:center">キーワードを入力すると結果が表示されます</p>
+</div>
+
+</main>
+
+<footer>
+  <p><a href="/">ホーム</a> | <a href="/help.html">FAQ</a> | <a href="/blog.html">ブログ</a> | <a href="/glossary.html">用語集</a></p>
+  <p style="margin-top:15px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
+</footer>
+
+<script>
+const INDEX = [
+  {title:'料金プラン', url:'/pricing.html', desc:'月額 ¥4,990 / 年額 ¥49,900 (2 ヶ月分お得)。14 日間無料トライアル付き。', tags:['料金','プラン','月額','年額','価格']},
+  {title:'節約額シミュレーター', url:'/pricing-simulator.html', desc:'年間いくら節約できるかを計算', tags:['料金','節約','シミュレーター']},
+  {title:'よくある質問 FAQ', url:'/help.html', desc:'解約・支払・機能など 50+ 項目', tags:['FAQ','質問','解約','支払']},
+  {title:'GPS 打刻機能', url:'/features/gps.html', desc:'位置情報で不正打刻を完全防止 (±50m精度)', tags:['GPS','打刻','位置情報']},
+  {title:'労基法自動チェック', url:'/features/labor-law.html', desc:'深夜手当・残業・休憩を自動アラート (8項目)', tags:['労基','労基法','深夜手当','残業']},
+  {title:'多言語対応', url:'/features/multi-language.html', desc:'日英中韓越 5 ヶ国語', tags:['多言語','英語','中国語','韓国語','ベトナム語']},
+  {title:'完全ガイド 2026', url:'/guide.html', desc:'8 章 30+ 表 現役オーナーの経営ノウハウ', tags:['ガイド','ノウハウ','経営']},
+  {title:'用語集', url:'/glossary.html', desc:'50+ 用語 5 カテゴリ 検索機能付き', tags:['用語','辞書']},
+  {title:'お客様の声', url:'/testimonials.html', desc:'導入オーナー 16 名の率直な感想', tags:['お客様','声','口コミ','レビュー']},
+  {title:'導入事例', url:'/case-studies.html', desc:'12 店舗の具体的効果', tags:['事例','導入','効果']},
+  {title:'ブログ', url:'/blog.html', desc:'14 記事 飲食店経営の実践ノウハウ', tags:['ブログ','記事','ノウハウ']},
+  {title:'vs Airシフト', url:'/vs-airshift.html', desc:'競合比較 料金・機能', tags:['競合','Airシフト','比較']},
+  {title:'vs Shiftee', url:'/vs-shiftee.html', desc:'競合比較 多機能 vs 特化', tags:['競合','Shiftee','比較']},
+  {title:'vs freee', url:'/vs-freee.html', desc:'競合比較 補完関係', tags:['競合','freee','比較']},
+  {title:'バー専用 LP', url:'/bar.html', desc:'HUB/キャストバー向け', tags:['バー','業界別']},
+  {title:'居酒屋専用 LP', url:'/izakaya.html', desc:'大型店/個人店向け', tags:['居酒屋','業界別']},
+  {title:'カフェ専用 LP', url:'/cafe.html', desc:'早朝/留学生対応', tags:['カフェ','業界別']},
+  {title:'ラウンジ専用 LP', url:'/lounge.html', desc:'会員制/VIP指名管理', tags:['ラウンジ','業界別']},
+  {title:'スナック専用 LP', url:'/snack.html', desc:'ママ運営/LINE完結', tags:['スナック','業界別']},
+  {title:'カラオケ専用 LP', url:'/karaoke.html', desc:'24時間営業/チェーン', tags:['カラオケ','業界別']},
+  {title:'クラブ専用 LP', url:'/club.html', desc:'DJ/バウンサー手配', tags:['クラブ','業界別']},
+  {title:'ダイニングバー LP', url:'/dining-bar.html', desc:'多能工対応', tags:['ダイニング','業界別']},
+  {title:'機能一覧', url:'/features/', desc:'全 8 機能カードグリッド', tags:['機能','一覧']},
+  {title:'連携サービス', url:'/integrations.html', desc:'freee/LINE/Slack 20+ 連携', tags:['連携','freee','LINE','Slack']},
+  {title:'API ドキュメント', url:'/api-docs.html', desc:'REST v1 開発者向け', tags:['API','開発者','REST']},
+  {title:'セキュリティ', url:'/security.html', desc:'SSL/bcrypt/GDPR 対応', tags:['セキュリティ','セキュリティ','SSL']},
+  {title:'プレスリリース', url:'/press-release.html', desc:'公式 PR 5件', tags:['PR','プレス','メディア']},
+  {title:'メディアキット', url:'/media-kit.html', desc:'ロゴ・スクショ・代表写真', tags:['メディア','ロゴ']},
+  {title:'更新履歴 Changelog', url:'/changelog.html', desc:'v2.0.0 〜 v2.5.0 リリースノート', tags:['更新','履歴','リリース']},
+  {title:'機能ロードマップ', url:'/roadmap.html', desc:'要望投稿可', tags:['ロードマップ','要望']},
+  {title:'稼働状況', url:'/status.html', desc:'リアルタイム監視', tags:['稼働','ステータス']},
+  {title:'利用規約', url:'/legal/terms.html', desc:'サービス利用条件', tags:['規約','法務']},
+  {title:'プライバシーポリシー', url:'/legal/privacy.html', desc:'個人情報保護方針', tags:['プライバシー','個人情報']},
+  {title:'特定商取引法 表記', url:'/legal/specified-commercial.html', desc:'事業者情報', tags:['特商','法務']},
+  {title:'無料テンプレート DL', url:'/free-templates.html', desc:'Excel シフト表', tags:['テンプレ','Excel','無料']},
+  {title:'採用情報', url:'/careers.html', desc:'エンジニア・営業募集', tags:['採用','careers','求人']},
+];
+
+function search(q){
+  const container = document.getElementById('results-container');
+  if (!q || q.length < 1) {
+    container.innerHTML = '<p style="color:#666;text-align:center">キーワードを入力すると結果が表示されます</p>';
+    return;
+  }
+  const ql = q.toLowerCase();
+  const results = INDEX.filter(item =>
+    item.title.toLowerCase().includes(ql) ||
+    item.desc.toLowerCase().includes(ql) ||
+    item.tags.some(t => t.toLowerCase().includes(ql))
+  );
+  if (results.length === 0) {
+    container.innerHTML = '<div class="no-results"><p>「' + escape(q) + '」に一致する結果が見つかりませんでした</p><p style="margin-top:10px;font-size:.9em">別のキーワードでお試しください</p></div>';
+    return;
+  }
+  container.innerHTML = '<h2 style="color:#4F46E5;margin-bottom:15px">' + results.length + ' 件の結果</h2>' + results.map(r =>
+    '<div class="result"><h3><a href="' + r.url + '">' + escape(r.title) + '</a></h3><div class="url">' + r.url + '</div><p>' + escape(r.desc) + '</p></div>'
+  ).join('');
+}
+
+function escape(s){return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+// URL クエリパラメータから初期検索
+(function(){
+  const params = new URLSearchParams(location.search);
+  const q = params.get('q');
+  if (q) {
+    document.getElementById('q-input').value = q;
+    search(q);
+  }
+})();
+</script>
+<script src="/help-widget.js" defer></script>
+</body>
+</html>
