@@ -1517,7 +1517,55 @@ app.get('/api/admin/subscriptions', (req, res) => {
   }
 });
 
-/* 歓迎メール再送 */
+/* 歓迎メール再送 — GET 版 (ブラウザで開くだけで実行) */
+app.get('/api/admin/resend-welcome', async (req, res) => {
+  const shopId = req.query.shop || req.query.shopId;
+  const email = req.query.email;
+  if (!shopId && !email) {
+    return res.status(400).send(`
+      <html><body style="font-family:sans-serif;max-width:600px;margin:40px auto;padding:20px;">
+        <h2>🔁 歓迎メール再送</h2>
+        <p>以下のいずれかの形式でアクセスしてください:</p>
+        <ul>
+          <li><a href="/api/admin/resend-welcome?shop=rose-usuy">/api/admin/resend-welcome?shop=rose-usuy</a></li>
+          <li><a href="/api/admin/resend-welcome?shop=rose-vlii">/api/admin/resend-welcome?shop=rose-vlii</a></li>
+          <li>または UI: <a href="/resend-welcome.html">/resend-welcome.html</a></li>
+        </ul>
+      </body></html>
+    `);
+  }
+  try {
+    const subs = readJSON(SUBSCRIPTIONS_FILE, []);
+    const target = subs.find(s =>
+      (shopId && s.shopId === shopId) ||
+      (email && s.email === email)
+    );
+    if (!target) return res.status(404).send(`<h2>❌ 該当する登録が見つかりません</h2><p>shop: ${shopId || '-'}, email: ${email || '-'}</p><a href="/api/admin/subscriptions">登録者一覧を見る</a>`);
+    if (!target.email) return res.status(400).send('<h2>❌ メールアドレス未登録</h2>');
+    await sendLicenseEmail(target.email, target.shopName, target.licenseCode, target.shopId);
+    if (typeof scheduleOnboardingEmails === 'function') {
+      try { scheduleOnboardingEmails(target.email, target.shopName, target.ownerName, target.shopId); } catch(e) {}
+    }
+    console.log(`[resend-welcome-GET] ${target.shopName} (${target.email}) に再送完了`);
+    res.send(`
+      <html><body style="font-family:sans-serif;max-width:600px;margin:40px auto;padding:20px;background:#ECFDF5;border:2px solid #10B981;border-radius:14px;">
+        <h2 style="color:#047857;">✅ 歓迎メール再送 完了</h2>
+        <p>📧 送信先: <strong>${target.email}</strong></p>
+        <p>🏪 店舗: <strong>${target.shopName}</strong></p>
+        <p>🆔 店舗ID: <code>${target.shopId}</code></p>
+        <p>数秒以内にメールが届きます。届かない場合は迷惑メールフォルダを確認してください。</p>
+        <p style="margin-top:20px;">
+          <a href="/resend-welcome.html" style="background:#4F46E5;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;">← 他の登録者の再送画面へ</a>
+        </p>
+      </body></html>
+    `);
+  } catch(e) {
+    console.error('[resend-welcome-GET]', e);
+    res.status(500).send(`<h2>❌ エラー</h2><pre>${e.message}</pre>`);
+  }
+});
+
+/* 歓迎メール再送 — POST 版 (resend-welcome.html UI用) */
 app.post('/api/admin/resend-welcome', async (req, res) => {
   const { shopId, email } = req.body || {};
   try {
