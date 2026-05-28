@@ -100,16 +100,15 @@
 <div class="container">
 
 <section class="hero">
-  <div class="hero-eyebrow">🗺 開発ロードマップ</div>
-  <h1>あなたの要望が <span class="grad">次の機能</span> になる</h1>
-  <p>計画中・開発中・リリース済みの全機能を公開。投票で優先度を決めています。</p>
+  <div class="hero-eyebrow">💌 お客様の声・ご要望</div>
+  <h1>みなさまの <span class="grad">「こうなったら嬉しい」</span> を形に</h1>
+  <p>導入店舗様から実際にいただいているご要望を公開しています。投票で優先度を決めて、順番に実装していきます。</p>
 </section>
 
-<div class="stats-bar">
-  <div class="stat-box"><div class="v" style="color:var(--emerald);" id="s-shipped">0</div><div class="l">完成済み機能</div></div>
-  <div class="stat-box"><div class="v" style="color:var(--amber);" id="s-progress">0</div><div class="l">開発中</div></div>
-  <div class="stat-box"><div class="v" style="color:var(--blue);" id="s-planned">0</div><div class="l">計画中</div></div>
-  <div class="stat-box"><div class="v" style="color:var(--slate-500);" id="s-ideas">0</div><div class="l">アイデア</div></div>
+<div class="stats-bar" style="grid-template-columns:repeat(3,1fr);">
+  <div class="stat-box"><div class="v" style="color:var(--amber);" id="s-progress">0</div><div class="l">対応中のご要望</div></div>
+  <div class="stat-box"><div class="v" style="color:var(--blue);" id="s-planned">0</div><div class="l">受付済 (近日対応)</div></div>
+  <div class="stat-box"><div class="v" style="color:var(--slate-500);" id="s-ideas">0</div><div class="l">検討中のご要望</div></div>
 </div>
 
 <div class="filter-row">
@@ -121,10 +120,10 @@
   <button class="filter-pill" onclick="filterCat('ux',this)">✨ UX改善</button>
 </div>
 
-<div class="columns">
+<div class="columns" style="grid-template-columns:repeat(3,1fr);">
   <div class="column">
     <div class="col-header ideas">
-      <div class="col-title">💡 アイデア</div>
+      <div class="col-title">💡 検討中のご要望</div>
       <span class="col-count" id="c-ideas">0</span>
     </div>
     <div id="ideas-list"></div>
@@ -132,7 +131,7 @@
 
   <div class="column">
     <div class="col-header planned">
-      <div class="col-title">📅 計画中</div>
+      <div class="col-title">📅 受付済 (近日対応)</div>
       <span class="col-count" id="c-planned">0</span>
     </div>
     <div id="planned-list"></div>
@@ -140,35 +139,22 @@
 
   <div class="column">
     <div class="col-header in-progress">
-      <div class="col-title">🚧 開発中</div>
+      <div class="col-title">🚧 対応中</div>
       <span class="col-count" id="c-progress">0</span>
     </div>
     <div id="progress-list"></div>
   </div>
-
-  <div class="column">
-    <div class="col-header shipped">
-      <div class="col-title">✅ 完成</div>
-      <span class="col-count" id="c-shipped">0</span>
-    </div>
-    <div id="shipped-list"></div>
-  </div>
 </div>
 
 <div class="suggest-card">
-  <h2>💌 機能アイデアを投稿する</h2>
-  <p>あなたが「これがあれば便利」と思う機能を提案してください。投票数が多いものから着手します。</p>
+  <h2>💌 ご要望をお寄せください</h2>
+  <p>「こんな機能があったら助かる」「ここがちょっと不便」など、何でもお聞かせください。<br>投票数の多いものから順番に対応していきます。</p>
   <form class="suggest-form" onsubmit="event.preventDefault();submitIdea();">
-    <input type="text" id="idea-title" placeholder="機能タイトル (例: シフトのCSV取込)" required maxlength="80" />
-    <textarea id="idea-desc" placeholder="どんな場面で使いたいか・どんな効果があるか (任意)" maxlength="500"></textarea>
-    <input type="email" id="idea-email" placeholder="連絡用メール (任意・実装したら通知します)" />
-    <button type="submit">📨 投稿する</button>
+    <input type="text" id="idea-title" placeholder="ご要望 (例: シフトのCSV取込ができたら助かる)" required maxlength="80" />
+    <textarea id="idea-desc" placeholder="どんな場面で使いたいか・どんな効果が欲しいか (任意)" maxlength="500"></textarea>
+    <input type="email" id="idea-email" placeholder="連絡用メール (任意・対応したらお知らせします)" />
+    <button type="submit">📨 要望を送る</button>
   </form>
-</div>
-
-<div class="section">
-  <h2>🚀 直近のリリース履歴</h2>
-  <div id="releases"></div>
 </div>
 
 </div>
@@ -181,32 +167,21 @@
 
 <script>
 const ROADMAP = [
-  /* ─── shipped ─── */
-  { id:'r1',  status:'shipped', cat:'core', title:'1タップ自動シフト生成', desc:'希望提出を元に最適配置を自動計算', votes:0, priority:'high', shippedAt:'2026-05' },
-  { id:'r2',  status:'shipped', cat:'core', title:'GPS出退勤打刻', desc:'店舗範囲内で打刻、不正打刻を自動検知', votes:0, priority:'high', shippedAt:'2026-05' },
-  { id:'r3',  status:'shipped', cat:'core', title:'深夜割増自動計算 +25%', desc:'22時以降の勤務時間を自動で割増', votes:0, priority:'high', shippedAt:'2026-05' },
-  { id:'r4',  status:'shipped', cat:'core', title:'3段階自動募集 (内部→社内→Timee)', desc:'人手不足時の段階的な人材確保', votes:0, priority:'high', shippedAt:'2026-05' },
-  { id:'r5',  status:'shipped', cat:'mobile', title:'PWA + プッシュ通知', desc:'ホーム画面追加・オフライン対応・通知', votes:0, priority:'high', shippedAt:'2026-05' },
-  { id:'r6',  status:'shipped', cat:'integration', title:'LINE公式アカウント連携', desc:'Messaging APIで全員一斉通知', votes:0, priority:'medium', shippedAt:'2026-05' },
-  { id:'r7',  status:'shipped', cat:'integration', title:'freee/MF CSVエクスポート', desc:'給与計算ソフトへ取込可能', votes:0, priority:'medium', shippedAt:'2026-05' },
-  { id:'r8',  status:'shipped', cat:'analytics', title:'本部ダッシュボード', desc:'複数店舗の横断KPI監視', votes:0, priority:'medium', shippedAt:'2026-05' },
-  { id:'r9',  status:'shipped', cat:'ux', title:'多言語対応 (日/英/中/韓)', desc:'外国人スタッフ対応', votes:0, priority:'medium', shippedAt:'2026-05' },
-  { id:'r10', status:'shipped', cat:'core', title:'個人給与照会 (パスワード保護)', desc:'スタッフ本人だけが見れる給与', votes:0, priority:'medium', shippedAt:'2026-05' },
+  /* ─── 対応中のご要望 ─── */
+  { id:'p1', status:'in-progress', cat:'integration', title:'POS自動定期取込 (Squareレジ)', desc:'毎日1回 売上を自動でSquareから取込んで人件費率を自動計算したい', votes:3, priority:'high' },
 
-  /* ─── in-progress ─── */
-  { id:'p1', status:'in-progress', cat:'integration', title:'POS自動定期取込 (Square)', desc:'毎日1回 売上を自動でSquareから取込', votes:3, priority:'high' },
+  /* ─── 受付済 (近日対応) ─── */
+  { id:'pl1', status:'planned', cat:'integration', title:'freee 会計と直接連携', desc:'CSV経由じゃなくて、給与データを freee に自動連携してほしい', votes:5, priority:'medium' },
+  { id:'pl2', status:'core', status:'planned', title:'iOS/Android アプリ化', desc:'アプリストアからダウンロードできる本格的なアプリにしてほしい', votes:7, priority:'medium' },
+  { id:'pl3', status:'planned', cat:'integration', title:'勘定奉行 / 弥生 連携', desc:'うちの会計ソフト (奉行・弥生) と連携してほしい', votes:2, priority:'low' },
 
-  /* ─── planned ─── */
-  { id:'pl1', status:'planned', cat:'integration', title:'freee API 直接連携', desc:'CSV経由ではなく API で給与データを直接送信', votes:5, priority:'medium' },
-  { id:'pl2', status:'planned', cat:'core', title:'iOS/Android ネイティブアプリ', desc:'Capacitorでアプリストア配信', votes:7, priority:'medium' },
-  { id:'pl3', status:'planned', cat:'integration', title:'勘定奉行 / 弥生 連携', desc:'中小企業の主要会計ソフトに対応', votes:2, priority:'low' },
-
-  /* ─── ideas ─── */
-  { id:'i1', status:'ideas', cat:'analytics', title:'AI シフト最適化 (来客予測)', desc:'過去売上から最適人員を機械学習で予測', votes:4, priority:'medium' },
-  { id:'i2', status:'ideas', cat:'integration', title:'POS連携 (スマレジ)', desc:'スマレジAPI連携で売上自動取込', votes:3, priority:'medium' },
-  { id:'i3', status:'ideas', cat:'ux', title:'ダークモード対応', desc:'夜の店舗運営で目に優しい', votes:6, priority:'low' },
-  { id:'i4', status:'ideas', cat:'ux', title:'シフト交換マッチング', desc:'スタッフ間で希望日を交換できる', votes:5, priority:'medium' },
-  { id:'i5', status:'ideas', cat:'core', title:'タイムカード打刻リマインダー', desc:'退勤忘れを LINE で自動通知', votes:2, priority:'low' },
+  /* ─── 検討中のご要望 ─── */
+  { id:'i1', status:'ideas', cat:'analytics', title:'AI で来月の必要人員を予測', desc:'過去の売上から「金曜の夜は何人必要」を AI が教えてほしい', votes:4, priority:'medium' },
+  { id:'i2', status:'ideas', cat:'integration', title:'スマレジと売上連携', desc:'スマレジ使ってるので売上を自動取込してほしい', votes:3, priority:'medium' },
+  { id:'i3', status:'ideas', cat:'ux', title:'ダークモード対応', desc:'夜の店舗で見ても目に優しい黒背景モードがほしい', votes:6, priority:'low' },
+  { id:'i4', status:'ideas', cat:'ux', title:'スタッフ間でシフト交換', desc:'スタッフ同士でシフトを直接交換できる仕組みがほしい', votes:5, priority:'medium' },
+  { id:'i5', status:'ideas', cat:'core', title:'退勤忘れ通知', desc:'退勤打刻を忘れるスタッフがいるので LINE で通知してほしい', votes:2, priority:'low' },
+  { id:'i6', status:'ideas', cat:'ux', title:'スタッフのスマホに通知バッジ', desc:'新しいシフトが確定したら通知が来るようにしてほしい', votes:4, priority:'medium' },
 ];
 
 const VOTES_KEY = 'rakuraku-roadmap-votes';
@@ -231,11 +206,15 @@ function filterCat(cat, btn) {
 
 function render() {
   const votes = loadVotes();
-  const filtered = ROADMAP.filter(r => _filterCat === 'all' || r.cat === _filterCat);
-  const buckets = { ideas: [], planned: [], 'in-progress': [], shipped: [] };
+  /* shipped (完成済み) は表示しない */
+  const filtered = ROADMAP.filter(r =>
+    r.status !== 'shipped' &&
+    (_filterCat === 'all' || r.cat === _filterCat)
+  );
+  const buckets = { ideas: [], planned: [], 'in-progress': [] };
   filtered.forEach(r => buckets[r.status] && buckets[r.status].push(r));
 
-  /* 投票数で並び替え (shipped以外) */
+  /* 投票数で並び替え */
   buckets.ideas.sort((a,b) => (b.votes + (votes[b.id] ? 1 : 0)) - (a.votes + (votes[a.id] ? 1 : 0)));
   buckets.planned.sort((a,b) => (b.votes + (votes[b.id] ? 1 : 0)) - (a.votes + (votes[a.id] ? 1 : 0)));
   buckets['in-progress'].sort((a,b) => (b.votes + (votes[b.id] ? 1 : 0)) - (a.votes + (votes[a.id] ? 1 : 0)));
@@ -243,33 +222,28 @@ function render() {
   document.getElementById('ideas-list').innerHTML = renderList(buckets.ideas, votes);
   document.getElementById('planned-list').innerHTML = renderList(buckets.planned, votes);
   document.getElementById('progress-list').innerHTML = renderList(buckets['in-progress'], votes);
-  document.getElementById('shipped-list').innerHTML = renderList(buckets.shipped, votes, true);
 
   document.getElementById('c-ideas').textContent = buckets.ideas.length;
   document.getElementById('c-planned').textContent = buckets.planned.length;
   document.getElementById('c-progress').textContent = buckets['in-progress'].length;
-  document.getElementById('c-shipped').textContent = buckets.shipped.length;
 
-  document.getElementById('s-shipped').textContent = ROADMAP.filter(r => r.status === 'shipped').length;
   document.getElementById('s-progress').textContent = ROADMAP.filter(r => r.status === 'in-progress').length;
   document.getElementById('s-planned').textContent = ROADMAP.filter(r => r.status === 'planned').length;
   document.getElementById('s-ideas').textContent = ROADMAP.filter(r => r.status === 'ideas').length;
 }
 
-function renderList(items, votes, isShipped) {
-  if (!items.length) return '<div style="font-size:11px;color:var(--slate-300);text-align:center;padding:20px;">なし</div>';
+function renderList(items, votes) {
+  if (!items.length) return '<div style="font-size:11px;color:var(--slate-300);text-align:center;padding:20px;">該当するご要望はまだありません</div>';
   return items.map(r => {
     const voted = votes[r.id];
     const total = r.votes + (voted ? 1 : 0);
-    const cls = 'card-item ' + (isShipped ? 'shipped' : 'priority-' + (r.priority || 'low'));
+    const cls = 'card-item priority-' + (r.priority || 'low');
     return `<div class="${cls}">
       <div class="item-title">${escapeHtml(r.title)}</div>
       <div class="item-desc">${escapeHtml(r.desc)}</div>
       <div class="item-meta">
         <span class="item-tag">${catLabel(r.cat)}</span>
-        ${isShipped
-          ? `<span style="color:var(--emerald);">✓ ${r.shippedAt || ''}</span>`
-          : `<button class="vote-btn ${voted ? 'voted' : ''}" onclick="vote('${r.id}')">${voted ? '✓' : '👍'} ${total}</button>`}
+        <button class="vote-btn ${voted ? 'voted' : ''}" onclick="vote('${r.id}')">${voted ? '✓ 投票済' : '👍 同意'} ${total}</button>
       </div>
     </div>`;
   }).join('');
@@ -319,54 +293,8 @@ async function submitIdea() {
   }
 }
 
-const RELEASES = [
-  {
-    version: 'v1.5.0',
-    date: '2026-05-28',
-    title: 'スケール準備 + 個人給与パスワード',
-    changes: [
-      '個人給与照会 (パスワード保護) 追加',
-      '無料期間上限ポリシー (2ヶ月) 実装',
-      '動画チュートリアル / オンボーディング自動メール / 解約アンケート / Status / Roadmap 公開',
-    ],
-  },
-  {
-    version: 'v1.4.0',
-    date: '2026-05-28',
-    title: '大規模機能追加 (12ページ・10API)',
-    changes: [
-      'マスタデータ管理 / スタッフ別月次サマリ / 本部ダッシュボード',
-      '通知設定 / LINE Messaging API / シフト確定全員通知',
-      'POS売上取込 / お知らせ管理 / データバックアップ',
-    ],
-  },
-  {
-    version: 'v1.3.0',
-    date: '2026-05-28',
-    title: 'シフト管理画面の大型改修',
-    changes: [
-      '時間バー塗りつぶし (グラデーション)',
-      '不足カレンダー (赤/黄/緑色分け)',
-      '時間編集モーダル + 必要人員 日別オーバーライド',
-      '個別欠勤マーク + 自動代替募集',
-    ],
-  },
-];
-
-function renderReleases() {
-  document.getElementById('releases').innerHTML = RELEASES.map(r => `
-    <div class="release-item">
-      <span class="release-version">${r.version}</span>
-      <span class="release-date">${r.date}</span>
-      <div class="release-title">${escapeHtml(r.title)}</div>
-      <ul class="release-changes">${r.changes.map(c => '<li>' + escapeHtml(c) + '</li>').join('')}</ul>
-    </div>
-  `).join('');
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   render();
-  renderReleases();
 });
 </script>
 <script src="/help-widget.js" defer></script>
