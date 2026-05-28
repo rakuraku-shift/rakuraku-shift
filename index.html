@@ -105,6 +105,9 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;scroll-padding-top:80px;}
+  /* アクセシビリティ: Skip to main content link */
+  .skip-link{position:absolute;top:-100px;left:0;background:#0F172A;color:#fff;padding:12px 20px;z-index:99999;font-weight:800;border-radius:0 0 8px 0;transition:top .2s;text-decoration:none;}
+  .skip-link:focus{top:0;outline:3px solid #FCD34D;outline-offset:-3px;}
   :root{
     --indigo:#4F46E5; --indigo-d:#3730A3; --indigo-l:#EEF2FF;
     --purple:#7C3AED; --slate-900:#0F172A; --slate-700:#334155;
@@ -341,6 +344,9 @@
   </div>
 </header>
 
+<!-- アクセシビリティ: Skip to main content (Tab キーで表示) -->
+<a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+
 <!-- アクセシビリティ: JavaScript無効環境向け -->
 <noscript>
   <div style="background:#FEF3C7;border-bottom:3px solid #F59E0B;padding:14px 18px;font-size:13px;color:#92400E;text-align:center;font-weight:700;">
@@ -350,6 +356,7 @@
 </noscript>
 
 <!-- ════════ HERO ════════ -->
+<main id="main-content">
 <section class="hero">
   <div class="container">
     <div class="hero-badge">🏆 導入120店舗+ ・ 🎁 14日間無料 ・ クレカ登録不要</div>
@@ -999,6 +1006,7 @@
     <div class="copyright">© 2026 RAKURAKU. All rights reserved.</div>
   </div>
 </footer>
+</main>
 
 <!-- ════════ Terms Overlay ════════ -->
 <div class="overlay" id="overlay-terms" onclick="if(event.target===this)closeOverlay()">

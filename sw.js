@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v7 — 匿名化事例 + 法令遵守採用 + 現実的数値 */
-var CACHE = 'rakuraku-v7';
+/* RAKURAKU Service Worker v8 — ブランディング統一・SEO・UX大幅 brushup */
+var CACHE = 'rakuraku-v8';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
