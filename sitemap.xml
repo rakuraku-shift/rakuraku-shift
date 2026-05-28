@@ -342,4 +342,16 @@
     <priority>0.8</priority>
     <lastmod>2026-05-29</lastmod>
   </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/competitor-matrix.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/success-tips.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
 </urlset>
