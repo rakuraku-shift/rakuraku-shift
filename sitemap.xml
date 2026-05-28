@@ -288,4 +288,28 @@
     <priority>0.75</priority>
     <lastmod>2026-05-29</lastmod>
   </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/onboarding.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/enterprise.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/partner-program.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/tutorials.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
 </urlset>
