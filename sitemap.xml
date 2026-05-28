@@ -324,4 +324,22 @@
     <priority>0.8</priority>
     <lastmod>2026-05-29</lastmod>
   </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/case-bar.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/case-izakaya.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/case-cafe.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-05-29</lastmod>
+  </url>
 </urlset>
