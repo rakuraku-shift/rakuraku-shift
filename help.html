@@ -101,6 +101,7 @@
 </script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } html { scroll-behavior:auto !important; } }
   :root{
     --indigo:#4F46E5; --indigo-d:#3730A3; --indigo-l:#EEF2FF;
     --purple:#7C3AED; --emerald:#10B981; --emerald-l:#ECFDF5;
