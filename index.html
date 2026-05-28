@@ -517,14 +517,39 @@
       <div class="price-card" style="margin:0;">
         <span class="price-badge" style="background:var(--slate-100);color:var(--slate-700);">📅 月払いプラン</span>
         <div class="price-plan">スタンダード (月払い)</div>
-        <div class="trial-banner">
-          <div class="trial-banner-title">🎁 14日間 無料でお試し</div>
-          <div class="trial-banner-sub">クレカ登録不要 ・ いつでも解約OK</div>
+
+        <!-- 🎁 強化版トライアルバナー -->
+        <div class="trial-banner" style="padding:18px;background:linear-gradient(135deg,#ECFDF5,#F0FDFA);border:2px solid #10B981;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="font-size:28px;">🎁</span>
+            <div>
+              <div class="trial-banner-title" style="margin-bottom:2px;">14日間 完全無料</div>
+              <div class="trial-banner-sub">¥9,800分のサービスを実質タダで体験</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;">
+            <div style="background:#fff;padding:8px 10px;border-radius:8px;font-size:10px;font-weight:700;color:#065F46;display:flex;align-items:center;gap:5px;">
+              <span style="color:#10B981;font-size:14px;">✓</span>クレカ登録 <strong>不要</strong>
+            </div>
+            <div style="background:#fff;padding:8px 10px;border-radius:8px;font-size:10px;font-weight:700;color:#065F46;display:flex;align-items:center;gap:5px;">
+              <span style="color:#10B981;font-size:14px;">✓</span>自動課金 <strong>なし</strong>
+            </div>
+            <div style="background:#fff;padding:8px 10px;border-radius:8px;font-size:10px;font-weight:700;color:#065F46;display:flex;align-items:center;gap:5px;">
+              <span style="color:#10B981;font-size:14px;">✓</span>違約金 <strong>0円</strong>
+            </div>
+            <div style="background:#fff;padding:8px 10px;border-radius:8px;font-size:10px;font-weight:700;color:#065F46;display:flex;align-items:center;gap:5px;">
+              <span style="color:#10B981;font-size:14px;">✓</span>全機能 <strong>制限なし</strong>
+            </div>
+          </div>
+          <div style="background:#10B981;color:#fff;padding:8px 12px;border-radius:8px;margin-top:10px;font-size:11px;font-weight:800;text-align:center;letter-spacing:.02em;">
+            💡 期間中に「合わない」と思ったら何もせず離脱でOK
+          </div>
         </div>
+
         <div class="price-amount">
           <span class="yen">¥</span>9,800<span class="per">/月（税込）</span>
         </div>
-        <div class="price-tax">※ 初期費用 無料 / 縛りなし</div>
+        <div class="price-tax">※ 初期費用 無料 / 縛りなし / 月単位で柔軟に</div>
         <ul class="price-features">
           <li>スタッフ数 無制限</li>
           <li>シフト自動生成・深夜割増</li>
@@ -533,8 +558,11 @@
           <li>3段階自動募集 (Timee代替)</li>
           <li>多言語対応 (日/英/中/韓)</li>
         </ul>
-        <a href="#" onclick="event.preventDefault();openSubModal('monthly');" class="btn-primary" style="width:100%;justify-content:center;background:var(--slate-600);">🎁 月払いで始める</a>
-        <div class="price-note">いつでも解約可能。違約金なし。</div>
+        <a href="#" onclick="event.preventDefault();openSubModal('monthly');" class="btn-primary" style="width:100%;justify-content:center;background:linear-gradient(135deg,#10B981,#059669);">🎁 14日間 無料で始める</a>
+        <div class="price-note" style="text-align:center;">
+          ⚡ 1分で登録完了 → すぐ全機能使えます<br>
+          いつでも解約可能。違約金 一切なし。
+        </div>
       </div>
 
       <!-- 年払いプラン (推奨) -->
