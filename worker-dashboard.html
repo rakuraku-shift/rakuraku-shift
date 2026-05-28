@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>ワーカーダッシュボード — BAR EXCHANGE</title>
+  <title>ワーカーダッシュボード — RAKURAKU</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -473,7 +473,7 @@
     </div>
     <div class="field">
       <label>店舗名（表示用）</label>
-      <input type="text" id="sv-shop-name" placeholder="例: BAR EXCHANGE 渋谷店" />
+      <input type="text" id="sv-shop-name" placeholder="例: RAKURAKU 渋谷店" />
     </div>
   </div>
 
@@ -673,7 +673,7 @@
     <div class="collapsible" id="edit-history">
       <div style="border-top:1px solid var(--slate-100);margin:14px 0 14px;"></div>
       <div class="field"><label>役割 / ポジション</label><input type="text" id="h-role" placeholder="バーテンダー" /></div>
-      <div class="field"><label>店舗名</label><input type="text" id="h-shop" placeholder="BAR EXCHANGE 渋谷店" /></div>
+      <div class="field"><label>店舗名</label><input type="text" id="h-shop" placeholder="RAKURAKU 渋谷店" /></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div class="field"><label>開始月</label><input type="month" id="h-start" /></div>
         <div class="field"><label>終了月（在職中なら空欄）</label><input type="month" id="h-end" /></div>
@@ -701,7 +701,7 @@
     </div>
     <div class="field">
       <label>店舗名</label>
-      <input type="text" id="adm-shopname" placeholder="BAR EXCHANGE 渋谷店" />
+      <input type="text" id="adm-shopname" placeholder="RAKURAKU 渋谷店" />
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:10px;">
@@ -806,7 +806,7 @@ async function loadShops() {
 
 function getDemoShops() {
   return [
-    { shopId:'bar-exchange', shopName:'BAR EXCHANGE 渋谷店', count:12 },
+    { shopId:'bar-exchange', shopName:'RAKURAKU 渋谷店', count:12 },
     { shopId:'night-lounge', shopName:'NIGHT LOUNGE 六本木',  count:7  },
     { shopId:'craft-bar',    shopName:'CRAFT BAR 新宿',       count:5  },
   ];
@@ -892,7 +892,7 @@ async function openShopDetail(shopId) {
 
 function getDemoShopDetail(shopId) {
   return {
-    shopId, shopName: shopId === 'bar-exchange' ? 'BAR EXCHANGE 渋谷店' : shopId,
+    shopId, shopName: shopId === 'bar-exchange' ? 'RAKURAKU 渋谷店' : shopId,
     count: 12,
     ratings: { overall:4.2, atmosphere:4.5, management:3.8, salary:3.9, schedule:4.6, growth:4.0 },
     demographics: {

@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>BAR EXCHANGE — ガチャ</title>
+<title>スタッフ満足度UPガチャ — RAKURAKU</title>
+<meta name="description" content="シフト皆勤・売上目標達成などの報酬として、スタッフが楽しめるガチャ機能。"/>
+<meta name="theme-color" content="#4F46E5">
+<meta property="og:title" content="スタッフガチャ — RAKURAKU"/>
+<meta property="og:type" content="website"/>
+<meta property="og:locale" content="ja_JP"/>
 <script src="/socket.io/socket.io.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@700&display=swap');
@@ -164,7 +169,7 @@
 <body>
 
 <div id="hdr">
-  <div class="logo">BAR EXCHANGE</div>
+  <div class="logo">RAKURAKU</div>
   <button id="back-btn" onclick="history.back()">← 戻る</button>
 </div>
 
@@ -429,11 +434,11 @@ function showResult(prize) {
 function shareResult(prize) {
   const isWin = prize.id !== 'miss';
   const text = isWin
-    ? `🎰 BAR EXCHANGE ガチャで「${prize.name}」が当たった！${prize.emoji} #BAR_EXCHANGE #当たった`
-    : `🎰 BAR EXCHANGE ガチャ… 今日は${prize.emoji}でした😢 また明日！ #BAR_EXCHANGE`;
+    ? `🎰 RAKURAKU ガチャで「${prize.name}」が当たった！${prize.emoji} #RAKURAKU #当たった`
+    : `🎰 RAKURAKU ガチャ… 今日は${prize.emoji}でした😢 また明日！ #RAKURAKU`;
 
   if (navigator.share) {
-    navigator.share({ title: 'BAR EXCHANGE ガチャ', text }).catch(() => {});
+    navigator.share({ title: 'RAKURAKU ガチャ', text }).catch(() => {});
   } else {
     navigator.clipboard?.writeText(text).catch(() => {});
     const btn = document.getElementById('share-btn');

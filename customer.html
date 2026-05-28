@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>BAR EXCHANGE</title>
+<title>RAKURAKU</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
 
@@ -367,7 +367,7 @@
 <!-- NAME MODAL -->
 <div id="name-overlay">
   <div id="name-modal">
-    <div class="nm-brand">BAR EXCHANGE</div>
+    <div class="nm-brand">RAKURAKU</div>
     <div class="nm-icon-wrap">
       <span class="nm-icon">🎰</span>
     </div>
@@ -390,7 +390,7 @@
 <!-- HEADER -->
 <div id="hdr">
   <div class="hdr-top">
-    <div class="logo">BAR EXCHANGE</div>
+    <div class="logo">RAKURAKU</div>
     <div style="display:flex;align-items:center;gap:8px;">
       <a href="gacha.html" style="font-size:0.72rem;padding:5px 12px;border-radius:6px;
         background:#ffd70018;border:1px solid #ffd70060;color:#ffd700;text-decoration:none;
@@ -750,14 +750,14 @@ function handleOrder(drink) {
 
 function showShare(drink, price, saving) {
   pendingShare = { drink, price, saving };
-  const barName = 'BAR EXCHANGE';
+  const barName = 'RAKURAKU';
   const savingText = saving > 0
     ? `ベースより ▼¥${saving} お得！`
     : saving < 0
     ? `ベースより ▲¥${Math.abs(saving)} 高め`
     : 'ベース価格';
 
-  const shareText = `${drink.emoji} ${drink.name}を ¥${price} でゲット！${saving > 0 ? `ベースより¥${saving}もお得😆` : ''} #BAR_EXCHANGE #${barName.replace(' ','')}`;
+  const shareText = `${drink.emoji} ${drink.name}を ¥${price} でゲット！${saving > 0 ? `ベースより¥${saving}もお得😆` : ''} #RAKURAKU #${barName.replace(' ','')}`;
 
   document.getElementById('s-emoji').textContent = drink.emoji;
   document.getElementById('s-name').textContent  = drink.name;
@@ -778,16 +778,16 @@ document.getElementById('share-overlay').addEventListener('click', e => {
 document.getElementById('share-native').addEventListener('click', async () => {
   if (!pendingShare) return;
   const { drink, price, saving } = pendingShare;
-  const text = `${drink.emoji} ${drink.name}を ¥${price} でゲット！${saving > 0 ? `ベースより¥${saving}もお得😆` : ''} #BAR_EXCHANGE`;
+  const text = `${drink.emoji} ${drink.name}を ¥${price} でゲット！${saving > 0 ? `ベースより¥${saving}もお得😆` : ''} #RAKURAKU`;
   if (navigator.share) {
-    try { await navigator.share({ title:'BAR EXCHANGE', text }); } catch {}
+    try { await navigator.share({ title:'RAKURAKU', text }); } catch {}
   } else { copyText(text); }
 });
 
 document.getElementById('share-x').addEventListener('click', () => {
   if (!pendingShare) return;
   const { drink, price, saving } = pendingShare;
-  const text = `${drink.emoji} ${drink.name}を ¥${price} でゲット！${saving > 0 ? `ベースより¥${saving}もお得😆` : ''} #BAR_EXCHANGE`;
+  const text = `${drink.emoji} ${drink.name}を ¥${price} でゲット！${saving > 0 ? `ベースより¥${saving}もお得😆` : ''} #RAKURAKU`;
   window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
 });
 

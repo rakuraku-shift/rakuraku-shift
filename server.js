@@ -1299,19 +1299,19 @@ app.post('/api/notify/shortage', async (req, res) => {
       } else {
         try {
           await emailTransporter.sendMail({
-            from: `"BAR EXCHANGE シフト管理" <${process.env.EMAIL_USER}>`,
+            from: `"RAKURAKU シフト管理" <${process.env.EMAIL_USER}>`,
             to: s.email,
-            subject: '【BAR EXCHANGE】シフトのご協力をお願いします',
+            subject: '【RAKURAKU】シフトのご協力をお願いします',
             text: message,
             html: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;max-width:520px;margin:0 auto;padding:24px;">
               <div style="background:#4F46E5;border-radius:12px 12px 0 0;padding:20px 24px;">
-                <h2 style="color:#fff;margin:0;font-size:18px;">🍺 BAR EXCHANGE</h2>
+                <h2 style="color:#fff;margin:0;font-size:18px;">🍺 RAKURAKU</h2>
                 <p style="color:#C7D2FE;margin:4px 0 0;font-size:13px;">シフト管理システム</p>
               </div>
               <div style="background:#fff;border:1px solid #E2E8F0;border-top:none;border-radius:0 0 12px 12px;padding:24px;">
                 <pre style="font-family:inherit;white-space:pre-wrap;font-size:14px;line-height:1.8;color:#0F172A;margin:0;">${message}</pre>
                 <hr style="border:none;border-top:1px solid #E2E8F0;margin:20px 0;">
-                <p style="font-size:12px;color:#64748B;margin:0;">このメールはBAR EXCHANGEシフト管理システムから自動送信されています。</p>
+                <p style="font-size:12px;color:#64748B;margin:0;">このメールはRAKURAKUシフト管理システムから自動送信されています。</p>
               </div>
             </div>`,
           });
@@ -2520,14 +2520,14 @@ app.post('/api/survey/send-invite', async (req, res) => {
     if (!s.email) continue;
     try {
       await emailTransporter.sendMail({
-        from: `"BAR EXCHANGE" <${process.env.EMAIL_USER}>`,
+        from: `"RAKURAKU" <${process.env.EMAIL_USER}>`,
         to: s.email,
-        subject: '【BAR EXCHANGE】職場アンケートにご協力ください',
+        subject: '【RAKURAKU】職場アンケートにご協力ください',
         text: `${s.name}さん\n\n匿名で職場の評価をお願いします。\n${surveyUrl}\n\nご協力ありがとうございます。`,
         html: `<div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
           <h2 style="color:#4F46E5;">📋 職場アンケート</h2>
           <p>${s.name}さん、いつもお疲れ様です。</p>
-          <p>匿名で <strong>${shopName || 'BAR EXCHANGE'}</strong> の職場評価にご協力ください。<br>所要時間：約2分</p>
+          <p>匿名で <strong>${shopName || 'RAKURAKU'}</strong> の職場評価にご協力ください。<br>所要時間：約2分</p>
           <a href="${surveyUrl}" style="display:inline-block;margin:20px 0;padding:14px 28px;background:#4F46E5;color:#fff;text-decoration:none;border-radius:10px;font-weight:700;">アンケートに答える</a>
           <p style="color:#64748B;font-size:12px;">回答は完全匿名です。個人が特定されることはありません。</p>
         </div>`,
@@ -2892,7 +2892,7 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   const divider = '─'.repeat(50);
   console.log(`\n${divider}`);
-  console.log(`  🍺  BAR EXCHANGE サーバー起動`);
+  console.log(`  🍺  RAKURAKU サーバー起動`);
   console.log(`${divider}`);
   console.log(`  📺  TV表示ボード      http://localhost:${PORT}/demo.html`);
   console.log(`  📱  お客様スマホ      http://localhost:${PORT}/customer.html`);
