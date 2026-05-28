@@ -144,7 +144,7 @@
         <div class="section">
           <div class="section-title">⚠️ アラート</div>
           <div class="insight">
-            ${violations > 0 ? `<strong>🚫 不正打刻: ${violations}件</strong> 検出されました。詳細は本社管理コンソールでご確認ください。<br>` : `<strong>✅ 不正打刻なし</strong> — 全打刻が店舗範囲内で行われました。<br>`}
+            ${violations > 0 ? `<strong>🚫 不正打刻: ${violations}件</strong> 検出されました。詳細は出退勤打刻履歴でご確認ください。<br>` : `<strong>✅ 不正打刻なし</strong> — 全打刻が店舗範囲内で行われました。<br>`}
             ${laborRate > 35 ? `<strong>⚠️ 人件費率が35%超</strong> — シフト最適化を推奨します。<br>` : ''}
             ${laborRate < 20 && sales > 0 ? `<strong>⚠️ 人件費率が低すぎる可能性</strong> — 過剰労働の可能性があります。<br>` : ''}
             ${totalNight > totalMin * 0.5 ? `<strong>🌙 深夜勤務比率が高い</strong> — 健康管理にご注意ください。` : ''}
