@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v8 — ブランディング統一・SEO・UX大幅 brushup */
-var CACHE = 'rakuraku-v8';
+/* RAKURAKU Service Worker v9 — 全面 a11y 対応 / JSON-LD 8 種 / 88 batches brushup */
+var CACHE = 'rakuraku-v9';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
