@@ -384,7 +384,7 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
           ※ 14日後に月額¥4,990（税込）の自動課金が開始されます。<br>
           ※ 解約はいつでも可能、翌月以降のご請求は発生しません。<br>
           ※ ご不明な点はこのメールに返信、または 📞 080-5168-3303 までお問い合わせください。<br>
-          ※ 運営: RAKURAKU（代表 小泉 翔太）
+          ※ 運営: RAKURAKU（代表 小泉 咲太）
         </p>
       </div>
     `,
@@ -512,7 +512,7 @@ const ONBOARDING_EMAILS = [
               → <a href="${base}/getting-started.html" style="color:#4F46E5;">ガイドを開く</a></li>
         </ol>
         <p style="margin-top:24px;">何か不明点があれば、このメールに返信するだけで私 (小泉) に直接届きます。</p>
-        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 小泉 翔太 / 📞 080-5168-3303</p>
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 小泉 咲太 / 📞 080-5168-3303</p>
       </div>
     `;
     },
@@ -563,7 +563,7 @@ const ONBOARDING_EMAILS = [
           🤝 <strong>知り合いの飲食店オーナー</strong>に紹介してくれませんか?<br>
           <a href="https://rakuraku-shift-production.up.railway.app/referral.html" style="color:#B45309;">紹介プログラム</a> でお互い1ヶ月無料になります。
         </p>
-        <p style="color:#64748B;font-size:12px;margin-top:24px;">代表 小泉 翔太</p>
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">代表 小泉 咲太</p>
       </div>
     `,
   },
@@ -592,7 +592,7 @@ const ONBOARDING_EMAILS = [
           💴 <strong>年払いプラン (¥49,900・2ヶ月分お得)</strong> もご用意しています。<br>
           長く使う予定があれば年払いが断然お得です。
         </p>
-        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 翔太 / koizumishota0323@gmail.com</p>
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 咲太 / koizumishota0323@gmail.com</p>
       </div>
     `,
   },
@@ -622,7 +622,7 @@ const ONBOARDING_EMAILS = [
         <h3>📞 困った時はいつでも</h3>
         <p>このメールにそのまま返信、または <a href="tel:08051683303" style="color:#4F46E5;">📞 080-5168-3303</a> へお電話ください。<br>代表が直接対応します。</p>
 
-        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 翔太</p>
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 咲太</p>
       </div>
     `,
   },
@@ -867,7 +867,7 @@ async function sendChurnSurveyEmail(subObj) {
           📌 もし「一時休止」も可能です。店舗を閉めている期間など、利用しない月だけ課金停止できます。<br>
           ご希望の場合は <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】一時休止希望">こちら</a> までご連絡ください。
         </p>
-        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 翔太 / 📞 080-5168-3303</p>
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 咲太 / 📞 080-5168-3303</p>
       </div>
     `,
   });
