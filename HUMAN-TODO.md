@@ -66,24 +66,39 @@ BASE_URL=https://rakuraku-shift-production.up.railway.app
 
 ---
 
-### 2. Stripe 本番化 (所要 30分〜2日)
+### 2. Stripe 本番化 + Freemium 移行 (所要 30分〜2日)
 
 **現状**: テストモード
-**目標**: 本番モードで実カード決済できる状態
+**目標**: 本番モードで Freemium 体系の実カード決済できる状態
+
+#### ⚠️ 2026-05-29 重要変更: Freemium 戦略へ移行
+旧プラン (月¥4,990 / 年¥49,900 のみ) → 新プラン (Free + 30日Pro体験 + Pro¥4,990 + Enterprise)
 
 #### 手順
 1. https://dashboard.stripe.com/ にログイン
 2. 右上の「テスト/本番」トグルを「本番」に切替
-3. 「商品」→「商品を追加」で2つ作成:
-   - **月額プラン**: ¥4,990/月 (recurring monthly) → Price ID をメモ
-   - **年額プラン**: ¥49,900/年 (recurring yearly) → Price ID をメモ
+3. 「商品」→「商品を追加」で **Pro プラン 2 種類** 作成:
+   - **Pro 月額**: ¥4,990/月 (recurring monthly) → `STRIPE_PRICE_ID_MONTHLY` に設定
+   - **Pro 年額**: ¥49,900/年 (recurring yearly) → `STRIPE_PRICE_ID_ANNUAL` に設定
+   - **※ Free プランは Stripe 不要** (DB フラグだけで管理)
+   - **※ 30日Pro体験は Stripe Subscription を作らず、トライアル期間として server.js 側で管理**
 4. 「開発者」→「APIキー」で本番の `sk_live_` と `pk_live_` を取得
 5. 「開発者」→「Webhook」→ エンドポイント追加:
    - URL: `https://rakuraku-shift-production.up.railway.app/webhook/stripe`
-   - イベント: `checkout.session.completed`, `customer.subscription.deleted`, `invoice.payment_failed`
+   - イベント: `checkout.session.completed`, `customer.subscription.deleted`, `invoice.payment_failed`, `customer.subscription.created`, `customer.subscription.updated`
    - シークレットをメモ → `STRIPE_WEBHOOK_SECRET` に設定
 6. 本番審査が未完了の場合、Stripe から書類提出依頼が来る (運営会社名/銀行口座/本人確認書類)
    - 通常 3-7日で承認
+   - **Freemium モデルは Stripe 審査でプラス評価** (無料ユーザー基盤 = 信頼性)
+
+#### 🆓 Freemium 実装に必要な server.js 修正
+- [ ] DB に `plan` カラム追加 (`free` / `trial` / `pro_monthly` / `pro_annual` / `enterprise`)
+- [ ] DB に `trial_ends_at` カラム追加 (30日後の日時)
+- [ ] DB に `staff_limit` カラム追加 (Free: 3, Trial/Pro: -1, Enterprise: -1)
+- [ ] DB に `store_limit` カラム追加 (Free: 1, Pro: 3, Enterprise: -1)
+- [ ] 機能フラグ実装: 売上連動AI/多言語/API/freee連携 は Pro のみ
+- [ ] 30日経過時の自動降格バッチ (cron: 毎日深夜)
+- [ ] アップグレード誘導 UI (スタッフ4人目追加時など)
 
 ⚠️ **本番審査通過まで実際の引き落としは発生しません**。テストカード `4242 4242 4242 4242` で動作確認可能。
 
