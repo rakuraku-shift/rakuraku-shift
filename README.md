@@ -108,7 +108,7 @@ PORT=3000
 |---|---|
 | `features/index.html` | 機能一覧ハブ (8 機能カードグリッド) |
 | `features/gps.html` | GPS 打刻機能 (位置精度±50m / プライバシー設計) |
-| `features/labor-law.html` | 労基法自動チェック 8 項目 (社労士監修) |
+| `features/labor-law.html` | 労基法自動チェック 8 項目 (法改正対応) |
 | `features/multi-language.html` | 多言語 (日英中韓越 5 言語) |
 
 ### ナレッジ・コンテンツ
