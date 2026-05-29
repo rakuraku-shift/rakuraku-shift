@@ -6,37 +6,6 @@
 
 ---
 
-## 📧 営業自動化 — server.js 側追加実装 (Phase B 移行時)
-
-### 配信停止 API エンドポイント追加が必須
-```javascript
-// server.js に追加
-app.post('/api/unsubscribe', async (req, res) => {
-  const {email, reason, otherReason, timestamp} = req.body;
-  // unsubscribe_list テーブルに保存
-  await db.run('INSERT INTO unsubscribe_list (email, reason, other_reason, unsubscribed_at) VALUES (?, ?, ?, ?)',
-    [email, reason, otherReason, timestamp]);
-  res.json({ok: true});
-});
-
-// 送信前に必ずチェック
-async function isUnsubscribed(email) {
-  const result = await db.get('SELECT 1 FROM unsubscribe_list WHERE email = ?', [email]);
-  return !!result;
-}
-```
-
-### DB スキーマ追加
-- `unsubscribe_list` テーブル: email, reason, other_reason, unsubscribed_at
-- `email_logs` テーブル: 送信履歴 (再送防止用)
-
-### 営業ツール 3 種 (社内専用)
-- `/unsubscribe.html` — 配信停止フォーム (公開)
-- `/sales-lead-manager.html` — リード管理 (社内専用 noindex)
-- `/email-template-generator.html` — メールテンプレ集 (社内専用 noindex)
-
----
-
 ## 🚨 セキュリティ最重要事項 (絶対守る)
 
 ### 🔒 `/noru-admin.html` は **代表 (恋ちゃん) 専用**
