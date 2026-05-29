@@ -18,9 +18,9 @@ body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:v
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* A4 1ページに 12 枚 (3列 x 4行) */
-.a4{width:210mm;min-height:297mm;background:#fff;margin:0 auto;padding:5mm;box-shadow:0 4px 20px rgba(0,0,0,.15)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;height:287mm}
-.card{border:1px dashed #94A3B8;border-radius:4px;padding:3mm 2.5mm;display:flex;flex-direction:column;align-items:center;justify-content:space-between;background:#fff;page-break-inside:avoid;text-align:center}
+.a4{width:210mm;min-height:297mm;background:#fff;margin:0 auto;padding:4mm;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr);gap:2mm;height:289mm}
+.card{border:1px dashed #94A3B8;border-radius:4px;padding:2mm 2mm;display:flex;flex-direction:column;align-items:center;justify-content:space-between;background:#fff;page-break-inside:avoid;text-align:center;overflow:hidden}
 
 .brand{margin-bottom:1mm}
 .brand h1{font-size:11pt;font-weight:900;letter-spacing:-.3px;line-height:1}
@@ -43,10 +43,12 @@ body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:v
 .controls .info{margin-top:8px;font-size:11px;color:var(--gray)}
 
 @media print{
-  body{background:#fff;padding:0}
-  .a4{box-shadow:none;margin:0;width:auto;min-height:auto}
-  .controls{display:none}
-  @page{size:A4;margin:0}
+  html,body{margin:0 !important;padding:0 !important;background:#fff !important;width:210mm !important;height:297mm !important;overflow:hidden !important}
+  .controls{display:none !important;visibility:hidden !important;height:0 !important;margin:0 !important;padding:0 !important}
+  .a4{box-shadow:none !important;border:none !important;margin:0 !important;padding:4mm !important;width:210mm !important;height:297mm !important;min-height:297mm !important;max-height:297mm !important;page-break-after:avoid !important}
+  .grid{height:289mm !important;page-break-inside:avoid !important}
+  .card{break-inside:avoid !important;page-break-inside:avoid !important}
+  @page{size:A4 portrait;margin:0}
 }
 </style>
 </head>
