@@ -140,7 +140,6 @@ PORT=3000
 | ファイル | 用途 |
 |---|---|
 | `press-release.html` | プレスリリース 5 件 |
-| `media-kit.html` | メディアキット (ファクトシート + 紹介文 3 種) |
 | `search.html` | サイト内検索 (全 36 ページ横断 + WebSite SearchAction schema) |
 
 ### 法的ページ (Stripe 審査必須)
