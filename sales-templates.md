@@ -20,7 +20,7 @@ RAKURAKUは
 ✅ 店長はワンタップでシフト表完成
 ✅ 不足コマはTimee/シェアフルへワンタップ配信
 
-月¥4,990、14日間無料・クレカ登録不要でお試しいただけます。
+月¥4,990、30日 Pro 体験・クレカ登録不要でお試しいただけます。
 → https://rakuraku-shift-production.up.railway.app
 
 ご興味あればお気軽にどうぞ！
@@ -35,7 +35,7 @@ RAKURAKUは
 深夜割増の自動計算とか、不足コマのTimee配信ワンタップとか、
 めちゃくちゃ便利なやつです。
 
-14日無料で試せるので、もしシフト管理で困ってたらぜひ👇
+30日 Pro 体験で試せるので、もしシフト管理で困ってたらぜひ👇
 https://rakuraku-shift-production.up.railway.app
 
 長文失礼しました🙏
@@ -44,7 +44,7 @@ https://rakuraku-shift-production.up.railway.app
 ### C. ストーリーズリプライ用（時短）
 
 ```
-バーのシフト管理アプリ作ってるので、もしお困りなら声かけてください！14日無料
+バーのシフト管理アプリ作ってるので、もしお困りなら声かけてください！30日 Pro 体験
 https://rakuraku-shift-production.up.railway.app
 ```
 
@@ -132,7 +132,7 @@ RAKURAKU
 ✅ 深夜割増 自動計算
 ✅ 不足コマは Timee/シェアフル へワンタップ配信
 
-月¥4,990・14日無料・クレカ不要
+月¥4,990・30日 Pro 体験・クレカ不要
 👉 https://rakuraku-shift-production.up.railway.app
 
 #バー #飲食店 #シフト管理 #個人店応援
@@ -143,7 +143,7 @@ RAKURAKU
 ```
 共感です…シフト管理ストレスですよね。
 バー専門のシフト管理アプリ作ったので、もしよければ。
-14日無料で試せます🙏
+30日 Pro 体験で試せます🙏
 https://rakuraku-shift-production.up.railway.app
 ```
 
@@ -170,7 +170,7 @@ https://rakuraku-shift-production.up.railway.app
 
 ```
 シフト作成、1タップで完璧に。
-RAKURAKU 14日無料👇
+RAKURAKU 30日 Pro 体験👇
 https://rakuraku-shift-production.up.railway.app
 ```
 
@@ -186,7 +186,7 @@ https://rakuraku-shift-production.up.railway.app
 
 ①スタッフはスマホで希望提出、店長は1タップでシフト完成
 ②不足コマはTimeeに自動配信、Timee手数料を月数万円削減できます  
-③月¥4,990、14日間無料・クレカ登録不要
+③月¥4,990、30日 Pro 体験・クレカ登録不要
 
 詳細をメールでお送りしてもよろしいでしょうか？」
 ```

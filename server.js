@@ -308,7 +308,7 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
       <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
         <h2 style="color:#4F46E5;margin:0 0 16px;">RAKURAKU へようこそ${shopName ? `（${shopName} 様）` : ''}</h2>
         <p>この度はご登録いただき、誠にありがとうございます。</p>
-        <p><strong>14日間の無料トライアル</strong>が開始されました。期間中は一切料金が発生しません。</p>
+        <p><strong>30 日 Pro 体験 (クレカ不要)</strong>が開始されました。期間中は一切料金が発生しません。</p>
 
         ${shopId ? `
         <div style="background:linear-gradient(135deg,#EEF2FF,#FAF5FF);border:2px solid #4F46E5;padding:20px;margin:24px 0;border-radius:12px;">
