@@ -3,502 +3,318 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>全ページ一覧 — RAKURAKU 管理者用</title>
-<meta name="description" content="管理者用全ページ一覧 (QA・営業前確認用)"/>
+<title>全 95 ページ一覧 — RAKURAKU 管理者用</title>
+<meta name="description" content="管理者用全ページ一覧 (95 ページ・QA・営業前確認用)"/>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#4F46E5">
 <link rel="icon" href="/icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;}
-  :root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--rose:#EF4444;
-        --slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
-  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:var(--slate-50);min-height:100vh;line-height:1.6;}
-
-  .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;}
-  .nav-inner{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
-  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
-  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;}
-
-  .container{max-width:1280px;margin:0 auto;padding:30px 24px;}
-
-  .hero{text-align:center;margin-bottom:30px;padding:30px;background:linear-gradient(135deg,#EEF2FF,#fff);border-radius:18px;border:1.5px solid var(--slate-100);}
-  .hero h1{font-size:26px;font-weight:900;letter-spacing:-.02em;margin-bottom:8px;}
-  .hero p{font-size:13px;color:var(--slate-500);font-weight:600;}
-
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px;}
-  @media(max-width:680px){.stats{grid-template-columns:repeat(2,1fr);}}
-  .stat{background:#fff;border:1.5px solid var(--slate-100);border-radius:10px;padding:14px 10px;text-align:center;}
-  .stat-num{font-size:24px;font-weight:900;color:var(--indigo);letter-spacing:-.02em;}
-  .stat-lbl{font-size:10px;color:var(--slate-500);font-weight:800;margin-top:3px;}
-
-  .category{background:#fff;border-radius:14px;padding:24px;margin-bottom:18px;border:1.5px solid var(--slate-100);box-shadow:0 4px 16px rgba(0,0,0,.04);}
-  .cat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--slate-100);}
-  .cat-title{font-size:17px;font-weight:900;display:flex;align-items:center;gap:8px;}
-  .cat-count{font-size:11px;font-weight:800;color:var(--slate-500);background:var(--slate-100);padding:3px 10px;border-radius:10px;}
-
-  .page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;}
-  .page-card{display:block;padding:14px;border:1.5px solid var(--slate-100);border-radius:10px;text-decoration:none;color:var(--slate-900);transition:all .15s;background:#fff;}
-  .page-card:hover{border-color:var(--indigo);box-shadow:0 6px 16px rgba(79,70,229,.12);transform:translateY(-2px);}
-  .page-card .ic{font-size:22px;margin-bottom:5px;}
-  .page-card .name{font-size:13px;font-weight:800;margin-bottom:3px;}
-  .page-card .url{font-size:10px;color:var(--slate-500);font-family:'SF Mono',monospace;margin-bottom:5px;word-break:break-all;}
-  .page-card .desc{font-size:11px;color:var(--slate-700);line-height:1.6;}
-  .page-card .status{display:inline-block;font-size:9px;font-weight:800;padding:2px 7px;border-radius:8px;margin-top:6px;}
-  .status-ok{background:#DCFCE7;color:#16A34A;}
-  .status-test{background:#FEF3C7;color:#B45309;}
-  .status-protected{background:#FEE2E2;color:var(--rose);}
-
-  .warn{background:#FFFBEB;border-left:4px solid #F59E0B;padding:14px 18px;border-radius:0 10px 10px 0;font-size:12px;color:#78350F;margin-bottom:20px;line-height:1.7;}
-  .warn strong{color:#92400E;}
-
-  .legacy{background:#FEE2E2;border-left:4px solid var(--rose);padding:14px 18px;border-radius:0 10px 10px 0;font-size:12px;color:#7F1D1D;margin-bottom:20px;line-height:1.7;}
-
-  .check-btn{display:inline-block;padding:6px 12px;background:var(--indigo-l);color:var(--indigo);border-radius:8px;font-size:10px;font-weight:800;margin-top:6px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;}
-  .check-btn:hover{background:var(--indigo);color:#fff;}
-
-  .footer-note{text-align:center;font-size:11px;color:var(--slate-500);padding:30px 0;line-height:1.7;}
-  .footer-note a{color:var(--indigo);text-decoration:none;}
-
-  /* 検査結果のバッジ */
-  .test-results{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;}
-  .test-result-badge{font-size:11px;font-weight:800;padding:6px 14px;border-radius:20px;background:var(--slate-100);color:var(--slate-700);}
-  .test-result-badge.ok{background:#DCFCE7;color:#16A34A;}
-  .test-result-badge.fail{background:#FEE2E2;color:var(--rose);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;color:#0F172A;background:#F8FAFC;line-height:1.6;padding:20px}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#4F46E5;color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid #4F46E5;outline-offset:2px}
+.container{max-width:1280px;margin:0 auto}
+.hero{text-align:center;margin-bottom:30px;padding:30px;background:linear-gradient(135deg,#EEF2FF,#fff);border-radius:18px;border:1.5px solid #F1F5F9}
+.hero h1{font-size:28px;font-weight:900;margin-bottom:8px}
+.hero p{font-size:14px;color:#64748B;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:18px}
+.stat{background:#fff;border:1.5px solid #F1F5F9;border-radius:10px;padding:14px 10px;text-align:center}
+.stat-num{font-size:26px;font-weight:900;color:#4F46E5}
+.stat-lbl{font-size:10px;color:#64748B;font-weight:800;margin-top:3px}
+.search-box{margin:25px 0;text-align:center}
+.search-box input{width:100%;max-width:500px;padding:12px 18px;border:2px solid #E2E8F0;border-radius:10px;font-size:14px;outline:none}
+.search-box input:focus{border-color:#4F46E5}
+.category{background:#fff;border-radius:14px;padding:24px;margin-bottom:18px;border:1.5px solid #F1F5F9;box-shadow:0 4px 16px rgba(0,0,0,.04)}
+.cat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #F1F5F9}
+.cat-title{font-size:18px;font-weight:900;display:flex;align-items:center;gap:8px}
+.cat-count{font-size:11px;font-weight:800;color:#64748B;background:#F1F5F9;padding:3px 10px;border-radius:10px}
+.page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.page-card{display:block;padding:14px;border:1.5px solid #F1F5F9;border-radius:10px;text-decoration:none;color:#0F172A;transition:all .15s;background:#fff}
+.page-card:hover{border-color:#4F46E5;box-shadow:0 6px 16px rgba(79,70,229,.12);transform:translateY(-2px)}
+.page-card .ic{font-size:22px;margin-bottom:5px}
+.page-card .name{font-size:13px;font-weight:800;margin-bottom:3px}
+.page-card .url{font-size:10px;color:#64748B;font-family:Menlo,monospace;word-break:break-all}
+.page-card .desc{font-size:11px;color:#334155;line-height:1.6;margin-top:5px}
+.status{display:inline-block;font-size:9px;font-weight:800;padding:2px 7px;border-radius:8px;margin-top:6px}
+.status-pub{background:#DCFCE7;color:#16A34A}
+.status-new{background:#FEF3C7;color:#B45309}
+.status-priv{background:#FEE2E2;color:#DC2626}
+.warn{background:#FFFBEB;border-left:4px solid #F59E0B;padding:14px 18px;border-radius:0 10px 10px 0;font-size:12px;color:#78350F;margin-bottom:20px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-
-<header class="nav">
-  <div class="nav-inner">
-    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU 全ページ一覧</span></a>
-    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;">← トップへ</a>
-  </div>
-</header>
-
-<div class="container">
+<a class="skip-link" href="#main">本文へスキップ</a>
+<div class="container" id="main">
 
 <div class="hero">
-  <h1>🗺 RAKURAKU 全ページ マップ</h1>
-  <p>全ページを一発で開けます。各カードをクリックで該当ページが新規タブで開きます。</p>
+  <h1>📋 全 95 ページ 一覧</h1>
+  <p>RAKURAKU シフト管理 / 管理者用 (noindex)</p>
   <div class="stats">
-    <div class="stat"><div class="stat-num">34</div><div class="stat-lbl">RAKURAKU ページ</div></div>
-    <div class="stat"><div class="stat-num">10</div><div class="stat-lbl">営業ページ</div></div>
-    <div class="stat"><div class="stat-num">8</div><div class="stat-lbl">コア機能</div></div>
-    <div class="stat"><div class="stat-num">81</div><div class="stat-lbl">API endpoint</div></div>
-  </div>
-  <div class="test-results">
-    <button class="test-result-badge" onclick="runHealthCheck()">🩺 全ページ生存チェック実行</button>
-    <span id="health-result"></span>
+    <div class="stat"><div class="stat-num">95</div><div class="stat-lbl">HTML PAGES</div></div>
+    <div class="stat"><div class="stat-num">220+</div><div class="stat-lbl">COMMITS</div></div>
+    <div class="stat"><div class="stat-num">20</div><div class="stat-lbl">CATEGORIES</div></div>
+    <div class="stat"><div class="stat-num">8</div><div class="stat-lbl">業態 LP</div></div>
+    <div class="stat"><div class="stat-num">14</div><div class="stat-lbl">⭐ NEW (5/28-29)</div></div>
   </div>
 </div>
 
 <div class="warn">
-  💡 <strong>営業時のオススメ動線:</strong><br>
-  1. 「<strong>営業・マーケ</strong>」のトップ → 2. 「<strong>差別化6機能</strong>」スクロール → 3. 料金 → 4. デモを実演 → 5. 事例
+  ⚠️ 各カードをクリックすると別タブで開きます · 🔒 マークは noindex / 公開不可 (代表専用) · 🆕 マークは 2026-05-28〜29 追加分
 </div>
 
-<!-- ─── 営業・マーケティング ─── -->
-<div class="category">
-  <div class="cat-header">
-    <div class="cat-title">🎁 営業・マーケティングページ</div>
-    <span class="cat-count">10ページ</span>
-  </div>
+<div class="search-box">
+  <input type="search" placeholder="🔍 ページ名で絞り込み (例: 料金, GPS, ラウンジ)" oninput="filterPages(this.value)">
+</div>
+
+<!-- ========== 🏠 トップ & 会社 ========== -->
+<div class="category" data-cat="トップ">
+  <div class="cat-header"><div class="cat-title">🏠 トップ & 会社情報</div><div class="cat-count">3</div></div>
   <div class="page-grid">
-    <a class="page-card" href="/" target="_blank" data-check="/">
-      <div class="ic">🏠</div>
-      <div class="name">トップページ</div>
-      <div class="url">/</div>
-      <div class="desc">LP・料金・差別化機能・FAQ</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/about.html" target="_blank" data-check="/about.html">
-      <div class="ic">🏢</div>
-      <div class="name">会社情報</div>
-      <div class="url">/about.html</div>
-      <div class="desc">代表/所在地/特商法表記</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/help.html" target="_blank" data-check="/help.html">
-      <div class="ic">❓</div>
-      <div class="name">FAQ・ヘルプ</div>
-      <div class="url">/help.html</div>
-      <div class="desc">46項目 / 8カテゴリ</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/getting-started.html" target="_blank" data-check="/getting-started.html">
-      <div class="ic">🚀</div>
-      <div class="name">3分セットアップ</div>
-      <div class="url">/getting-started.html</div>
-      <div class="desc">5ステップガイド (新規店長向け)</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/demo-reservation.html" target="_blank" data-check="/demo-reservation.html">
-      <div class="ic">🎁</div>
-      <div class="name">デモ予約</div>
-      <div class="url">/demo-reservation.html</div>
-      <div class="desc">15分無料デモのフォーム</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/referral.html" target="_blank" data-check="/referral.html">
-      <div class="ic">🤝</div>
-      <div class="name">紹介プログラム</div>
-      <div class="url">/referral.html</div>
-      <div class="desc">お互い1ヶ月無料 (上限2ヶ月)</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/case-studies.html" target="_blank" data-check="/case-studies.html">
-      <div class="ic">📊</div>
-      <div class="name">導入事例</div>
-      <div class="url">/case-studies.html</div>
-      <div class="desc">A〜F店 + A〜E様 (匿名)</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/blog.html" target="_blank" data-check="/blog.html">
-      <div class="ic">📚</div>
-      <div class="name">ブログ</div>
-      <div class="url">/blog.html</div>
-      <div class="desc">7記事 (小泉さん視点)</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/careers.html" target="_blank" data-check="/careers.html">
-      <div class="ic">💼</div>
-      <div class="name">採用情報</div>
-      <div class="url">/careers.html</div>
-      <div class="desc">パートナー店舗 + エンジニア</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
+    <a href="/" target="_blank" class="page-card"><div class="ic">🏠</div><div class="name">index.html</div><div class="url">/</div><div class="desc">LP / トップ</div><div class="status status-pub">公開</div></a>
+    <a href="/about.html" target="_blank" class="page-card"><div class="ic">🏢</div><div class="name">about.html</div><div class="url">/about.html</div><div class="desc">会社概要</div><div class="status status-pub">公開</div></a>
+    <a href="/roadmap.html" target="_blank" class="page-card"><div class="ic">🗺</div><div class="name">roadmap.html</div><div class="url">/roadmap.html</div><div class="desc">機能ロードマップ</div><div class="status status-pub">公開</div></a>
   </div>
 </div>
 
-<!-- ─── シフト管理コア機能 ─── -->
-<div class="category">
-  <div class="cat-header">
-    <div class="cat-title">🏪 シフト管理 コア機能</div>
-    <span class="cat-count">8ページ</span>
-  </div>
+<!-- ========== 💰 料金 & 営業 ========== -->
+<div class="category" data-cat="料金">
+  <div class="cat-header"><div class="cat-title">💰 料金 & 営業</div><div class="cat-count">4</div></div>
   <div class="page-grid">
-    <a class="page-card" href="/shift.html?shop=demo-shop" target="_blank" data-check="/shift.html">
-      <div class="ic">📅</div>
-      <div class="name">シフト管理 メイン</div>
-      <div class="url">/shift.html?shop=xxx</div>
-      <div class="desc">SmartNewsタブ・店長/スタッフ統合</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/myshift.html?shop=demo-shop" target="_blank" data-check="/myshift.html">
-      <div class="ic">📲</div>
-      <div class="name">マイシフト</div>
-      <div class="url">/myshift.html?shop=xxx</div>
-      <div class="desc">スタッフ用 シフト確認</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/attendance.html?shop=demo-shop" target="_blank" data-check="/attendance.html">
-      <div class="ic">⏰</div>
-      <div class="name">GPS打刻</div>
-      <div class="url">/attendance.html?shop=xxx</div>
-      <div class="desc">出退勤・休憩・GPS判定</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/staff-dashboard.html" target="_blank" data-check="/staff-dashboard.html">
-      <div class="ic">🏠</div>
-      <div class="name">スタッフホーム</div>
-      <div class="url">/staff-dashboard.html</div>
-      <div class="desc">個人KPI・お知らせ・次シフト</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/payroll.html?shop=demo-shop&month=2026-05" target="_blank" data-check="/payroll.html">
-      <div class="ic">💴</div>
-      <div class="name">給与明細</div>
-      <div class="url">/payroll.html</div>
-      <div class="desc">PDF + freee/MF CSV出力</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/monthly-report.html?shop=demo-shop" target="_blank" data-check="/monthly-report.html">
-      <div class="ic">📊</div>
-      <div class="name">月次レポート</div>
-      <div class="url">/monthly-report.html</div>
-      <div class="desc">経営KPI・人件費率 (A4PDF)</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/staff-monthly.html" target="_blank" data-check="/staff-monthly.html">
-      <div class="ic">📈</div>
-      <div class="name">スタッフ月次</div>
-      <div class="url">/staff-monthly.html</div>
-      <div class="desc">個別月次サマリ</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/master-data.html?shop=demo-shop" target="_blank" data-check="/master-data.html">
-      <div class="ic">⚙️</div>
-      <div class="name">マスタデータ</div>
-      <div class="url">/master-data.html</div>
-      <div class="desc">ポジション/時給/休憩ルール</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
+    <a href="/pricing.html" target="_blank" class="page-card"><div class="ic">💰</div><div class="name">pricing.html ⭐NEW</div><div class="url">/pricing.html</div><div class="desc">料金プラン (Free/Pro/Enterprise)</div><div class="status status-new">🆕 Freemium</div></a>
+    <a href="/pricing-simulator.html" target="_blank" class="page-card"><div class="ic">📊</div><div class="name">pricing-simulator.html</div><div class="url">/pricing-simulator.html</div><div class="desc">節約額シミュレーター</div><div class="status status-pub">公開</div></a>
+    <a href="/enterprise.html" target="_blank" class="page-card"><div class="ic">🏢</div><div class="name">enterprise.html</div><div class="url">/enterprise.html</div><div class="desc">Enterprise プラン</div><div class="status status-new">🆕</div></a>
+    <a href="/free-templates.html" target="_blank" class="page-card"><div class="ic">🎁</div><div class="name">free-templates.html</div><div class="url">/free-templates.html</div><div class="desc">無料 Excel テンプレ</div><div class="status status-pub">公開</div></a>
   </div>
 </div>
 
-<!-- ─── 管理者用 ─── -->
-<div class="category">
-  <div class="cat-header">
-    <div class="cat-title">🏢 管理者用 (本社・オーナー)</div>
-    <span class="cat-count">5ページ</span>
-  </div>
+<!-- ========== 🍸 業界別 LP ========== -->
+<div class="category" data-cat="業界別">
+  <div class="cat-header"><div class="cat-title">🍸 業界別 LP (8 業態)</div><div class="cat-count">8</div></div>
   <div class="page-grid">
-    <a class="page-card" href="/noru-admin.html" target="_blank" data-check="/noru-admin.html" style="border:2px solid #EF4444;background:#FEF2F2;">
-      <div class="ic">🔐</div>
-      <div class="name">本社管理コンソール</div>
-      <div class="url">/noru-admin.html</div>
-      <div class="desc"><strong style="color:#EF4444;">⚠ 代表専用 (恋ちゃんのみ)</strong><br>お客様には絶対にURLを教えない</div>
-      <span class="status" style="background:#FEE2E2;color:#7F1D1D;">🔒 PIN必須・代表専用</span>
-    </a>
-    <a class="page-card" href="/hq-dashboard.html" target="_blank" data-check="/hq-dashboard.html">
-      <div class="ic">📈</div>
-      <div class="name">本部ダッシュボード</div>
-      <div class="url">/hq-dashboard.html</div>
-      <div class="desc">横断KPI・CSV出力</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/announcements.html" target="_blank" data-check="/announcements.html">
-      <div class="ic">📢</div>
-      <div class="name">お知らせ管理</div>
-      <div class="url">/announcements.html</div>
-      <div class="desc">LINE/メール/Push 一斉送信</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/notification-settings.html" target="_blank" data-check="/notification-settings.html">
-      <div class="ic">🔔</div>
-      <div class="name">通知設定</div>
-      <div class="url">/notification-settings.html</div>
-      <div class="desc">LINE/メール/Push/SMS</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/sales-import.html" target="_blank" data-check="/sales-import.html">
-      <div class="ic">💰</div>
-      <div class="name">売上取込</div>
-      <div class="url">/sales-import.html</div>
-      <div class="desc">手動/CSV/POS連携</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
+    <a href="/bar.html" target="_blank" class="page-card"><div class="ic">🍸</div><div class="name">bar.html</div><div class="url">/bar.html</div><div class="desc">バー (HUB/キャスト)</div><div class="status status-pub">公開</div></a>
+    <a href="/izakaya.html" target="_blank" class="page-card"><div class="ic">🍺</div><div class="name">izakaya.html</div><div class="url">/izakaya.html</div><div class="desc">居酒屋</div><div class="status status-pub">公開</div></a>
+    <a href="/cafe.html" target="_blank" class="page-card"><div class="ic">☕</div><div class="name">cafe.html</div><div class="url">/cafe.html</div><div class="desc">カフェ</div><div class="status status-pub">公開</div></a>
+    <a href="/lounge.html" target="_blank" class="page-card"><div class="ic">💎</div><div class="name">lounge.html</div><div class="url">/lounge.html</div><div class="desc">会員制ラウンジ</div><div class="status status-new">🆕</div></a>
+    <a href="/snack.html" target="_blank" class="page-card"><div class="ic">🌸</div><div class="name">snack.html</div><div class="url">/snack.html</div><div class="desc">スナック</div><div class="status status-new">🆕</div></a>
+    <a href="/karaoke.html" target="_blank" class="page-card"><div class="ic">🎤</div><div class="name">karaoke.html</div><div class="url">/karaoke.html</div><div class="desc">カラオケ</div><div class="status status-new">🆕</div></a>
+    <a href="/club.html" target="_blank" class="page-card"><div class="ic">🪩</div><div class="name">club.html</div><div class="url">/club.html</div><div class="desc">ナイトクラブ</div><div class="status status-new">🆕</div></a>
+    <a href="/dining-bar.html" target="_blank" class="page-card"><div class="ic">🍽</div><div class="name">dining-bar.html</div><div class="url">/dining-bar.html</div><div class="desc">ダイニングバー</div><div class="status status-new">🆕</div></a>
   </div>
 </div>
 
-<!-- ─── ユーティリティ ─── -->
-<div class="category">
-  <div class="cat-header">
-    <div class="cat-title">🛠 ユーティリティ</div>
-    <span class="cat-count">4ページ</span>
-  </div>
+<!-- ========== 🆚 競合比較 ========== -->
+<div class="category" data-cat="競合">
+  <div class="cat-header"><div class="cat-title">🆚 競合比較</div><div class="cat-count">4</div></div>
   <div class="page-grid">
-    <a class="page-card" href="/data-export.html" target="_blank" data-check="/data-export.html">
-      <div class="ic">💾</div>
-      <div class="name">データバックアップ</div>
-      <div class="url">/data-export.html</div>
-      <div class="desc">JSON エクスポート/インポート</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/churn-survey.html" target="_blank" data-check="/churn-survey.html">
-      <div class="ic">📊</div>
-      <div class="name">解約アンケート</div>
-      <div class="url">/churn-survey.html</div>
-      <div class="desc">NPS+10理由+改善要望</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/roadmap.html" target="_blank" data-check="/roadmap.html">
-      <div class="ic">🗺</div>
-      <div class="name">機能ロードマップ</div>
-      <div class="url">/roadmap.html</div>
-      <div class="desc">投票・要望投稿可</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/status.html" target="_blank" data-check="/status.html">
-      <div class="ic">🚦</div>
-      <div class="name">稼働状況</div>
-      <div class="url">/status.html</div>
-      <div class="desc">リアルタイム監視・障害履歴</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
+    <a href="/vs-airshift.html" target="_blank" class="page-card"><div class="ic">🆚</div><div class="name">vs-airshift.html</div><div class="url">/vs-airshift.html</div><div class="desc">vs Airシフト</div><div class="status status-new">🆕</div></a>
+    <a href="/vs-shiftee.html" target="_blank" class="page-card"><div class="ic">🆚</div><div class="name">vs-shiftee.html</div><div class="url">/vs-shiftee.html</div><div class="desc">vs Shiftee</div><div class="status status-new">🆕</div></a>
+    <a href="/vs-freee.html" target="_blank" class="page-card"><div class="ic">🆚</div><div class="name">vs-freee.html</div><div class="url">/vs-freee.html</div><div class="desc">vs freee (補完)</div><div class="status status-new">🆕</div></a>
+    <a href="/competitor-matrix.html" target="_blank" class="page-card"><div class="ic">📊</div><div class="name">competitor-matrix.html</div><div class="url">/competitor-matrix.html</div><div class="desc">12 社徹底比較表</div><div class="status status-new">🆕</div></a>
   </div>
 </div>
 
-<!-- ─── 決済関連 ─── -->
-<div class="category">
-  <div class="cat-header">
-    <div class="cat-title">💳 決済関連</div>
-    <span class="cat-count">3ページ</span>
-  </div>
+<!-- ========== ⚙️ 機能特化 ========== -->
+<div class="category" data-cat="機能">
+  <div class="cat-header"><div class="cat-title">⚙️ 機能特化 LP</div><div class="cat-count">4</div></div>
   <div class="page-grid">
-    <a class="page-card" href="/checkout.html" target="_blank" data-check="/checkout.html">
-      <div class="ic">💳</div>
-      <div class="name">Stripe Checkout</div>
-      <div class="url">/checkout.html</div>
-      <div class="desc">サブスク決済画面</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/payment-success.html" target="_blank" data-check="/payment-success.html">
-      <div class="ic">✅</div>
-      <div class="name">決済完了</div>
-      <div class="url">/payment-success.html</div>
-      <div class="desc">Stripe からのリダイレクト先</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/subscribe-success.html" target="_blank" data-check="/subscribe-success.html">
-      <div class="ic">🎉</div>
-      <div class="name">サブスク登録完了</div>
-      <div class="url">/subscribe-success.html</div>
-      <div class="desc">登録完了 + ライセンスコード表示</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
+    <a href="/features/" target="_blank" class="page-card"><div class="ic">⚙️</div><div class="name">features/index.html</div><div class="url">/features/</div><div class="desc">機能一覧ハブ</div><div class="status status-new">🆕</div></a>
+    <a href="/features/gps.html" target="_blank" class="page-card"><div class="ic">📍</div><div class="name">features/gps.html</div><div class="url">/features/gps.html</div><div class="desc">GPS 打刻</div><div class="status status-new">🆕</div></a>
+    <a href="/features/labor-law.html" target="_blank" class="page-card"><div class="ic">⚖️</div><div class="name">features/labor-law.html</div><div class="url">/features/labor-law.html</div><div class="desc">労基法自動チェック</div><div class="status status-new">🆕</div></a>
+    <a href="/features/multi-language.html" target="_blank" class="page-card"><div class="ic">🌐</div><div class="name">features/multi-language.html</div><div class="url">/features/multi-language.html</div><div class="desc">多言語 (5 言語)</div><div class="status status-new">🆕</div></a>
   </div>
 </div>
 
-<!-- ─── 営業ツール ─── -->
-<div class="category">
-  <div class="cat-header">
-    <div class="cat-title">🎨 営業ツール (印刷用)</div>
-    <span class="cat-count">3ページ</span>
-  </div>
+<!-- ========== 📚 ナレッジ ========== -->
+<div class="category" data-cat="ナレッジ">
+  <div class="cat-header"><div class="cat-title">📚 ナレッジ・ガイド</div><div class="cat-count">6</div></div>
   <div class="page-grid">
-    <a class="page-card" href="/flyer.html" target="_blank" data-check="/flyer.html">
-      <div class="ic">📄</div>
-      <div class="name">営業チラシ</div>
-      <div class="url">/flyer.html</div>
-      <div class="desc">A4印刷用 / 表裏あり</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/business-card.html" target="_blank" data-check="/business-card.html">
-      <div class="ic">💳</div>
-      <div class="name">名刺デザイン</div>
-      <div class="url">/business-card.html</div>
-      <div class="desc">印刷用デザイン</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/talk-script.html" target="_blank" data-check="/talk-script.html">
-      <div class="ic">🎤</div>
-      <div class="name">営業トーク台本</div>
-      <div class="url">/talk-script.html</div>
-      <div class="desc">飛び込み営業の話し方</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
+    <a href="/guide.html" target="_blank" class="page-card"><div class="ic">📖</div><div class="name">guide.html</div><div class="url">/guide.html</div><div class="desc">完全ガイド 2026 (8章)</div><div class="status status-new">🆕</div></a>
+    <a href="/glossary.html" target="_blank" class="page-card"><div class="ic">📚</div><div class="name">glossary.html</div><div class="url">/glossary.html</div><div class="desc">用語集 50+</div><div class="status status-new">🆕</div></a>
+    <a href="/success-tips.html" target="_blank" class="page-card"><div class="ic">🎯</div><div class="name">success-tips.html</div><div class="url">/success-tips.html</div><div class="desc">導入成功 Tips 30 選</div><div class="status status-new">🆕</div></a>
+    <a href="/onboarding.html" target="_blank" class="page-card"><div class="ic">🚀</div><div class="name">onboarding.html</div><div class="url">/onboarding.html</div><div class="desc">5 分で始める</div><div class="status status-new">🆕</div></a>
+    <a href="/tutorials.html" target="_blank" class="page-card"><div class="ic">🎬</div><div class="name">tutorials.html</div><div class="url">/tutorials.html</div><div class="desc">動画チュートリアル 32 本</div><div class="status status-new">🆕</div></a>
+    <a href="/mobile-app.html" target="_blank" class="page-card"><div class="ic">📱</div><div class="name">mobile-app.html</div><div class="url">/mobile-app.html</div><div class="desc">PWA インストール</div><div class="status status-new">🆕</div></a>
   </div>
 </div>
 
-<!-- ─── システムページ ─── -->
-<div class="category">
-  <div class="cat-header">
-    <div class="cat-title">⚙️ システムページ</div>
-    <span class="cat-count">3ページ</span>
-  </div>
+<!-- ========== 📝 ブログ & 事例 ========== -->
+<div class="category" data-cat="ブログ">
+  <div class="cat-header"><div class="cat-title">📝 ブログ & 事例</div><div class="cat-count">7</div></div>
   <div class="page-grid">
-    <a class="page-card" href="/404.html" target="_blank" data-check="/404.html">
-      <div class="ic">🚫</div>
-      <div class="name">404 エラーページ</div>
-      <div class="url">/404.html</div>
-      <div class="desc">存在しないURLへアクセス時 (検索バー+ナビカード付き)</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/500.html" target="_blank" data-check="/500.html">
-      <div class="ic">🆘</div>
-      <div class="name">500 サーバーエラー</div>
-      <div class="url">/500.html</div>
-      <div class="desc">サーバー側エラー時 (再読込・稼働状況リンク)</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
-    <a class="page-card" href="/503.html" target="_blank" data-check="/503.html">
-      <div class="ic">🛠</div>
-      <div class="name">503 メンテナンス</div>
-      <div class="url">/503.html</div>
-      <div class="desc">メンテナンス中表示 (60秒自動再読込)</div>
-      <span class="status status-ok">✓ 公開</span>
-    </a>
+    <a href="/blog.html" target="_blank" class="page-card"><div class="ic">📚</div><div class="name">blog.html</div><div class="url">/blog.html</div><div class="desc">ブログ (19 記事)</div><div class="status status-pub">公開</div></a>
+    <a href="/blog-freemium-launch.html" target="_blank" class="page-card"><div class="ic">🆓</div><div class="name">blog-freemium-launch.html ⭐NEW</div><div class="url">/blog-freemium-launch.html</div><div class="desc">Freemium 戦略告知</div><div class="status status-new">🆕</div></a>
+    <a href="/case-studies.html" target="_blank" class="page-card"><div class="ic">📊</div><div class="name">case-studies.html</div><div class="url">/case-studies.html</div><div class="desc">導入事例一覧</div><div class="status status-pub">公開</div></a>
+    <a href="/case-bar.html" target="_blank" class="page-card"><div class="ic">🍸</div><div class="name">case-bar.html</div><div class="url">/case-bar.html</div><div class="desc">事例: 銀座 BAR FOREST</div><div class="status status-new">🆕</div></a>
+    <a href="/case-izakaya.html" target="_blank" class="page-card"><div class="ic">🍺</div><div class="name">case-izakaya.html</div><div class="url">/case-izakaya.html</div><div class="desc">事例: 居酒屋ご縁 渋谷</div><div class="status status-new">🆕</div></a>
+    <a href="/case-cafe.html" target="_blank" class="page-card"><div class="ic">☕</div><div class="name">case-cafe.html</div><div class="url">/case-cafe.html</div><div class="desc">事例: CAFE LUMIERE 表参道</div><div class="status status-new">🆕</div></a>
+    <a href="/testimonials.html" target="_blank" class="page-card"><div class="ic">💬</div><div class="name">testimonials.html</div><div class="url">/testimonials.html</div><div class="desc">お客様の声 16 件</div><div class="status status-new">🆕</div></a>
   </div>
 </div>
 
-<!-- ─── ドキュメント ─── -->
-<div class="category">
-  <div class="cat-header">
-    <div class="cat-title">📚 ドキュメント (Markdown)</div>
-    <span class="cat-count">3ファイル</span>
-  </div>
+<!-- ========== 🤝 PR/コミュニティ ========== -->
+<div class="category" data-cat="PR">
+  <div class="cat-header"><div class="cat-title">🤝 PR / コミュニティ</div><div class="cat-count">5</div></div>
   <div class="page-grid">
-    <a class="page-card" href="/README.md" target="_blank">
-      <div class="ic">📖</div>
-      <div class="name">README.md</div>
-      <div class="url">/README.md</div>
-      <div class="desc">開発者向けドキュメント</div>
-    </a>
-    <a class="page-card" href="/HUMAN-TODO.md" target="_blank">
-      <div class="ic">👤</div>
-      <div class="name">HUMAN-TODO.md</div>
-      <div class="url">/HUMAN-TODO.md</div>
-      <div class="desc">あなたがやる作業手順</div>
-    </a>
-    <a class="page-card" href="/OPERATION-MANUAL.md" target="_blank">
-      <div class="ic">📋</div>
-      <div class="name">OPERATION-MANUAL.md</div>
-      <div class="url">/OPERATION-MANUAL.md</div>
-      <div class="desc">店舗オーナー向け運用マニュアル</div>
-    </a>
+    <a href="/press-release.html" target="_blank" class="page-card"><div class="ic">📰</div><div class="name">press-release.html</div><div class="url">/press-release.html</div><div class="desc">プレスリリース 6 件</div><div class="status status-new">🆕</div></a>
+    <a href="/media-kit.html" target="_blank" class="page-card"><div class="ic">📦</div><div class="name">media-kit.html</div><div class="url">/media-kit.html</div><div class="desc">メディアキット</div><div class="status status-new">🆕</div></a>
+    <a href="/community.html" target="_blank" class="page-card"><div class="ic">💬</div><div class="name">community.html</div><div class="url">/community.html</div><div class="desc">コミュニティ</div><div class="status status-new">🆕</div></a>
+    <a href="/webinar.html" target="_blank" class="page-card"><div class="ic">🎤</div><div class="name">webinar.html</div><div class="url">/webinar.html</div><div class="desc">無料ウェビナー</div><div class="status status-new">🆕</div></a>
+    <a href="/changelog.html" target="_blank" class="page-card"><div class="ic">📋</div><div class="name">changelog.html</div><div class="url">/changelog.html</div><div class="desc">更新履歴 (v2.0-2.6)</div><div class="status status-new">🆕</div></a>
   </div>
 </div>
 
-<div class="legacy">
-  ⚠️ <strong>別プロジェクト残骸 (13ページ・非表示):</strong><br>
-  order.html / kitchen.html / pos.html / menu-admin.html / customer.html / table-qr.html / tables.html / gacha.html / staff.html / sales.html / demo.html / admin-settings.html / worker-dashboard.html<br>
-  → 旧モバイルオーダープロジェクトのもの。<strong>どこからもリンクされていないので、お客さんには見えません</strong>。放置でOK。
+<!-- ========== 🔌 開発者・連携 ========== -->
+<div class="category" data-cat="開発">
+  <div class="cat-header"><div class="cat-title">🔌 開発者 / 連携</div><div class="cat-count">3</div></div>
+  <div class="page-grid">
+    <a href="/api-docs.html" target="_blank" class="page-card"><div class="ic">📡</div><div class="name">api-docs.html</div><div class="url">/api-docs.html</div><div class="desc">REST API v1</div><div class="status status-new">🆕</div></a>
+    <a href="/integrations.html" target="_blank" class="page-card"><div class="ic">🔌</div><div class="name">integrations.html</div><div class="url">/integrations.html</div><div class="desc">連携サービス 20+</div><div class="status status-new">🆕</div></a>
+    <a href="/security.html" target="_blank" class="page-card"><div class="ic">🔒</div><div class="name">security.html</div><div class="url">/security.html</div><div class="desc">セキュリティ・コンプライアンス</div><div class="status status-new">🆕</div></a>
+  </div>
 </div>
 
+<!-- ========== 🔍 ユーティリティ ========== -->
+<div class="category" data-cat="ユーティリティ">
+  <div class="cat-header"><div class="cat-title">🔍 ユーティリティ</div><div class="cat-count">4</div></div>
+  <div class="page-grid">
+    <a href="/search.html" target="_blank" class="page-card"><div class="ic">🔍</div><div class="name">search.html</div><div class="url">/search.html</div><div class="desc">サイト内検索</div><div class="status status-new">🆕</div></a>
+    <a href="/help.html" target="_blank" class="page-card"><div class="ic">❓</div><div class="name">help.html</div><div class="url">/help.html</div><div class="desc">FAQ 50+</div><div class="status status-pub">公開</div></a>
+    <a href="/getting-started.html" target="_blank" class="page-card"><div class="ic">🚀</div><div class="name">getting-started.html</div><div class="url">/getting-started.html</div><div class="desc">3 分セットアップ</div><div class="status status-pub">公開</div></a>
+    <a href="/demo.html" target="_blank" class="page-card"><div class="ic">🎮</div><div class="name">demo.html</div><div class="url">/demo.html</div><div class="desc">機能デモ</div><div class="status status-pub">公開</div></a>
+  </div>
 </div>
 
-<div class="footer-note">
-  RAKURAKU 全ページマップ · このページは管理者専用 (検索エンジン非表示)<br>
-  問題が見つかったら <a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a><br>
-  &copy; 2026 RAKURAKU. All rights reserved.
+<!-- ========== ⚖️ 法的 ========== -->
+<div class="category" data-cat="法的">
+  <div class="cat-header"><div class="cat-title">⚖️ 法的ページ (Stripe 必須)</div><div class="cat-count">3</div></div>
+  <div class="page-grid">
+    <a href="/legal/terms.html" target="_blank" class="page-card"><div class="ic">📄</div><div class="name">legal/terms.html</div><div class="url">/legal/terms.html</div><div class="desc">利用規約</div><div class="status status-new">🆕</div></a>
+    <a href="/legal/privacy.html" target="_blank" class="page-card"><div class="ic">🔐</div><div class="name">legal/privacy.html</div><div class="url">/legal/privacy.html</div><div class="desc">プライバシーポリシー</div><div class="status status-new">🆕</div></a>
+    <a href="/legal/specified-commercial.html" target="_blank" class="page-card"><div class="ic">📜</div><div class="name">legal/specified-commercial.html</div><div class="url">/legal/specified-commercial.html</div><div class="desc">特定商取引法</div><div class="status status-new">🆕</div></a>
+  </div>
+</div>
+
+<!-- ========== 🤝 パートナー ========== -->
+<div class="category" data-cat="パートナー">
+  <div class="cat-header"><div class="cat-title">🤝 パートナー</div><div class="cat-count">2</div></div>
+  <div class="page-grid">
+    <a href="/partner-program.html" target="_blank" class="page-card"><div class="ic">🥇</div><div class="name">partner-program.html</div><div class="url">/partner-program.html</div><div class="desc">パートナー (4 ティア)</div><div class="status status-new">🆕</div></a>
+    <a href="/referral.html" target="_blank" class="page-card"><div class="ic">🎁</div><div class="name">referral.html</div><div class="url">/referral.html</div><div class="desc">紹介プログラム</div><div class="status status-pub">公開</div></a>
+  </div>
+</div>
+
+<!-- ========== 📅 シフト管理コア ========== -->
+<div class="category" data-cat="シフト">
+  <div class="cat-header"><div class="cat-title">📅 シフト管理コア (店長/スタッフ用)</div><div class="cat-count">8</div></div>
+  <div class="page-grid">
+    <a href="/shift.html" target="_blank" class="page-card"><div class="ic">📅</div><div class="name">shift.html</div><div class="url">/shift.html</div><div class="desc">店長/スタッフ統合</div><div class="status status-pub">公開</div></a>
+    <a href="/myshift.html" target="_blank" class="page-card"><div class="ic">👤</div><div class="name">myshift.html</div><div class="url">/myshift.html</div><div class="desc">スタッフ用シフト</div><div class="status status-pub">公開</div></a>
+    <a href="/attendance.html" target="_blank" class="page-card"><div class="ic">📍</div><div class="name">attendance.html</div><div class="url">/attendance.html</div><div class="desc">GPS 出退勤</div><div class="status status-pub">公開</div></a>
+    <a href="/payroll.html" target="_blank" class="page-card"><div class="ic">💴</div><div class="name">payroll.html</div><div class="url">/payroll.html</div><div class="desc">給与明細</div><div class="status status-pub">公開</div></a>
+    <a href="/staff-dashboard.html" target="_blank" class="page-card"><div class="ic">🏠</div><div class="name">staff-dashboard.html</div><div class="url">/staff-dashboard.html</div><div class="desc">スタッフホーム</div><div class="status status-pub">公開</div></a>
+    <a href="/staff-monthly.html" target="_blank" class="page-card"><div class="ic">📈</div><div class="name">staff-monthly.html</div><div class="url">/staff-monthly.html</div><div class="desc">月次サマリ</div><div class="status status-pub">公開</div></a>
+    <a href="/monthly-report.html" target="_blank" class="page-card"><div class="ic">📊</div><div class="name">monthly-report.html</div><div class="url">/monthly-report.html</div><div class="desc">月次レポート</div><div class="status status-pub">公開</div></a>
+    <a href="/worker-dashboard.html" target="_blank" class="page-card"><div class="ic">👷</div><div class="name">worker-dashboard.html</div><div class="url">/worker-dashboard.html</div><div class="desc">ワーカー画面</div><div class="status status-pub">公開</div></a>
+  </div>
+</div>
+
+<!-- ========== 🏪 店舗運営 ========== -->
+<div class="category" data-cat="運営">
+  <div class="cat-header"><div class="cat-title">🏪 店舗運営</div><div class="cat-count">8</div></div>
+  <div class="page-grid">
+    <a href="/master-data.html" target="_blank" class="page-card"><div class="ic">🗄</div><div class="name">master-data.html</div><div class="url">/master-data.html</div><div class="desc">マスタデータ</div><div class="status status-pub">公開</div></a>
+    <a href="/staff.html" target="_blank" class="page-card"><div class="ic">👥</div><div class="name">staff.html</div><div class="url">/staff.html</div><div class="desc">スタッフ一覧</div><div class="status status-pub">公開</div></a>
+    <a href="/sales.html" target="_blank" class="page-card"><div class="ic">💹</div><div class="name">sales.html</div><div class="url">/sales.html</div><div class="desc">売上管理</div><div class="status status-pub">公開</div></a>
+    <a href="/sales-import.html" target="_blank" class="page-card"><div class="ic">📥</div><div class="name">sales-import.html</div><div class="url">/sales-import.html</div><div class="desc">売上CSV取込</div><div class="status status-pub">公開</div></a>
+    <a href="/announcements.html" target="_blank" class="page-card"><div class="ic">📣</div><div class="name">announcements.html</div><div class="url">/announcements.html</div><div class="desc">お知らせ配信</div><div class="status status-pub">公開</div></a>
+    <a href="/notification-settings.html" target="_blank" class="page-card"><div class="ic">🔔</div><div class="name">notification-settings.html</div><div class="url">/notification-settings.html</div><div class="desc">通知設定</div><div class="status status-pub">公開</div></a>
+    <a href="/data-export.html" target="_blank" class="page-card"><div class="ic">💾</div><div class="name">data-export.html</div><div class="url">/data-export.html</div><div class="desc">データエクスポート</div><div class="status status-pub">公開</div></a>
+    <a href="/churn-survey.html" target="_blank" class="page-card"><div class="ic">📝</div><div class="name">churn-survey.html</div><div class="url">/churn-survey.html</div><div class="desc">解約アンケート</div><div class="status status-pub">公開</div></a>
+  </div>
+</div>
+
+<!-- ========== 🍴 POS / 注文 ========== -->
+<div class="category" data-cat="POS">
+  <div class="cat-header"><div class="cat-title">🍴 POS / 注文 / メニュー</div><div class="cat-count">7</div></div>
+  <div class="page-grid">
+    <a href="/tables.html" target="_blank" class="page-card"><div class="ic">🍽</div><div class="name">tables.html</div><div class="url">/tables.html</div><div class="desc">テーブル管理</div><div class="status status-pub">公開</div></a>
+    <a href="/table-qr.html" target="_blank" class="page-card"><div class="ic">📱</div><div class="name">table-qr.html</div><div class="url">/table-qr.html</div><div class="desc">テーブル QR</div><div class="status status-pub">公開</div></a>
+    <a href="/order.html" target="_blank" class="page-card"><div class="ic">🛒</div><div class="name">order.html</div><div class="url">/order.html</div><div class="desc">注文画面</div><div class="status status-pub">公開</div></a>
+    <a href="/kitchen.html" target="_blank" class="page-card"><div class="ic">👨‍🍳</div><div class="name">kitchen.html</div><div class="url">/kitchen.html</div><div class="desc">キッチン画面</div><div class="status status-pub">公開</div></a>
+    <a href="/pos.html" target="_blank" class="page-card"><div class="ic">💳</div><div class="name">pos.html</div><div class="url">/pos.html</div><div class="desc">POS</div><div class="status status-pub">公開</div></a>
+    <a href="/menu-admin.html" target="_blank" class="page-card"><div class="ic">📋</div><div class="name">menu-admin.html</div><div class="url">/menu-admin.html</div><div class="desc">メニュー管理</div><div class="status status-pub">公開</div></a>
+    <a href="/customer.html" target="_blank" class="page-card"><div class="ic">👤</div><div class="name">customer.html</div><div class="url">/customer.html</div><div class="desc">顧客管理</div><div class="status status-pub">公開</div></a>
+  </div>
+</div>
+
+<!-- ========== 🏢 管理機能 (内部) ========== -->
+<div class="category" data-cat="管理">
+  <div class="cat-header"><div class="cat-title">🏢 管理機能 (noindex)</div><div class="cat-count">3</div></div>
+  <div class="page-grid">
+    <a href="/noru-admin.html" target="_blank" class="page-card"><div class="ic">🔒</div><div class="name">noru-admin.html</div><div class="url">/noru-admin.html</div><div class="desc">本部管理 (代表専用)</div><div class="status status-priv">🔒 代表専用</div></a>
+    <a href="/hq-dashboard.html" target="_blank" class="page-card"><div class="ic">📊</div><div class="name">hq-dashboard.html</div><div class="url">/hq-dashboard.html</div><div class="desc">本部 KPI</div><div class="status status-priv">🔒</div></a>
+    <a href="/admin-settings.html" target="_blank" class="page-card"><div class="ic">⚙️</div><div class="name">admin-settings.html</div><div class="url">/admin-settings.html</div><div class="desc">管理設定</div><div class="status status-priv">🔒</div></a>
+  </div>
+</div>
+
+<!-- ========== 💳 決済 ========== -->
+<div class="category" data-cat="決済">
+  <div class="cat-header"><div class="cat-title">💳 決済関連</div><div class="cat-count">3</div></div>
+  <div class="page-grid">
+    <a href="/checkout.html" target="_blank" class="page-card"><div class="ic">💳</div><div class="name">checkout.html</div><div class="url">/checkout.html</div><div class="desc">Stripe Checkout</div><div class="status status-pub">公開</div></a>
+    <a href="/subscribe-success.html" target="_blank" class="page-card"><div class="ic">✅</div><div class="name">subscribe-success.html</div><div class="url">/subscribe-success.html</div><div class="desc">課金成功</div><div class="status status-pub">公開</div></a>
+    <a href="/payment-success.html" target="_blank" class="page-card"><div class="ic">🎉</div><div class="name">payment-success.html</div><div class="url">/payment-success.html</div><div class="desc">支払い成功</div><div class="status status-pub">公開</div></a>
+  </div>
+</div>
+
+<!-- ========== 📄 営業ツール ========== -->
+<div class="category" data-cat="営業">
+  <div class="cat-header"><div class="cat-title">📄 営業ツール</div><div class="cat-count">4</div></div>
+  <div class="page-grid">
+    <a href="/flyer.html" target="_blank" class="page-card"><div class="ic">📄</div><div class="name">flyer.html</div><div class="url">/flyer.html</div><div class="desc">A4 営業チラシ</div><div class="status status-pub">公開</div></a>
+    <a href="/business-card.html" target="_blank" class="page-card"><div class="ic">🎴</div><div class="name">business-card.html</div><div class="url">/business-card.html</div><div class="desc">名刺デザイン</div><div class="status status-pub">公開</div></a>
+    <a href="/talk-script.html" target="_blank" class="page-card"><div class="ic">🗣</div><div class="name">talk-script.html</div><div class="url">/talk-script.html</div><div class="desc">営業トーク台本</div><div class="status status-pub">公開</div></a>
+    <a href="/careers.html" target="_blank" class="page-card"><div class="ic">💼</div><div class="name">careers.html</div><div class="url">/careers.html</div><div class="desc">採用情報</div><div class="status status-pub">公開</div></a>
+  </div>
+</div>
+
+<!-- ========== 🚦 システム ========== -->
+<div class="category" data-cat="システム">
+  <div class="cat-header"><div class="cat-title">🚦 システム</div><div class="cat-count">5</div></div>
+  <div class="page-grid">
+    <a href="/404.html" target="_blank" class="page-card"><div class="ic">🔍</div><div class="name">404.html</div><div class="url">/404.html</div><div class="desc">404 Not Found</div><div class="status status-pub">公開</div></a>
+    <a href="/500.html" target="_blank" class="page-card"><div class="ic">⚠️</div><div class="name">500.html</div><div class="url">/500.html</div><div class="desc">500 サーバーエラー</div><div class="status status-pub">公開</div></a>
+    <a href="/503.html" target="_blank" class="page-card"><div class="ic">🔧</div><div class="name">503.html</div><div class="url">/503.html</div><div class="desc">503 メンテナンス</div><div class="status status-pub">公開</div></a>
+    <a href="/status.html" target="_blank" class="page-card"><div class="ic">🚦</div><div class="name">status.html</div><div class="url">/status.html</div><div class="desc">稼働状況</div><div class="status status-pub">公開</div></a>
+    <a href="/sitemap-view.html" target="_blank" class="page-card"><div class="ic">📋</div><div class="name">sitemap-view.html</div><div class="url">/sitemap-view.html</div><div class="desc">全 95 ページ一覧 (このページ)</div><div class="status status-priv">🔒</div></a>
+  </div>
+</div>
+
+<!-- ========== 🔧 内部その他 ========== -->
+<div class="category" data-cat="内部">
+  <div class="cat-header"><div class="cat-title">🔧 内部 / その他</div><div class="cat-count">4</div></div>
+  <div class="page-grid">
+    <a href="/stripe-setup-guide.html" target="_blank" class="page-card"><div class="ic">📘</div><div class="name">stripe-setup-guide.html</div><div class="url">/stripe-setup-guide.html</div><div class="desc">社内 Stripe 手順書</div><div class="status status-priv">🔒</div></a>
+    <a href="/resend-welcome.html" target="_blank" class="page-card"><div class="ic">📨</div><div class="name">resend-welcome.html</div><div class="url">/resend-welcome.html</div><div class="desc">ウェルカムメール再送</div><div class="status status-pub">公開</div></a>
+    <a href="/gacha.html" target="_blank" class="page-card"><div class="ic">🎲</div><div class="name">gacha.html</div><div class="url">/gacha.html</div><div class="desc">ガチャ機能</div><div class="status status-pub">公開</div></a>
+    <a href="/demo-reservation.html" target="_blank" class="page-card"><div class="ic">📅</div><div class="name">demo-reservation.html</div><div class="url">/demo-reservation.html</div><div class="desc">デモ予約</div><div class="status status-pub">公開</div></a>
+  </div>
+</div>
+
 </div>
 
 <script>
-/* 全ページ生存チェック */
-async function runHealthCheck() {
-  const btn = event.target;
-  const result = document.getElementById('health-result');
-  btn.disabled = true;
-  btn.textContent = '🔄 チェック中...';
-  result.innerHTML = '';
-
-  const cards = document.querySelectorAll('[data-check]');
-  let okCount = 0, failCount = 0;
-  const failedPages = [];
-
-  for (const card of cards) {
-    const url = card.dataset.check;
-    try {
-      const res = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
-      if (res.ok) {
-        okCount++;
-        card.style.borderColor = '#10B981';
-      } else {
-        failCount++;
-        failedPages.push(url + ' (HTTP ' + res.status + ')');
-        card.style.borderColor = '#EF4444';
-        card.style.background = '#FEF2F2';
-      }
-    } catch(e) {
-      failCount++;
-      failedPages.push(url + ' (' + e.message + ')');
-      card.style.borderColor = '#EF4444';
-      card.style.background = '#FEF2F2';
-    }
-  }
-
-  btn.disabled = false;
-  btn.textContent = '🩺 全ページ生存チェック実行';
-  btn.style.background = failCount === 0 ? '#DCFCE7' : '#FEE2E2';
-  btn.style.color = failCount === 0 ? '#16A34A' : '#EF4444';
-  result.innerHTML = `<span class="test-result-badge ${failCount === 0 ? 'ok' : 'fail'}" style="margin-left:8px;">✓ ${okCount} 件 OK / ❌ ${failCount} 件 NG</span>`;
-  if (failCount > 0) {
-    result.innerHTML += '<div style="margin-top:10px;font-size:11px;color:#7F1D1D;text-align:left;background:#FEE2E2;padding:10px;border-radius:8px;">失敗したページ:<br>' + failedPages.map(p => '• ' + p).join('<br>') + '</div>';
-  }
+function filterPages(q){
+  const ql = q.toLowerCase().trim();
+  document.querySelectorAll('.page-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = (!ql || text.includes(ql)) ? '' : 'none';
+  });
+  document.querySelectorAll('.category').forEach(cat => {
+    const visibleCards = cat.querySelectorAll('.page-card:not([style*="display: none"])');
+    cat.style.display = (visibleCards.length === 0 && ql) ? 'none' : '';
+  });
 }
 </script>
 </body>
