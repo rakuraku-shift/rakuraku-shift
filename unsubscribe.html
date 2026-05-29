@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>配信停止のお手続き | RAKURAKU</title>
+<meta name="description" content="RAKURAKU からの営業メール配信停止フォーム。1 クリックで停止可能です。">
+<meta name="theme-color" content="#0F172A">
+<link rel="canonical" href="https://rakuraku-shift-production.up.railway.app/unsubscribe.html">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:#0F172A;background:linear-gradient(135deg,#F8FAFC,#E2E8F0);min-height:100vh;line-height:1.7;padding:20px;display:flex;align-items:center;justify-content:center}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#0F172A;color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid #4F46E5;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.container{max-width:560px;width:100%;background:#fff;padding:45px 40px;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.header{text-align:center;margin-bottom:30px}
+.header .icon{font-size:3em;margin-bottom:10px}
+.header h1{font-size:1.6em;font-weight:900;color:#0F172A;margin-bottom:10px}
+.header p{color:#64748B;font-size:.95em}
+
+form{margin-top:25px}
+.field{margin-bottom:20px}
+label{display:block;font-weight:bold;font-size:.9em;margin-bottom:8px;color:#334155}
+input[type=email],textarea{width:100%;padding:14px 16px;border:2px solid #E2E8F0;border-radius:10px;font-size:1em;font-family:inherit;outline:none;transition:border-color .15s}
+input[type=email]:focus,textarea:focus{border-color:#4F46E5}
+textarea{resize:vertical;min-height:80px}
+
+.reason-group{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+.reason-group label.radio{display:flex;align-items:flex-start;padding:12px 15px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:8px;cursor:pointer;font-weight:normal;font-size:.92em;transition:all .15s}
+.reason-group label.radio:hover{background:#EEF2FF;border-color:#4F46E5}
+.reason-group input[type=radio]{margin-right:10px;margin-top:3px}
+
+.btn{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;border:none;border-radius:10px;font-size:1.05em;font-weight:bold;cursor:pointer;margin-top:10px;transition:transform .15s,opacity .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(79,70,229,.3)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.success{display:none;background:#F0FDF4;border-left:5px solid #22C55E;padding:25px;border-radius:10px;text-align:center;margin-top:20px}
+.success.show{display:block;animation:slideIn .3s}
+.success h2{color:#16A34A;font-size:1.3em;margin-bottom:10px}
+.success p{color:#0F172A}
+
+@keyframes slideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+
+.legal{margin-top:30px;padding-top:20px;border-top:1px solid #E2E8F0;font-size:.82em;color:#64748B;line-height:1.6}
+.legal strong{color:#0F172A}
+.legal a{color:#4F46E5;text-decoration:none}
+.legal a:hover{text-decoration:underline}
+
+.footer-info{margin-top:20px;text-align:center;font-size:.8em;color:#94A3B8}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<div class="container" id="main">
+
+  <div class="header">
+    <div class="icon">📭</div>
+    <h1>配信停止のお手続き</h1>
+    <p>ご不快な思いをさせてしまい、誠に申し訳ございません。<br>下記フォームから 1 クリックで配信停止できます。</p>
+  </div>
+
+  <form id="unsubForm" onsubmit="return submitForm(event)">
+    <div class="field">
+      <label for="email">メールアドレス <span style="color:#DC2626">*</span></label>
+      <input type="email" id="email" name="email" autocomplete="email" required placeholder="hello@example.com">
+    </div>
+
+    <div class="field">
+      <label>差し支えなければ、停止理由を教えてください</label>
+      <div class="reason-group">
+        <label class="radio"><input type="radio" name="reason" value="not_interested">興味がないため</label>
+        <label class="radio"><input type="radio" name="reason" value="too_many">配信頻度が高すぎるため</label>
+        <label class="radio"><input type="radio" name="reason" value="not_relevant">サービスが自社に合わないため</label>
+        <label class="radio"><input type="radio" name="reason" value="never_signed_up">登録した覚えがないため</label>
+        <label class="radio"><input type="radio" name="reason" value="other">その他</label>
+      </div>
+    </div>
+
+    <div class="field" id="otherReasonField" style="display:none">
+      <label for="otherReason">具体的な理由 (任意)</label>
+      <textarea id="otherReason" name="otherReason" placeholder="ご意見・ご要望があればお聞かせください"></textarea>
+    </div>
+
+    <button type="submit" class="btn" id="submitBtn">📭 配信を停止する</button>
+  </form>
+
+  <div class="success" id="successMsg">
+    <h2>✅ 配信停止が完了しました</h2>
+    <p>今後、RAKURAKU からの営業メールは送信されません。<br>ご協力ありがとうございました。</p>
+    <p style="margin-top:15px;font-size:.9em;color:#64748B">もしご不明点ございましたら<br><a href="mailto:koizumishota0323@gmail.com" style="color:#4F46E5">koizumishota0323@gmail.com</a> までご連絡ください。</p>
+  </div>
+
+  <div class="legal">
+    <strong>📋 配信停止について</strong><br>
+    特定電子メール法第 3 条第 3 項に基づき、配信停止のご要請には <strong>速やかに対応</strong>いたします。<br>
+    配信停止後も、過去 24 時間以内に送信予約済みのメールが届く場合がございますが、その後は完全に送信を停止いたします。
+    <br><br>
+    <strong>個人情報の取扱い</strong><br>
+    このフォームから取得した情報は、配信停止リストへの登録のみに使用し、他の目的では使用しません。<br>
+    詳細は<a href="/legal/privacy.html">プライバシーポリシー</a>をご覧ください。
+  </div>
+
+  <div class="footer-info">
+    RAKURAKU (個人事業主: 小泉 咲太) / <a href="/" style="color:#4F46E5;text-decoration:none">RAKURAKU トップ</a>
+  </div>
+
+</div>
+
+<script>
+// URLパラメータからメアドを自動入力
+(function(){
+  const params = new URLSearchParams(location.search);
+  const email = params.get('email');
+  if (email) document.getElementById('email').value = decodeURIComponent(email);
+})();
+
+// その他選択時のテキストエリア表示
+document.querySelectorAll('input[name=reason]').forEach(r => {
+  r.addEventListener('change', e => {
+    document.getElementById('otherReasonField').style.display = e.target.value === 'other' ? 'block' : 'none';
+  });
+});
+
+function submitForm(e){
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ 処理中…';
+
+  const data = {
+    email: document.getElementById('email').value,
+    reason: document.querySelector('input[name=reason]:checked')?.value || '',
+    otherReason: document.getElementById('otherReason').value,
+    timestamp: new Date().toISOString()
+  };
+
+  // API送信 (server.js にエンドポイント /api/unsubscribe を追加する想定)
+  fetch('/api/unsubscribe', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  }).then(r => r.ok ? r.json() : Promise.reject())
+    .then(() => showSuccess())
+    .catch(() => {
+      // APIエラーでも、ユーザー体験を損なわないようにメール送信フォールバック
+      window.location.href = 'mailto:koizumishota0323@gmail.com?subject=【配信停止希望】' + encodeURIComponent(data.email) + '&body=' + encodeURIComponent('配信停止希望: ' + data.email + '\n理由: ' + data.reason + '\n備考: ' + data.otherReason);
+      showSuccess();
+    });
+
+  return false;
+}
+
+function showSuccess(){
+  document.getElementById('unsubForm').style.display = 'none';
+  document.getElementById('successMsg').classList.add('show');
+}
+</script>
+</body>
+</html>

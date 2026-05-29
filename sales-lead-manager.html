@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>営業リード管理 — RAKURAKU 社内専用</title>
+<meta name="description" content="営業リード管理ダッシュボード (社内専用 / noindex)">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0F172A">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#4F46E5;--green:#16A34A;--amber:#F59E0B;--red:#DC2626;--text:#0F172A;--gray:#64748B;--bg:#F8FAFC}
+body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:var(--text);background:var(--bg);line-height:1.6;padding:15px}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:var(--accent);color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.container{max-width:1300px;margin:0 auto}
+.hero{background:linear-gradient(135deg,#0F172A,var(--accent));color:#fff;padding:25px 30px;border-radius:14px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+.hero h1{font-size:1.5em;font-weight:900}
+.hero .meta{font-size:.85em;opacity:.9;margin-top:5px}
+.export-btn{background:#fff;color:var(--accent);border:none;padding:10px 20px;border-radius:6px;font-weight:bold;cursor:pointer}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:#fff;padding:18px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.04);text-align:center}
+.stat .num{font-size:1.8em;font-weight:900;color:var(--accent)}
+.stat .lbl{font-size:.75em;color:var(--gray);font-weight:bold;margin-top:3px;text-transform:uppercase}
+
+.toolbar{background:#fff;padding:18px;border-radius:10px;margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.toolbar input,.toolbar select{padding:9px 12px;border:1.5px solid #E2E8F0;border-radius:6px;font-size:.9em;font-family:inherit}
+.toolbar input:focus,.toolbar select:focus{outline:none;border-color:var(--accent)}
+.toolbar button{padding:9px 16px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer;font-size:.9em}
+.toolbar button:hover{opacity:.9}
+.toolbar button.danger{background:var(--red)}
+.toolbar button.green{background:var(--green)}
+
+.lead-table{background:#fff;border-radius:10px;overflow-x:auto;box-shadow:0 2px 6px rgba(0,0,0,.04);margin-bottom:20px}
+table{width:100%;border-collapse:collapse;min-width:1100px;font-size:.85em}
+th,td{padding:10px 8px;border-bottom:1px solid #F1F5F9;text-align:left;vertical-align:middle}
+th{background:#0F172A;color:#fff;font-weight:600;position:sticky;top:0;font-size:.8em}
+tr:hover{background:#F8FAFC}
+.status{padding:3px 8px;border-radius:10px;font-size:.75em;font-weight:bold;display:inline-block}
+.status.new{background:#FEF3C7;color:#92400E}
+.status.sent{background:#DBEAFE;color:#1E40AF}
+.status.opened{background:#E0E7FF;color:#3730A3}
+.status.replied{background:#DCFCE7;color:#16A34A}
+.status.appointed{background:#FCE7F3;color:#9D174D}
+.status.closed{background:#FEE2E2;color:#991B1B}
+
+input.cell-edit{border:1px dashed #CBD5E1;padding:4px 6px;border-radius:4px;font-size:.85em;font-family:inherit;background:transparent;min-width:80px}
+input.cell-edit:focus{border:1px solid var(--accent);background:#fff}
+select.status-select{border:none;padding:3px 8px;border-radius:10px;font-size:.75em;font-weight:bold;cursor:pointer}
+
+.import-section{background:#fff;padding:25px;border-radius:10px;margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.import-section h2{color:var(--accent);margin-bottom:15px}
+.import-section textarea{width:100%;min-height:120px;padding:12px;border:2px solid #E2E8F0;border-radius:8px;font-family:Menlo,monospace;font-size:.85em;resize:vertical}
+.import-section textarea:focus{outline:none;border-color:var(--accent)}
+.warning{background:#FEF3C7;padding:15px;border-left:4px solid var(--amber);border-radius:8px;margin-bottom:15px;font-size:.9em}
+
+.actions{display:flex;gap:5px;flex-wrap:wrap}
+.actions button{padding:4px 8px;border:none;border-radius:4px;cursor:pointer;font-size:.75em;font-weight:bold}
+.actions .mail{background:#DBEAFE;color:#1E40AF}
+.actions .del{background:#FEE2E2;color:#991B1B}
+
+.tag{padding:2px 8px;background:#E0E7FF;color:#3730A3;border-radius:8px;font-size:.7em;font-weight:bold}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<div class="container" id="main">
+
+<div class="hero">
+  <div>
+    <h1>📊 営業リード管理ダッシュボード</h1>
+    <div class="meta">RAKURAKU 社内専用 / 全データ localStorage に保存 (端末ローカル)</div>
+  </div>
+  <button class="export-btn" onclick="exportCSV()">📥 CSV エクスポート</button>
+</div>
+
+<div class="warning">
+  ⚠️ <strong>使い方</strong>: このダッシュボードは localStorage で動作 (サーバー非依存)。データはこの端末のみに保存されます。<br>
+  バックアップは定期的に「CSV エクスポート」してください。 / 配信停止リストは別管理 (server.js の API or テキストファイル)。
+</div>
+
+<div class="stats" id="stats">
+  <!-- JSで集計 -->
+</div>
+
+<div class="toolbar">
+  <input type="search" id="searchInput" placeholder="🔍 店舗名・エリアで検索" oninput="renderTable()">
+  <select id="filterStatus" onchange="renderTable()">
+    <option value="">全ステータス</option>
+    <option value="new">新規 (未送信)</option>
+    <option value="sent">送信済</option>
+    <option value="opened">開封済</option>
+    <option value="replied">返信あり</option>
+    <option value="appointed">アポ獲得</option>
+    <option value="closed">成約</option>
+  </select>
+  <select id="filterCategory" onchange="renderTable()">
+    <option value="">全業態</option>
+    <option value="bar">🍸 バー</option>
+    <option value="izakaya">🍺 居酒屋</option>
+    <option value="cafe">☕ カフェ</option>
+    <option value="lounge">💎 ラウンジ</option>
+    <option value="snack">🌸 スナック</option>
+    <option value="karaoke">🎤 カラオケ</option>
+    <option value="club">🪩 クラブ</option>
+    <option value="dining-bar">🍽 ダイニング</option>
+    <option value="other">その他</option>
+  </select>
+  <button onclick="addLead()">➕ リード追加</button>
+  <button class="green" onclick="copyMailMerge()">📋 一括メールテンプレ生成</button>
+  <button class="danger" onclick="clearAll()">🗑 全削除</button>
+</div>
+
+<div class="lead-table">
+  <table>
+    <thead>
+      <tr>
+        <th>店舗名</th><th>業態</th><th>エリア</th><th>メアド</th><th>電話</th><th>URL</th>
+        <th>ステータス</th><th>送信日</th><th>返信日</th><th>メモ</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="leadTable">
+      <!-- JS でレンダリング -->
+    </tbody>
+  </table>
+</div>
+
+<div class="import-section">
+  <h2>📥 一括インポート (CSV/TSV)</h2>
+  <p style="font-size:.9em;color:var(--gray);margin-bottom:10px">フォーマット: 店舗名 [TAB] 業態 [TAB] エリア [TAB] メアド [TAB] 電話 [TAB] URL</p>
+  <textarea id="importData" placeholder="BAR FOREST	bar	港区	info@barforest.example.com	03-XXXX-XXXX	https://example.com&#10;居酒屋ご縁	izakaya	渋谷区	info@goen.example	..."></textarea>
+  <button onclick="bulkImport()" style="margin-top:10px;background:var(--green);color:#fff;border:none;padding:10px 20px;border-radius:6px;font-weight:bold;cursor:pointer">📥 インポート実行</button>
+</div>
+
+<details style="background:#fff;padding:20px;border-radius:10px;margin-bottom:20px">
+  <summary style="cursor:pointer;font-weight:bold;color:var(--accent)">📖 使い方ヘルプ</summary>
+  <div style="margin-top:15px;font-size:.92em;line-height:1.8">
+    <strong>1. リード追加</strong><br>
+    「➕ リード追加」で空行追加。各セルをクリックして編集。<br><br>
+    <strong>2. 一括インポート</strong><br>
+    Google Sheets からコピーした TSV/CSV をテキストエリアに貼って「インポート実行」。<br><br>
+    <strong>3. ステータス管理</strong><br>
+    新規 → 送信済 → 開封済 → 返信あり → アポ獲得 → 成約 の順で更新。<br><br>
+    <strong>4. メールテンプレ生成</strong><br>
+    フィルター済みのリードに対して、業態別カスタマイズされたメール本文を一括生成 (クリップボードへコピー)。<br><br>
+    <strong>5. データバックアップ</strong><br>
+    「📥 CSV エクスポート」を毎週実行することを推奨。端末の localStorage は消えると元に戻りません。
+  </div>
+</details>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'rakuraku_leads';
+
+const STATUS_LABELS = {
+  new: '新規', sent: '送信済', opened: '開封済',
+  replied: '返信あり', appointed: 'アポ', closed: '成約'
+};
+
+const CATEGORY_LABELS = {
+  bar: '🍸 バー', izakaya: '🍺 居酒屋', cafe: '☕ カフェ',
+  lounge: '💎 ラウンジ', snack: '🌸 スナック', karaoke: '🎤 カラオケ',
+  club: '🪩 クラブ', 'dining-bar': '🍽 ダイニング', other: 'その他'
+};
+
+function loadLeads() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch { return []; }
+}
+
+function saveLeads(leads) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
+  renderStats();
+}
+
+function addLead() {
+  const leads = loadLeads();
+  leads.unshift({
+    id: Date.now(), name: '', category: 'bar', area: '', email: '',
+    phone: '', url: '', status: 'new', sentDate: '', repliedDate: '', memo: ''
+  });
+  saveLeads(leads);
+  renderTable();
+}
+
+function deleteLead(id) {
+  if (!confirm('このリードを削除しますか?')) return;
+  const leads = loadLeads().filter(l => l.id !== id);
+  saveLeads(leads);
+  renderTable();
+}
+
+function updateField(id, field, value) {
+  const leads = loadLeads();
+  const lead = leads.find(l => l.id === id);
+  if (lead) {
+    lead[field] = value;
+    if (field === 'status' && value === 'sent' && !lead.sentDate) {
+      lead.sentDate = new Date().toISOString().slice(0, 10);
+    }
+    if (field === 'status' && value === 'replied' && !lead.repliedDate) {
+      lead.repliedDate = new Date().toISOString().slice(0, 10);
+    }
+    saveLeads(leads);
+  }
+}
+
+function bulkImport() {
+  const text = document.getElementById('importData').value.trim();
+  if (!text) return alert('データが空です');
+  const lines = text.split('\n');
+  const leads = loadLeads();
+  let added = 0;
+  lines.forEach(line => {
+    const parts = line.split('\t').map(s => s.trim());
+    if (parts.length < 4 || !parts[0]) return;
+    leads.unshift({
+      id: Date.now() + Math.random(),
+      name: parts[0] || '', category: parts[1] || 'other',
+      area: parts[2] || '', email: parts[3] || '',
+      phone: parts[4] || '', url: parts[5] || '',
+      status: 'new', sentDate: '', repliedDate: '', memo: ''
+    });
+    added++;
+  });
+  saveLeads(leads);
+  document.getElementById('importData').value = '';
+  renderTable();
+  alert(`${added} 件のリードをインポートしました`);
+}
+
+function clearAll() {
+  if (!confirm('全リードを削除します。本当によろしいですか?')) return;
+  if (!confirm('本当に本当に削除しますか? (取り消せません)')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  renderTable();
+}
+
+function exportCSV() {
+  const leads = loadLeads();
+  if (leads.length === 0) return alert('エクスポートするリードがありません');
+  const headers = ['店舗名', '業態', 'エリア', 'メアド', '電話', 'URL', 'ステータス', '送信日', '返信日', 'メモ'];
+  const rows = leads.map(l => [l.name, CATEGORY_LABELS[l.category] || l.category, l.area, l.email, l.phone, l.url, STATUS_LABELS[l.status] || l.status, l.sentDate, l.repliedDate, l.memo].map(s => `"${(s || '').replace(/"/g, '""')}"`).join(','));
+  const csv = '﻿' + headers.join(',') + '\n' + rows.join('\n');
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `rakuraku-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyMailMerge() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const filterStatus = document.getElementById('filterStatus').value;
+  const filterCat = document.getElementById('filterCategory').value;
+  const leads = loadLeads().filter(l => {
+    return (!search || l.name.toLowerCase().includes(search) || l.area.toLowerCase().includes(search))
+      && (!filterStatus || l.status === filterStatus)
+      && (!filterCat || l.category === filterCat)
+      && l.email;
+  });
+
+  if (leads.length === 0) return alert('対象リードが 0 件です');
+
+  const templates = leads.map(l => generateEmail(l)).join('\n\n======================\n\n');
+  navigator.clipboard.writeText(templates).then(() => {
+    alert(`${leads.length} 件のメールテンプレをクリップボードにコピーしました。\n\nGoogle Sheets / Notion に貼り付けて使えます。`);
+  });
+}
+
+function generateEmail(l) {
+  const catLabel = CATEGORY_LABELS[l.category] || '';
+  return `To: ${l.email}
+件名: 【未承諾広告※】飲食店向けシフト管理 SaaS のご案内 (${l.name}様)
+
+${l.name} 様
+
+突然のメールにて失礼いたします。
+RAKURAKU の代表 小泉 咲太 と申します。
+
+${l.area} の ${catLabel.replace(/[🍸🍺☕💎🌸🎤🪩🍽]/g, '').trim()}業態を運営されている貴店の発信を拝見し、
+ご連絡させていただきました。
+
+私自身、東京・港区で 2 年間バーを経営する現役オーナーです。
+深夜まで続く事務作業や家族と過ごす時間が削られていく現実に向き合い、
+「同じ思いをしている飲食店オーナーを救いたい」という想いで
+RAKURAKU を立ち上げました。
+
+■ RAKURAKU の特徴
+・個人店なら永久無料 / 30 日 Pro 体験 (クレカ不要)
+・シフト作成 5h → 1h
+・深夜手当・労基法アラート自動
+・現役バー経営者が開発
+
+■ ご提案
+営業ではなく、まずは無料でお試しいただきたく。
+30 分ほどお時間をいただけませんでしょうか。
+
+● 対応可能日: 6 月 1 日 (月) 〜 6 月 5 日 (金)
+● 対応可能時間: 10:00 〜 20:00
+
+何卒よろしくお願い申し上げます。
+
+──────────────────────
+RAKURAKU
+代表 小泉 咲太
+📧 koizumishota0323@gmail.com
+📞 080-5168-3303
+🌐 https://rakuraku-shift-production.up.railway.app/
+
+■ 個人事業主 / 所在地: 東京都 (請求があれば遅滞なく開示)
+
+■ 配信停止のお願い
+今後このようなメールを希望されない場合、
+🔗 https://rakuraku-shift-production.up.railway.app/unsubscribe.html?email=${encodeURIComponent(l.email)}
+(または「不要」とご返信いただくだけでも結構です)
+──────────────────────`;
+}
+
+function renderStats() {
+  const leads = loadLeads();
+  const counts = {
+    total: leads.length,
+    new: leads.filter(l => l.status === 'new').length,
+    sent: leads.filter(l => l.status === 'sent').length,
+    opened: leads.filter(l => l.status === 'opened').length,
+    replied: leads.filter(l => l.status === 'replied').length,
+    appointed: leads.filter(l => l.status === 'appointed').length,
+    closed: leads.filter(l => l.status === 'closed').length
+  };
+  const replyRate = counts.sent > 0 ? ((counts.replied / counts.sent) * 100).toFixed(1) : '0.0';
+  const html = `
+    <div class="stat"><div class="num">${counts.total}</div><div class="lbl">総リード</div></div>
+    <div class="stat"><div class="num" style="color:#92400E">${counts.new}</div><div class="lbl">未送信</div></div>
+    <div class="stat"><div class="num" style="color:#1E40AF">${counts.sent}</div><div class="lbl">送信済</div></div>
+    <div class="stat"><div class="num" style="color:#16A34A">${counts.replied}</div><div class="lbl">返信</div></div>
+    <div class="stat"><div class="num" style="color:#9D174D">${counts.appointed}</div><div class="lbl">アポ</div></div>
+    <div class="stat"><div class="num" style="color:#991B1B">${counts.closed}</div><div class="lbl">成約</div></div>
+    <div class="stat"><div class="num">${replyRate}%</div><div class="lbl">返信率</div></div>
+  `;
+  document.getElementById('stats').innerHTML = html;
+}
+
+function renderTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const filterStatus = document.getElementById('filterStatus').value;
+  const filterCat = document.getElementById('filterCategory').value;
+  const leads = loadLeads().filter(l => {
+    return (!search || l.name.toLowerCase().includes(search) || l.area.toLowerCase().includes(search))
+      && (!filterStatus || l.status === filterStatus)
+      && (!filterCat || l.category === filterCat);
+  });
+
+  const tbody = document.getElementById('leadTable');
+  if (leads.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:#94A3B8">リードがありません — 「➕ リード追加」または「📥 一括インポート」から始めてください</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = leads.map(l => `
+    <tr>
+      <td><input class="cell-edit" value="${escapeHtml(l.name)}" onchange="updateField(${l.id},'name',this.value)"></td>
+      <td>
+        <select class="cell-edit" onchange="updateField(${l.id},'category',this.value)">
+          ${Object.entries(CATEGORY_LABELS).map(([k,v]) => `<option value="${k}" ${l.category===k?'selected':''}>${v}</option>`).join('')}
+        </select>
+      </td>
+      <td><input class="cell-edit" value="${escapeHtml(l.area)}" onchange="updateField(${l.id},'area',this.value)" style="width:80px"></td>
+      <td><input class="cell-edit" type="email" value="${escapeHtml(l.email)}" onchange="updateField(${l.id},'email',this.value)" style="width:160px"></td>
+      <td><input class="cell-edit" value="${escapeHtml(l.phone)}" onchange="updateField(${l.id},'phone',this.value)" style="width:110px"></td>
+      <td><input class="cell-edit" value="${escapeHtml(l.url)}" onchange="updateField(${l.id},'url',this.value)" style="width:150px"></td>
+      <td>
+        <select class="status-select status ${l.status}" onchange="updateField(${l.id},'status',this.value)">
+          ${Object.entries(STATUS_LABELS).map(([k,v]) => `<option value="${k}" ${l.status===k?'selected':''}>${v}</option>`).join('')}
+        </select>
+      </td>
+      <td><input class="cell-edit" type="date" value="${l.sentDate}" onchange="updateField(${l.id},'sentDate',this.value)" style="width:115px"></td>
+      <td><input class="cell-edit" type="date" value="${l.repliedDate}" onchange="updateField(${l.id},'repliedDate',this.value)" style="width:115px"></td>
+      <td><input class="cell-edit" value="${escapeHtml(l.memo)}" onchange="updateField(${l.id},'memo',this.value)" style="width:120px"></td>
+      <td class="actions">
+        <button class="mail" onclick="copyMail(${l.id})">✉️</button>
+        <button class="del" onclick="deleteLead(${l.id})">🗑</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function copyMail(id) {
+  const lead = loadLeads().find(l => l.id === id);
+  if (!lead || !lead.email) return alert('メアドが入力されていません');
+  navigator.clipboard.writeText(generateEmail(lead)).then(() => {
+    alert(`${lead.name} 様向けメールをクリップボードにコピーしました`);
+  });
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// 初期表示
+renderStats();
+renderTable();
+</script>
+</body>
+</html>
