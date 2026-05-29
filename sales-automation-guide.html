@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>飲食店リード営業 自動化ガイド — RAKURAKU 社内専用</title>
+<meta name="description" content="合法ラインで効率最大化する営業自動化マニュアル (社内専用)">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#7C3AED">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#7C3AED;--green:#16A34A;--red:#DC2626;--gold:#F59E0B;--text:#0F172A;--gray:#64748B;--bg:#F8FAFC}
+body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:var(--text);background:var(--bg);line-height:1.7;padding:20px}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:var(--accent);color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.container{max-width:980px;margin:0 auto}
+.hero{background:linear-gradient(135deg,#1E1B4B,var(--accent));color:#fff;padding:40px 30px;border-radius:18px;text-align:center;margin-bottom:25px}
+.hero h1{font-size:2em;font-weight:900;line-height:1.2;margin-bottom:10px}
+.hero p{opacity:.95}
+.hero .badge{display:inline-block;background:#fff;color:var(--accent);padding:5px 14px;border-radius:20px;font-weight:bold;font-size:.85em;margin-bottom:10px}
+
+section{background:#fff;padding:30px;border-radius:14px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.04);border-left:5px solid var(--accent)}
+section h2{color:var(--text);font-size:1.4em;margin-bottom:15px;padding-bottom:10px;border-bottom:3px solid var(--accent);display:flex;align-items:center;gap:10px}
+section h2 .num{background:var(--accent);color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:.85em}
+section h3{color:var(--accent);margin:20px 0 10px}
+section p{margin-bottom:12px}
+section ul,section ol{padding-left:25px;margin-bottom:15px}
+section li{margin:6px 0}
+
+.callout{padding:15px 20px;border-radius:8px;margin:15px 0}
+.callout.warn{background:#FEE2E2;border-left:4px solid var(--red)}
+.callout.tip{background:#F0FDF4;border-left:4px solid var(--green)}
+.callout.gold{background:#FEF3C7;border-left:4px solid var(--gold)}
+
+table{width:100%;border-collapse:collapse;margin:15px 0;font-size:.95em}
+th,td{padding:12px;border:1px solid #E2E8F0;text-align:left}
+th{background:var(--accent);color:#fff}
+tr:nth-child(even){background:var(--bg)}
+.ok{color:var(--green);font-weight:bold}
+.ng{color:var(--red);font-weight:bold}
+
+.phase{background:linear-gradient(135deg,#fff,#F3E8FF);padding:25px;border-radius:12px;margin:15px 0;border-left:5px solid var(--accent)}
+.phase h3{color:var(--accent);margin-bottom:10px}
+
+code{background:#1E1B4B;color:#A5F3FC;padding:2px 8px;border-radius:4px;font-family:Menlo,monospace;font-size:.9em}
+pre{background:#1E1B4B;color:#fff;padding:18px;border-radius:8px;overflow-x:auto;font-family:Menlo,monospace;font-size:.85em;line-height:1.6;margin:10px 0}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+<div class="container" id="main">
+
+<div class="hero">
+  <span class="badge">📧 SALES AUTOMATION PLAYBOOK</span>
+  <h1>飲食店リード営業<br>自動化ガイド</h1>
+  <p>合法ライン × 効率最大化 / 月 300 件以上の新規アプローチを実現</p>
+</div>
+
+<!-- ============ 1. 法律的注意点 ============ -->
+<section>
+  <h2><span class="num">1</span>⚖️ 必ず守る法律 (これを破ると訴訟リスク)</h2>
+
+  <div class="callout warn">
+    <strong>⚠️ 特定電子メール法 (2002年制定)</strong><br>
+    広告・宣伝メールには <strong>オプトイン (事前同意)</strong> が原則必須。<br>
+    例外: 「取引関係がある」「名刺交換した」「公開されている事業者メアド」のみオプトアウト方式可。
+  </div>
+
+  <h3>必須項目 (これがないと違法)</h3>
+  <ul>
+    <li>✅ 件名に <strong>「未承諾広告※」</strong> 表記 (※マーク必須)</li>
+    <li>✅ 本文に <strong>送信者名・住所</strong> (個人事業主名・所在地)</li>
+    <li>✅ 受信拒否の連絡先 (<strong>配信停止リンク</strong>または送信元アドレス)</li>
+    <li>✅ 受信拒否者には <strong>二度と送信しない</strong> (記録必須)</li>
+  </ul>
+
+  <h3>合法 vs 違法 早見表</h3>
+  <table>
+    <thead><tr><th>行為</th><th>合法性</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td>Google Maps API で店舗情報収集</td><td class="ok">✅ 合法</td><td>API利用規約遵守</td></tr>
+      <tr><td>公開されている店舗メアドへ営業メール</td><td class="ok">✅ 条件付き合法</td><td>未承諾広告※+ オプトアウト必須</td></tr>
+      <tr><td>店舗の公式サイトからメアド取得</td><td class="ok">✅ 合法</td><td>公開情報のため</td></tr>
+      <tr><td>食べログ・ホットペッパーのスクレイピング</td><td class="ng">❌ TOS違反</td><td>規約で明示的に禁止</td></tr>
+      <tr><td>お問い合わせフォーム自動送信</td><td class="ng">❌ TOS違反</td><td>多くの場合スパム扱い</td></tr>
+      <tr><td>CAPTCHA回避ツール使用</td><td class="ng">❌ 違法の可能性</td><td>不正アクセス禁止法該当の場合あり</td></tr>
+      <tr><td>個人の SNS DM 自動送信</td><td class="ng">❌ TOS違反</td><td>各プラットフォーム規約違反</td></tr>
+      <tr><td>未承諾広告※表記なしの一斉送信</td><td class="ng">❌ 特電法違反</td><td>1年以下の懲役 or 100万円以下の罰金</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 2. システム全体像 ============ -->
+<section>
+  <h2><span class="num">2</span>🏗 推奨システム構成 (半自動化)</h2>
+
+  <p>「完全自動」は法的リスクと炎上リスクが高すぎる。<strong>「半自動化 (人間レビュー付き)」</strong>が最適解。</p>
+
+  <pre>
+┌────────────────────────────────────┐
+│ Phase 1: リード収集 (完全自動)        │
+│ Google Maps API → スプレッドシート    │
+│ ↓ (店名/住所/電話/URL/メアド)         │
+├────────────────────────────────────┤
+│ Phase 2: メール文章生成 (AI 自動)     │
+│ Claude API → 業態別カスタムメール    │
+│ ↓ (個別店舗用にパラメータ挿入)         │
+├────────────────────────────────────┤
+│ Phase 3: 人間レビュー (重要)          │
+│ 10件ずつチェック → 承認/却下           │
+│ ↓                                    │
+├────────────────────────────────────┤
+│ Phase 4: 配信 (半自動)                │
+│ SendGrid / Gmail SMTP                │
+│ 配信間隔 1日 50件まで                  │
+│ ↓                                    │
+├────────────────────────────────────┤
+│ Phase 5: 返信トラッキング             │
+│ Notion CRM で管理                    │
+│ 返信あり → 手動で個別フォロー          │
+└────────────────────────────────────┘
+  </pre>
+</section>
+
+<!-- ============ 3. Phase 1 リード収集 ============ -->
+<section>
+  <h2><span class="num">3</span>📍 Phase 1: リード収集 (店舗情報)</h2>
+
+  <h3>推奨ツール</h3>
+  <table>
+    <thead><tr><th>ツール</th><th>料金</th><th>取得項目</th><th>難易度</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Google Places API (公式)</strong></td><td>$17 / 1000リクエスト</td><td>店名/住所/電話/URL/評価</td><td>⭐⭐</td></tr>
+      <tr><td>Apify Google Maps Scraper</td><td>$49/月〜</td><td>全項目 + メール</td><td>⭐</td></tr>
+      <tr><td>ScrapeBox</td><td>買い切り $97</td><td>地域別大量取得可</td><td>⭐⭐⭐</td></tr>
+      <tr><td>業界DB購入 (テレコムスクエア等)</td><td>10万円〜</td><td>連絡先確実</td><td>⭐ (買うだけ)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>収集する項目 (スプレッドシート設計)</h3>
+  <pre>
+| 店舗名 | 業態 | 住所 | 電話 | URL | メアド | 評価 | 件数 | 営業時間 | 備考 |</pre>
+
+  <h3>業態カテゴリで絞り込み (RAKURAKU 対応業態)</h3>
+  <ul>
+    <li>バー (Bar) — TARGET ⭐⭐⭐</li>
+    <li>居酒屋 (Izakaya)</li>
+    <li>カフェ (Cafe)</li>
+    <li>ラウンジ (Lounge) — TARGET ⭐⭐⭐</li>
+    <li>スナック (Snack)</li>
+    <li>カラオケ店 (Karaoke)</li>
+    <li>クラブ (Night Club)</li>
+    <li>ダイニングバー</li>
+  </ul>
+
+  <div class="callout gold">
+    💡 <strong>第一弾は「東京 23 区のバー」に絞る</strong> — 業種特化 LP (bar.html) と相性最高で返信率が高い
+  </div>
+</section>
+
+<!-- ============ 4. Phase 2 メール生成 ============ -->
+<section>
+  <h2><span class="num">4</span>🤖 Phase 2: メール文章 AI 生成</h2>
+
+  <h3>Claude API でカスタマイズ (Python例)</h3>
+  <pre>
+import anthropic
+
+client = anthropic.Anthropic(api_key="...")
+
+def generate_email(shop_name, area, category):
+    prompt = f"""
+    以下の飲食店向けに、シフト管理 SaaS RAKURAKU の営業メールを書いてください。
+
+    店舗名: {shop_name}
+    エリア: {area}
+    業態: {category}
+
+    トーン:
+    - 「営業」感を消す
+    - 同じ飲食業界の経営者として共感
+    - 「家族との時間を取り戻したい」想いを伝える
+    - 30 分のお時間と無料体験を提案
+
+    必須含有事項:
+    - 件名に「未承諾広告※」表記
+    - 配信停止リンク (https://rakuraku-shift.com/unsubscribe?email=...)
+    - 個人事業主名・所在地
+    """
+    response = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=1500,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.content[0].text</pre>
+
+  <h3>業態別テンプレート (使い分け)</h3>
+  <table>
+    <thead><tr><th>業態</th><th>強調ポイント</th></tr></thead>
+    <tbody>
+      <tr><td>バー</td><td>深夜手当自動・キャスト管理</td></tr>
+      <tr><td>居酒屋</td><td>学生バイト管理・希望休一元化</td></tr>
+      <tr><td>カフェ</td><td>多言語・早朝シフト最適化</td></tr>
+      <tr><td>ラウンジ</td><td>VIP指名管理・キャスト稼働率</td></tr>
+      <tr><td>スナック</td><td>LINE完結・年配ママでも使える</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 5. Phase 3 人間レビュー ============ -->
+<section>
+  <h2><span class="num">5</span>👀 Phase 3: 人間レビュー (必須)</h2>
+
+  <div class="callout warn">
+    ⚠️ <strong>絶対に「完全自動送信」しない</strong><br>
+    AI が生成した文章には事実誤認・不適切表現が含まれる可能性あり。10 件に 1 件は要修正のケース有。
+  </div>
+
+  <h3>レビューチェックリスト</h3>
+  <ul>
+    <li>☐ 店舗名・業態の誤りなし</li>
+    <li>☐ 「社労士監修」「ネイティブ監修」など誇大表現なし</li>
+    <li>☐ 競合の誹謗中傷なし</li>
+    <li>☐ 「未承諾広告※」件名先頭にあり</li>
+    <li>☐ 配信停止リンク末尾にあり</li>
+    <li>☐ 個人事業主表記「小泉 咲太」あり</li>
+    <li>☐ 文章のトーンが営業臭くない</li>
+    <li>☐ 文字化け・絵文字崩れなし</li>
+  </ul>
+
+  <h3>レビュー UI 案 (Google Sheets)</h3>
+  <pre>
+| 店舗名 | 生成メール | 承認/却下 | 編集後メール | 送信日 |
+| バーA  | (Claude生成) | ✅ | (空欄=そのまま) | 6/2  |
+| バーB  | (Claude生成) | ❌ | (人間が修正) | 6/2  |
+| カフェC| (Claude生成) | ✅ |               | 6/3  |</pre>
+</section>
+
+<!-- ============ 6. Phase 4 配信 ============ -->
+<section>
+  <h2><span class="num">6</span>📨 Phase 4: 配信 (合法な配信ルール)</h2>
+
+  <h3>推奨ツール</h3>
+  <table>
+    <thead><tr><th>ツール</th><th>料金</th><th>1日上限</th><th>機能</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Gmail SMTP (個人)</strong></td><td>無料</td><td>500件</td><td>シンプル</td></tr>
+      <tr><td>Google Workspace</td><td>$6/月〜</td><td>2,000件</td><td>独自ドメイン可</td></tr>
+      <tr><td>SendGrid</td><td>無料 100件/日</td><td>有料 40,000件/日</td><td>分析機能あり</td></tr>
+      <tr><td>Mailgun</td><td>無料 5,000件/月</td><td>4万件/日</td><td>API豊富</td></tr>
+    </tbody>
+  </table>
+
+  <h3>配信ルール (スパム認定回避)</h3>
+  <ul>
+    <li>✅ 1 時間あたり <strong>10-20 件まで</strong> (一気に送らない)</li>
+    <li>✅ 1 日あたり <strong>50-100 件まで</strong> (初動)</li>
+    <li>✅ 段階的に増やす (1週目 50 件 → 2週目 100 件 → 1ヶ月後 300 件)</li>
+    <li>✅ 同じ IP/ドメインから送信</li>
+    <li>✅ SPF / DKIM / DMARC 設定済みドメイン使用</li>
+    <li>✅ 開封率 20% 未満なら件名・本文を見直す</li>
+    <li>✅ 返信なしリードへの再送は 1 ヶ月後 1 回まで</li>
+  </ul>
+
+  <h3>必須テンプレート要素 (本文)</h3>
+  <pre>
+件名: 【未承諾広告※】飲食店向けシフト管理 SaaS のご案内
+
+(本文…)
+
+──────────────────────
+■ 送信元
+個人事業主: 小泉 咲太 (屋号: RAKURAKU)
+所在地: 東京都 (請求があれば遅滞なく開示)
+📧 koizumishota0323@gmail.com
+📞 080-5168-3303
+
+■ 配信停止のお願い
+今後このようなメールを希望されない場合、
+下記リンクよりお手続きください。
+🔗 https://rakuraku-shift.com/unsubscribe?email=○○
+
+(または「不要」とご返信いただくだけでもOK)
+──────────────────────</pre>
+</section>
+
+<!-- ============ 7. Phase 5 トラッキング ============ -->
+<section>
+  <h2><span class="num">7</span>📊 Phase 5: 返信トラッキング</h2>
+
+  <h3>必要な指標</h3>
+  <table>
+    <thead><tr><th>指標</th><th>計算式</th><th>目標</th></tr></thead>
+    <tbody>
+      <tr><td>到達率</td><td>(到達 ÷ 送信) × 100</td><td>95%以上</td></tr>
+      <tr><td>開封率</td><td>(開封 ÷ 到達) × 100</td><td>20-30%</td></tr>
+      <tr><td>返信率</td><td>(返信 ÷ 送信) × 100</td><td>3-5%</td></tr>
+      <tr><td>アポ獲得率</td><td>(アポ ÷ 返信) × 100</td><td>30-50%</td></tr>
+      <tr><td>成約率</td><td>(成約 ÷ アポ) × 100</td><td>10-20%</td></tr>
+    </tbody>
+  </table>
+
+  <h3>CRM ツール推奨</h3>
+  <ul>
+    <li><strong>初期 (〜100件)</strong>: Google Sheets で十分</li>
+    <li><strong>中期 (100-1000件)</strong>: Notion CRM (無料テンプレあり)</li>
+    <li><strong>本格運用</strong>: HubSpot Free / Pipedrive</li>
+  </ul>
+
+  <h3>フォローアップシナリオ (自動化可能)</h3>
+  <pre>
+Day 0:  初回メール送信
+Day 7:  開封したが返信なし → 軽いリマインドメール
+Day 14: それでも反応なし → 別角度の提案メール (Free Plan強調)
+Day 30: 再度反応なし → 配信停止 (DB に記録)</pre>
+</section>
+
+<!-- ============ 8. 実装フェーズ ============ -->
+<section>
+  <h2><span class="num">8</span>🚀 段階別実装プラン</h2>
+
+  <div class="phase">
+    <h3>Phase A: マニュアル運用 (今すぐ / 0円)</h3>
+    <ul>
+      <li>Google Maps で手動検索 → スプレッドシート手入力</li>
+      <li>Claude/ChatGPT でメール生成</li>
+      <li>Gmail から手動送信 (1 日 10-20 件)</li>
+      <li><strong>30 日で 300 件アプローチ可能</strong></li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <h3>Phase B: 半自動 (1-2ヶ月後 / 月 1-2万円)</h3>
+    <ul>
+      <li>Apify で Google Maps 自動収集 (週末まとめて 1000 件)</li>
+      <li>Claude API で文章自動生成</li>
+      <li>SendGrid でスケジュール配信</li>
+      <li>Notion CRM で返信管理</li>
+      <li><strong>月 1,000 件アプローチ可能</strong></li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <h3>Phase C: 本格自動化 (6ヶ月後 / 月 5万円〜)</h3>
+    <ul>
+      <li>Make.com / n8n で完全ワークフロー化</li>
+      <li>業種・エリア・規模で A/B テスト</li>
+      <li>専用ドメイン + DKIM/SPF/DMARC 設定</li>
+      <li>BDR (営業) 1 名雇用してフォローアップ専任</li>
+      <li><strong>月 5,000 件アプローチ + 100 件アポ</strong></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 9. ROI試算 ============ -->
+<section>
+  <h2><span class="num">9</span>💰 ROI 試算 (現実的な数字)</h2>
+
+  <table>
+    <thead><tr><th>項目</th><th>Phase A</th><th>Phase B</th><th>Phase C</th></tr></thead>
+    <tbody>
+      <tr><td>月間送信数</td><td>300</td><td>1,000</td><td>5,000</td></tr>
+      <tr><td>返信率 3%</td><td>9 件</td><td>30 件</td><td>150 件</td></tr>
+      <tr><td>アポ率 40%</td><td>3.6 件</td><td>12 件</td><td>60 件</td></tr>
+      <tr><td>成約率 15%</td><td>0.5 件</td><td>1.8 件</td><td>9 件</td></tr>
+      <tr><td>月次 MRR 増加 (¥4,990 × 成約)</td><td>¥2,500</td><td>¥9,000</td><td>¥45,000</td></tr>
+      <tr><td>年間 ARR 増加</td><td>¥30,000</td><td>¥108,000</td><td>¥540,000</td></tr>
+      <tr><td>運用コスト/月</td><td>0円</td><td>¥15,000</td><td>¥50,000</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    💡 <strong>Phase C は月¥45,000 MRR 増 vs 運用費¥50,000</strong> → 単純ROIで見ると赤字。<br>
+    でも LTV (継続率97%・5年) で計算すると 1 成約 = ¥30 万 → <strong>9件成約 = ¥270 万/年</strong> でROI 大幅黒字。
+  </div>
+</section>
+
+<!-- ============ 10. NG行為 ============ -->
+<section>
+  <h2><span class="num">10</span>🚫 絶対やってはいけない 10 のこと</h2>
+  <div class="callout warn">
+    <ol>
+      <li><strong>食べログ・ホットペッパーから情報スクレイピング</strong> → TOS違反・訴訟リスク</li>
+      <li><strong>お問い合わせフォーム自動送信</strong> → スパム認定・ブラックリスト入り</li>
+      <li><strong>「未承諾広告※」表記なしメール</strong> → 特電法違反 (罰金100万円)</li>
+      <li><strong>配信停止希望者への再送</strong> → 同上</li>
+      <li><strong>大量一斉送信 (1時間100件超)</strong> → ドメイン全体ブラックリスト入り</li>
+      <li><strong>CAPTCHA回避ツール使用</strong> → 不正アクセス禁止法該当</li>
+      <li><strong>SNS DM 自動送信ツール使用</strong> → 各プラットフォーム凍結</li>
+      <li><strong>事実と異なる誇大表現</strong> (「業界 No.1」「100% 成功」) → 景品表示法違反</li>
+      <li><strong>競合の名指し批判</strong> → 営業妨害・名誉毀損</li>
+      <li><strong>取得した個人情報を別目的に利用</strong> → 個人情報保護法違反</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ 11. 今すぐ始める ============ -->
+<section>
+  <h2><span class="num">11</span>🎬 今すぐ始める Phase A (今日から)</h2>
+  <ol>
+    <li>Google Maps で「東京 バー」検索</li>
+    <li>表示された 20 件を Google Sheets に手入力</li>
+    <li>Claude にこの戦略書のテンプレを渡してメール文章生成</li>
+    <li>個人事業主表記・配信停止リンク確認 (人間レビュー)</li>
+    <li>Gmail から 1 日 10 件ずつ送信</li>
+    <li>Notion CRM (無料テンプレ) で返信管理</li>
+    <li>1 週間後に開封率・返信率を測定</li>
+    <li>結果を見て Phase B 投資判断</li>
+  </ol>
+
+  <div class="callout gold">
+    🎯 <strong>30日チャレンジ</strong>: Phase A で 300 件アプローチ → 1 件成約を目標に。<br>
+    成約率を実測すれば、Phase B/C への投資判断ができる。
+  </div>
+</section>
+
+<div class="hero" style="margin-top:30px">
+  <h1 style="font-size:1.5em">📊 まずは Phase A で実測値を取ろう</h1>
+  <p>合法 × 効率最大化で、月 300 件の新規アプローチを実現</p>
+</div>
+
+</div>
+</body>
+</html>
