@@ -139,7 +139,6 @@ PORT=3000
 ### PR / メディア
 | ファイル | 用途 |
 |---|---|
-| `press-release.html` | プレスリリース 5 件 |
 | `search.html` | サイト内検索 (全 36 ページ横断 + WebSite SearchAction schema) |
 
 ### 法的ページ (Stripe 審査必須)

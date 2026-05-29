@@ -16,7 +16,6 @@ var ASSETS = [
   '/blog.html',
   '/guide.html',
   '/glossary.html',
-  '/press-release.html',
   '/lounge.html',
   '/snack.html',
   '/karaoke.html',
