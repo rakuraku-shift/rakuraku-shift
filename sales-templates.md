@@ -75,7 +75,7 @@ https://rakuraku-shift-production.up.railway.app
 
 突然のご連絡失礼いたします。
 バー・飲食店向けシフト管理SaaS「RAKURAKU」を運営している
-小泉咲太と申します。
+小泉翔太と申します。
 
 ▼ よくあるお悩み
 ・月末はExcelでシフト作成に何時間も…
@@ -110,7 +110,7 @@ https://rakuraku-shift-production.up.railway.app
 
 ────────────────────────────
 RAKURAKU
-代表 小泉 咲太
+代表 小泉 翔太
 📞 080-5168-3303
 📨 koizumishota0323@gmail.com
 🌐 https://rakuraku-shift-production.up.railway.app
@@ -209,7 +209,7 @@ https://rakuraku-shift-production.up.railway.app
 ご都合の良い日時を教えていただければ、URLをお送りします。
 
 ──────────
-RAKURAKU 小泉咲太
+RAKURAKU 小泉翔太
 ```
 
 ---
