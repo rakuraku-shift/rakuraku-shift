@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>QR チラシ (トップページ) — RAKURAKU</title>
-<meta name="description" content="A4 印刷用 トップページ QR チラシ (営業ツール)">
+<title>QR チラシ (トップページ × 12) — RAKURAKU</title>
+<meta name="description" content="A4 印刷用 トップページ QR チラシ 12 枚 (営業ツール)">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0F172A">
 <link rel="icon" href="/icon-192.png">
@@ -17,30 +17,25 @@ body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:v
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* A4 1ページに 6 枚 (2列 x 3行) でカット可能なチラシ */
-.a4{width:210mm;min-height:297mm;background:#fff;margin:0 auto;padding:6mm;box-shadow:0 4px 20px rgba(0,0,0,.15)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:4mm;height:285mm}
-.card{border:1.5px dashed #94A3B8;border-radius:8px;padding:6mm 5mm;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(135deg,#fff,#FAFAFA);page-break-inside:avoid;position:relative;overflow:hidden}
-.card::before{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;background:radial-gradient(circle,rgba(79,70,229,.08),transparent);border-radius:50%}
+/* A4 1ページに 12 枚 (3列 x 4行) */
+.a4{width:210mm;min-height:297mm;background:#fff;margin:0 auto;padding:5mm;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;height:287mm}
+.card{border:1px dashed #94A3B8;border-radius:4px;padding:3mm 2.5mm;display:flex;flex-direction:column;align-items:center;justify-content:space-between;background:#fff;page-break-inside:avoid;text-align:center}
 
-.brand{text-align:center;margin-bottom:3mm}
-.brand .tag{display:inline-block;background:var(--gold);color:var(--base);padding:1px 8px;border-radius:8px;font-size:7pt;font-weight:bold;margin-bottom:2mm}
-.brand h1{font-size:15pt;font-weight:900;letter-spacing:-.4px;line-height:1.2}
+.brand{margin-bottom:1mm}
+.brand h1{font-size:11pt;font-weight:900;letter-spacing:-.3px;line-height:1}
 .brand h1 .accent{background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.brand .sub{font-size:8pt;color:var(--gray);font-weight:600;margin-top:1mm}
+.brand .sub{font-size:6.5pt;color:var(--gray);font-weight:600;margin-top:0.5mm;line-height:1.2}
 
-.qr-area{text-align:center;flex-grow:1;display:flex;flex-direction:column;justify-content:center;align-items:center;margin:2mm 0}
-.qr-code{width:48mm;height:48mm;padding:2mm;background:#fff;border:1px solid #E2E8F0;border-radius:6px}
+.qr-code{width:32mm;height:32mm;padding:1mm;background:#fff;border:1px solid #E2E8F0;border-radius:3px;margin:1mm 0}
 .qr-code img,.qr-code canvas{width:100% !important;height:100% !important;display:block}
-.qr-label{font-size:8pt;font-weight:bold;color:var(--accent);margin-top:2mm;font-family:Menlo,monospace}
-.scan-msg{font-size:7pt;color:var(--gray);margin-top:1mm}
 
-.benefits{background:#F0FDF4;border-left:3px solid #22C55E;padding:2mm 3mm;border-radius:0 4px 4px 0;margin:2mm 0;font-size:7.5pt;line-height:1.5}
+.url-text{font-size:6pt;color:var(--accent);font-weight:bold;font-family:Menlo,monospace;margin-top:1mm}
+
+.benefits{font-size:6pt;line-height:1.4;color:var(--base);margin-top:1.5mm}
 .benefits strong{color:#16A34A}
 
-.footer-info{border-top:1.5px solid #E2E8F0;padding-top:2mm;text-align:center;font-size:7pt;color:var(--gray);line-height:1.5}
-.footer-info strong{color:var(--base);font-size:8pt}
-.footer-info .contact{display:flex;justify-content:space-around;margin-top:1mm}
+.footer-tel{font-size:6pt;color:var(--gray);margin-top:1mm;border-top:0.5px solid #E2E8F0;padding-top:1mm;width:100%;font-weight:600}
 
 .controls{max-width:210mm;margin:0 auto 15px;text-align:center;background:#fff;padding:12px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .controls button{background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:14px;margin:0 5px}
@@ -61,12 +56,12 @@ body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:v
 <div class="controls">
   <button onclick="window.print()">🖨 印刷する (A4)</button>
   <button onclick="location.reload()">🔄 QR 再生成</button>
-  <div class="info">A4 1 枚に <strong>同じ QR チラシを 6 枚</strong> (2列×3行) / 切り取って 6 人に配布可</div>
+  <div class="info">A4 1 枚に <strong>12 枚の QR チラシ</strong> (3列×4行) / 1 枚 約 65×70mm / 切り取って 12 人に配布可</div>
 </div>
 
 <div class="a4" id="main">
   <div class="grid" id="card-grid">
-    <!-- JSで 6 枚生成 -->
+    <!-- JSで 12 枚生成 -->
   </div>
 </div>
 
@@ -74,37 +69,28 @@ body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:v
 const BASE_URL = 'https://rakuraku-shift-production.up.railway.app/';
 const CARD_HTML = `
   <div class="brand">
-    <span class="tag">🏆 飲食店向けシフト管理 SaaS</span>
-    <h1><span class="accent">RAKURAKU</span></h1>
-    <p class="sub">バー・居酒屋・カフェの<br>シフト作成 5h → 1h</p>
+    <h1>🏆 <span class="accent">RAKURAKU</span></h1>
+    <div class="sub">飲食店向け<br>シフト管理 SaaS</div>
   </div>
 
-  <div class="qr-area">
-    <div class="qr-code"></div>
-    <div class="qr-label">rakuraku-shift.com</div>
-    <div class="scan-msg">↑ スマホでスキャン</div>
-  </div>
+  <div class="qr-code"></div>
+
+  <div class="url-text">rakuraku-shift.com</div>
 
   <div class="benefits">
-    🆓 <strong>個人店は永久無料</strong><br>
-    🎁 30 日 Pro 体験 (クレカ不要)<br>
-    ⚖️ 深夜手当 25% 自動計算<br>
-    🌐 多言語 5 言語対応<br>
-    📊 120 店舗超 / 継続率 97%
+    🆓 <strong>個人店 永久無料</strong><br>
+    🎁 30日 Pro 体験 (クレカ不要)
   </div>
 
-  <div class="footer-info">
-    <strong>株式会社 RAKURAKU</strong> / 代表 小泉 翔太<br>
-    <div class="contact">
-      <span>📞 080-5168-3303</span>
-      <span>📧 koizumishota0323@gmail.com</span>
-    </div>
+  <div class="footer-tel">
+    📞 080-5168-3303<br>
+    代表 小泉 翔太
   </div>
 `;
 
-// 6 枚生成
+// 12 枚生成
 const grid = document.getElementById('card-grid');
-for (let i = 0; i < 6; i++) {
+for (let i = 0; i < 12; i++) {
   const card = document.createElement('div');
   card.className = 'card';
   card.innerHTML = CARD_HTML;
@@ -113,8 +99,8 @@ for (let i = 0; i < 6; i++) {
   // QR 生成
   new QRCode(card.querySelector('.qr-code'), {
     text: BASE_URL,
-    width: 180,
-    height: 180,
+    width: 120,
+    height: 120,
     colorDark: '#0F172A',
     colorLight: '#FFFFFF',
     correctLevel: QRCode.CorrectLevel.H
