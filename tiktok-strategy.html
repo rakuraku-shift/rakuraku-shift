@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TikTok バズらせる完全戦略 — RAKURAKU</title>
+<meta name="description" content="RAKURAKU の TikTok アカウント運用完全マニュアル (社内専用)">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#FE2C55">
+<link rel="icon" href="/icon-192.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--tt-pink:#FE2C55;--tt-cyan:#25F4EE;--tt-black:#010101;--text:#0F172A;--gray:#64748B;--bg:#F8FAFC}
+body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:var(--text);background:var(--bg);line-height:1.7;padding:20px}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:var(--tt-pink);color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid var(--tt-pink);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.container{max-width:980px;margin:0 auto}
+.hero{background:linear-gradient(135deg,var(--tt-black),var(--tt-pink) 70%,var(--tt-cyan));color:#fff;padding:40px 30px;border-radius:18px;text-align:center;margin-bottom:25px;position:relative;overflow:hidden}
+.hero::before{content:'🎵';position:absolute;top:-20px;right:-10px;font-size:120px;opacity:.15;transform:rotate(20deg)}
+.hero .badge{display:inline-block;background:#fff;color:var(--tt-pink);padding:5px 14px;border-radius:20px;font-weight:bold;font-size:.85em;margin-bottom:10px}
+.hero h1{font-size:2.2em;font-weight:900;line-height:1.2;margin-bottom:10px;text-shadow:0 2px 12px rgba(0,0,0,.3)}
+.hero p{opacity:.95;font-size:1.05em}
+
+.toc{background:#fff;padding:25px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:25px}
+.toc h2{color:var(--tt-pink);margin-bottom:12px;font-size:1.2em}
+.toc ol{padding-left:25px;columns:2;gap:30px}
+.toc li{margin:5px 0;font-weight:600}
+.toc a{color:var(--text);text-decoration:none}
+.toc a:hover{color:var(--tt-pink);text-decoration:underline}
+
+section{background:#fff;padding:30px;border-radius:14px;margin-bottom:25px;box-shadow:0 2px 12px rgba(0,0,0,.04);border-left:5px solid var(--tt-pink)}
+section h2{color:var(--tt-black);font-size:1.5em;margin-bottom:15px;padding-bottom:10px;border-bottom:3px solid var(--tt-pink);display:flex;align-items:center;gap:10px}
+section h2 .num{background:var(--tt-pink);color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:.85em}
+section h3{color:var(--tt-pink);margin:20px 0 10px;font-size:1.15em}
+section p{margin-bottom:12px}
+section ul,section ol{padding-left:25px;margin-bottom:15px}
+section li{margin:6px 0}
+
+.callout{padding:15px 20px;border-radius:8px;margin:15px 0;font-size:.95em}
+.callout.tip{background:#F0FDF4;border-left:4px solid #22C55E}
+.callout.warn{background:#FEE2E2;border-left:4px solid #DC2626}
+.callout.gold{background:#FEF3C7;border-left:4px solid #F59E0B}
+.callout strong{color:var(--text)}
+
+table{width:100%;border-collapse:collapse;margin:15px 0;font-size:.95em}
+th,td{padding:12px;border:1px solid #E2E8F0;text-align:left}
+th{background:var(--tt-black);color:#fff;font-weight:600}
+tr:nth-child(even){background:var(--bg)}
+
+.idea-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px;margin:20px 0}
+.idea{background:linear-gradient(135deg,#FFF,#FEE2E2);padding:18px;border-radius:10px;border-left:4px solid var(--tt-pink)}
+.idea .num{display:inline-block;background:var(--tt-pink);color:#fff;padding:2px 10px;border-radius:8px;font-size:.75em;font-weight:bold;margin-bottom:8px}
+.idea h4{color:var(--tt-pink);margin-bottom:5px;font-size:1em}
+.idea p{font-size:.85em;color:var(--gray);margin-bottom:5px}
+.idea .hashtag{display:block;font-size:.75em;color:var(--tt-cyan);font-family:Menlo,monospace;margin-top:5px}
+
+.kpi-card{background:linear-gradient(135deg,var(--tt-black),var(--tt-pink));color:#fff;padding:20px;border-radius:10px;text-align:center;margin:10px 0}
+.kpi-card .stage{font-size:.85em;opacity:.8;font-weight:bold}
+.kpi-card .num{font-size:2em;font-weight:900;margin:5px 0}
+.kpi-card .desc{font-size:.85em;opacity:.95}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:15px 0}
+
+.controls{max-width:980px;margin:0 auto 15px;text-align:center;background:#fff;padding:12px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.controls button{background:var(--tt-pink);color:#fff;border:none;padding:10px 24px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:14px;margin:0 5px}
+.controls button:hover{opacity:.9}
+
+@media print{
+  body{background:#fff;padding:0;font-size:11pt}
+  section{box-shadow:none;border:1px solid #E2E8F0;page-break-inside:avoid}
+  .controls{display:none}
+  @page{size:A4;margin:8mm}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<div class="controls">
+  <button onclick="window.print()">🖨 印刷する</button>
+  <span style="color:#64748B;font-size:12px">スマホで見るのも OK / 印刷して机に貼ってもOK</span>
+</div>
+
+<div class="container" id="main">
+
+<div class="hero">
+  <span class="badge">🎯 SOCIAL PLAYBOOK</span>
+  <h1>RAKURAKU TikTok<br>バズらせる完全戦略</h1>
+  <p>飲食店オーナー・店長・スタッフに刺さるコンテンツで 10 万フォロワー目指す</p>
+</div>
+
+<div class="toc">
+  <h2>📚 目次</h2>
+  <ol>
+    <li><a href="#s1">アカウント設計</a></li>
+    <li><a href="#s2">ターゲットペルソナ</a></li>
+    <li><a href="#s3">コンテンツ 5 本柱</a></li>
+    <li><a href="#s4">動画パターン 20 例</a></li>
+    <li><a href="#s5">アルゴリズム攻略</a></li>
+    <li><a href="#s6">投稿頻度・時間</a></li>
+    <li><a href="#s7">ハッシュタグ戦略</a></li>
+    <li><a href="#s8">トレンド活用法</a></li>
+    <li><a href="#s9">編集テクニック</a></li>
+    <li><a href="#s10">段階別 KPI 目標</a></li>
+    <li><a href="#s11">禁止事項・NG 集</a></li>
+    <li><a href="#s12">最初の 30 日アクションプラン</a></li>
+  </ol>
+</div>
+
+<!-- ============ Section 1 ============ -->
+<section id="s1">
+  <h2><span class="num">1</span>👤 アカウント設計</h2>
+  <h3>アカウント名 (候補)</h3>
+  <ul>
+    <li><strong>第一候補: @rakuraku_owner</strong> (覚えやすい / RAKURAKU + オーナー)</li>
+    <li>第二候補: @sakuta_bar (個人ブランド軸 / 小泉 咲太)</li>
+    <li>第三候補: @rakuraku_shift (検索一致しやすい)</li>
+  </ul>
+
+  <h3>表示名</h3>
+  <p><strong>「咲太|現役バーオーナーが教えるシフト管理」</strong> (一目で「何屋・何が学べる」が分かる)</p>
+
+  <h3>プロフィール文 (80 字以内)</h3>
+  <div class="callout tip">
+    🍸 現役バー経営者 (港区) <br>
+    📊 飲食店向け SaaS RAKURAKU 開発者<br>
+    💡 シフト 5h→1h / 人件費削減ノウハウ毎日配信<br>
+    🆓 サービス無料登録 ↓
+  </div>
+
+  <h3>リンク (Linktree 推奨)</h3>
+  <ul>
+    <li>① RAKURAKU トップ (rakuraku-shift.com)</li>
+    <li>② 14日Pro無料体験</li>
+    <li>③ 完全ガイド (guide.html)</li>
+    <li>④ 業界別 LP (bar/snack/lounge など) — フォロワーの業態に合わせて案内</li>
+  </ul>
+
+  <h3>アイコン</h3>
+  <p>顔写真 (信頼感) + 「RAKURAKU」ロゴをワンポイント → 個人感 × ブランド感の両立</p>
+</section>
+
+<!-- ============ Section 2 ============ -->
+<section id="s2">
+  <h2><span class="num">2</span>🎯 ターゲットペルソナ</h2>
+  <table>
+    <thead><tr><th>ペルソナ</th><th>年齢</th><th>悩み</th><th>刺さるコンテンツ</th></tr></thead>
+    <tbody>
+      <tr><td>個人バー店長</td><td>30-50</td><td>事務作業に時間奪われる</td><td>「シフト作成 5h → 1h」「労基法あるある」</td></tr>
+      <tr><td>居酒屋オーナー</td><td>35-55</td><td>学生バイトの管理</td><td>「学生バイト続かない理由」「面接で見抜く方法」</td></tr>
+      <tr><td>カフェオーナー</td><td>28-45</td><td>外国人スタッフ採用</td><td>「外国人バイトあるある」「多言語対応の重要性」</td></tr>
+      <tr><td>スナックママ</td><td>40-65</td><td>IT苦手・人手不足</td><td>「スマホで全部できる」「LINE活用術」</td></tr>
+      <tr><td>飲食チェーン本部</td><td>30-50</td><td>多店舗管理</td><td>「100店舗の人件費を一画面で」</td></tr>
+      <tr><td>新規開業予定者</td><td>25-40</td><td>知識不足・不安</td><td>「開業1年目で知っておくべき10のこと」</td></tr>
+    </tbody>
+  </table>
+  <div class="callout gold">
+    💡 <strong>狙うのは「飲食店オーナー / 店長」を直接 + 「学生バイト・スタッフ」経由の口コミ</strong><br>
+    バイトが「うちの店長これ使えばいいのに」と思えるコンテンツを織り交ぜると拡散が起きやすい。
+  </div>
+</section>
+
+<!-- ============ Section 3 ============ -->
+<section id="s3">
+  <h2><span class="num">3</span>📚 コンテンツ 5 本柱</h2>
+  <p>すべての投稿はこの 5 本柱のどれかに分類。バランス良く投稿することで「学べる × 共感 × 面白い」アカウントになる。</p>
+
+  <table>
+    <thead><tr><th>柱</th><th>%</th><th>目的</th><th>例</th></tr></thead>
+    <tbody>
+      <tr><td>① <strong>共感系 (あるある)</strong></td><td>30%</td><td>共感獲得・コメント増</td><td>「飲食オーナーあるある」「シフト作成時の地獄」</td></tr>
+      <tr><td>② <strong>教育系 (ハック・ノウハウ)</strong></td><td>30%</td><td>保存・シェア促進</td><td>「労基法5つの落とし穴」「原価率30%の黄金比」</td></tr>
+      <tr><td>③ <strong>裏側系 (オーナーvlog)</strong></td><td>20%</td><td>信頼性・ファン化</td><td>「バー1日密着」「シフト作成の実況」</td></tr>
+      <tr><td>④ <strong>サービス紹介系 (CV)</strong></td><td>10%</td><td>RAKURAKU 認知・登録</td><td>「30秒で機能紹介」「ユーザー事例」</td></tr>
+      <tr><td>⑤ <strong>トレンド乗っかり系</strong></td><td>10%</td><td>新規リーチ</td><td>流行音楽・チャレンジに飲食視点で参加</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ Section 4 ============ -->
+<section id="s4">
+  <h2><span class="num">4</span>🎬 動画パターン 20 例</h2>
+  <div class="idea-grid">
+
+    <div class="idea"><span class="num">01</span><h4>シフト管理あるある</h4><p>「LINEで来る希望休が読み取れない問題」をコント風に</p><span class="hashtag">#飲食あるある #シフト管理</span></div>
+
+    <div class="idea"><span class="num">02</span><h4>労基法ヤバい話</h4><p>「22時以降の手当忘れて訴えられたバー」実例ベース</p><span class="hashtag">#労基法 #飲食経営</span></div>
+
+    <div class="idea"><span class="num">03</span><h4>Excel地獄</h4><p>シフト作成5時間→1時間ビフォーアフター</p><span class="hashtag">#業務効率化 #時短</span></div>
+
+    <div class="idea"><span class="num">04</span><h4>30秒で原価率の話</h4><p>「人件費30%の黄金比」を超高速で解説</p><span class="hashtag">#飲食経営 #コスト削減</span></div>
+
+    <div class="idea"><span class="num">05</span><h4>バー1日密着</h4><p>朝の仕込みから深夜の閉店まで</p><span class="hashtag">#バー #1日密着</span></div>
+
+    <div class="idea"><span class="num">06</span><h4>面接で見抜く5つの質問</h4><p>続くバイトを見極めるテク</p><span class="hashtag">#面接 #採用</span></div>
+
+    <div class="idea"><span class="num">07</span><h4>店長vsバイト寸劇</h4><p>「シフト変えてって言われた時の店長」</p><span class="hashtag">#寸劇 #あるある</span></div>
+
+    <div class="idea"><span class="num">08</span><h4>外国人バイトあるある</h4><p>愛のあるコミカルな描写</p><span class="hashtag">#外国人スタッフ #多言語</span></div>
+
+    <div class="idea"><span class="num">09</span><h4>スマホで完結デモ</h4><p>RAKURAKU の使い方 15 秒</p><span class="hashtag">#SaaS #業務改善</span></div>
+
+    <div class="idea"><span class="num">10</span><h4>「マジで?」と言われた給与計算ミス</h4><p>深夜手当ミスがバレた瞬間の話</p><span class="hashtag">#給与計算 #労務</span></div>
+
+    <div class="idea"><span class="num">11</span><h4>2年経営で痛感したこと</h4><p>個人バーオーナー 2 年の本音</p><span class="hashtag">#バー経営 #起業</span></div>
+
+    <div class="idea"><span class="num">12</span><h4>競合ツール比較</h4><p>Airシフト vs Shiftee vs RAKURAKU を 30 秒で</p><span class="hashtag">#比較 #ツール</span></div>
+
+    <div class="idea"><span class="num">13</span><h4>Q&A: 視聴者の悩み回答</h4><p>コメント欄の質問を動画化</p><span class="hashtag">#Q&A #相談</span></div>
+
+    <div class="idea"><span class="num">14</span><h4>新店オープン準備vlog</h4><p>店舗開業の裏側を密着</p><span class="hashtag">#開業 #起業vlog</span></div>
+
+    <div class="idea"><span class="num">15</span><h4>失敗談シリーズ</h4><p>「初年度に犯した10の失敗」</p><span class="hashtag">#失敗談 #学び</span></div>
+
+    <div class="idea"><span class="num">16</span><h4>ユーザーインタビュー</h4><p>導入店のオーナー登場</p><span class="hashtag">#事例 #導入</span></div>
+
+    <div class="idea"><span class="num">17</span><h4>飲食用語クイズ</h4><p>「これ知ってる? 飲食用語10連発」</p><span class="hashtag">#クイズ #業界用語</span></div>
+
+    <div class="idea"><span class="num">18</span><h4>店内ツアー</h4><p>自分のバーを案内</p><span class="hashtag">#バー紹介 #港区</span></div>
+
+    <div class="idea"><span class="num">19</span><h4>「結局これだけやれ」シリーズ</h4><p>シンプルな核心ノウハウ</p><span class="hashtag">#ノウハウ #本質</span></div>
+
+    <div class="idea"><span class="num">20</span><h4>トレンド音乗っかり</h4><p>流行曲 × 飲食オーナー視点</p><span class="hashtag">#トレンド</span></div>
+
+  </div>
+</section>
+
+<!-- ============ Section 5 ============ -->
+<section id="s5">
+  <h2><span class="num">5</span>🧠 アルゴリズム攻略 (最重要)</h2>
+
+  <h3>① 最初の 3 秒で「指止め」させる</h3>
+  <div class="callout warn">
+    ❌ 「こんにちは、〇〇です。今日は〜」← 即スワイプされる<br>
+    ✅ 「これやってる飲食オーナー、マジで気をつけて」「3秒で年100万削減できる方法」「これ知らないと労基署に通報されます」
+  </div>
+
+  <h3>② 視聴維持率 70%超を狙う</h3>
+  <ul>
+    <li>動画は <strong>15-30秒</strong> 推奨 (短いほど完視聴されやすい)</li>
+    <li><strong>テキストテロップ</strong>で目で追える設計 (音なし視聴対応)</li>
+    <li>「最後まで見ると衝撃の結末」型の構成</li>
+    <li><strong>ループしやすい構造</strong> (最後 → 最初に繋がるオチ)</li>
+  </ul>
+
+  <h3>③ エンゲージメントを稼ぐ</h3>
+  <ul>
+    <li><strong>コメントを促す</strong>:「あなたのお店ではどう?」「賛成派は👍、反対派は👎」</li>
+    <li><strong>議論を呼ぶテーマ</strong>: 「店長 vs バイト」「Excel派 vs ツール派」</li>
+    <li><strong>明確な敵を作る</strong>: 「Excelで管理してる店長、これ見て」</li>
+  </ul>
+
+  <h3>④ 保存・シェア狙い</h3>
+  <ul>
+    <li><strong>リスト系</strong>: 「労基法5つ」「経営テク10選」← 後で見たくなる</li>
+    <li><strong>テンプレ系</strong>: 「面接で使える質問」← 保存される</li>
+    <li><strong>共感系</strong>: 「他のオーナーに見せたくなる」</li>
+  </ul>
+
+  <div class="callout tip">
+    💡 <strong>初動 1 時間が全て</strong>: 投稿後 1 時間以内のエンゲージメント (いいね・コメント・完視聴) がその後のリーチ量を決める。投稿直後は積極的にコメントに返信。
+  </div>
+</section>
+
+<!-- ============ Section 6 ============ -->
+<section id="s6">
+  <h2><span class="num">6</span>⏰ 投稿頻度・時間</h2>
+
+  <h3>頻度</h3>
+  <ul>
+    <li><strong>立ち上げ期 (1-3ヶ月)</strong>: 毎日 1-2 本 (アカウント評価を上げる)</li>
+    <li><strong>成長期 (3-6ヶ月)</strong>: 毎日 1 本 + 週末ライブ</li>
+    <li><strong>安定期 (6ヶ月+)</strong>: 週 5 本 + 不定期ライブ</li>
+  </ul>
+
+  <h3>投稿時間 (飲食オーナーが見る時間)</h3>
+  <table>
+    <thead><tr><th>時間</th><th>視聴者層</th><th>おすすめ</th></tr></thead>
+    <tbody>
+      <tr><td>朝 6:00-8:00</td><td>カフェオーナー・早朝シフト</td><td>⭐ 教育系</td></tr>
+      <tr><td>昼 12:00-13:00</td><td>店長休憩中</td><td>⭐⭐ 共感系・あるある</td></tr>
+      <tr><td>15:00-17:00</td><td>仕込み時間・空き時間</td><td>⭐⭐ ノウハウ系</td></tr>
+      <tr><td>21:00-23:00</td><td>営業中の隙間 (BGMなし視聴)</td><td>⭐⭐⭐ 寸劇・短尺</td></tr>
+      <tr><td>2:00-4:00</td><td>バー・スナック営業終了後</td><td>⭐⭐⭐ オーナー直撃時間</td></tr>
+    </tbody>
+  </table>
+  <div class="callout gold">
+    🎯 <strong>狙い目は深夜 2-4 時</strong>: 飲食オーナーが店じまい後にスマホを見る時間。競合発信者が少ない時間帯なので独占しやすい。
+  </div>
+</section>
+
+<!-- ============ Section 7 ============ -->
+<section id="s7">
+  <h2><span class="num">7</span>#️⃣ ハッシュタグ戦略</h2>
+
+  <h3>必須セット (毎投稿)</h3>
+  <p style="font-family:Menlo,monospace;background:#F1F5F9;padding:12px;border-radius:6px;font-size:.9em">
+  #飲食店 #飲食経営 #飲食オーナー #バー #シフト管理 #店長 #飲食バイト #RAKURAKU
+  </p>
+
+  <h3>業態別ハッシュタグ (動画内容に応じて追加)</h3>
+  <table>
+    <thead><tr><th>動画テーマ</th><th>追加ハッシュタグ</th></tr></thead>
+    <tbody>
+      <tr><td>バー関連</td><td>#バー #バーテンダー #ショットバー #バー経営 #港区バー</td></tr>
+      <tr><td>居酒屋関連</td><td>#居酒屋 #居酒屋店長 #居酒屋バイト</td></tr>
+      <tr><td>カフェ関連</td><td>#カフェ #カフェ経営 #バリスタ #カフェ開業</td></tr>
+      <tr><td>労基法</td><td>#労基法 #労働基準法 #労務管理 #ブラック企業</td></tr>
+      <tr><td>採用関連</td><td>#面接 #バイト採用 #人材難 #人手不足</td></tr>
+      <tr><td>業務効率化</td><td>#業務効率化 #時短 #DX #SaaS #働き方改革</td></tr>
+    </tbody>
+  </table>
+
+  <h3>トレンドタグ (週次でチェック)</h3>
+  <p>TikTok「発見」タブで <strong>飲食/起業/ビジネス系</strong>のトレンドタグを毎週リサーチして 1-2 個混ぜる。</p>
+
+  <div class="callout tip">
+    💡 ハッシュタグは <strong>3-5 個に絞る</strong>。大量タグはむしろアルゴリズム的に逆効果。
+  </div>
+</section>
+
+<!-- ============ Section 8 ============ -->
+<section id="s8">
+  <h2><span class="num">8</span>🎵 トレンド活用法</h2>
+  <ul>
+    <li><strong>毎朝 10 分</strong> TikTok の「For You」「発見」で流行をリサーチ</li>
+    <li><strong>流行音楽は積極的に使う</strong> → アルゴリズムが優遇する</li>
+    <li>流行のチャレンジを<strong>飲食視点でアレンジ</strong> (例: 「ダンスチャレンジ × バーテンの動き」)</li>
+    <li>大手 TikToker のフォーマットを<strong>飲食ジャンルに翻訳</strong> (例: ヤンキー先生風 → 厳しい店長キャラ)</li>
+  </ul>
+
+  <div class="callout warn">
+    ⚠️ <strong>著作権注意</strong>: 商用アカウント (ビジネスアカウント) では一般人気曲が使えない。商用ライセンスフリーの曲を使うか、個人クリエイターアカウントで運用するか選択。
+  </div>
+</section>
+
+<!-- ============ Section 9 ============ -->
+<section id="s9">
+  <h2><span class="num">9</span>🎞 編集テクニック (必須項目)</h2>
+  <ul>
+    <li>✅ <strong>テロップ必須</strong>: 音なし視聴者対応 (75%が音なしで見ている)</li>
+    <li>✅ <strong>カット多用</strong>: 0.5-2秒で切り替えて飽きさせない</li>
+    <li>✅ <strong>絵文字・矢印</strong>: 視覚的に強調</li>
+    <li>✅ <strong>BGM 必須</strong>: 流行音 or 雰囲気に合った曲</li>
+    <li>✅ <strong>9:16 縦動画</strong> (横向きは絶対NG)</li>
+    <li>✅ <strong>顔出し推奨</strong>: 親近感 + アカウント記憶</li>
+    <li>✅ <strong>最初の 3 秒に投資</strong>: テロップ大きく・動きある映像</li>
+  </ul>
+
+  <h3>推奨アプリ</h3>
+  <table>
+    <thead><tr><th>用途</th><th>無料</th><th>有料</th></tr></thead>
+    <tbody>
+      <tr><td>動画編集</td><td>CapCut (TikTok純正)</td><td>VLLO / Premiere Rush</td></tr>
+      <tr><td>サムネ作成</td><td>Canva</td><td>Photoshop</td></tr>
+      <tr><td>テロップ</td><td>CapCut 自動字幕</td><td>Vrew (AI字幕)</td></tr>
+      <tr><td>音楽探し</td><td>TikTok内蔵</td><td>Artlist</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ Section 10 ============ -->
+<section id="s10">
+  <h2><span class="num">10</span>📈 段階別 KPI 目標</h2>
+
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="stage">Phase 1 (1ヶ月)</div><div class="num">100</div><div class="desc">フォロワー / 投稿 30本</div></div>
+    <div class="kpi-card"><div class="stage">Phase 2 (3ヶ月)</div><div class="num">1,000</div><div class="desc">フォロワー / バズ動画 1 本</div></div>
+    <div class="kpi-card"><div class="stage">Phase 3 (6ヶ月)</div><div class="num">10,000</div><div class="desc">フォロワー / RAKURAKU登録流入</div></div>
+    <div class="kpi-card"><div class="stage">Phase 4 (12ヶ月)</div><div class="num">100,000</div><div class="desc">フォロワー / 月100名登録</div></div>
+  </div>
+
+  <h3>各段階のミッション</h3>
+  <table>
+    <thead><tr><th>Phase</th><th>主要施策</th><th>判断基準</th></tr></thead>
+    <tbody>
+      <tr><td>1 (0-100)</td><td>毎日投稿・パターン試行</td><td>視聴維持率 60% 以上の動画が出てるか</td></tr>
+      <tr><td>2 (100-1k)</td><td>勝ちパターン量産 + コメント返し丁寧</td><td>1万再生超え動画が出てるか</td></tr>
+      <tr><td>3 (1k-10k)</td><td>ライブ配信開始 + コラボ模索</td><td>RAKURAKU 登録に動画から流入してるか</td></tr>
+      <tr><td>4 (10k+)</td><td>UGC 促進 + マネタイズ複線化</td><td>月次 LTV 計算で広告費換算 黒字か</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ Section 11 ============ -->
+<section id="s11">
+  <h2><span class="num">11</span>🚫 禁止事項・NG 集</h2>
+
+  <div class="callout warn">
+    <strong>絶対やってはいけない 10 項目</strong><br>
+    ❌ いきなり営業 (「RAKURAKU 入れてください」 連発)<br>
+    ❌ 競合サービスの名指し批判<br>
+    ❌ 著作権侵害 (他人の動画転載)<br>
+    ❌ 誇大表現 (「100% 削減」「絶対バズる」)<br>
+    ❌ 政治・宗教・センシティブネタ<br>
+    ❌ スタッフ・顧客の顔を無許可で出す<br>
+    ❌ 投稿が不規則 (1 週間空く → アルゴ評価ダウン)<br>
+    ❌ アンチコメントに感情的返信<br>
+    ❌ 流行りものの後追い (旬を逃すと逆効果)<br>
+    ❌ サムネで釣って中身がスカスカ (信頼失う)
+  </div>
+
+  <div class="callout tip">
+    💡 <strong>「商品売る前に、自分を売れ」</strong> — 半年は人格・知識・面白さで認知獲得。商品紹介は 10% 以下に抑える。
+  </div>
+</section>
+
+<!-- ============ Section 12 ============ -->
+<section id="s12">
+  <h2><span class="num">12</span>📅 最初の 30 日 アクションプラン</h2>
+
+  <table>
+    <thead><tr><th>日数</th><th>やること</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Day 1-3 (準備)</strong></td><td>アカウント作成 / プロフ完成 / Linktree 設定 / アイコン撮影 / 投稿 30 本の企画リスト作成</td></tr>
+      <tr><td><strong>Day 4-7</strong></td><td>1 日 1 本投稿開始 (まず 7 本)。コメント全て返信。視聴維持率を分析</td></tr>
+      <tr><td><strong>Day 8-14</strong></td><td>反応良かった動画パターンを倍増。流行音を 1 本入れる。ライブ配信 1 回試す</td></tr>
+      <tr><td><strong>Day 15-21</strong></td><td>勝ちパターン量産 + シリーズ化 (「シフト失敗談 #1, #2..」)</td></tr>
+      <tr><td><strong>Day 22-30</strong></td><td>30 投稿達成 → 分析 → 最高再生数の動画パターンに集中</td></tr>
+    </tbody>
+  </table>
+
+  <h3>30 日後の判断基準</h3>
+  <ul>
+    <li>✅ フォロワー 100 超え → 継続</li>
+    <li>✅ 1 本でも 1 万再生超え → アカウント方向性 OK</li>
+    <li>❌ どの動画も 500 再生未満 → コンテンツ柱を見直し</li>
+  </ul>
+
+  <div class="callout gold">
+    🚀 <strong>最重要マインドセット</strong>: 「バズらせる」ではなく「<strong>毎日継続して、視聴者の役に立つ</strong>」を貫く。バズは結果。途中でやめないことが 9 割。
+  </div>
+</section>
+
+<div class="hero" style="margin-top:30px">
+  <h1 style="font-size:1.5em">🎬 さあ、始めよう</h1>
+  <p>今すぐ TikTok アプリを開いて、アカウントを作成 → このガイドを横に置いて Day 1 から実行</p>
+</div>
+
+</div>
+
+</body>
+</html>
