@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v12 — Wave1-36 完了: 業界別8 + 競合3 + features/ + 法的3 + Enterprise/Partner/Search/Community/Onboarding/Tutorials/Mobile/Webinar/Pricing/Testimonials/Changelog */
-var CACHE = 'rakuraku-v12';
+/* RAKURAKU Service Worker v13 — Wave1-43 完了 + 個別事例 3本 + competitor-matrix + success-tips 追加 */
+var CACHE = 'rakuraku-v13';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -47,6 +47,11 @@ var ASSETS = [
   '/pricing.html',
   '/testimonials.html',
   '/changelog.html',
+  '/case-bar.html',
+  '/case-izakaya.html',
+  '/case-cafe.html',
+  '/competitor-matrix.html',
+  '/success-tips.html',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',

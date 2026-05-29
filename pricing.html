@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>料金プラン | RAKURAKU シフト管理</title>
-<meta name="description" content="月額 ¥4,990 / 年額 ¥49,900 (2 ヶ月分お得)。14 日間無料トライアル付き、初期費用 0 円。明朗会計でわかりやすい料金体系。">
+<title>料金プラン (永久無料あり) | RAKURAKU シフト管理</title>
+<meta name="description" content="個人店なら永久無料。30日間は全機能を無料で試せる (クレカ不要)。Free / Pro ¥4,990 / Enterprise の 3 段階プラン。">
 <meta name="theme-color" content="#0EA5E9">
 <link rel="canonical" href="https://rakuraku-shift.com/pricing.html">
-<meta property="og:title" content="料金プラン | RAKURAKU">
-<meta property="og:description" content="月額 ¥4,990 業界最安級 / 14 日間無料">
+<meta property="og:title" content="料金プラン (永久無料あり) | RAKURAKU">
+<meta property="og:description" content="個人店なら永久無料 / 30日全機能体験 / Pro ¥4,990">
 <meta property="og:image" content="https://rakuraku-shift.com/icon-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
@@ -21,7 +21,11 @@
 ]}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Product","name":"RAKURAKU シフト管理","description":"飲食店向けシフト管理 SaaS","offers":[{"@type":"Offer","name":"月額プラン","price":"4990","priceCurrency":"JPY","priceValidUntil":"2027-12-31"},{"@type":"Offer","name":"年額プラン","price":"49900","priceCurrency":"JPY","priceValidUntil":"2027-12-31"}]}
+{"@context":"https://schema.org","@type":"Product","name":"RAKURAKU シフト管理","description":"飲食店向けシフト管理 SaaS","offers":[
+  {"@type":"Offer","name":"Free Plan","price":"0","priceCurrency":"JPY"},
+  {"@type":"Offer","name":"Pro Plan","price":"4990","priceCurrency":"JPY","priceValidUntil":"2027-12-31"},
+  {"@type":"Offer","name":"Pro Annual","price":"49900","priceCurrency":"JPY","priceValidUntil":"2027-12-31"}
+]}
 </script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -31,35 +35,64 @@ body{font-family:-apple-system,sans-serif;line-height:1.7;color:#333;background:
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 header{background:linear-gradient(135deg,#0EA5E9,#0284C7);color:#fff;padding:60px 20px;text-align:center}
 header h1{font-size:2.8em;margin-bottom:10px}
-header .badge{display:inline-block;background:#fff;color:#0EA5E9;padding:6px 16px;border-radius:20px;font-weight:bold;margin-bottom:15px}
+header .badge{display:inline-block;background:#22C55E;color:#fff;padding:6px 16px;border-radius:20px;font-weight:bold;margin-bottom:15px;font-size:.95em}
+header p{font-size:1.15em;opacity:.95;max-width:680px;margin:10px auto 0}
 nav.bc{padding:15px 20px;background:#fff;border-bottom:1px solid #eee}
 nav.bc a{color:#0EA5E9;text-decoration:none}
-main{max-width:1100px;margin:0 auto;padding:30px 20px}
-.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin-bottom:40px}
-.plan{background:#fff;padding:35px;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.08);position:relative;border:3px solid transparent}
-.plan.featured{border-color:#0EA5E9;transform:scale(1.03)}
-.plan .ribbon{position:absolute;top:-12px;right:20px;background:#0EA5E9;color:#fff;padding:5px 15px;border-radius:20px;font-size:.85em;font-weight:bold}
-.plan h2{color:#0EA5E9;margin-bottom:10px;font-size:1.5em}
-.plan .price{font-size:3em;color:#333;font-weight:bold;margin:15px 0}
+main{max-width:1200px;margin:0 auto;padding:30px 20px}
+.hero-msg{background:linear-gradient(135deg,#DCFCE7,#F0FDF4);padding:30px;border-radius:14px;text-align:center;margin-bottom:30px;border-left:6px solid #22C55E}
+.hero-msg h2{color:#16A34A;margin-bottom:10px;font-size:1.6em}
+.hero-msg p{font-size:1.05em}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-bottom:40px}
+.plan{background:#fff;padding:30px;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.08);position:relative;border:3px solid transparent;display:flex;flex-direction:column}
+.plan.free{border-color:#22C55E}
+.plan.trial{border-color:#F59E0B;transform:scale(1.04)}
+.plan.pro{border-color:#0EA5E9}
+.plan.enterprise{border-color:#7C3AED}
+.plan .ribbon{position:absolute;top:-13px;right:18px;padding:5px 14px;border-radius:20px;font-size:.82em;font-weight:bold;color:#fff}
+.plan.free .ribbon{background:#22C55E}
+.plan.trial .ribbon{background:#F59E0B}
+.plan.pro .ribbon{background:#0EA5E9}
+.plan h2{margin-bottom:10px;font-size:1.4em}
+.plan.free h2{color:#16A34A}
+.plan.trial h2{color:#D97706}
+.plan.pro h2{color:#0284C7}
+.plan.enterprise h2{color:#6D28D9}
+.plan .price{font-size:2.5em;color:#333;font-weight:bold;margin:15px 0 5px}
 .plan .price small{font-size:.4em;color:#666;font-weight:normal}
-.plan .save{color:#22C55E;font-weight:bold;margin-bottom:15px}
-.plan ul{padding-left:0;list-style:none;margin:20px 0}
-.plan li{padding:8px 0;border-bottom:1px solid #eee}
+.plan .sub{color:#666;font-size:.95em;min-height:50px;margin-bottom:10px}
+.plan ul{padding-left:0;list-style:none;margin:15px 0;flex-grow:1}
+.plan li{padding:6px 0;border-bottom:1px solid #f5f5f5;font-size:.92em}
 .plan li::before{content:'✓ ';color:#22C55E;font-weight:bold}
-.plan a.cta{display:block;text-align:center;background:#0EA5E9;color:#fff;padding:14px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:1.1em;margin-top:20px}
-.plan.featured a.cta{background:linear-gradient(135deg,#0EA5E9,#0284C7)}
-.compare{background:#fff;padding:30px;border-radius:12px;margin-bottom:30px}
-.compare table{width:100%;border-collapse:collapse}
-.compare th,.compare td{padding:12px;border-bottom:1px solid #eee;text-align:left}
-.compare th{background:#0EA5E9;color:#fff}
-.compare td:nth-child(2),.compare td:nth-child(3){text-align:center}
+.plan li.x::before{content:'× ';color:#ccc}
+.plan li.x{color:#aaa}
+.plan a.cta{display:block;text-align:center;padding:14px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:1.05em;margin-top:15px}
+.plan.free a.cta{background:#22C55E;color:#fff}
+.plan.trial a.cta{background:linear-gradient(135deg,#F59E0B,#EAB308);color:#fff}
+.plan.pro a.cta{background:linear-gradient(135deg,#0EA5E9,#0284C7);color:#fff}
+.plan.enterprise a.cta{background:#7C3AED;color:#fff}
+.flow{background:#fff;padding:30px;border-radius:12px;margin-bottom:25px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.flow h2{color:#0EA5E9;margin-bottom:15px;text-align:center}
+.flow-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:20px}
+.flow-step{background:#F0F9FF;padding:20px;border-radius:10px;text-align:center}
+.flow-step .num{background:#0EA5E9;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;margin:0 auto 10px;font-size:1.1em}
+.flow-step h3{color:#0EA5E9;margin-bottom:8px;font-size:1em}
+.flow-step p{font-size:.85em;color:#666}
 .guarantee{background:#FEF3C7;padding:25px;border-radius:12px;text-align:center;margin:30px 0;border-left:5px solid #F59E0B}
 .guarantee h2{color:#92400E;margin-bottom:10px}
-.faq{background:#fff;padding:30px;border-radius:12px;margin-bottom:20px}
+.faq{background:#fff;padding:30px;border-radius:12px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .faq h2{color:#0EA5E9;margin-bottom:15px}
 .faq details{margin-bottom:12px;padding:15px;background:#F8FAFC;border-radius:8px}
 .faq summary{font-weight:bold;cursor:pointer;color:#0EA5E9}
-.faq p{margin-top:10px}
+.faq p{margin-top:10px;font-size:.95em}
+.compare{background:#fff;padding:30px;border-radius:12px;margin-bottom:30px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow-x:auto}
+.compare h2{color:#0EA5E9;margin-bottom:15px;text-align:center}
+.compare table{width:100%;border-collapse:collapse;margin-top:10px;min-width:580px}
+.compare th,.compare td{padding:12px;border-bottom:1px solid #eee;text-align:center}
+.compare th{background:#0EA5E9;color:#fff}
+.compare td:first-child{text-align:left;font-weight:bold;background:#F8FAFC}
+.compare .y{color:#22C55E;font-weight:bold}
+.compare .n{color:#ccc}
 footer{background:#333;color:#fff;padding:40px 20px;text-align:center;margin-top:40px}
 footer a{color:#0EA5E9;margin:0 10px}
 </style>
@@ -67,98 +100,175 @@ footer a{color:#0EA5E9;margin:0 10px}
 <body>
 <a class="skip-link" href="#main">本文へスキップ</a>
 <header>
-  <span class="badge">🎉 値下げ実施中</span>
+  <span class="badge">🎉 永久無料プラン誕生</span>
   <h1>💰 料金プラン</h1>
-  <p>月 ¥4,990 — 飲食店向け SaaS で業界最安級</p>
+  <p>個人バー・スナックなら<strong>完全永久無料</strong>。30 日間は全機能を無料で試せます (クレカ登録不要)。</p>
 </header>
 <nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; 料金プラン</nav>
 
 <main id="main">
+
+<div class="hero-msg">
+  <h2>🎁 新生 RAKURAKU = 無料で始めて、必要になったら払う</h2>
+  <p>「お金を払う前に効果を確かめたい」が当たり前。だから RAKURAKU は<strong>全機能 30 日間無料 + その後も基本機能は永久無料</strong>のシンプル設計に変えました。</p>
+</div>
+
 <div class="plans">
-  <div class="plan">
-    <h2>📅 月額プラン</h2>
-    <div class="price">¥4,990<small> / 月 (税抜)</small></div>
-    <p>初月いきなり試したい方に</p>
+  <div class="plan free">
+    <span class="ribbon">永久無料</span>
+    <h2>🆓 Free</h2>
+    <div class="price">¥0<small>/永久</small></div>
+    <p class="sub">個人バー・スナックママ・小規模カフェに最適。クレジットカード不要。</p>
     <ul>
-      <li>シフト作成・確定・通知</li>
+      <li>シフト作成・確定通知</li>
+      <li>LINE 自動通知</li>
       <li>GPS / QR 打刻</li>
-      <li>給与計算 (深夜手当自動)</li>
-      <li>売上連動シフト推奨</li>
-      <li>多店舗一括管理</li>
-      <li>LINE 通知連携</li>
-      <li>多言語対応 (5 ヶ国語)</li>
-      <li>無制限スタッフ登録</li>
-      <li>14 日間無料トライアル</li>
+      <li>基本給与計算 (深夜手当 25% 自動)</li>
+      <li>スマホアプリ (PWA)</li>
+      <li>スタッフ <strong>3 名</strong>まで</li>
+      <li><strong>1 店舗</strong>のみ</li>
+      <li class="x">多店舗管理</li>
+      <li class="x">売上連動 AI</li>
+      <li class="x">多言語 (英中韓越)</li>
+      <li class="x">API / freee 連携</li>
     </ul>
-    <a href="/signup?plan=monthly" class="cta">14 日間無料で始める</a>
+    <a href="/signup?plan=free" class="cta">無料で始める →</a>
   </div>
 
-  <div class="plan featured">
-    <span class="ribbon">💎 おすすめ</span>
-    <h2>📆 年額プラン</h2>
-    <div class="price">¥49,900<small> / 年 (税抜)</small></div>
-    <div class="save">→ 月換算 ¥4,158 / 月 (約 17% お得)</div>
-    <p>長く使う予定の方は年額が断然お得</p>
+  <div class="plan trial">
+    <span class="ribbon">⭐ 全員推奨</span>
+    <h2>🎁 30日 Pro 体験</h2>
+    <div class="price">¥0<small>/30日間</small></div>
+    <p class="sub">全機能を 30 日間まるごと試せる。クレカ登録なし。期間後は Free に自動降格 — 勝手に課金されません。</p>
     <ul>
-      <li>月額プランの全機能</li>
-      <li><strong>2 ヶ月分相当お得</strong></li>
-      <li>優先サポート (24h 以内返信)</li>
-      <li>新機能の早期アクセス</li>
-      <li>専任カスタマーサクセス</li>
-      <li>14 日間無料トライアル</li>
+      <li><strong>Pro プランの全機能</strong></li>
+      <li>スタッフ <strong>無制限</strong></li>
+      <li>多店舗管理 (3 店舗まで)</li>
+      <li>売上連動 AI シフト推奨</li>
+      <li>多言語 (英中韓越)</li>
+      <li>API / Webhook</li>
+      <li>freee / 弥生 CSV 連携</li>
+      <li>優先サポート</li>
+      <li>クレジットカード <strong>登録不要</strong></li>
+      <li>30 日後 → Free に自動降格</li>
     </ul>
-    <a href="/signup?plan=yearly" class="cta">14 日間無料で始める</a>
+    <a href="/signup?plan=trial" class="cta">30 日無料で始める →</a>
+  </div>
+
+  <div class="plan pro">
+    <span class="ribbon">本格運用に</span>
+    <h2>💼 Pro</h2>
+    <div class="price">¥4,990<small>/月 (税抜)</small></div>
+    <p class="sub">中規模店・多店舗チェーンに。年額 ¥49,900 で 2 ヶ月分お得。</p>
+    <ul>
+      <li>Free + Trial の全機能</li>
+      <li>スタッフ <strong>無制限</strong></li>
+      <li>多店舗管理 (3 店舗まで)</li>
+      <li>売上連動 AI シフト推奨</li>
+      <li>多言語 (日英中韓越 5 言語)</li>
+      <li>API / Webhook</li>
+      <li>freee / 弥生 / マネフォ 連携</li>
+      <li>詳細レポート / カスタム分析</li>
+      <li>優先サポート (24h 以内返信)</li>
+      <li>30 日間 全額返金保証</li>
+    </ul>
+    <a href="/signup?plan=pro" class="cta">Pro にアップグレード →</a>
+  </div>
+
+  <div class="plan enterprise">
+    <span class="ribbon">10 店舗+</span>
+    <h2>🏢 Enterprise</h2>
+    <div class="price">個別<small>見積</small></div>
+    <p class="sub">大規模チェーン向け。SLA 99.99% / SSO / 専用サーバー。</p>
+    <ul>
+      <li>Pro の全機能</li>
+      <li>店舗数 <strong>無制限</strong></li>
+      <li>SSO (SAML / OAuth)</li>
+      <li>カスタム API 連携</li>
+      <li>専用サーバー</li>
+      <li>24/7 サポート</li>
+      <li>専任カスタマーサクセス</li>
+      <li>稼働率 SLA 99.99%</li>
+      <li>請求書 / 銀行振込対応</li>
+    </ul>
+    <a href="mailto:enterprise@rakuraku-shift.com" class="cta">問い合わせ →</a>
+  </div>
+</div>
+
+<div class="flow">
+  <h2>📅 「30 日 Pro 体験 → Free 降格」の流れ</h2>
+  <div class="flow-steps">
+    <div class="flow-step"><div class="num">1</div><h3>登録 (Day 0)</h3><p>メールアドレスだけで開始<br>クレカ不要</p></div>
+    <div class="flow-step"><div class="num">2</div><h3>全機能体験 (Day 1-30)</h3><p>多店舗・多言語・API すべて使える</p></div>
+    <div class="flow-step"><div class="num">3</div><h3>満足したら課金</h3><p>「Pro 継続」ボタンで ¥4,990/月</p></div>
+    <div class="flow-step"><div class="num">4</div><h3>何もしなくても OK</h3><p>30 日後に Free 自動降格<br>勝手に課金されません</p></div>
   </div>
 </div>
 
 <div class="compare">
-  <h2 style="color:#0EA5E9;margin-bottom:15px">📊 競合との比較</h2>
+  <h2>📊 プラン機能比較</h2>
   <table>
-    <thead><tr><th>項目</th><th>RAKURAKU</th><th>Airシフト</th><th>Shiftee</th></tr></thead>
+    <thead><tr><th>機能</th><th>Free</th><th>Pro</th><th>Enterprise</th></tr></thead>
     <tbody>
-      <tr><td>月額料金</td><td><strong>¥4,990</strong></td><td>¥7,800</td><td>¥9,800</td></tr>
-      <tr><td>初期費用</td><td><strong>0 円</strong></td><td>¥30,000</td><td>¥50,000</td></tr>
-      <tr><td>無料トライアル</td><td><strong>14 日間</strong></td><td>7 日間</td><td>14 日間</td></tr>
-      <tr><td>飲食特化機能</td><td>◎</td><td>○</td><td>△</td></tr>
-      <tr><td>深夜手当自動</td><td>◎</td><td>×</td><td>○</td></tr>
-      <tr><td>多言語 5 ヶ国語</td><td>◎</td><td>×</td><td>×</td></tr>
+      <tr><td>月額料金</td><td>¥0</td><td>¥4,990</td><td>個別</td></tr>
+      <tr><td>スタッフ数</td><td>3 名</td><td>無制限</td><td>無制限</td></tr>
+      <tr><td>店舗数</td><td>1 店舗</td><td>3 店舗</td><td>無制限</td></tr>
+      <tr><td>シフト基本機能</td><td class="y">◎</td><td class="y">◎</td><td class="y">◎</td></tr>
+      <tr><td>GPS 打刻</td><td class="y">◎</td><td class="y">◎</td><td class="y">◎</td></tr>
+      <tr><td>深夜手当 自動</td><td class="y">◎</td><td class="y">◎</td><td class="y">◎</td></tr>
+      <tr><td>LINE 通知</td><td class="y">◎</td><td class="y">◎</td><td class="y">◎</td></tr>
+      <tr><td>売上連動 AI</td><td class="n">×</td><td class="y">◎</td><td class="y">◎</td></tr>
+      <tr><td>多言語 (5 言語)</td><td class="n">×</td><td class="y">◎</td><td class="y">◎</td></tr>
+      <tr><td>API / Webhook</td><td class="n">×</td><td class="y">◎</td><td class="y">◎</td></tr>
+      <tr><td>freee 連携</td><td class="n">×</td><td class="y">◎</td><td class="y">◎</td></tr>
+      <tr><td>SSO</td><td class="n">×</td><td class="n">×</td><td class="y">◎</td></tr>
+      <tr><td>専任サポート</td><td class="n">基本</td><td>優先</td><td class="y">24/7 専任</td></tr>
+      <tr><td>稼働率 SLA</td><td>-</td><td>99.9%</td><td>99.99%</td></tr>
     </tbody>
   </table>
 </div>
 
 <div class="guarantee">
-  <h2>🛡 30 日間 全額返金保証</h2>
-  <p>初回課金後 30 日以内であれば理由を問わず全額返金。RAKURAKU の使い心地に満足できなければ料金は戻ってきます。</p>
+  <h2>🛡 Pro プラン契約後も「30 日間 全額返金保証」</h2>
+  <p>初回課金後 30 日以内であれば理由を問わず全額返金。Free Plan でじっくり判断 → Pro に上げて満足できなければお金戻ります。</p>
 </div>
 
 <div class="faq">
   <h2>❓ よくある質問</h2>
   <details>
-    <summary>無料トライアル中にクレジットカード情報の登録は必要ですか?</summary>
-    <p>いいえ、不要です。14 日間の無料トライアルはクレジットカード登録なしで全機能をお試しいただけます。期間終了時に有料プランへ移行する際に登録をお願いします。</p>
+    <summary>本当に永久無料? 後で勝手に課金されない?</summary>
+    <p>はい、Free Plan は永久無料です。クレジットカードを登録しない限り、絶対に課金されません。30 日 Pro 体験中もクレカ不要なので、忘れていても何も起こりません。</p>
   </details>
   <details>
-    <summary>スタッフ人数による追加料金はありますか?</summary>
-    <p>ございません。スタッフ何名でも月額 ¥4,990 のままご利用いただけます。多店舗の場合も同じです。</p>
+    <summary>30 日 Pro 体験が終わったらどうなる?</summary>
+    <p>自動的に Free Plan に降格します。データはすべて残り、Free Plan の機能範囲 (スタッフ 3 名・1 店舗・基本機能) で引き続き使えます。「もっと使いたい」と思ったタイミングで Pro にアップグレードしてください。</p>
   </details>
   <details>
-    <summary>解約時に違約金や解約金はありますか?</summary>
-    <p>一切ございません。マイページから 1 クリックで解約可能、解約後も期間終了日まではご利用いただけます。</p>
+    <summary>Free Plan でスタッフ 4 人目を追加したい時は?</summary>
+    <p>Pro プラン (¥4,990/月) にアップグレードしてください。アップグレードはマイページから 1 クリックで完了。アップグレード当日から無制限で追加できます。</p>
+  </details>
+  <details>
+    <summary>Free → Pro → Free と戻れますか?</summary>
+    <p>はい、いつでもダウングレード可能です。Pro 解約後は期間終了日まで Pro 機能、その後 Free に自動移行します。違約金は一切ありません。</p>
   </details>
   <details>
     <summary>支払方法は何が使えますか?</summary>
-    <p>クレジットカード (VISA / Mastercard / JCB / AMEX / Diners) でお支払いいただけます。年額プランは銀行振込にも対応しています。</p>
+    <p>Pro / Enterprise はクレジットカード (VISA/Mastercard/JCB/AMEX/Diners) でお支払い。Enterprise は銀行振込・請求書払いにも対応しています。</p>
   </details>
   <details>
-    <summary>月額と年額、途中で変更できますか?</summary>
-    <p>はい、いつでもマイページから変更できます。月額 → 年額への変更時は差額調整が自動で行われます。</p>
+    <summary>Stripe で課金されるのが不安です</summary>
+    <p>Stripe は世界的に最も信頼されている決済プラットフォームです (Amazon・Google も採用)。RAKURAKU は Stripe にカード情報を委託しており、当社サーバーには一切保存しません。</p>
+  </details>
+  <details>
+    <summary>スタッフ 3 名以下の個人店だけど、本当に永久無料で十分?</summary>
+    <p>はい、十分です。シフト作成・通知・GPS 打刻・深夜手当の自動計算など、月次運営に必要な機能はすべて Free で使えます。本当に「人件費を月 5 万削減できた」というオーナーさんが Free のままで成果を出しています。</p>
   </details>
 </div>
 
-<div style="text-align:center;background:linear-gradient(135deg,#0EA5E9,#0284C7);color:#fff;padding:40px;border-radius:12px;margin:30px 0">
-  <h2 style="color:#fff;margin-bottom:10px">まずは無料で試してみる</h2>
-  <p style="margin:15px 0">クレジットカード登録不要、5 分で開始</p>
-  <a href="/signup" style="display:inline-block;background:#fff;color:#0EA5E9;padding:14px 40px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:1.1em">14 日間無料トライアル</a>
+<div style="text-align:center;background:linear-gradient(135deg,#0EA5E9,#0284C7);color:#fff;padding:40px;border-radius:14px;margin:40px 0">
+  <h2 style="color:#fff;margin-bottom:10px">まずは 30 日 Pro 体験から</h2>
+  <p style="margin:15px 0">クレカ登録不要・5 分で開始</p>
+  <a href="/signup" style="display:inline-block;background:#fff;color:#0EA5E9;padding:14px 40px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:1.1em">無料で始める →</a>
 </div>
 </main>
 
