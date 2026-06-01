@@ -9,14 +9,14 @@
 <meta name="theme-color" content="#1A237E">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-body{font-family:'游明朝','Yu Mincho','Hiragino Mincho ProN','MS Mincho',serif;color:#1A1A1A;background:#D9D9D9;line-height:1.95;font-size:11pt}
+body{font-family:'游明朝','Yu Mincho','Hiragino Mincho ProN','MS Mincho',serif;color:#1A1A1A;background:#D9D9D9;line-height:1.7;font-size:10pt}
 .skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#1A237E;color:#fff;padding:10px;z-index:9999}
 :focus-visible{outline:2px solid #1A237E;outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* A4 ページ */
 @page{size:A4;margin:0}
-.page{width:210mm;min-height:297mm;background:#fff;margin:18px auto;padding:22mm 22mm 18mm;box-shadow:0 4px 14px rgba(0,0,0,.1);page-break-after:always;position:relative}
+.page{width:210mm;height:297mm;min-height:297mm;max-height:297mm;background:#fff;margin:18px auto;padding:18mm 20mm 22mm;box-shadow:0 4px 14px rgba(0,0,0,.1);page-break-after:always;position:relative;overflow:hidden}
 .page:last-child{page-break-after:auto}
 
 /* 表紙のみ別レイアウト */
@@ -30,39 +30,43 @@ body{font-family:'游明朝','Yu Mincho','Hiragino Mincho ProN','MS Mincho',seri
 .cover .date{margin-top:40px;font-size:10pt;color:#666;font-family:'Noto Sans JP',sans-serif}
 
 /* 通常ページのヘッダー */
-.page-header{padding-bottom:6mm;margin-bottom:10mm;border-bottom:1px solid #1A237E;display:flex;justify-content:space-between;align-items:flex-end;font-family:'Noto Sans JP',sans-serif}
-.page-header .doc-name{font-size:9pt;color:#666;letter-spacing:.1em}
-.page-header .section-name{font-size:11pt;color:#1A237E;font-weight:600}
-.page-footer{position:absolute;bottom:12mm;left:22mm;right:22mm;display:flex;justify-content:space-between;font-size:8.5pt;color:#888;border-top:1px solid #DDD;padding-top:5mm;font-family:'Noto Sans JP',sans-serif}
+.page-header{padding-bottom:4mm;margin-bottom:6mm;border-bottom:1px solid #1A237E;display:flex;justify-content:space-between;align-items:flex-end;font-family:'Noto Sans JP',sans-serif}
+.page-header .doc-name{font-size:8pt;color:#666;letter-spacing:.1em}
+.page-header .section-name{font-size:10pt;color:#1A237E;font-weight:600}
+.page-footer{position:absolute;bottom:8mm;left:20mm;right:20mm;display:flex;justify-content:space-between;font-size:8pt;color:#888;border-top:1px solid #DDD;padding-top:3mm;font-family:'Noto Sans JP',sans-serif}
 
 /* 見出し */
-h2{font-family:'Noto Sans JP',sans-serif;font-size:17pt;font-weight:600;color:#1A237E;margin:0 0 14px;padding-left:0;border:none;position:relative;padding-bottom:4mm}
+h2{font-family:'Noto Sans JP',sans-serif;font-size:15pt;font-weight:600;color:#1A237E;margin:0 0 10px;padding-left:0;border:none;position:relative;padding-bottom:3mm}
 h2::after{content:'';position:absolute;bottom:0;left:0;width:50px;height:2px;background:#1A237E}
-h3{font-family:'Noto Sans JP',sans-serif;font-size:12pt;font-weight:600;color:#1A237E;margin:18px 0 8px}
-h4{font-size:11.5pt;font-weight:600;color:#333;margin:14px 0 6px}
+h3{font-family:'Noto Sans JP',sans-serif;font-size:11pt;font-weight:600;color:#1A237E;margin:12px 0 5px}
+h4{font-size:10.5pt;font-weight:600;color:#333;margin:10px 0 4px}
 
-p{margin-bottom:12px;text-align:justify}
-ol,ul{padding-left:24px;margin-bottom:14px}
-li{margin:4px 0}
+p{margin-bottom:7px;text-align:justify}
+ol,ul{padding-left:22px;margin-bottom:8px}
+li{margin:2px 0}
 
 /* テーブル */
-table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:10.5pt;font-family:'Noto Sans JP',sans-serif}
-th,td{padding:9px 12px;border-bottom:1px solid #BBB;text-align:left;vertical-align:top;line-height:1.7}
+table{width:100%;border-collapse:collapse;margin:6px 0 10px;font-size:9.5pt;font-family:'Noto Sans JP',sans-serif}
+th,td{padding:5px 9px;border-bottom:1px solid #BBB;text-align:left;vertical-align:top;line-height:1.5}
 th{background:#F5F5F5;font-weight:600;color:#1A237E;border-bottom:2px solid #1A237E;width:30%}
 tbody tr:hover{background:#FAFAFA}
 
 /* 控えめなボックス */
-.quote{margin:18px 0;padding:18px 24px;border-left:3px solid #1A237E;background:#FAFAFA;font-style:italic;font-size:11pt;color:#333}
-.note{margin:12px 0;padding:12px 18px;background:#F5F5F5;font-size:10pt;color:#555;border:1px solid #E0E0E0;font-family:'Noto Sans JP',sans-serif}
+.quote{margin:12px 0;padding:12px 18px;border-left:3px solid #1A237E;background:#FAFAFA;font-style:italic;font-size:10.5pt;color:#333}
+.note{margin:8px 0;padding:10px 14px;background:#F5F5F5;font-size:9.5pt;color:#555;border:1px solid #E0E0E0;font-family:'Noto Sans JP',sans-serif}
 
 /* 数字を控えめに */
-.figures{display:flex;justify-content:space-around;margin:18px 0;padding:18px 0;border-top:1px solid #DDD;border-bottom:1px solid #DDD}
+.figures{display:flex;justify-content:space-around;margin:10px 0;padding:10px 0;border-top:1px solid #DDD;border-bottom:1px solid #DDD}
 .figure{text-align:center;flex:1}
-.figure .v{font-family:'Noto Sans JP',sans-serif;font-size:22pt;font-weight:300;color:#1A237E;letter-spacing:-.02em;line-height:1}
-.figure .l{font-family:'Noto Sans JP',sans-serif;font-size:9pt;color:#666;margin-top:6px}
+.figure .v{font-family:'Noto Sans JP',sans-serif;font-size:18pt;font-weight:300;color:#1A237E;letter-spacing:-.02em;line-height:1}
+.figure .l{font-family:'Noto Sans JP',sans-serif;font-size:8.5pt;color:#666;margin-top:5px}
 
-.signature{margin-top:30px;text-align:right;font-size:10.5pt;color:#555;font-style:italic}
-.signature .name{margin-top:6px;font-size:11pt;color:#1A1A1A;font-style:normal}
+.signature{margin-top:20px;text-align:right;font-size:10pt;color:#555;font-style:italic}
+.signature .name{margin-top:5px;font-size:10.5pt;color:#1A1A1A;font-style:normal}
+
+/* 成長戦略の表をさらにコンパクトに */
+.compact{font-size:9pt}
+.compact th,.compact td{padding:4px 7px;line-height:1.4}
 
 .controls{max-width:210mm;margin:0 auto 15px;text-align:center;background:#fff;padding:12px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.08);font-family:'Noto Sans JP',sans-serif}
 .controls button{background:#1A237E;color:#fff;border:none;padding:9px 22px;border-radius:4px;font-weight:500;cursor:pointer;font-size:12px;margin:0 5px}
@@ -194,30 +198,28 @@ tbody tr:hover{background:#FAFAFA}
 
   <h2>3. プロダクト概要</h2>
 
-  <p>RAKURAKUは、飲食店関係者を月末徹夜から解放するシフト管理SaaSです。スマートフォン1台で、シフトの作成から給与計算まで全てを完結させることができます。</p>
+  <p>RAKURAKUは、飲食店関係者を月末徹夜から解放するシフト管理SaaSです。スマートフォン1台で、シフト作成から給与計算まで完結できます。</p>
 
   <h3>どんな課題を、どう解決するのか</h3>
 
-  <p>これまで多くの飲食店では、シフト管理にLINEグループとExcelを使ってきました。LINEで届く希望を一つひとつExcelに転記し、組み合わせを考え、確定したシフトを再びLINEで配信する。給与計算では、深夜手当を手作業で加算する必要があり、計算ミスが頻発していました。</p>
+  <p>これまで多くの飲食店では、シフト管理にLINEグループとExcelを使ってきました。LINEで届く希望を一つひとつExcelに転記し、組み合わせを考え、確定したシフトを再びLINEで配信する。給与計算では深夜手当を手作業で加算する必要があり、計算ミスが頻発していました。</p>
 
-  <p>RAKURAKUを使えば、スタッフはアプリ上で希望シフトを提出するだけで、店長は希望を一覧で確認し、ドラッグ操作でシフトを組むことができます。確定すれば、LINE通知が自動で全員に届きます。打刻もスマートフォンのGPSで完結し、給与計算は深夜手当を含めて自動で行われます。</p>
+  <p>RAKURAKUを使えば、スタッフはアプリで希望シフトを提出するだけ。店長は希望を一覧で確認し、ドラッグ操作でシフトを組み、確定するとLINE通知が自動で届きます。打刻はGPSで完結し、給与計算は深夜手当を含めて自動で行われます。</p>
 
   <h3>「現場の声から生まれた」ということ</h3>
 
-  <p>このサービスは、飲食業界の関係者の方々への徹底的なヒアリングを通じて設計しました。だからこそ、現場で本当に必要な機能だけを揃え、現場で使えない機能は徹底的に削ぎ落としました。</p>
-
-  <p>例えば「シフト確定の通知をLINEで一斉送信できるか」「深夜2時にスマホで打刻できるか」「外国人留学生でも操作できるか」——大手SaaSが見落としがちな細部にこそ、私たちのこだわりがあります。</p>
+  <p>このサービスは、飲食業界の関係者の方々への徹底的なヒアリングを通じて設計しました。だからこそ、現場で本当に必要な機能だけを揃え、現場で使えない機能は徹底的に削ぎ落としました。「深夜2時にスマホで打刻できるか」「外国人留学生でも操作できるか」——大手SaaSが見落としがちな細部にこそ、私たちのこだわりがあります。</p>
 
   <h3>主な機能</h3>
 
-  <table>
+  <table class="compact">
     <tbody>
-      <tr><th>シフト作成</th><td>スタッフの希望を一覧表示。ドラッグ操作で組み合わせ、確定後はLINEで自動通知。</td></tr>
-      <tr><th>打刻</th><td>店舗から半径50m以内でのみGPS打刻が可能。電波の弱い地下店舗ではQRコード打刻にも対応。</td></tr>
-      <tr><th>給与計算</th><td>深夜手当25%加算、残業計算、月60時間超の割増まで自動。freee・弥生・マネーフォワードへのCSV出力に対応。</td></tr>
-      <tr><th>労務アラート</th><td>休憩時間不足、連続勤務日数の超過、36協定の上限超過などを事前に警告。</td></tr>
-      <tr><th>多言語対応</th><td>日本語、英語、中国語、韓国語、ベトナム語の5言語。外国人スタッフが母国語で操作できる。</td></tr>
-      <tr><th>多店舗管理</th><td>本部から全店舗の人件費率や労務リスクを一画面で確認可能。</td></tr>
+      <tr><th>シフト作成</th><td>希望を一覧表示。ドラッグ操作で組み、確定後にLINE自動通知。</td></tr>
+      <tr><th>打刻</th><td>店舗半径50m以内でGPS打刻。地下店舗ではQRコードにも対応。</td></tr>
+      <tr><th>給与計算</th><td>深夜手当25%・残業・月60h超の割増を自動。freee/弥生/マネフォCSV出力。</td></tr>
+      <tr><th>労務アラート</th><td>休憩時間不足、連続勤務日数、36協定上限などを事前に警告。</td></tr>
+      <tr><th>多言語対応</th><td>日本語・英語・中国語・韓国語・ベトナム語の5言語に対応。</td></tr>
+      <tr><th>多店舗管理</th><td>本部から全店舗の人件費率や労務リスクを一画面で把握可能。</td></tr>
     </tbody>
   </table>
 
@@ -240,29 +242,29 @@ tbody tr:hover{background:#FAFAFA}
 
   <p>料金体系を考えるとき、私たちは大きな決断をしました。「個人店の飲食店関係者には、永久に無料で使ってもらおう」というものです。</p>
 
-  <p>正直に申し上げれば、この決断には何ヶ月も悩みました。会社として売上が立たなくなるリスクがあるからです。しかし、個人店の飲食店関係者から「月1万円のツールでさえ、最初の導入が一番怖い」という声を何度も聞いてきました。お金を払う前に効果を確かめてもらう体験こそが、本当に必要な人にサービスを届ける唯一の道だと考えました。</p>
+  <p>この決断には何ヶ月も悩みました。会社として売上が立たなくなるリスクがあるからです。しかし、個人店の方々から「月1万円のツールでさえ、最初の導入が怖い」という声を何度も聞いてきました。お金を払う前に効果を確かめてもらう体験こそが、本当に必要な人にサービスを届ける唯一の道だと考えました。</p>
 
   <h3>4つのプラン構成</h3>
 
-  <table>
+  <table class="compact">
     <thead>
-      <tr><th>プラン名</th><th>料金</th><th>主な利用対象</th></tr>
+      <tr><th style="width:22%">プラン名</th><th style="width:25%">料金</th><th>主な利用対象</th></tr>
     </thead>
     <tbody>
       <tr><th>Free</th><td>永久無料</td><td>スタッフ3名以下、1店舗の個人経営</td></tr>
-      <tr><th>30日Pro体験</th><td>無料 (クレカ登録不要)</td><td>新規ユーザー全員。期間後はFreeに自動降格</td></tr>
-      <tr><th>Pro</th><td>月額 4,990円(税抜)</td><td>スタッフ無制限・最大3店舗。多言語、API利用可能</td></tr>
-      <tr><th>Enterprise</th><td>個別見積</td><td>10店舗以上のチェーン。SSO、専任サポート、SLA保証</td></tr>
+      <tr><th>30日Pro体験</th><td>無料 (クレカ不要)</td><td>新規ユーザー全員。期間後はFreeに自動降格</td></tr>
+      <tr><th>Pro</th><td>月額 4,990円(税抜)</td><td>スタッフ無制限・最大3店舗。多言語・API利用可</td></tr>
+      <tr><th>Enterprise</th><td>個別見積</td><td>10店舗以上のチェーン。SSO・専任サポート・SLA保証</td></tr>
     </tbody>
   </table>
 
-  <p>30日Pro体験は、クレジットカードの登録を必要としません。30日後は何もしなければ自動的にFreeに降格するため、利用者は知らないうちに課金される心配がありません。「気に入ったら払う、合わなければそのまま無料で使い続ける」という、当たり前の体験を提供したいと考えています。</p>
+  <p>30日Pro体験はクレジットカード登録不要。何もしなければ自動的にFreeに降格するため、知らないうちに課金される心配がありません。「気に入ったら払う、合わなければそのまま無料で使い続ける」を提供します。</p>
 
   <h3>収益化の見通し</h3>
 
-  <p>Freemiumモデルでは、無料ユーザーから有料への転換率が事業の成否を決めます。私たちの想定では、30日Pro体験を経験したユーザーのうち約10%がProプランへ移行すると見ています。これは、北米のSaaS業界における転換率の中央値とほぼ同水準です。</p>
+  <p>Freemiumモデルでは、無料ユーザーから有料への転換率が事業の成否を決めます。想定では、30日Pro体験を経験したユーザーのうち約10%がProプランへ移行する見込みで、これは北米SaaS業界の転換率中央値とほぼ同水準です。</p>
 
-  <p>有料ユーザーの月間ARPUは4,990円、想定解約率は月2%、これらから算出する顧客生涯価値(LTV)は約24-30万円となります。顧客獲得コスト(CAC)を3,000円程度に抑えられれば、LTV-CAC比は8倍、投資回収期間は1ヶ月以内と、SaaSビジネスとして健全な構造を実現できる見込みです。</p>
+  <p>月間ARPUは4,990円、想定解約率は月2%、これらから算出する顧客生涯価値(LTV)は約24〜30万円。顧客獲得コスト(CAC)を3,000円程度に抑えれば、LTV-CAC比は8倍、投資回収期間は1ヶ月以内と、SaaSビジネスとして健全な構造を実現できます。</p>
 
   <div class="page-footer">
     <span>RAKURAKU 事業概要・製品説明資料</span>
@@ -281,15 +283,15 @@ tbody tr:hover{background:#FAFAFA}
 
   <h3>市場規模について</h3>
 
-  <p>日本国内の飲食店は約60万店あります。仮にProプラン(月4,990円)を全店舗が導入すれば、年間市場規模は約3,600億円となります。シフト管理SaaSの市場は年率18%で成長しており(矢野経済研究所)、特に夜営業を含む飲食業態には専用サービスがまだほとんど存在しません。</p>
+  <p>日本国内の飲食店は約60万店。Proプラン(月4,990円)を全店舗が導入すれば、年間市場規模は約3,600億円となります。シフト管理SaaS市場は年率18%で成長(矢野経済研究所)、特に夜営業を含む業態には専用サービスがほとんど存在しません。</p>
 
-  <p>私たちは初期段階として、バー、居酒屋、スナック、カラオケ、ラウンジ、クラブなど夜営業を含む業態に集中します。この領域だけで約10万店、市場規模にして約600億円。5年後には10%のシェア獲得を目指しており、その時点での想定売上は約60億円となります。</p>
+  <p>初期は、バー、居酒屋、スナック、カラオケ、ラウンジ、クラブなど夜営業を含む業態に集中。この領域だけで約10万店、市場規模約600億円。5年後に10%のシェア獲得を目指し、想定売上は約60億円です。</p>
 
   <h3>競合との違い</h3>
 
-  <p>シフト管理SaaSの主要競合には、Airシフト、Shiftee、freee人事労務、KING OF TIMEなどがあります。これらはいずれも優れたサービスですが、一つ大きな共通点があります。「個人店向けの無料プランが存在しない」ということです。</p>
+  <p>主要競合にはAirシフト、Shiftee、freee人事労務、KING OF TIMEがあります。いずれも優れたサービスですが、共通点が一つ。「個人店向けの無料プランがない」ことです。</p>
 
-  <table>
+  <table class="compact">
     <thead>
       <tr><th>サービス</th><th>月額目安</th><th>無料プラン</th><th>飲食業特化</th><th>多言語</th></tr>
     </thead>
@@ -301,11 +303,11 @@ tbody tr:hover{background:#FAFAFA}
     </tbody>
   </table>
 
-  <p>大手サービスが個人店向けの無料プランを提供しない理由は、既存の有料顧客との価格バランスを崩したくないという経営判断にあります。新規参入者である私たちは、この制約から自由です。最初から「個人店は無料」という前提でビジネスモデルを設計できる、これが大きな優位性になると考えています。</p>
+  <p>大手が個人店向け無料プランを出さないのは、既存有料顧客との価格バランスを崩したくないため。新規参入の私たちはこの制約から自由で、最初から「個人店は無料」を前提に設計できることが優位性です。</p>
 
   <h3>競合に真似されない3つの強み</h3>
 
-  <p>第一に、飲食業界に深く入り込み、飲食店関係者の声を毎日聞きながら開発を続けていること。机上の理論ではなく、現場の生の声からプロダクトを磨き続ける姿勢が強みです。第二に、飲食業界の縦のつながりの中で、信頼を一つひとつ積み重ねていける口コミの流通網。第三に、Freemiumを後から導入できない大手の構造的な制約。これらが、私たちが時間をかけて築く参入障壁になります。</p>
+  <p>第一に、飲食業界に深く入り込み、関係者の声を毎日聞きながら開発を続けていること。第二に、飲食業界の縦のつながりの中で、信頼を一つひとつ積み重ねていける口コミの流通網。第三に、Freemiumを後から導入できない大手の構造的な制約。これらが時間をかけて築く参入障壁になります。</p>
 
   <div class="page-footer">
     <span>RAKURAKU 事業概要・製品説明資料</span>
@@ -324,24 +326,24 @@ tbody tr:hover{background:#FAFAFA}
 
   <h3>5年間で目指す姿</h3>
 
-  <p>私たちは5年後、Freeプランで10万店舗、Proプランで1万店舗の利用を目標としています。ARRにして約6億円。これを実現するには、段階を踏んだ着実な拡大が必要です。</p>
+  <p>5年後、Freeプランで10万店舗、Proプランで1万店舗の利用を目標としています。ARRにして約6億円。段階を踏んだ着実な拡大を計画しています。</p>
 
-  <table>
+  <table class="compact">
     <thead>
-      <tr><th>年度</th><th>Free利用店舗</th><th>Pro有料店舗</th><th>年商(ARR)</th><th>注力すること</th></tr>
+      <tr><th style="width:14%">年度</th><th>Free店舗</th><th>Pro店舗</th><th>ARR</th><th>注力施策</th></tr>
     </thead>
     <tbody>
-      <tr><th>1年目</th><td>1,000</td><td>100</td><td>600万円</td><td>個人店への浸透・SNS発信</td></tr>
-      <tr><th>2年目</th><td>5,000</td><td>500</td><td>3,000万円</td><td>税理士・社労士との提携</td></tr>
-      <tr><th>3年目</th><td>15,000</td><td>1,500</td><td>9,000万円</td><td>チェーン本部への営業</td></tr>
-      <tr><th>4年目</th><td>30,000</td><td>3,000</td><td>1.8億円</td><td>多言語の拡充・海外展開準備</td></tr>
+      <tr><th>1年目</th><td>1,000</td><td>100</td><td>600万円</td><td>個人店浸透・SNS発信</td></tr>
+      <tr><th>2年目</th><td>5,000</td><td>500</td><td>3,000万円</td><td>税理士・社労士提携</td></tr>
+      <tr><th>3年目</th><td>15,000</td><td>1,500</td><td>9,000万円</td><td>チェーン本部営業</td></tr>
+      <tr><th>4年目</th><td>30,000</td><td>3,000</td><td>1.8億円</td><td>多言語拡充・海外準備</td></tr>
       <tr><th>5年目</th><td>100,000</td><td>10,000</td><td>6億円</td><td>アジア市場・IPO準備</td></tr>
     </tbody>
   </table>
 
   <h3>顧客獲得の道筋</h3>
 
-  <p>初年度は、SNSによる発信を主軸に据えます。TikTokやInstagramでの動画コンテンツ、業界メディアへの寄稿、飲食店関係者のネットワークでの口コミ。広告に頼らず、信頼に基づく拡大を目指します。</p>
+  <p>初年度はSNSによる発信を主軸に据えます。TikTokやInstagramでの動画コンテンツ、業界メディアへの寄稿、飲食店関係者のネットワークでの口コミ。広告に頼らず、信頼に基づく拡大を目指します。</p>
 
   <p>2年目以降は、税理士や社労士など、飲食店関係者とつながりの深い専門家との提携を進めます。彼らの紹介ネットワークを通じて、より多くの個人店にアプローチします。</p>
 
@@ -349,19 +351,22 @@ tbody tr:hover{background:#FAFAFA}
 
   <h3>資金調達について</h3>
 
-  <p>このたび、Series Aラウンドとして2億円の調達を希望しております。本ラウンドは、「プロダクト開発」「マーケティング・認知獲得」「営業組織構築」の3領域への同時投資により、事業の非連続な成長を実現するための調達計画です。用途の内訳は以下のとおりです。</p>
+  <p>このたび、Series Aラウンドとして2億円の調達を希望しております。「プロダクト開発」「マーケティング・認知獲得」「営業組織構築」の3領域への同時投資により、事業の非連続な成長を実現します。</p>
 
-  <table>
+  <table class="compact">
+    <thead>
+      <tr><th style="width:25%">用途</th><th style="width:18%">金額(比率)</th><th>主な内訳</th></tr>
+    </thead>
     <tbody>
-      <tr><th>プロダクト開発・エンジニア組織</th><td>8,000万円<br>(40%)</td><td>CTO候補1名、フロントエンドエンジニア3名、バックエンドエンジニア2名、UI/UXデザイナー1名。継続的なプロダクト改善とAIシフト推奨機能の高度化を実現。</td></tr>
-      <tr><th>マーケティング・認知獲得</th><td>6,000万円<br>(30%)</td><td>業界特化メディアへの出稿、SNS広告(TikTok、Instagram、X)、SEO強化、PR・広報、ブランディング施策。3年以内のテレビCM展開も視野に。</td></tr>
-      <tr><th>営業組織構築</th><td>4,000万円<br>(20%)</td><td>営業責任者1名、BDR(フィールドセールス)4名、税理士・社労士パートナー開拓担当2名。中堅・大手チェーン本部への直接営業体制を整備。</td></tr>
-      <tr><th>カスタマーサクセス</th><td>1,500万円<br>(7.5%)</td><td>CS責任者1名、CSメンバー3名。Pro/Enterprise顧客への伴走支援、Free→Pro転換率の最大化を担う。</td></tr>
-      <tr><th>コーポレート・インフラ</th><td>500万円<br>(2.5%)</td><td>株式会社化、Pマーク・ISMS取得、サーバー増強、顧問契約(税理士・社労士・弁護士)、予備資金。</td></tr>
+      <tr><th>プロダクト開発</th><td>8,000万円 (40%)</td><td>CTO1名、フロント3名、バック2名、UI/UXデザイナー1名</td></tr>
+      <tr><th>マーケティング</th><td>6,000万円 (30%)</td><td>SNS広告、SEO、PR・広報、ブランディング、TVCM準備</td></tr>
+      <tr><th>営業組織構築</th><td>4,000万円 (20%)</td><td>営業責任者1名、BDR 4名、パートナー開拓担当2名</td></tr>
+      <tr><th>カスタマーサクセス</th><td>1,500万円 (7.5%)</td><td>CS責任者1名、CSメンバー3名</td></tr>
+      <tr><th>コーポレート</th><td>500万円 (2.5%)</td><td>株式会社化、Pマーク・ISMS取得、顧問契約、予備資金</td></tr>
     </tbody>
   </table>
 
-  <p>本ラウンドの完了後、24ヶ月以内にPro有料店舗1,500店・ARR9,000万円規模への成長を目指し、Series Bラウンド(10億円規模)に進む計画です。3〜5年後には、freee、Money Forward、SmartHRなどの大手SaaS企業へのM&A、あるいは独立してのIPOを視野に入れています。</p>
+  <p>24ヶ月以内にPro有料店舗1,500店・ARR9,000万円規模への成長を目指し、Series B(10億円規模)へ進む計画です。3〜5年後にはfreee・Money Forward等へのM&A、あるいは独立してのIPOを視野に入れています。</p>
 
   <div class="page-footer">
     <span>RAKURAKU 事業概要・製品説明資料</span>
