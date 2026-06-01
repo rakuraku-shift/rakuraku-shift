@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgTime" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="clockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="btnIn" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <filter id="phoneShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgTime)"/>
+
+  <!-- Title -->
+  <text x="640" y="80" font-family="-apple-system, sans-serif" font-size="32" font-weight="900" fill="#fff" text-anchor="middle">GPS 打刻画面</text>
+  <text x="640" y="110" font-family="-apple-system, sans-serif" font-size="14" fill="#A5B4FC" text-anchor="middle" letter-spacing="3">SMART PHONE PUNCH-IN</text>
+
+  <!-- Phone mockup -->
+  <g transform="translate(440, 150)" filter="url(#phoneShadow)">
+    <!-- Phone body -->
+    <rect x="0" y="0" width="400" height="540" rx="48" fill="#0F172A"/>
+    <rect x="12" y="12" width="376" height="516" rx="36" fill="#FFFFFF"/>
+    <!-- notch -->
+    <rect x="160" y="12" width="80" height="20" rx="10" fill="#0F172A"/>
+
+    <!-- Status bar -->
+    <g transform="translate(28, 50)">
+      <text x="0" y="14" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#0F172A">19:42</text>
+      <text x="320" y="14" font-family="-apple-system, sans-serif" font-size="11" fill="#0F172A">📶 🔋</text>
+    </g>
+
+    <!-- Header -->
+    <g transform="translate(28, 80)">
+      <rect x="0" y="0" width="36" height="36" rx="10" fill="url(#clockGrad)"/>
+      <text x="18" y="24" font-family="-apple-system, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">R</text>
+      <text x="48" y="22" font-family="-apple-system, sans-serif" font-size="16" font-weight="900" fill="#0F172A">RAKURAKU</text>
+      <text x="48" y="38" font-family="-apple-system, sans-serif" font-size="10" fill="#64748B">バー RAKURAKU(港区)</text>
+    </g>
+
+    <!-- Current time -->
+    <g transform="translate(200, 180)" text-anchor="middle">
+      <text x="0" y="0" font-family="-apple-system, sans-serif" font-size="13" fill="#64748B">2026年6月1日(月)</text>
+      <text x="0" y="50" font-family="-apple-system, sans-serif" font-size="56" font-weight="200" fill="#0F172A" letter-spacing="-2">19:42</text>
+      <text x="0" y="76" font-family="-apple-system, sans-serif" font-size="13" fill="#94A3B8">出勤予定 19:00</text>
+    </g>
+
+    <!-- Status -->
+    <g transform="translate(28, 290)">
+      <rect x="0" y="0" width="344" height="60" rx="12" fill="#F0FDF4"/>
+      <circle cx="32" cy="30" r="14" fill="url(#btnIn)"/>
+      <text x="32" y="34" font-family="-apple-system, sans-serif" font-size="14" font-weight="900" fill="#fff" text-anchor="middle">✓</text>
+      <text x="60" y="26" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" fill="#16A34A">店舗内で確認済み</text>
+      <text x="60" y="42" font-family="-apple-system, sans-serif" font-size="10" fill="#16A34A">店舗から 18m / GPS精度 ±5m</text>
+    </g>
+
+    <!-- Big button -->
+    <g transform="translate(28, 372)">
+      <rect x="0" y="0" width="344" height="96" rx="48" fill="url(#btnIn)" filter="url(#phoneShadow)"/>
+      <text x="172" y="58" font-family="-apple-system, sans-serif" font-size="24" font-weight="900" fill="#fff" text-anchor="middle">出勤を記録</text>
+    </g>
+
+    <!-- Footer info -->
+    <g transform="translate(28, 484)">
+      <text x="172" y="0" font-family="-apple-system, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle">深夜営業 22:00以降は深夜手当25%自動加算</text>
+      <text x="172" y="16" font-family="-apple-system, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle">QRコード打刻に切替</text>
+    </g>
+  </g>
+
+  <!-- Features on the right -->
+  <g transform="translate(900, 180)" font-family="-apple-system, sans-serif" fill="#fff">
+    <text x="0" y="0" font-size="18" font-weight="900">主な特徴</text>
+    <g transform="translate(0, 40)">
+      <text x="0" y="0" font-size="14" font-weight="700">📍 位置精度 ±50m</text>
+      <text x="0" y="20" font-size="11" fill="#A5B4FC">店舗の半径内のみ打刻可能</text>
+    </g>
+    <g transform="translate(0, 90)">
+      <text x="0" y="0" font-size="14" font-weight="700">🔒 暗号化保存</text>
+      <text x="0" y="20" font-size="11" fill="#A5B4FC">本人と管理者のみ閲覧可</text>
+    </g>
+    <g transform="translate(0, 140)">
+      <text x="0" y="0" font-size="14" font-weight="700">📲 QR代替認証</text>
+      <text x="0" y="20" font-size="11" fill="#A5B4FC">GPS不調時に自動切替</text>
+    </g>
+    <g transform="translate(0, 190)">
+      <text x="0" y="0" font-size="14" font-weight="700">🌐 5言語対応</text>
+      <text x="0" y="20" font-size="11" fill="#A5B4FC">英中韓越 + 日本語</text>
+    </g>
+    <g transform="translate(0, 240)">
+      <text x="0" y="0" font-size="14" font-weight="700">🗑️ 30日後自動削除</text>
+      <text x="0" y="20" font-size="11" fill="#A5B4FC">プライバシー保護</text>
+    </g>
+  </g>
+
+  <!-- Left features -->
+  <g transform="translate(60, 180)" font-family="-apple-system, sans-serif" fill="#fff">
+    <text x="0" y="0" font-size="18" font-weight="900">解決する課題</text>
+    <g transform="translate(0, 40)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ 自宅から打刻</text>
+      <text x="0" y="20" font-size="11" fill="#A5B4FC">不正打刻を完全防止</text>
+    </g>
+    <g transform="translate(0, 90)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ 遅刻なのに定時打刻</text>
+      <text x="0" y="20" font-size="11" fill="#A5B4FC">時刻と位置情報を同時記録</text>
+    </g>
+    <g transform="translate(0, 140)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ 他店舗での誤打刻</text>
+      <text x="0" y="20" font-size="11" fill="#A5B4FC">所属店舗外では警告</text>
+    </g>
+  </g>
+</svg>
