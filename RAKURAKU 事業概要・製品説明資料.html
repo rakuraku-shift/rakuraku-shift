@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1A237E">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-body{font-family:'游明朝','Yu Mincho','Hiragino Mincho ProN','MS Mincho',serif;color:#1A1A1A;background:#D9D9D9;line-height:1.7;font-size:10pt}
+body{font-family:'游明朝','Yu Mincho','Hiragino Mincho ProN','MS Mincho',serif;color:#1A1A1A;background:#D9D9D9;line-height:1.95;font-size:11pt}
 .skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:#1A237E;color:#fff;padding:10px;z-index:9999}
 :focus-visible{outline:2px solid #1A237E;outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -23,8 +23,8 @@ body{font-family:'游明朝','Yu Mincho','Hiragino Mincho ProN','MS Mincho',seri
 .cover{padding:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#fff}
 .cover-content{text-align:center;padding:40mm 22mm}
 .cover .label{font-family:'Noto Sans JP',sans-serif;font-size:10pt;letter-spacing:.4em;color:#555;margin-bottom:60px;border-top:1px solid #999;border-bottom:1px solid #999;padding:14px 0;display:inline-block}
-.cover h1{font-size:46pt;font-weight:500;letter-spacing:.05em;color:#1A237E;margin-bottom:30px;line-height:1.2}
-.cover .tagline{font-size:14pt;color:#1A1A1A;line-height:1.9;margin-bottom:80px}
+.cover h1{font-size:46pt;font-weight:500;letter-spacing:.05em;color:#1A237E;margin-bottom:30px;line-height:1.2;text-align:center}
+.cover .tagline{font-size:14pt;color:#1A1A1A;line-height:1.9;margin-bottom:80px;text-align:center}
 .cover .info{font-size:10.5pt;color:#444;line-height:2.1;font-family:'Noto Sans JP',sans-serif}
 .cover .info dt{display:inline-block;font-weight:500;color:#1A237E;margin-right:8px}
 .cover .date{margin-top:40px;font-size:10pt;color:#666;font-family:'Noto Sans JP',sans-serif}
@@ -36,37 +36,47 @@ body{font-family:'游明朝','Yu Mincho','Hiragino Mincho ProN','MS Mincho',seri
 .page-footer{position:absolute;bottom:8mm;left:20mm;right:20mm;display:flex;justify-content:space-between;font-size:8pt;color:#888;border-top:1px solid #DDD;padding-top:3mm;font-family:'Noto Sans JP',sans-serif}
 
 /* 見出し */
-h2{font-family:'Noto Sans JP',sans-serif;font-size:15pt;font-weight:600;color:#1A237E;margin:0 0 10px;padding-left:0;border:none;position:relative;padding-bottom:3mm}
-h2::after{content:'';position:absolute;bottom:0;left:0;width:50px;height:2px;background:#1A237E}
-h3{font-family:'Noto Sans JP',sans-serif;font-size:11pt;font-weight:600;color:#1A237E;margin:12px 0 5px}
-h4{font-size:10.5pt;font-weight:600;color:#333;margin:10px 0 4px}
+h2{font-family:'Noto Sans JP',sans-serif;font-size:18pt;font-weight:600;color:#1A237E;margin:0 0 16px;padding-left:0;border:none;position:relative;padding-bottom:4mm}
+h2::after{content:'';position:absolute;bottom:0;left:0;width:60px;height:2px;background:#1A237E}
+h3{font-family:'Noto Sans JP',sans-serif;font-size:13pt;font-weight:600;color:#1A237E;margin:20px 0 10px}
+h4{font-size:11.5pt;font-weight:600;color:#333;margin:14px 0 6px}
 
-p{margin-bottom:7px;text-align:justify}
-ol,ul{padding-left:22px;margin-bottom:8px}
-li{margin:2px 0}
+p{margin-bottom:13px;text-align:justify}
+ol,ul{padding-left:24px;margin-bottom:14px}
+li{margin:4px 0}
 
-/* テーブル */
-table{width:100%;border-collapse:collapse;margin:6px 0 10px;font-size:9.5pt;font-family:'Noto Sans JP',sans-serif}
-th,td{padding:5px 9px;border-bottom:1px solid #BBB;text-align:left;vertical-align:top;line-height:1.5}
+/* テーブル(通常) */
+table{width:100%;border-collapse:collapse;margin:12px 0 18px;font-size:10.5pt;font-family:'Noto Sans JP',sans-serif}
+th,td{padding:10px 14px;border-bottom:1px solid #BBB;text-align:left;vertical-align:top;line-height:1.7}
 th{background:#F5F5F5;font-weight:600;color:#1A237E;border-bottom:2px solid #1A237E;width:30%}
 tbody tr:hover{background:#FAFAFA}
 
+/* テーブル(コンパクト・5年計画など) */
+.compact{font-size:10pt}
+.compact th,.compact td{padding:7px 10px;line-height:1.55}
+
+/* テーブル(大きめ・プラン構成・主な機能) */
+.large{font-size:11.5pt;margin:18px 0}
+.large th,.large td{padding:14px 18px;line-height:1.85}
+.large th{font-size:11.5pt}
+
 /* 控えめなボックス */
-.quote{margin:12px 0;padding:12px 18px;border-left:3px solid #1A237E;background:#FAFAFA;font-style:italic;font-size:10.5pt;color:#333}
-.note{margin:8px 0;padding:10px 14px;background:#F5F5F5;font-size:9.5pt;color:#555;border:1px solid #E0E0E0;font-family:'Noto Sans JP',sans-serif}
+.quote{margin:18px 0;padding:18px 24px;border-left:3px solid #1A237E;background:#FAFAFA;font-style:italic;font-size:11.5pt;color:#333}
+.note{margin:12px 0;padding:12px 18px;background:#F5F5F5;font-size:10pt;color:#555;border:1px solid #E0E0E0;font-family:'Noto Sans JP',sans-serif}
 
 /* 数字を控えめに */
-.figures{display:flex;justify-content:space-around;margin:10px 0;padding:10px 0;border-top:1px solid #DDD;border-bottom:1px solid #DDD}
+.figures{display:flex;justify-content:space-around;margin:20px 0;padding:18px 0;border-top:1px solid #DDD;border-bottom:1px solid #DDD}
 .figure{text-align:center;flex:1}
-.figure .v{font-family:'Noto Sans JP',sans-serif;font-size:18pt;font-weight:300;color:#1A237E;letter-spacing:-.02em;line-height:1}
-.figure .l{font-family:'Noto Sans JP',sans-serif;font-size:8.5pt;color:#666;margin-top:5px}
+.figure .v{font-family:'Noto Sans JP',sans-serif;font-size:24pt;font-weight:300;color:#1A237E;letter-spacing:-.02em;line-height:1}
+.figure .l{font-family:'Noto Sans JP',sans-serif;font-size:9.5pt;color:#666;margin-top:8px}
 
-.signature{margin-top:20px;text-align:right;font-size:10pt;color:#555;font-style:italic}
-.signature .name{margin-top:5px;font-size:10.5pt;color:#1A1A1A;font-style:normal}
+.signature{margin-top:30px;text-align:right;font-size:10.5pt;color:#555;font-style:italic}
+.signature .name{margin-top:6px;font-size:11pt;color:#1A1A1A;font-style:normal}
 
-/* 成長戦略の表をさらにコンパクトに */
-.compact{font-size:9pt}
-.compact th,.compact td{padding:4px 7px;line-height:1.4}
+/* お問合せ用 */
+.contact-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:12pt;font-family:'Noto Sans JP',sans-serif;border:1px solid #1A237E}
+.contact-table th,.contact-table td{padding:18px 22px;border:1px solid #DDD;text-align:left;vertical-align:middle;line-height:1.7}
+.contact-table th{background:#1A237E;color:#fff;font-weight:600;width:30%}
 
 .controls{max-width:210mm;margin:0 auto 15px;text-align:center;background:#fff;padding:12px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.08);font-family:'Noto Sans JP',sans-serif}
 .controls button{background:#1A237E;color:#fff;border:none;padding:9px 22px;border-radius:4px;font-weight:500;cursor:pointer;font-size:12px;margin:0 5px}
@@ -212,11 +222,11 @@ tbody tr:hover{background:#FAFAFA}
 
   <h3>主な機能</h3>
 
-  <table class="compact">
+  <table class="large">
     <tbody>
       <tr><th>シフト作成</th><td>希望を一覧表示。ドラッグ操作で組み、確定後にLINE自動通知。</td></tr>
       <tr><th>打刻</th><td>店舗半径50m以内でGPS打刻。地下店舗ではQRコードにも対応。</td></tr>
-      <tr><th>給与計算</th><td>深夜手当25%・残業・月60h超の割増を自動。freee/弥生/マネフォCSV出力。</td></tr>
+      <tr><th>給与計算</th><td>深夜手当25%・残業・月60h超の割増を自動計算。freee/弥生/マネフォCSV出力。</td></tr>
       <tr><th>労務アラート</th><td>休憩時間不足、連続勤務日数、36協定上限などを事前に警告。</td></tr>
       <tr><th>多言語対応</th><td>日本語・英語・中国語・韓国語・ベトナム語の5言語に対応。</td></tr>
       <tr><th>多店舗管理</th><td>本部から全店舗の人件費率や労務リスクを一画面で把握可能。</td></tr>
@@ -246,7 +256,7 @@ tbody tr:hover{background:#FAFAFA}
 
   <h3>4つのプラン構成</h3>
 
-  <table class="compact">
+  <table class="large">
     <thead>
       <tr><th style="width:22%">プラン名</th><th style="width:25%">料金</th><th>主な利用対象</th></tr>
     </thead>
@@ -293,10 +303,10 @@ tbody tr:hover{background:#FAFAFA}
 
   <table class="compact">
     <thead>
-      <tr><th>サービス</th><th>月額目安</th><th>無料プラン</th><th>飲食業特化</th><th>多言語</th></tr>
+      <tr><th style="width:22%">サービス</th><th style="width:16%">月額目安</th><th style="width:18%">無料プラン</th><th style="width:18%">飲食業特化</th><th style="width:26%">多言語対応</th></tr>
     </thead>
     <tbody>
-      <tr><th>RAKURAKU</th><td>4,990円</td><td>あり(永久)</td><td>あり</td><td>5言語</td></tr>
+      <tr><th>RAKURAKU</th><td>4,990円</td><td>あり(永久)</td><td>あり</td><td>5言語(英中韓越)</td></tr>
       <tr><th>Airシフト</th><td>7,800円〜</td><td>なし</td><td>一部</td><td>なし</td></tr>
       <tr><th>Shiftee</th><td>3,300円〜</td><td>なし</td><td>部分的</td><td>なし</td></tr>
       <tr><th>freee人事労務</th><td>4,650円〜</td><td>なし</td><td>なし</td><td>なし</td></tr>
@@ -349,13 +359,28 @@ tbody tr:hover{background:#FAFAFA}
 
   <p>3年目からは、チェーン本部への直接営業を本格化させます。個人店での実績を背景に、多店舗チェーンに対しても「現場で本当に使えるサービス」として信頼を獲得していきます。</p>
 
-  <h3>資金調達について</h3>
+  <div class="page-footer">
+    <span>RAKURAKU 事業概要・製品説明資料</span>
+    <span>6 / 9</span>
+  </div>
+</div>
 
-  <p>このたび、Series Aラウンドとして2億円の調達を希望しております。「プロダクト開発」「マーケティング・認知獲得」「営業組織構築」の3領域への同時投資により、事業の非連続な成長を実現します。</p>
+<!-- ========== 7. 資金調達 ========== -->
+<div class="page">
+  <div class="page-header">
+    <span class="doc-name">RAKURAKU 事業概要・製品説明資料</span>
+    <span class="section-name">7. 資金調達</span>
+  </div>
 
-  <table class="compact">
+  <h2>7. 資金調達について</h2>
+
+  <p>このたび、Series Aラウンドとして<strong>2億円</strong>の調達を希望しております。「プロダクト開発」「マーケティング・認知獲得」「営業組織構築」の3領域への同時投資により、事業の非連続な成長を実現してまいります。</p>
+
+  <h3>用途の内訳</h3>
+
+  <table class="large">
     <thead>
-      <tr><th style="width:25%">用途</th><th style="width:18%">金額(比率)</th><th>主な内訳</th></tr>
+      <tr><th style="width:25%">用途</th><th style="width:22%">金額(比率)</th><th>主な内訳</th></tr>
     </thead>
     <tbody>
       <tr><th>プロダクト開発</th><td>8,000万円 (40%)</td><td>CTO1名、フロント3名、バック2名、UI/UXデザイナー1名</td></tr>
@@ -366,11 +391,13 @@ tbody tr:hover{background:#FAFAFA}
     </tbody>
   </table>
 
-  <p>24ヶ月以内にPro有料店舗1,500店・ARR9,000万円規模への成長を目指し、Series B(10億円規模)へ進む計画です。3〜5年後にはfreee・Money Forward等へのM&A、あるいは独立してのIPOを視野に入れています。</p>
+  <h3>次ラウンド・出口戦略</h3>
+
+  <p>24ヶ月以内にPro有料店舗1,500店・ARR9,000万円規模への成長を目指し、Series B(10億円規模)へ進む計画です。3〜5年後にはfreee・Money Forward等の大手SaaS企業へのM&A、あるいは独立してのIPOを視野に入れています。</p>
 
   <div class="page-footer">
     <span>RAKURAKU 事業概要・製品説明資料</span>
-    <span>6 / 8</span>
+    <span>7 / 9</span>
   </div>
 </div>
 
@@ -405,7 +432,7 @@ tbody tr:hover{background:#FAFAFA}
 
   <div class="page-footer">
     <span>RAKURAKU 事業概要・製品説明資料</span>
-    <span>7 / 8</span>
+    <span>8 / 9</span>
   </div>
 </div>
 
@@ -433,19 +460,22 @@ tbody tr:hover{background:#FAFAFA}
     <div class="name">小泉 咲太</div>
   </div>
 
-  <h3 style="margin-top:40px">お問い合わせ</h3>
+  <h3 style="margin-top:30px">お問い合わせ</h3>
 
-  <table>
+  <table class="contact-table">
     <tbody>
+      <tr><th>運営者</th><td>小泉 咲太(こいずみ しょうた)</td></tr>
+      <tr><th>サービス名</th><td>RAKURAKU シフト管理</td></tr>
       <tr><th>メールアドレス</th><td>koizumishota0323@gmail.com</td></tr>
       <tr><th>電話番号</th><td>080-5168-3303</td></tr>
       <tr><th>ウェブサイト</th><td>https://rakuraku-shift-production.up.railway.app/</td></tr>
+      <tr><th>所在地</th><td>東京都(請求があれば遅滞なく開示)</td></tr>
     </tbody>
   </table>
 
   <div class="page-footer">
     <span>RAKURAKU 事業概要・製品説明資料</span>
-    <span>8 / 8</span>
+    <span>9 / 9</span>
   </div>
 </div>
 
