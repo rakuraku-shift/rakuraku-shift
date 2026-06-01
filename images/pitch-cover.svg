@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bgMain" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F0F23"/>
+      <stop offset="50%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#F472B6"/>
+    </linearGradient>
+    <radialGradient id="vignette" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.4"/>
+    </radialGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#bgMain)"/>
+
+  <!-- Subtle decorative lines -->
+  <g stroke="#FFFFFF" stroke-opacity="0.04" stroke-width="1" fill="none">
+    <line x1="0" y1="270" x2="1920" y2="270"/>
+    <line x1="0" y1="810" x2="1920" y2="810"/>
+    <line x1="480" y1="0" x2="480" y2="1080"/>
+    <line x1="1440" y1="0" x2="1440" y2="1080"/>
+  </g>
+
+  <!-- Subtle stars/dots -->
+  <g fill="#FFFFFF" fill-opacity="0.15">
+    <circle cx="200" cy="180" r="2"/>
+    <circle cx="380" cy="320" r="1.5"/>
+    <circle cx="1700" cy="220" r="2"/>
+    <circle cx="1550" cy="380" r="1.5"/>
+    <circle cx="280" cy="850" r="1.5"/>
+    <circle cx="1620" cy="780" r="2"/>
+    <circle cx="150" cy="600" r="1"/>
+    <circle cx="1800" cy="550" r="1"/>
+  </g>
+
+  <!-- Vignette overlay -->
+  <rect width="1920" height="1080" fill="url(#vignette)"/>
+
+  <!-- Top badge -->
+  <g transform="translate(960, 200)" text-anchor="middle">
+    <rect x="-180" y="-30" width="360" height="60" rx="30" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="0" y="10" font-family="-apple-system, 'Hiragino Sans', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF" letter-spacing="6">SHIFT MANAGEMENT SaaS</text>
+  </g>
+
+  <!-- Main logo -->
+  <g transform="translate(960, 380)" text-anchor="middle">
+    <text font-family="-apple-system, 'Hiragino Sans', sans-serif" font-size="180" font-weight="900" letter-spacing="-6" filter="url(#softGlow)">
+      <tspan fill="#FFFFFF">RAKU</tspan><tspan fill="url(#logoGrad)">RAKU</tspan>
+    </text>
+  </g>
+
+  <!-- Separator -->
+  <line x1="860" y1="450" x2="1060" y2="450" stroke="url(#accentGrad)" stroke-width="3"/>
+
+  <!-- Main tagline -->
+  <g transform="translate(960, 580)" text-anchor="middle" font-family="'游明朝', 'Yu Mincho', 'Hiragino Mincho ProN', serif" fill="#FFFFFF">
+    <text font-size="62" font-weight="500" letter-spacing="4">
+      <tspan x="0" y="0">飲食店関係者が、</tspan>
+      <tspan x="0" y="100" fill="url(#logoGrad)">家族と夕飯を食べられる国を作る。</tspan>
+    </text>
+  </g>
+
+  <!-- Sub message -->
+  <g transform="translate(960, 800)" text-anchor="middle">
+    <text font-family="-apple-system, 'Hiragino Sans', sans-serif" font-size="26" font-weight="400" fill="#A5B4FC" letter-spacing="3">
+      個人店は永久無料・Pro 月額 ¥4,990
+    </text>
+  </g>
+
+  <!-- Bottom info -->
+  <g transform="translate(960, 980)" text-anchor="middle">
+    <text font-family="-apple-system, 'Hiragino Sans', sans-serif" font-size="18" font-weight="500" fill="#FFFFFF" fill-opacity="0.6" letter-spacing="4">
+      RAKURAKU 代表 小泉 咲太
+    </text>
+  </g>
+
+  <!-- Corner accents -->
+  <g stroke="url(#accentGrad)" stroke-width="2" fill="none" opacity="0.5">
+    <path d="M 60 60 L 60 120 M 60 60 L 120 60"/>
+    <path d="M 1860 60 L 1860 120 M 1860 60 L 1800 60"/>
+    <path d="M 60 1020 L 60 960 M 60 1020 L 120 1020"/>
+    <path d="M 1860 1020 L 1860 960 M 1860 1020 L 1800 1020"/>
+  </g>
+</svg>
