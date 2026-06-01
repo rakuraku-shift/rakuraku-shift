@@ -16,7 +16,7 @@ body{font-family:'游明朝','Yu Mincho','Hiragino Mincho ProN','MS Mincho',seri
 
 /* A4 ページ */
 @page{size:A4;margin:0}
-.page{width:210mm;height:297mm;min-height:297mm;max-height:297mm;background:#fff;margin:18px auto;padding:18mm 20mm 22mm;box-shadow:0 4px 14px rgba(0,0,0,.1);page-break-after:always;position:relative;overflow:hidden}
+.page{width:210mm;height:297mm;min-height:297mm;max-height:297mm;background:#fff;margin:18px auto;padding:15mm 18mm 18mm;box-shadow:0 4px 14px rgba(0,0,0,.1);page-break-after:always;position:relative;overflow:hidden}
 .page:last-child{page-break-after:auto}
 
 /* 表紙のみ別レイアウト */
@@ -36,29 +36,29 @@ body{font-family:'游明朝','Yu Mincho','Hiragino Mincho ProN','MS Mincho',seri
 .page-footer{position:absolute;bottom:8mm;left:20mm;right:20mm;display:flex;justify-content:space-between;font-size:8pt;color:#888;border-top:1px solid #DDD;padding-top:3mm;font-family:'Noto Sans JP',sans-serif}
 
 /* 見出し */
-h2{font-family:'Noto Sans JP',sans-serif;font-size:18pt;font-weight:600;color:#1A237E;margin:0 0 16px;padding-left:0;border:none;position:relative;padding-bottom:4mm}
+h2{font-family:'Noto Sans JP',sans-serif;font-size:17pt;font-weight:600;color:#1A237E;margin:0 0 10px;padding-left:0;border:none;position:relative;padding-bottom:3mm}
 h2::after{content:'';position:absolute;bottom:0;left:0;width:60px;height:2px;background:#1A237E}
-h3{font-family:'Noto Sans JP',sans-serif;font-size:13pt;font-weight:600;color:#1A237E;margin:20px 0 10px}
-h4{font-size:11.5pt;font-weight:600;color:#333;margin:14px 0 6px}
+h3{font-family:'Noto Sans JP',sans-serif;font-size:12pt;font-weight:600;color:#1A237E;margin:14px 0 6px}
+h4{font-size:11pt;font-weight:600;color:#333;margin:10px 0 4px}
 
-p{margin-bottom:13px;text-align:justify}
-ol,ul{padding-left:24px;margin-bottom:14px}
-li{margin:4px 0}
+p{margin-bottom:8px;text-align:justify}
+ol,ul{padding-left:22px;margin-bottom:9px}
+li{margin:3px 0}
 
 /* テーブル(通常) */
-table{width:100%;border-collapse:collapse;margin:12px 0 18px;font-size:10.5pt;font-family:'Noto Sans JP',sans-serif}
-th,td{padding:10px 14px;border-bottom:1px solid #BBB;text-align:left;vertical-align:top;line-height:1.7}
+table{width:100%;border-collapse:collapse;margin:8px 0 12px;font-size:10pt;font-family:'Noto Sans JP',sans-serif}
+th,td{padding:7px 11px;border-bottom:1px solid #BBB;text-align:left;vertical-align:top;line-height:1.55}
 th{background:#F5F5F5;font-weight:600;color:#1A237E;border-bottom:2px solid #1A237E;width:30%}
 tbody tr:hover{background:#FAFAFA}
 
 /* テーブル(コンパクト・5年計画など) */
-.compact{font-size:10pt}
-.compact th,.compact td{padding:7px 10px;line-height:1.55}
+.compact{font-size:9.5pt}
+.compact th,.compact td{padding:5px 8px;line-height:1.45}
 
 /* テーブル(大きめ・プラン構成・主な機能) */
-.large{font-size:10.5pt;margin:14px 0}
-.large th,.large td{padding:10px 14px;line-height:1.65}
-.large th{font-size:10.5pt}
+.large{font-size:10pt;margin:10px 0}
+.large th,.large td{padding:7px 11px;line-height:1.55}
+.large th{font-size:10pt}
 
 /* 控えめなボックス */
 .quote{margin:18px 0;padding:18px 24px;border-left:3px solid #1A237E;background:#FAFAFA;font-style:italic;font-size:11.5pt;color:#333}
@@ -250,9 +250,7 @@ tbody tr:hover{background:#FAFAFA}
 
   <h3>個人店は永久無料という選択</h3>
 
-  <p>料金体系を考えるとき、私たちは大きな決断をしました。「個人店の飲食店関係者には、永久に無料で使ってもらおう」というものです。</p>
-
-  <p>この決断には何ヶ月も悩みました。会社として売上が立たなくなるリスクがあるからです。しかし、個人店の方々から「月1万円のツールでさえ、最初の導入が怖い」という声を何度も聞いてきました。お金を払う前に効果を確かめてもらう体験こそが、本当に必要な人にサービスを届ける唯一の道だと考えました。</p>
+  <p>料金体系の検討にあたり、「個人店の飲食店関係者には永久に無料で使ってもらう」という大きな決断をしました。何ヶ月も悩んだ末の判断です。個人店の方々から「月1万円のツールでさえ、最初の導入が怖い」という声を何度も聞き、お金を払う前に効果を確かめてもらう体験こそが、本当に必要な人にサービスを届ける唯一の道だと考えました。</p>
 
   <h3>4つのプラン構成</h3>
 
@@ -268,7 +266,7 @@ tbody tr:hover{background:#FAFAFA}
     </tbody>
   </table>
 
-  <p>30日Pro体験はクレジットカード登録不要。何もしなければ自動的にFreeに降格するため、知らないうちに課金される心配がありません。「気に入ったら払う、合わなければそのまま無料で使い続ける」を提供します。</p>
+  <p>30日Pro体験はクレジットカード登録不要、何もしなければ自動的にFreeに降格するため、知らないうちに課金される心配がありません。</p>
 
   <h3>収益化の見通し</h3>
 
@@ -334,7 +332,7 @@ tbody tr:hover{background:#FAFAFA}
 
   <h3>5年間で目指す姿</h3>
 
-  <p>5年後、Freeプランで10万店舗、Proプランで1万店舗の利用を目標としています。ARRにして約6億円。段階を踏んだ着実な拡大を計画しています。</p>
+  <p>5年後、Freeプランで10万店舗、Proプランで1万店舗の利用、ARR約6億円を目指します。</p>
 
   <table class="compact">
     <thead>
