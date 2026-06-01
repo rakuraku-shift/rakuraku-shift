@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RAKURAKU 事業概要・製品説明資料</title>
+<meta name="description" content="RAKURAKU 事業概要・製品説明資料 (JAFCOピッチイベント / VC提出用)">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#4F46E5">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+:root{--accent:#4F46E5;--purple:#7C3AED;--gold:#F59E0B;--text:#0F172A;--gray:#64748B;--bg:#F8FAFC}
+body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:var(--text);background:#E2E8F0;line-height:1.7}
+.skip-link{position:absolute;left:-9999px}.skip-link:focus{left:10px;top:10px;background:var(--accent);color:#fff;padding:10px;z-index:9999}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* A4 ページ */
+@page{size:A4;margin:0}
+.page{width:210mm;min-height:297mm;background:#fff;margin:20px auto;padding:18mm 16mm;box-shadow:0 8px 32px rgba(0,0,0,.12);page-break-after:always;position:relative}
+.page:last-child{page-break-after:auto}
+
+/* ヘッダー / フッター */
+.page-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:8mm;border-bottom:2px solid var(--accent);margin-bottom:8mm}
+.page-header .logo{font-weight:900;font-size:18pt;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.02em}
+.page-header .doc-title{font-size:10pt;color:var(--gray);font-weight:600}
+.page-footer{position:absolute;bottom:10mm;left:16mm;right:16mm;display:flex;justify-content:space-between;font-size:9pt;color:var(--gray);border-top:1px solid #E2E8F0;padding-top:5mm}
+
+/* 表紙 */
+.cover{background:linear-gradient(135deg,#1E1B4B,var(--accent) 60%,var(--purple));color:#fff;padding:0;display:flex;flex-direction:column;justify-content:space-between;border:none}
+.cover-inner{padding:50mm 16mm 30mm;flex:1;display:flex;flex-direction:column;justify-content:center}
+.cover .badge{display:inline-block;background:var(--gold);color:var(--text);padding:5px 16px;border-radius:20px;font-weight:bold;font-size:10pt;margin-bottom:20px;letter-spacing:.05em}
+.cover h1{font-size:48pt;font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:18px;color:#fff}
+.cover h1 .accent{background:linear-gradient(135deg,var(--gold),#FBBF24);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cover p.sub{font-size:14pt;opacity:.92;margin-bottom:25px}
+.cover .meta{margin-top:auto;padding-top:30px;border-top:1px solid rgba(255,255,255,.2);font-size:10pt;opacity:.85}
+
+/* セクション */
+h2.section{font-size:20pt;font-weight:900;color:var(--accent);margin:0 0 12px;padding-left:14px;border-left:6px solid var(--accent)}
+h3{font-size:13pt;font-weight:900;color:var(--text);margin:18px 0 8px}
+p{font-size:11pt;margin-bottom:10px;line-height:1.85}
+ul,ol{font-size:11pt;padding-left:22px;line-height:1.95;margin-bottom:12px}
+li{margin:3px 0}
+strong{color:var(--accent)}
+
+/* テーブル */
+table{width:100%;border-collapse:collapse;margin:10px 0 15px;font-size:10pt}
+th,td{padding:8px 10px;border:1px solid #CBD5E1;text-align:left;vertical-align:top}
+th{background:var(--accent);color:#fff;font-weight:bold;font-size:9.5pt}
+tr:nth-child(even){background:#F8FAFC}
+.highlight-row{background:#FEF3C7 !important}
+
+/* カード/ボックス */
+.box{background:#F8FAFC;padding:14px 18px;border-radius:8px;border-left:5px solid var(--accent);margin:12px 0;font-size:11pt}
+.box.gold{border-left-color:var(--gold);background:#FFFBEB}
+.box.green{border-left-color:#10B981;background:#F0FDF4}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.kpi{background:linear-gradient(135deg,#fff,#EEF2FF);padding:14px;border-radius:8px;text-align:center;border:1px solid #E0E7FF}
+.kpi .v{font-size:22pt;font-weight:900;color:var(--accent);line-height:1;letter-spacing:-.02em}
+.kpi .l{font-size:8pt;color:var(--gray);font-weight:bold;margin-top:4px;letter-spacing:.04em}
+
+.plan-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.plan{padding:12px;border-radius:8px;border:2px solid #E2E8F0;text-align:center}
+.plan.featured{border-color:var(--accent);background:#F0F9FF}
+.plan .name{font-size:10pt;font-weight:900;color:var(--accent)}
+.plan .price{font-size:14pt;font-weight:900;color:var(--text);margin:5px 0}
+.plan .desc{font-size:8pt;color:var(--gray);line-height:1.5}
+
+.feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}
+.feature{background:#F8FAFC;padding:12px 14px;border-radius:8px;border-left:4px solid var(--accent)}
+.feature .icon{font-size:14pt;margin-bottom:4px}
+.feature .name{font-weight:900;font-size:11pt;color:var(--text)}
+.feature .desc{font-size:9.5pt;color:var(--gray);margin-top:4px}
+
+.controls{max-width:210mm;margin:0 auto 15px;text-align:center;background:#fff;padding:12px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.controls button{background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:13px;margin:0 5px}
+.controls button:hover{background:var(--purple)}
+
+@media print{
+  body{background:#fff}
+  .page{box-shadow:none;margin:0;border-radius:0;page-break-after:always}
+  .controls{display:none}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<div class="controls">
+  <button onclick="window.print()">🖨 PDF 出力 (印刷ダイアログ)</button>
+  <span style="color:#64748B;font-size:12px;margin-left:10px">全 8 ページ / A4 印刷対応</span>
+</div>
+
+<div id="main">
+
+<!-- ========== 1. 表紙 ========== -->
+<div class="page cover">
+  <div class="cover-inner">
+    <span class="badge">事業概要・製品説明資料</span>
+    <h1>RAKU<span class="accent">RAKU</span></h1>
+    <p class="sub" style="font-size:18pt;font-weight:600;line-height:1.4;margin-top:20px">
+      日本中の飲食店オーナーに、<br>
+      家族と夕飯を食べる時間を返す。
+    </p>
+    <p style="font-size:11pt;opacity:.85;margin-top:30px">
+      飲食店特化型シフト管理 SaaS<br>
+      個人店は永久無料・Pro月額¥4,990
+    </p>
+    <div class="meta">
+      <p>代表者: 小泉 咲太 (こいずみ しょうた)</p>
+      <p>事業形態: 個人事業主</p>
+      <p>本社所在地: 東京都</p>
+      <p>作成日: 2026 年 5 月</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 2. ビジョン・ミッション ========== -->
+<div class="page">
+  <div class="page-header">
+    <div class="logo">RAKURAKU</div>
+    <div class="doc-title">事業概要・製品説明資料 / 1. ビジョン・ミッション</div>
+  </div>
+
+  <h2 class="section">🌍 ビジョン・ミッション</h2>
+
+  <div class="box gold">
+    <strong style="font-size:14pt;display:block;margin-bottom:6px">「働きすぎて家族時間を失った人を、家族の元へ返す。」</strong>
+    これが、私たち RAKURAKU の存在理由です。
+  </div>
+
+  <h3>📖 創業の原点</h3>
+  <p>
+    私は東京でバーを経営する現役オーナーです。深夜まで続く事務作業、月末徹夜の給与計算、家族と過ごす時間が削られていく現実——同じ苦しみを抱える飲食店経営者は数えきれません。
+  </p>
+  <p>
+    しかしこれは、飲食業界だけの問題ではありません。日本中の中小企業経営者、店長、現場リーダー、共働き家庭、夜遅くまで働くシングルマザー。多くの「働きすぎる人」が、家族と夕飯を食べる、子どもの寝顔を見る、そんな当たり前の時間さえ失っています。
+  </p>
+
+  <h3>🎯 ミッション</h3>
+  <p>
+    RAKURAKU は、シフト管理という入口から始めて、IT の力で「人間がしなくていい作業」を徹底的に減らし、取り戻した時間を家族へ還す事業です。
+  </p>
+  <p>
+    私たちが目指すのは、誰もが仕事と家族を両立できる社会。経営者が誇りを持って働きながら、子どもと夕飯を食べ、パートナーと笑い合える夜を迎えられる国です。
+  </p>
+
+  <div class="box">
+    <strong>シフト管理は、その入口に過ぎません。</strong><br>
+    働きすぎる全ての人を、家族の元へ返す。それが、私たちの使命です。
+  </div>
+
+  <div class="page-footer">
+    <span>RAKURAKU 事業概要・製品説明資料</span>
+    <span>1 / 8</span>
+  </div>
+</div>
+
+<!-- ========== 3. 解決する課題 ========== -->
+<div class="page">
+  <div class="page-header">
+    <div class="logo">RAKURAKU</div>
+    <div class="doc-title">2. 解決する課題</div>
+  </div>
+
+  <h2 class="section">😩 解決する社会課題</h2>
+
+  <h3>飲食業界が抱える「3 つの構造的問題」</h3>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="v">25%</div><div class="l">飲食店の5年生存率</div></div>
+    <div class="kpi"><div class="v">15h+</div><div class="l">月末事務作業時間</div></div>
+    <div class="kpi"><div class="v">2.0×</div><div class="l">経営者の離婚率</div></div>
+  </div>
+
+  <h3>① 個人事業主としての過酷な労働</h3>
+  <p>日本の飲食店の <strong>80% が個人事業主</strong>。個人事業主の 5 年生存率は約 41% で、飲食業界に絞れば <strong>25%</strong> まで落ち込みます。廃業の主因は資金繰りではなく、<strong>「経営者の燃え尽き」</strong>です。</p>
+
+  <h3>② 労務管理の複雑さ</h3>
+  <p>深夜手当 25% 加算、36 協定、休憩時間、有給休暇——労働基準法は年々厳格化しています。LINE グループや Excel での管理では計算ミスが頻発し、未払い残業代訴訟は 5 年で <strong>3.2 倍</strong>に増加。</p>
+
+  <h3>③ 多様化する従業員ニーズ</h3>
+  <p>学生バイト・外国人スタッフ・シングルマザーなど、勤務形態が多様化。しかし業界の多言語対応率はわずか <strong>18%</strong>、外国人スタッフの定着に苦労する店舗が大半です。</p>
+
+  <h3>④ 飲食業界を超えた汎用課題</h3>
+  <p>長時間労働は日本社会全体の慢性病。働き方改革関連法の施行後も、現場の負担は変わっていません。RAKURAKU は飲食を起点に、<strong>あらゆる「働きすぎる業界」</strong>への展開を見据えています。</p>
+
+  <div class="page-footer">
+    <span>RAKURAKU 事業概要・製品説明資料</span>
+    <span>2 / 8</span>
+  </div>
+</div>
+
+<!-- ========== 4. プロダクト概要 ========== -->
+<div class="page">
+  <div class="page-header">
+    <div class="logo">RAKURAKU</div>
+    <div class="doc-title">3. プロダクト概要</div>
+  </div>
+
+  <h2 class="section">📱 プロダクト概要</h2>
+
+  <div class="box gold">
+    <strong style="font-size:13pt">RAKURAKU は、飲食店オーナーを月末徹夜から解放するシフト管理 SaaS です。</strong>
+  </div>
+
+  <p>シフト作成、LINE 通知、GPS 打刻、深夜手当の自動計算、多言語 5 言語対応など、現役バー経営者が自店の課題から開発した機能を 1 つに統合。スマホで完結し、誰でも使えます。</p>
+  <p>個人店なら永久無料、Pro 月額 ¥4,990。シフト管理は入口に過ぎません。働きすぎる全ての人を、家族の元へ返す仕組みをつくります。</p>
+
+  <h3>🌟 プロダクトの 5 つの特徴</h3>
+
+  <div class="feature-grid">
+    <div class="feature">
+      <div class="icon">📱</div>
+      <div class="name">スマホ完結</div>
+      <div class="desc">PWA 設計でアプリ不要。インストール容量わずか 5MB。</div>
+    </div>
+    <div class="feature">
+      <div class="icon">🆓</div>
+      <div class="name">永久無料プラン</div>
+      <div class="desc">個人店はずっと無料。30 日 Pro 体験はクレカ不要。</div>
+    </div>
+    <div class="feature">
+      <div class="icon">🍸</div>
+      <div class="name">飲食 8 業態特化</div>
+      <div class="desc">バー / 居酒屋 / カフェ / ラウンジ / スナック / カラオケ / クラブ / ダイニング</div>
+    </div>
+    <div class="feature">
+      <div class="icon">🌐</div>
+      <div class="name">多言語対応</div>
+      <div class="desc">日本語・英語・中国語・韓国語・ベトナム語の 5 言語完備</div>
+    </div>
+    <div class="feature">
+      <div class="icon">⚖️</div>
+      <div class="name">労基法自動チェック</div>
+      <div class="desc">深夜手当 25%・36 協定・休憩時間・連続勤務日数を自動アラート</div>
+    </div>
+    <div class="feature">
+      <div class="icon">📊</div>
+      <div class="name">本部ダッシュボード</div>
+      <div class="desc">多店舗の人件費率・労基リスクを一画面で把握</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>RAKURAKU 事業概要・製品説明資料</span>
+    <span>3 / 8</span>
+  </div>
+</div>
+
+<!-- ========== 5. 主要機能詳細 ========== -->
+<div class="page">
+  <div class="page-header">
+    <div class="logo">RAKURAKU</div>
+    <div class="doc-title">4. 主要機能 詳細</div>
+  </div>
+
+  <h2 class="section">⚙️ 主要機能 詳細</h2>
+
+  <table>
+    <thead>
+      <tr><th>機能</th><th>説明</th><th>削減効果</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>📅 シフト作成</strong></td><td>業態テンプレ + ドラッグ&ドロップで翌週シフトを 10 分で完成</td><td>5h → 1h</td></tr>
+      <tr><td><strong>📩 LINE 通知連携</strong></td><td>シフト確定・代替募集・打刻リマインドを LINE 公式アカウントから自動配信</td><td>連絡漏れ 0 件</td></tr>
+      <tr><td><strong>📍 GPS / QR 打刻</strong></td><td>店舗半径 50m 内のみ打刻可能。GPS 不調時は QR 自動切替</td><td>不正打刻 0 件</td></tr>
+      <tr><td><strong>💴 給与計算自動</strong></td><td>深夜手当 25% 自動加算。freee/弥生/マネフォへ CSV 出力</td><td>8h → 1h</td></tr>
+      <tr><td><strong>⚖️ 労基法アラート</strong></td><td>休憩時間不足・連続勤務日数超過・残業上限を自動警告</td><td>違反リスク 90% 減</td></tr>
+      <tr><td><strong>🌐 多言語対応</strong></td><td>英中韓越 5 言語。シフト・通知・給与明細まで母国語表示</td><td>採用枠 +30%</td></tr>
+      <tr><td><strong>🏪 多店舗管理</strong></td><td>本部ダッシュボードで全店の人件費率・労基リスクを一覧</td><td>把握時間 1/10</td></tr>
+      <tr><td><strong>📊 売上連動 AI</strong></td><td>過去売上から必要人時を自動算出。シフト最適化提案</td><td>人件費率 -5%</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🔌 連携サービス</h3>
+  <p>給与計算: <strong>freee / 弥生 / マネーフォワード / SmartHR</strong><br>
+  通信: <strong>LINE / Slack / Chatwork / SMS</strong><br>
+  カレンダー: <strong>Google / Apple / Outlook</strong><br>
+  決済: <strong>Stripe / Square</strong><br>
+  自動化: <strong>Zapier / Make / Webhook / REST API</strong></p>
+
+  <div class="page-footer">
+    <span>RAKURAKU 事業概要・製品説明資料</span>
+    <span>4 / 8</span>
+  </div>
+</div>
+
+<!-- ========== 6. 料金プラン ========== -->
+<div class="page">
+  <div class="page-header">
+    <div class="logo">RAKURAKU</div>
+    <div class="doc-title">5. 料金プラン (Freemium)</div>
+  </div>
+
+  <h2 class="section">💰 料金プラン</h2>
+
+  <div class="box gold">
+    <strong>業界唯一の「永久無料プラン」</strong> — 競合 12 社の中で、唯一個人店向け無料プランを提供。これにより、個人店オーナー (40 万店) への大規模リーチを実現します。
+  </div>
+
+  <div class="plan-grid">
+    <div class="plan">
+      <div class="name">🆓 Free</div>
+      <div class="price">¥0<small style="font-size:8pt">/永久</small></div>
+      <div class="desc">スタッフ3名 / 1店舗 / 基本機能</div>
+    </div>
+    <div class="plan featured">
+      <div class="name">🎁 30日Pro体験</div>
+      <div class="price">¥0<small style="font-size:8pt">/30日</small></div>
+      <div class="desc">全機能 / クレカ不要 / 自動降格</div>
+    </div>
+    <div class="plan">
+      <div class="name">💼 Pro</div>
+      <div class="price">¥4,990<small style="font-size:8pt">/月</small></div>
+      <div class="desc">無制限 / 3店舗 / API / 多言語</div>
+    </div>
+    <div class="plan">
+      <div class="name">🏢 Enterprise</div>
+      <div class="price">個別</div>
+      <div class="desc">SLA99.99% / SSO / 専任CS</div>
+    </div>
+  </div>
+
+  <h3>💎 機能比較表</h3>
+  <table>
+    <thead>
+      <tr><th>機能</th><th>Free</th><th>Pro</th><th>Enterprise</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>シフト作成・LINE通知・GPS打刻</td><td>◎</td><td>◎</td><td>◎</td></tr>
+      <tr><td>深夜手当・労基法アラート</td><td>◎</td><td>◎</td><td>◎</td></tr>
+      <tr><td>スタッフ数</td><td>3 名</td><td>無制限</td><td>無制限</td></tr>
+      <tr><td>店舗数</td><td>1 店舗</td><td>3 店舗</td><td>無制限</td></tr>
+      <tr><td>多言語 5 言語</td><td>×</td><td>◎</td><td>◎</td></tr>
+      <tr><td>売上連動 AI シフト</td><td>×</td><td>◎</td><td>◎</td></tr>
+      <tr><td>API / Webhook</td><td>×</td><td>◎</td><td>◎</td></tr>
+      <tr><td>SSO (SAML / OAuth)</td><td>×</td><td>×</td><td>◎</td></tr>
+      <tr><td>稼働率 SLA</td><td>—</td><td>99.9%</td><td>99.99%</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🎯 ユニットエコノミクス</h3>
+  <table>
+    <thead><tr><th>指標</th><th>RAKURAKU</th><th>SaaS 業界基準</th></tr></thead>
+    <tbody>
+      <tr class="highlight-row"><td>LTV-CAC 比</td><td><strong>8x</strong></td><td>3x</td></tr>
+      <tr class="highlight-row"><td>Payback Period</td><td><strong>0.6 ヶ月</strong></td><td>12 ヶ月</td></tr>
+      <tr><td>月次解約率</td><td>2%</td><td>3-5%</td></tr>
+      <tr><td>顧客生涯価値 (LTV)</td><td>¥24-30 万</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>RAKURAKU 事業概要・製品説明資料</span>
+    <span>5 / 8</span>
+  </div>
+</div>
+
+<!-- ========== 7. 市場・競合 ========== -->
+<div class="page">
+  <div class="page-header">
+    <div class="logo">RAKURAKU</div>
+    <div class="doc-title">6. 市場規模 & 競合分析</div>
+  </div>
+
+  <h2 class="section">📊 市場規模 & 競合分析</h2>
+
+  <h3>🌐 市場規模 (TAM / SAM / SOM)</h3>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="v">3,594億</div><div class="l">TAM 全飲食店市場</div></div>
+    <div class="kpi"><div class="v">600億</div><div class="l">SAM バー/夜営業特化</div></div>
+    <div class="kpi"><div class="v">60億</div><div class="l">5年後 SOM (10%シェア)</div></div>
+  </div>
+
+  <p style="font-size:10pt">日本の飲食店 約 60 万店 × 月 ¥4,990 = <strong>年間 3,594 億円市場</strong>。シフト管理 SaaS は年率 18% 成長 (矢野経済研究所)。夜営業特化 SaaS は空白市場で、外国人スタッフ採用増により多言語ニーズが急拡大しています。</p>
+
+  <h3>🆚 競合比較</h3>
+  <table>
+    <thead><tr><th>サービス</th><th>月額</th><th>無料プラン</th><th>飲食特化</th><th>多言語</th><th>当事者開発</th></tr></thead>
+    <tbody>
+      <tr class="highlight-row"><td><strong>RAKURAKU</strong></td><td><strong>¥4,990</strong></td><td><strong>◎ 永久無料</strong></td><td>◎</td><td>◎ 5 言語</td><td>◎</td></tr>
+      <tr><td>Airシフト</td><td>¥7,800</td><td>×</td><td>○</td><td>×</td><td>×</td></tr>
+      <tr><td>Shiftee</td><td>¥3,300+</td><td>×</td><td>△</td><td>×</td><td>×</td></tr>
+      <tr><td>freee 人事労務</td><td>¥4,650</td><td>×</td><td>×</td><td>×</td><td>×</td></tr>
+      <tr><td>KING OF TIME</td><td>¥3,000</td><td>×</td><td>×</td><td>×</td><td>×</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🛡 競合優位性 (Moat) — 3 つの参入障壁</h3>
+  <ol>
+    <li><strong>当事者性</strong>: 大手 SaaS には真似できない、現役バー経営者が毎日現場で開発</li>
+    <li><strong>業界ネットワーク</strong>: バー業界の縦社会ネットワーク。一度信頼を得れば紹介で爆発的拡大</li>
+    <li><strong>Freemium 先行</strong>: 競合は既存顧客の反発で無料化できない。先行者利益</li>
+  </ol>
+
+  <div class="page-footer">
+    <span>RAKURAKU 事業概要・製品説明資料</span>
+    <span>6 / 8</span>
+  </div>
+</div>
+
+<!-- ========== 8. 成長戦略 ========== -->
+<div class="page">
+  <div class="page-header">
+    <div class="logo">RAKURAKU</div>
+    <div class="doc-title">7. 成長戦略・収益計画</div>
+  </div>
+
+  <h2 class="section">📈 成長戦略・収益計画</h2>
+
+  <h3>🚀 5 年計画</h3>
+  <table>
+    <thead><tr><th>年</th><th>Free 店舗</th><th>Pro 転換</th><th>MRR</th><th>ARR</th><th>注力施策</th></tr></thead>
+    <tbody>
+      <tr><td>Year 1</td><td>1,000</td><td>100 (10%)</td><td>¥50 万</td><td>¥600 万</td><td>SNS / 個人店重点開拓</td></tr>
+      <tr><td>Year 2</td><td>5,000</td><td>500 (10%)</td><td>¥250 万</td><td>¥3,000 万</td><td>士業パートナー連携</td></tr>
+      <tr><td>Year 3</td><td>15,000</td><td>1,500 (10%)</td><td>¥750 万</td><td>¥9,000 万</td><td>チェーン本部開拓</td></tr>
+      <tr><td>Year 4</td><td>30,000</td><td>3,000 (10%)</td><td>¥1,500 万</td><td>¥1.8 億</td><td>海外展開準備</td></tr>
+      <tr class="highlight-row"><td><strong>Year 5</strong></td><td><strong>100,000</strong></td><td><strong>10,000</strong></td><td><strong>¥5,000 万</strong></td><td><strong>¥6 億</strong></td><td>アジア展開・IPO 準備</td></tr>
+    </tbody>
+  </table>
+
+  <h3>📣 マーケティング戦略</h3>
+  <table>
+    <thead><tr><th>チャネル</th><th>役割</th><th>狙い</th></tr></thead>
+    <tbody>
+      <tr><td>TikTok</td><td>認知拡大</td><td>現役バー経営者のリアル発信で月間 10 万再生</td></tr>
+      <tr><td>SEO ブログ</td><td>長期流入</td><td>19 → 50 記事で月間 PV 10 万を目指す</td></tr>
+      <tr><td>飲食業界口コミ</td><td>転換率最大</td><td>バー業界の縦社会ネットワーク活用</td></tr>
+      <tr><td>士業パートナー</td><td>大手攻略</td><td>税理士・社労士経由でチェーン本部にリーチ</td></tr>
+    </tbody>
+  </table>
+
+  <h3>💰 資金調達計画 (Pre-Series A)</h3>
+  <p><strong>調達希望額: 5,000 万円</strong></p>
+  <table>
+    <thead><tr><th>項目</th><th>金額</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>エンジニア採用</td><td>¥2,000 万</td><td>CTO + フロント 2 名</td></tr>
+      <tr><td>営業・CS</td><td>¥1,500 万</td><td>BDR 2 名 + CS 2 名</td></tr>
+      <tr><td>マーケティング</td><td>¥1,000 万</td><td>SNS 広告・SEO・展示会</td></tr>
+      <tr><td>インフラ・予備</td><td>¥500 万</td><td>サーバー増強・運転資金</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box green">
+    <strong>想定 Exit</strong>: 3-5 年後に freee / Money Forward / SmartHR への M&A、または独立 IPO。Series A 想定 Valuation 5-8 億円。
+  </div>
+
+  <div class="page-footer">
+    <span>RAKURAKU 事業概要・製品説明資料</span>
+    <span>7 / 8</span>
+  </div>
+</div>
+
+<!-- ========== 9. 会社概要・連絡先 ========== -->
+<div class="page">
+  <div class="page-header">
+    <div class="logo">RAKURAKU</div>
+    <div class="doc-title">8. 会社概要・代表者プロフィール</div>
+  </div>
+
+  <h2 class="section">🏢 会社概要</h2>
+
+  <table>
+    <tr><th style="width:30%">サービス名</th><td>RAKURAKU シフト管理</td></tr>
+    <tr><th>運営形態</th><td>個人事業主 (法人化準備中)</td></tr>
+    <tr><th>運営者</th><td>小泉 咲太 (こいずみ しょうた)</td></tr>
+    <tr><th>所在地</th><td>東京都 (請求があれば遅滞なく開示)</td></tr>
+    <tr><th>サービス開始</th><td>2026 年 春</td></tr>
+    <tr><th>対象業種</th><td>飲食店 (バー / 居酒屋 / カフェ / ラウンジ / スナック / カラオケ / クラブ / ダイニング)</td></tr>
+    <tr><th>主要機能</th><td>シフト作成・LINE通知・GPS打刻・給与計算・労基法アラート・多言語対応</td></tr>
+    <tr><th>料金体系</th><td>Free (永久無料) / 30日Pro体験 / Pro ¥4,990/月 / Enterprise 個別</td></tr>
+    <tr><th>対応デバイス</th><td>PC / スマホ / タブレット (PWA)</td></tr>
+    <tr><th>公式 URL</th><td>https://rakuraku-shift-production.up.railway.app/</td></tr>
+  </table>
+
+  <h2 class="section" style="margin-top:25px">👤 代表者プロフィール</h2>
+
+  <div class="box">
+    <strong style="font-size:13pt">小泉 咲太 (こいずみ しょうた) — RAKURAKU 代表</strong>
+    <p style="margin-top:8px">東京都内でバーを 2 年経営する現役オーナー。自店舗の運営で痛感したシフト管理・労務管理の煩雑さを、自ら SaaS 化することで業界課題を解決すべく RAKURAKU を立ち上げ。「働きすぎる人を、家族の元へ返す」というミッションのもと、まずは飲食業界からの変革を目指す。</p>
+  </div>
+
+  <h2 class="section" style="margin-top:25px">📞 連絡先</h2>
+
+  <table>
+    <tr><th>メール</th><td>koizumishota0323@gmail.com</td></tr>
+    <tr><th>電話</th><td>080-5168-3303 (平日 10:00 - 20:00)</td></tr>
+    <tr><th>公式サイト</th><td>https://rakuraku-shift-production.up.railway.app/</td></tr>
+    <tr><th>対応可能日時</th><td>2026 年 6 月 1 日 (月) 〜 6 月 5 日 (金) / 10:00 〜 20:00</td></tr>
+  </table>
+
+  <div style="margin-top:30px;padding:25px;background:linear-gradient(135deg,#1E1B4B,var(--accent));color:#fff;border-radius:12px;text-align:center">
+    <p style="font-size:14pt;font-weight:900;line-height:1.5">
+      日本中の飲食店オーナーに、<br>
+      <span style="color:#FBBF24">家族と夕飯を食べる時間を返す。</span>
+    </p>
+    <p style="margin-top:15px;font-size:10pt;opacity:.85">— RAKURAKU 代表 小泉 咲太</p>
+  </div>
+
+  <div class="page-footer">
+    <span>RAKURAKU 事業概要・製品説明資料</span>
+    <span>8 / 8</span>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>
