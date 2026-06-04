@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RAKURAKU プロモ動画</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#0F0F23;font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;color:#fff}
+:root{
+  --primary:#4F46E5;
+  --purple:#7C3AED;
+  --gold:#FBBF24;
+  --green:#10B981;
+  --red:#EF4444;
+}
+
+/* Stage - full screen */
+.stage{position:relative;width:100vw;height:100vh;overflow:hidden}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .8s,visibility .8s;padding:5vh 5vw;text-align:center}
+.scene.active{opacity:1;visibility:visible}
+
+/* Background animations */
+.bg-grad{position:absolute;inset:0;background:linear-gradient(135deg,#0F0F23 0%,#1E1B4B 50%,#312E81 100%);z-index:0}
+.bg-warm{background:linear-gradient(135deg,#3F1F1F 0%,#7C2D12 50%,#C2410C 100%)}
+.bg-success{background:linear-gradient(135deg,#0F2A1E 0%,#10B981 60%,#22C55E 100%)}
+.scene .content{position:relative;z-index:2;width:100%;max-width:90vw}
+
+/* Scene 1: Title */
+.scene-1 .brand{font-size:13vw;font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:3vh;opacity:0;transform:scale(.85);animation:popIn 1s .3s forwards}
+.scene-1 .brand .accent{background:linear-gradient(135deg,var(--gold),#F59E0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.scene-1 .tagline{font-family:'游明朝','Yu Mincho',serif;font-size:3.6vw;font-weight:400;letter-spacing:.05em;line-height:1.6;color:#fff;opacity:0;animation:fadeUp 1.2s 1s forwards}
+.scene-1 .tagline .gold{color:var(--gold)}
+
+/* Scene 2: Problem */
+.scene-2 .label{font-size:1.4vw;color:#F87171;letter-spacing:.6em;font-weight:700;margin-bottom:3vh;text-transform:uppercase;opacity:0;animation:fadeIn .8s .2s forwards}
+.scene-2 .hero-text{font-size:6vw;font-weight:900;line-height:1.3;margin-bottom:5vh;opacity:0;animation:fadeUp 1s .8s forwards}
+.scene-2 .hero-text .red{color:#FCA5A5}
+.scene-2 .pain-row{display:flex;gap:3vw;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 1s 1.6s forwards}
+.scene-2 .pain{background:rgba(248,113,113,.15);border:1px solid rgba(252,165,165,.4);padding:2.5vh 3vw;border-radius:16px;backdrop-filter:blur(8px)}
+.scene-2 .pain .ic{font-size:4vw;margin-bottom:1vh}
+.scene-2 .pain .txt{font-size:1.8vw;font-weight:700;color:#FCA5A5}
+
+/* Scene 3: Number transition */
+.scene-3 .label{font-size:1.4vw;letter-spacing:.6em;color:#A5B4FC;margin-bottom:4vh;font-weight:700;text-transform:uppercase;opacity:0;animation:fadeIn .8s .2s forwards}
+.scene-3 .big-number{font-size:18vw;font-weight:900;line-height:1;letter-spacing:-.04em;display:flex;align-items:baseline;gap:2vw;justify-content:center;opacity:0;animation:fadeUp 1s .8s forwards}
+.scene-3 .big-number .from{color:#94A3B8;text-decoration:line-through;font-size:8vw}
+.scene-3 .big-number .arrow{font-size:6vw;color:var(--gold)}
+.scene-3 .big-number .to{background:linear-gradient(135deg,var(--gold),#F59E0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.scene-3 .caption{font-size:2.5vw;font-weight:700;margin-top:3vh;opacity:0;animation:fadeUp 1s 1.4s forwards}
+
+/* Scene 4: Features grid */
+.scene-4 .label{font-size:1.4vw;color:#A5B4FC;letter-spacing:.6em;margin-bottom:4vh;font-weight:700;text-transform:uppercase;opacity:0;animation:fadeIn .8s .2s forwards}
+.scene-4 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5vw;width:100%;max-width:80vw}
+.scene-4 .feat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);padding:3vh 2vw;border-radius:20px;backdrop-filter:blur(10px);opacity:0;transform:translateY(30px)}
+.scene-4.active .feat{animation:fadeUp .8s forwards}
+.scene-4.active .feat:nth-child(1){animation-delay:.3s}
+.scene-4.active .feat:nth-child(2){animation-delay:.6s}
+.scene-4.active .feat:nth-child(3){animation-delay:.9s}
+.scene-4.active .feat:nth-child(4){animation-delay:1.2s}
+.scene-4.active .feat:nth-child(5){animation-delay:1.5s}
+.scene-4.active .feat:nth-child(6){animation-delay:1.8s}
+.scene-4 .feat .ic{font-size:4vw;margin-bottom:1.5vh}
+.scene-4 .feat .nm{font-size:1.6vw;font-weight:900;margin-bottom:.5vh}
+.scene-4 .feat .ds{font-size:1.1vw;color:#A5B4FC}
+
+/* Scene 5: Pricing */
+.scene-5 .label{font-size:1.4vw;letter-spacing:.6em;color:#FBBF24;margin-bottom:3vh;font-weight:700;text-transform:uppercase;opacity:0;animation:fadeIn .8s .2s forwards}
+.scene-5 .pricing-row{display:flex;gap:3vw;align-items:center;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 1s .6s forwards}
+.scene-5 .plan{background:rgba(255,255,255,.08);padding:5vh 4vw;border-radius:24px;border:2px solid rgba(255,255,255,.15);backdrop-filter:blur(10px);min-width:25vw}
+.scene-5 .plan.featured{border-color:var(--gold);background:rgba(251,191,36,.1);transform:scale(1.05)}
+.scene-5 .plan .name{font-size:2vw;color:#A5B4FC;margin-bottom:1.5vh;font-weight:700}
+.scene-5 .plan .price{font-size:5vw;font-weight:900;line-height:1;margin-bottom:1vh}
+.scene-5 .plan.featured .price{color:var(--gold)}
+.scene-5 .plan .sub{font-size:1.2vw;color:#A5B4FC}
+.scene-5 .footer{font-size:1.8vw;font-weight:700;margin-top:5vh;opacity:0;animation:fadeUp 1s 1.4s forwards}
+
+/* Scene 6: CTA */
+.scene-6 .brand{font-size:8vw;font-weight:900;letter-spacing:-.04em;margin-bottom:3vh;opacity:0;animation:popIn 1s .2s forwards}
+.scene-6 .brand .accent{background:linear-gradient(135deg,var(--gold),#F59E0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.scene-6 .cta-text{font-size:4vw;font-weight:900;margin-bottom:5vh;opacity:0;animation:fadeUp 1s .8s forwards}
+.scene-6 .url-box{background:rgba(255,255,255,.95);color:#0F0F23;padding:3vh 4vw;border-radius:20px;font-size:2.2vw;font-weight:900;font-family:Menlo,monospace;opacity:0;animation:fadeUp 1s 1.4s forwards;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.scene-6 .small{font-size:1.4vw;margin-top:4vh;color:#A5B4FC;opacity:0;animation:fadeUp 1s 2s forwards}
+
+/* Animations */
+@keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Progress bar */
+.progress{position:fixed;bottom:0;left:0;height:5px;background:linear-gradient(90deg,var(--primary),var(--gold));width:0;z-index:100;transition:width .3s}
+
+/* Controls */
+.controls{position:fixed;top:15px;right:15px;background:rgba(255,255,255,.95);padding:10px 14px;border-radius:8px;z-index:9999;display:flex;gap:8px;font-family:-apple-system,sans-serif}
+.controls button{background:#4F46E5;color:#fff;border:none;padding:9px 18px;border-radius:5px;font-weight:bold;cursor:pointer;font-size:13px}
+.controls button.warn{background:#DC2626}
+.controls .info{color:#475569;font-size:11px;padding:6px 8px}
+@media (display-mode:fullscreen){.controls{display:none}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <button onclick="start()">▶ 再生</button>
+  <button onclick="stopShow()" class="warn">■ 停止</button>
+  <button onclick="document.documentElement.requestFullscreen()">⛶ 全画面</button>
+  <span class="info" id="info">準備中</span>
+</div>
+
+<div class="stage" id="stage">
+
+  <!-- Scene 1: Title -->
+  <div class="scene scene-1">
+    <div class="bg-grad"></div>
+    <div class="content">
+      <div class="brand">RAKU<span class="accent">RAKU</span></div>
+      <div class="tagline">
+        飲食店関係者が、<br>
+        <span class="gold">家族と夕飯を食べられる国を作る。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2: Problem -->
+  <div class="scene scene-2">
+    <div class="bg-grad bg-warm"></div>
+    <div class="content">
+      <div class="label">— THE PROBLEM —</div>
+      <div class="hero-text">
+        飲食店オーナーの<br>
+        <span class="red">5 年生存率は 25%</span>
+      </div>
+      <div class="pain-row">
+        <div class="pain"><div class="ic">😩</div><div class="txt">月末徹夜 15h+</div></div>
+        <div class="pain"><div class="ic">💸</div><div class="txt">深夜手当ミス</div></div>
+        <div class="pain"><div class="ic">👨‍👧</div><div class="txt">家族時間ゼロ</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3: Big number -->
+  <div class="scene scene-3">
+    <div class="bg-grad"></div>
+    <div class="content">
+      <div class="label">— SHIFT WORK TIME —</div>
+      <div class="big-number">
+        <span class="from">5h</span>
+        <span class="arrow">→</span>
+        <span class="to">1h</span>
+      </div>
+      <div class="caption">シフト作成時間が、<span style="color:var(--gold)">80% 短縮</span></div>
+    </div>
+  </div>
+
+  <!-- Scene 4: Features -->
+  <div class="scene scene-4">
+    <div class="bg-grad"></div>
+    <div class="content">
+      <div class="label">— ALL IN ONE APP —</div>
+      <div class="grid">
+        <div class="feat"><div class="ic">📅</div><div class="nm">シフト作成</div><div class="ds">ドラッグ操作で完成</div></div>
+        <div class="feat"><div class="ic">📍</div><div class="nm">GPS 打刻</div><div class="ds">不正打刻を防止</div></div>
+        <div class="feat"><div class="ic">💴</div><div class="nm">給与計算</div><div class="ds">深夜手当 自動 25%</div></div>
+        <div class="feat"><div class="ic">📩</div><div class="nm">LINE 通知</div><div class="ds">連絡漏れゼロ</div></div>
+        <div class="feat"><div class="ic">🌐</div><div class="nm">5 言語対応</div><div class="ds">英中韓越</div></div>
+        <div class="feat"><div class="ic">⚖️</div><div class="nm">労基法アラート</div><div class="ds">違反リスクを防ぐ</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 5: Pricing -->
+  <div class="scene scene-5">
+    <div class="bg-grad bg-success"></div>
+    <div class="content">
+      <div class="label">— PRICING —</div>
+      <div class="pricing-row">
+        <div class="plan">
+          <div class="name">Free</div>
+          <div class="price">¥0</div>
+          <div class="sub">個人店は永久無料</div>
+        </div>
+        <div class="plan featured">
+          <div class="name">Pro</div>
+          <div class="price">¥4,990</div>
+          <div class="sub">月額・スタッフ無制限</div>
+        </div>
+      </div>
+      <div class="footer">クレジットカード登録 不要 ・ 30 日間 全機能 無料体験</div>
+    </div>
+  </div>
+
+  <!-- Scene 6: CTA -->
+  <div class="scene scene-6">
+    <div class="bg-grad"></div>
+    <div class="content">
+      <div class="brand">RAKU<span class="accent">RAKU</span></div>
+      <div class="cta-text">今すぐ、無料で始める。</div>
+      <div class="url-box">rakuraku-shift.com</div>
+      <div class="small">RAKURAKU 代表  小泉咲太</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="progress" id="progress"></div>
+
+<script>
+const scenes = document.querySelectorAll('.scene');
+const progress = document.getElementById('progress');
+const info = document.getElementById('info');
+
+// シーン秒数
+const durations = [5, 7, 6, 9, 7, 6]; // 合計 40 秒
+
+let currentIndex = 0;
+let timeoutId = null;
+let progressInterval = null;
+let startTime = 0;
+
+function showScene(i){
+  scenes.forEach(s=>s.classList.remove('active'));
+  if(i < scenes.length){
+    scenes[i].classList.add('active');
+    info.textContent = `シーン ${i+1} / ${scenes.length}`;
+  }
+}
+
+function start(){
+  stopShow();
+  currentIndex = 0;
+  startTime = Date.now();
+  const totalDuration = durations.reduce((a,b)=>a+b,0) * 1000;
+  showScene(0);
+
+  // Progress bar
+  progress.style.width = '0%';
+  progressInterval = setInterval(()=>{
+    const elapsed = Date.now() - startTime;
+    progress.style.width = Math.min(100, (elapsed / totalDuration) * 100) + '%';
+  }, 100);
+
+  // Schedule scene transitions
+  let cumulative = 0;
+  for(let i = 0; i < durations.length; i++){
+    cumulative += durations[i] * 1000;
+    setTimeout((idx=>()=>{
+      currentIndex = idx + 1;
+      if(currentIndex < scenes.length){
+        showScene(currentIndex);
+      } else {
+        info.textContent = '完了';
+        clearInterval(progressInterval);
+      }
+    })(i), cumulative);
+  }
+}
+
+function stopShow(){
+  if(timeoutId) clearTimeout(timeoutId);
+  if(progressInterval) clearInterval(progressInterval);
+  scenes.forEach(s=>s.classList.remove('active'));
+  progress.style.width = '0%';
+  info.textContent = '停止';
+}
+
+// 起動時は最初のシーンを表示
+showScene(0);
+info.textContent = '▶ 再生で開始';
+</script>
+
+</body>
+</html>
