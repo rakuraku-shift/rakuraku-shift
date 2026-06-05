@@ -2435,7 +2435,7 @@
     <div class="sf-field name-input-wrap">
       <label class="sf-label"><span data-i18n="sf.label_name">氏名</span> <span style="font-size:10px;color:var(--slate-400);font-weight:600;margin-left:4px;" data-i18n="sf.label_name_hint">💡 1文字入力で候補表示</span></label>
       <input class="sf-input" type="text" id="staff-name"
-             placeholder="山田 太郎"
+             placeholder="スタッフ名"
              oninput="onNameInput()" onfocus="onNameInput()" autocomplete="off" />
       <div class="name-suggestions" id="name-suggestions" style="display:none;"></div>
     </div>
@@ -7033,15 +7033,15 @@
       dates.push(d.toISOString().slice(0, 10));
     }
 
-    // サンプルスタッフと希望時間（朝/昼/夜 混在）
+    // サンプルスタッフと希望時間（朝/昼/夜 混在）— 匿名化済み
     const SAMPLE = [
-      { name:'田中 太郎', dates:[dates[0],dates[1],dates[2],dates[4]], time:'9〜14' },
-      { name:'鈴木 花子', dates:[dates[1],dates[2],dates[3],dates[5]], time:'14〜18' },
-      { name:'山田 次郎', dates:[dates[0],dates[2],dates[4],dates[6]], time:'18〜22' },
-      { name:'佐藤 美咲', dates:[dates[0],dates[1],dates[3],dates[5]], time:'18〜23' },
-      { name:'高橋 健一', dates:[dates[2],dates[3],dates[4],dates[6]], time:'10〜14' },
-      { name:'伊藤 由美', dates:[dates[0],dates[2],dates[5],dates[6]], time:'15〜19' },
-      { name:'渡辺 健太', dates:[dates[1],dates[3],dates[4],dates[6]], time:'18〜22' },
+      { name:'スタッフA', dates:[dates[0],dates[1],dates[2],dates[4]], time:'9〜14' },
+      { name:'スタッフB', dates:[dates[1],dates[2],dates[3],dates[5]], time:'14〜18' },
+      { name:'スタッフC', dates:[dates[0],dates[2],dates[4],dates[6]], time:'18〜22' },
+      { name:'スタッフD', dates:[dates[0],dates[1],dates[3],dates[5]], time:'18〜23' },
+      { name:'スタッフE', dates:[dates[2],dates[3],dates[4],dates[6]], time:'10〜14' },
+      { name:'スタッフF', dates:[dates[0],dates[2],dates[5],dates[6]], time:'15〜19' },
+      { name:'スタッフG', dates:[dates[1],dates[3],dates[4],dates[6]], time:'18〜22' },
     ];
 
     // periodを直接 time文字列から推定
