@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgLaw" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#7C2D12"/>
+    </linearGradient>
+    <linearGradient id="alertGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#DC2626"/>
+    </linearGradient>
+    <filter id="phShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgLaw)"/>
+
+  <!-- Title -->
+  <text x="640" y="80" font-family="-apple-system, sans-serif" font-size="32" font-weight="900" fill="#fff" text-anchor="middle">労基法違反アラート (自動検知)</text>
+  <text x="640" y="110" font-family="-apple-system, sans-serif" font-size="14" fill="#FCD34D" text-anchor="middle" letter-spacing="3">LABOR LAW COMPLIANCE ALERT</text>
+
+  <!-- Phone -->
+  <g transform="translate(440, 150)" filter="url(#phShadow)">
+    <rect x="0" y="0" width="400" height="540" rx="48" fill="#0F172A"/>
+    <rect x="12" y="12" width="376" height="516" rx="36" fill="#FFFFFF"/>
+    <rect x="160" y="12" width="80" height="20" rx="10" fill="#0F172A"/>
+
+    <!-- Status bar -->
+    <g transform="translate(28, 50)">
+      <text x="0" y="14" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#0F172A">19:42</text>
+      <text x="320" y="14" font-family="-apple-system, sans-serif" font-size="11" fill="#0F172A">📶 🔋</text>
+    </g>
+
+    <!-- Header -->
+    <g transform="translate(28, 80)">
+      <text x="0" y="14" font-family="-apple-system, sans-serif" font-size="11" fill="#94A3B8" letter-spacing="2">2026/06/05 (木)</text>
+      <text x="0" y="36" font-family="-apple-system, sans-serif" font-size="16" font-weight="900" fill="#0F172A">⚠️ 3件のアラート</text>
+    </g>
+
+    <!-- Alert 1 (critical) -->
+    <g transform="translate(28, 138)">
+      <rect x="0" y="0" width="344" height="80" rx="12" fill="#FEF2F2" stroke="#DC2626" stroke-width="1.5"/>
+      <rect x="0" y="0" width="6" height="80" rx="3" fill="url(#alertGrad)"/>
+      <text x="20" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="900" fill="#991B1B" letter-spacing="2">⛔ 重大 (赤)</text>
+      <text x="20" y="42" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#0F172A">深夜手当25%未加算</text>
+      <text x="20" y="60" font-family="-apple-system, sans-serif" font-size="10" fill="#7F1D1D">スタッフB / 6/3 22:00-翌2:00 / 不足額¥1,250</text>
+      <text x="20" y="74" font-family="-apple-system, sans-serif" font-size="9" font-weight="700" fill="#DC2626">→ 労基法第37条 違反リスク</text>
+    </g>
+
+    <!-- Alert 2 (warning) -->
+    <g transform="translate(28, 232)">
+      <rect x="0" y="0" width="344" height="80" rx="12" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/>
+      <rect x="0" y="0" width="6" height="80" rx="3" fill="#F59E0B"/>
+      <text x="20" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="900" fill="#92400E" letter-spacing="2">⚠️ 警告 (黄)</text>
+      <text x="20" y="42" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#0F172A">連勤6日目</text>
+      <text x="20" y="60" font-family="-apple-system, sans-serif" font-size="10" fill="#78350F">スタッフC / 6/1〜6/6 連続出勤</text>
+      <text x="20" y="74" font-family="-apple-system, sans-serif" font-size="9" font-weight="700" fill="#D97706">→ 6日連続超は労基法上推奨外</text>
+    </g>
+
+    <!-- Alert 3 (info) -->
+    <g transform="translate(28, 326)">
+      <rect x="0" y="0" width="344" height="68" rx="12" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+      <rect x="0" y="0" width="6" height="68" rx="3" fill="#3B82F6"/>
+      <text x="20" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="900" fill="#1E40AF" letter-spacing="2">ℹ️ 情報</text>
+      <text x="20" y="42" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#0F172A">休憩時間 短い</text>
+      <text x="20" y="60" font-family="-apple-system, sans-serif" font-size="10" fill="#1E3A8A">スタッフD / 8h勤務に休憩30min</text>
+    </g>
+
+    <!-- Bottom action -->
+    <g transform="translate(28, 412)">
+      <rect x="0" y="0" width="344" height="56" rx="28" fill="url(#alertGrad)" filter="url(#phShadow)"/>
+      <text x="172" y="36" font-family="-apple-system, sans-serif" font-size="16" font-weight="900" fill="#fff" text-anchor="middle">3 件を一括解決</text>
+    </g>
+
+    <!-- Footer -->
+    <g transform="translate(28, 484)">
+      <text x="172" y="0" font-family="-apple-system, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle">労基法第32-41条 / 最新通達 自動反映</text>
+      <text x="172" y="16" font-family="-apple-system, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle">違反検出から即座にプッシュ通知</text>
+    </g>
+  </g>
+
+  <!-- Left features -->
+  <g transform="translate(60, 180)" font-family="-apple-system, sans-serif" fill="#fff">
+    <text x="0" y="0" font-size="18" font-weight="900">解決する課題</text>
+    <g transform="translate(0, 40)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ 深夜手当の未払い</text>
+      <text x="0" y="20" font-size="11" fill="#FCD34D">22:00以降+25%自動加算</text>
+    </g>
+    <g transform="translate(0, 90)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ 連勤6日超え</text>
+      <text x="0" y="20" font-size="11" fill="#FCD34D">休日取得を自動提案</text>
+    </g>
+    <g transform="translate(0, 140)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ 休憩時間不足</text>
+      <text x="0" y="20" font-size="11" fill="#FCD34D">6h超は45min / 8h超は60min</text>
+    </g>
+  </g>
+
+  <!-- Right features -->
+  <g transform="translate(900, 180)" font-family="-apple-system, sans-serif" fill="#fff">
+    <text x="0" y="0" font-size="18" font-weight="900">業界唯一の機能</text>
+    <g transform="translate(0, 40)">
+      <text x="0" y="0" font-size="14" font-weight="700">⚡ リアルタイム検知</text>
+      <text x="0" y="20" font-size="11" fill="#FCD34D">シフト確定前に警告</text>
+    </g>
+    <g transform="translate(0, 90)">
+      <text x="0" y="0" font-size="14" font-weight="700">💰 不足額自動計算</text>
+      <text x="0" y="20" font-size="11" fill="#FCD34D">差額を即座に表示</text>
+    </g>
+    <g transform="translate(0, 140)">
+      <text x="0" y="0" font-size="14" font-weight="700">📊 月次レポート</text>
+      <text x="0" y="20" font-size="11" fill="#FCD34D">監査対応の証跡を保管</text>
+    </g>
+    <g transform="translate(0, 190)">
+      <text x="0" y="0" font-size="14" font-weight="700">🎯 訴訟リスク 0</text>
+      <text x="0" y="20" font-size="11" fill="#FCD34D">経営者を守る保険</text>
+    </g>
+  </g>
+</svg>

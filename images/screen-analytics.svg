@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgAna" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="anaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+    <linearGradient id="okGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <filter id="phShadowA" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgAna)"/>
+
+  <text x="640" y="80" font-family="-apple-system, sans-serif" font-size="32" font-weight="900" fill="#fff" text-anchor="middle">売上 × 人件費率 可視化 (月次レポート)</text>
+  <text x="640" y="110" font-family="-apple-system, sans-serif" font-size="14" fill="#93C5FD" text-anchor="middle" letter-spacing="3">ANALYTICS DASHBOARD</text>
+
+  <!-- Phone -->
+  <g transform="translate(440, 150)" filter="url(#phShadowA)">
+    <rect x="0" y="0" width="400" height="540" rx="48" fill="#0F172A"/>
+    <rect x="12" y="12" width="376" height="516" rx="36" fill="#FFFFFF"/>
+    <rect x="160" y="12" width="80" height="20" rx="10" fill="#0F172A"/>
+
+    <!-- Status -->
+    <g transform="translate(28, 50)">
+      <text x="0" y="14" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#0F172A">19:42</text>
+      <text x="320" y="14" font-family="-apple-system, sans-serif" font-size="11" fill="#0F172A">📶 🔋</text>
+    </g>
+
+    <!-- Header -->
+    <g transform="translate(28, 88)">
+      <text x="0" y="14" font-family="-apple-system, sans-serif" font-size="11" fill="#94A3B8">2026年6月 月次レポート</text>
+      <text x="0" y="36" font-family="-apple-system, sans-serif" font-size="16" font-weight="900" fill="#0F172A">📊 売上 × 人件費</text>
+    </g>
+
+    <!-- KPI card 1: 売上 -->
+    <g transform="translate(28, 134)">
+      <rect x="0" y="0" width="164" height="76" rx="14" fill="#F0F9FF"/>
+      <text x="14" y="22" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" fill="#1E40AF" letter-spacing="2">売上</text>
+      <text x="14" y="48" font-family="-apple-system, sans-serif" font-size="22" font-weight="900" fill="#1E3A8A">¥4.82M</text>
+      <text x="14" y="64" font-family="-apple-system, sans-serif" font-size="10" fill="#3B82F6">▲ 前月比 +12.3%</text>
+    </g>
+
+    <!-- KPI card 2: 人件費率 -->
+    <g transform="translate(208, 134)">
+      <rect x="0" y="0" width="164" height="76" rx="14" fill="#ECFDF5"/>
+      <text x="14" y="22" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" fill="#065F46" letter-spacing="2">人件費率</text>
+      <text x="14" y="48" font-family="-apple-system, sans-serif" font-size="22" font-weight="900" fill="#047857">28.4%</text>
+      <text x="14" y="64" font-family="-apple-system, sans-serif" font-size="10" fill="#10B981">▼ 前月比 -2.1pt</text>
+    </g>
+
+    <!-- Chart title -->
+    <g transform="translate(28, 230)">
+      <text x="0" y="0" font-family="-apple-system, sans-serif" font-size="11" font-weight="900" fill="#0F172A">日別 売上(青) vs 人件費(緑)</text>
+    </g>
+
+    <!-- Bar chart -->
+    <g transform="translate(28, 248)">
+      <rect x="0" y="0" width="344" height="120" rx="10" fill="#F8FAFC"/>
+      <!-- Bars -->
+      <g>
+        <rect x="20" y="20" width="14" height="80" fill="url(#anaGrad)" rx="2"/>
+        <rect x="36" y="44" width="14" height="56" fill="url(#okGrad)" rx="2"/>
+        <rect x="62" y="32" width="14" height="68" fill="url(#anaGrad)" rx="2"/>
+        <rect x="78" y="56" width="14" height="44" fill="url(#okGrad)" rx="2"/>
+        <rect x="104" y="14" width="14" height="86" fill="url(#anaGrad)" rx="2"/>
+        <rect x="120" y="40" width="14" height="60" fill="url(#okGrad)" rx="2"/>
+        <rect x="146" y="28" width="14" height="72" fill="url(#anaGrad)" rx="2"/>
+        <rect x="162" y="52" width="14" height="48" fill="url(#okGrad)" rx="2"/>
+        <rect x="188" y="22" width="14" height="78" fill="url(#anaGrad)" rx="2"/>
+        <rect x="204" y="46" width="14" height="54" fill="url(#okGrad)" rx="2"/>
+        <rect x="230" y="10" width="14" height="90" fill="url(#anaGrad)" rx="2"/>
+        <rect x="246" y="34" width="14" height="66" fill="url(#okGrad)" rx="2"/>
+        <rect x="272" y="18" width="14" height="82" fill="url(#anaGrad)" rx="2"/>
+        <rect x="288" y="40" width="14" height="60" fill="url(#okGrad)" rx="2"/>
+        <rect x="314" y="28" width="14" height="72" fill="url(#anaGrad)" rx="2"/>
+      </g>
+      <!-- X axis -->
+      <line x1="0" y1="100" x2="344" y2="100" stroke="#CBD5E1" stroke-width="1"/>
+    </g>
+
+    <!-- Insights -->
+    <g transform="translate(28, 384)">
+      <rect x="0" y="0" width="344" height="84" rx="12" fill="#FEF3C7"/>
+      <text x="14" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="900" fill="#92400E">💡 AI 改善提案</text>
+      <text x="14" y="44" font-family="-apple-system, sans-serif" font-size="11" fill="#78350F">・金曜の人件費率が34%と高い</text>
+      <text x="14" y="60" font-family="-apple-system, sans-serif" font-size="11" fill="#78350F">・スタッフ2名減で目標28%達成</text>
+      <text x="14" y="76" font-family="-apple-system, sans-serif" font-size="11" fill="#78350F">・推定削減額 月¥48,000</text>
+    </g>
+
+    <!-- Footer -->
+    <g transform="translate(28, 484)">
+      <text x="172" y="6" font-family="-apple-system, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle">月次レポートをPDFで出力可</text>
+      <text x="172" y="22" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#3B82F6" text-anchor="middle">経営判断が"勘"から"数字"へ</text>
+    </g>
+  </g>
+
+  <!-- Left -->
+  <g transform="translate(60, 180)" font-family="-apple-system, sans-serif" fill="#fff">
+    <text x="0" y="0" font-size="18" font-weight="900">解決する課題</text>
+    <g transform="translate(0, 40)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ 経営判断が"勘"頼み</text>
+      <text x="0" y="20" font-size="11" fill="#93C5FD">数字で見れない</text>
+    </g>
+    <g transform="translate(0, 90)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ 人件費率が分からない</text>
+      <text x="0" y="20" font-size="11" fill="#93C5FD">業界平均30%を上回る</text>
+    </g>
+    <g transform="translate(0, 140)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ 月次会議で資料準備</text>
+      <text x="0" y="20" font-size="11" fill="#93C5FD">エクセル集計に5時間</text>
+    </g>
+  </g>
+
+  <!-- Right -->
+  <g transform="translate(900, 180)" font-family="-apple-system, sans-serif" fill="#fff">
+    <text x="0" y="0" font-size="18" font-weight="900">経営者向け機能</text>
+    <g transform="translate(0, 40)">
+      <text x="0" y="0" font-size="14" font-weight="700">📈 売上 × 人件費比較</text>
+      <text x="0" y="20" font-size="11" fill="#93C5FD">日次・週次・月次</text>
+    </g>
+    <g transform="translate(0, 90)">
+      <text x="0" y="0" font-size="14" font-weight="700">🤖 AI 改善提案</text>
+      <text x="0" y="20" font-size="11" fill="#93C5FD">削減ポイントを自動指摘</text>
+    </g>
+    <g transform="translate(0, 140)">
+      <text x="0" y="0" font-size="14" font-weight="700">📊 多店舗比較</text>
+      <text x="0" y="20" font-size="11" fill="#93C5FD">本部視点で全店一覧</text>
+    </g>
+    <g transform="translate(0, 190)">
+      <text x="0" y="0" font-size="14" font-weight="700">📥 PDF / CSV 出力</text>
+      <text x="0" y="20" font-size="11" fill="#93C5FD">月次会議資料が3秒で</text>
+    </g>
+  </g>
+</svg>

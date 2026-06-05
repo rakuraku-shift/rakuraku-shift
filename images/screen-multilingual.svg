@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgMulti" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="multiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#F472B6"/>
+    </linearGradient>
+    <filter id="multiShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="20" stdDeviation="25" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgMulti)"/>
+
+  <!-- Title -->
+  <text x="640" y="80" font-family="-apple-system,'Hiragino Sans',sans-serif" font-size="34" font-weight="900" fill="#fff" text-anchor="middle">🌐 5 言語対応</text>
+  <text x="640" y="112" font-family="-apple-system,sans-serif" font-size="14" fill="#C7D2FE" text-anchor="middle" letter-spacing="3">5 LANGUAGES FOR FOREIGN STAFF</text>
+
+  <!-- 5 言語カード横並び -->
+  <g transform="translate(80, 165)">
+    <!-- 日本語 -->
+    <g transform="translate(0, 0)" filter="url(#multiShadow)">
+      <rect x="0" y="0" width="210" height="240" rx="20" fill="#fff"/>
+      <rect x="0" y="0" width="210" height="50" rx="20" fill="#EF4444"/>
+      <rect x="0" y="30" width="210" height="20" fill="#EF4444"/>
+      <text x="105" y="32" font-family="-apple-system,sans-serif" font-size="14" font-weight="900" fill="#fff" text-anchor="middle">🇯🇵 日本語</text>
+      <text x="105" y="92" font-family="-apple-system,sans-serif" font-size="18" font-weight="900" fill="#0F172A" text-anchor="middle">シフト確認</text>
+      <line x1="40" y1="108" x2="170" y2="108" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="105" y="138" font-family="-apple-system,sans-serif" font-size="12" fill="#475569" text-anchor="middle">9月15日(金)</text>
+      <text x="105" y="158" font-family="-apple-system,sans-serif" font-size="14" font-weight="700" fill="#4F46E5" text-anchor="middle">18:00 - 23:00</text>
+      <text x="105" y="180" font-family="-apple-system,sans-serif" font-size="11" fill="#64748B" text-anchor="middle">BAR RAKURAKU 港区</text>
+      <rect x="35" y="200" width="140" height="26" rx="13" fill="#10B981"/>
+      <text x="105" y="218" font-family="-apple-system,sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">✓ 確認しました</text>
+    </g>
+
+    <!-- English -->
+    <g transform="translate(228, 0)" filter="url(#multiShadow)">
+      <rect x="0" y="0" width="210" height="240" rx="20" fill="#fff"/>
+      <rect x="0" y="0" width="210" height="50" rx="20" fill="#3B82F6"/>
+      <rect x="0" y="30" width="210" height="20" fill="#3B82F6"/>
+      <text x="105" y="32" font-family="-apple-system,sans-serif" font-size="14" font-weight="900" fill="#fff" text-anchor="middle">🇺🇸 English</text>
+      <text x="105" y="92" font-family="-apple-system,sans-serif" font-size="16" font-weight="900" fill="#0F172A" text-anchor="middle">Shift Confirm</text>
+      <line x1="40" y1="108" x2="170" y2="108" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="105" y="138" font-family="-apple-system,sans-serif" font-size="12" fill="#475569" text-anchor="middle">Sept 15 (Fri)</text>
+      <text x="105" y="158" font-family="-apple-system,sans-serif" font-size="14" font-weight="700" fill="#4F46E5" text-anchor="middle">18:00 - 23:00</text>
+      <text x="105" y="180" font-family="-apple-system,sans-serif" font-size="11" fill="#64748B" text-anchor="middle">BAR RAKURAKU Minato</text>
+      <rect x="35" y="200" width="140" height="26" rx="13" fill="#10B981"/>
+      <text x="105" y="218" font-family="-apple-system,sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">✓ Confirmed</text>
+    </g>
+
+    <!-- 中文 -->
+    <g transform="translate(456, 0)" filter="url(#multiShadow)">
+      <rect x="0" y="0" width="210" height="240" rx="20" fill="#fff"/>
+      <rect x="0" y="0" width="210" height="50" rx="20" fill="#DC2626"/>
+      <rect x="0" y="30" width="210" height="20" fill="#DC2626"/>
+      <text x="105" y="32" font-family="-apple-system,sans-serif" font-size="14" font-weight="900" fill="#fff" text-anchor="middle">🇨🇳 中文</text>
+      <text x="105" y="92" font-family="-apple-system,sans-serif" font-size="18" font-weight="900" fill="#0F172A" text-anchor="middle">班次确认</text>
+      <line x1="40" y1="108" x2="170" y2="108" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="105" y="138" font-family="-apple-system,sans-serif" font-size="12" fill="#475569" text-anchor="middle">9月15日(周五)</text>
+      <text x="105" y="158" font-family="-apple-system,sans-serif" font-size="14" font-weight="700" fill="#4F46E5" text-anchor="middle">18:00 - 23:00</text>
+      <text x="105" y="180" font-family="-apple-system,sans-serif" font-size="11" fill="#64748B" text-anchor="middle">BAR RAKURAKU 港区</text>
+      <rect x="35" y="200" width="140" height="26" rx="13" fill="#10B981"/>
+      <text x="105" y="218" font-family="-apple-system,sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">✓ 已确认</text>
+    </g>
+
+    <!-- 한국어 -->
+    <g transform="translate(684, 0)" filter="url(#multiShadow)">
+      <rect x="0" y="0" width="210" height="240" rx="20" fill="#fff"/>
+      <rect x="0" y="0" width="210" height="50" rx="20" fill="#1E40AF"/>
+      <rect x="0" y="30" width="210" height="20" fill="#1E40AF"/>
+      <text x="105" y="32" font-family="-apple-system,sans-serif" font-size="14" font-weight="900" fill="#fff" text-anchor="middle">🇰🇷 한국어</text>
+      <text x="105" y="92" font-family="-apple-system,sans-serif" font-size="18" font-weight="900" fill="#0F172A" text-anchor="middle">근무 확인</text>
+      <line x1="40" y1="108" x2="170" y2="108" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="105" y="138" font-family="-apple-system,sans-serif" font-size="12" fill="#475569" text-anchor="middle">9월 15일(금)</text>
+      <text x="105" y="158" font-family="-apple-system,sans-serif" font-size="14" font-weight="700" fill="#4F46E5" text-anchor="middle">18:00 - 23:00</text>
+      <text x="105" y="180" font-family="-apple-system,sans-serif" font-size="11" fill="#64748B" text-anchor="middle">BAR RAKURAKU 미나토</text>
+      <rect x="35" y="200" width="140" height="26" rx="13" fill="#10B981"/>
+      <text x="105" y="218" font-family="-apple-system,sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">✓ 확인했습니다</text>
+    </g>
+
+    <!-- Tiếng Việt -->
+    <g transform="translate(912, 0)" filter="url(#multiShadow)">
+      <rect x="0" y="0" width="210" height="240" rx="20" fill="#fff"/>
+      <rect x="0" y="0" width="210" height="50" rx="20" fill="#F59E0B"/>
+      <rect x="0" y="30" width="210" height="20" fill="#F59E0B"/>
+      <text x="105" y="32" font-family="-apple-system,sans-serif" font-size="14" font-weight="900" fill="#fff" text-anchor="middle">🇻🇳 Tiếng Việt</text>
+      <text x="105" y="92" font-family="-apple-system,sans-serif" font-size="16" font-weight="900" fill="#0F172A" text-anchor="middle">Xác nhận ca</text>
+      <line x1="40" y1="108" x2="170" y2="108" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="105" y="138" font-family="-apple-system,sans-serif" font-size="12" fill="#475569" text-anchor="middle">15/9 (Thứ 6)</text>
+      <text x="105" y="158" font-family="-apple-system,sans-serif" font-size="14" font-weight="700" fill="#4F46E5" text-anchor="middle">18:00 - 23:00</text>
+      <text x="105" y="180" font-family="-apple-system,sans-serif" font-size="11" fill="#64748B" text-anchor="middle">BAR RAKURAKU Minato</text>
+      <rect x="35" y="200" width="140" height="26" rx="13" fill="#10B981"/>
+      <text x="105" y="218" font-family="-apple-system,sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">✓ Đã xác nhận</text>
+    </g>
+  </g>
+
+  <!-- 説明 -->
+  <g transform="translate(640, 460)" font-family="-apple-system,sans-serif" fill="#fff" text-anchor="middle">
+    <text x="0" y="0" font-size="20" font-weight="900">スタッフは "自分の母国語で" シフトを受け取れる</text>
+    <text x="0" y="30" font-size="14" fill="#C7D2FE">シフト確定通知 / 給与明細 / 打刻 / 募集 ── すべて多言語対応</text>
+  </g>
+
+  <!-- 利点バッジ -->
+  <g transform="translate(640, 540)" font-family="-apple-system,sans-serif" text-anchor="middle">
+    <g transform="translate(-260, 0)">
+      <rect x="-100" y="0" width="200" height="60" rx="30" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
+      <text x="0" y="25" font-size="13" font-weight="900" fill="#fff">🌐 外国人スタッフ</text>
+      <text x="0" y="46" font-size="11" fill="#C7D2FE">採用ハードル激減</text>
+    </g>
+    <g transform="translate(0, 0)">
+      <rect x="-100" y="0" width="200" height="60" rx="30" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
+      <text x="0" y="25" font-size="13" font-weight="900" fill="#fff">📲 翻訳ミス 0</text>
+      <text x="0" y="46" font-size="11" fill="#C7D2FE">手動チューニング済</text>
+    </g>
+    <g transform="translate(260, 0)">
+      <rect x="-100" y="0" width="200" height="60" rx="30" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
+      <text x="0" y="25" font-size="13" font-weight="900" fill="#fff">🔄 自動切替</text>
+      <text x="0" y="46" font-size="11" fill="#C7D2FE">端末設定に追従</text>
+    </g>
+  </g>
+</svg>

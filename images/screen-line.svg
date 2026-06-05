@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgLine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064E3B"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06C755"/>
+      <stop offset="100%" stop-color="#0AB849"/>
+    </linearGradient>
+    <filter id="phShadowLn" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgLine)"/>
+
+  <text x="640" y="80" font-family="-apple-system, sans-serif" font-size="32" font-weight="900" fill="#fff" text-anchor="middle">LINE 通知 自動連携 (スタッフの 100% が読む)</text>
+  <text x="640" y="110" font-family="-apple-system, sans-serif" font-size="14" fill="#86EFAC" text-anchor="middle" letter-spacing="3">LINE NOTIFICATION INTEGRATION</text>
+
+  <!-- Phone -->
+  <g transform="translate(440, 150)" filter="url(#phShadowLn)">
+    <rect x="0" y="0" width="400" height="540" rx="48" fill="#0F172A"/>
+    <rect x="12" y="12" width="376" height="516" rx="36" fill="#F7F8FA"/>
+    <rect x="160" y="12" width="80" height="20" rx="10" fill="#0F172A"/>
+
+    <!-- Status -->
+    <g transform="translate(28, 50)">
+      <text x="0" y="14" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#0F172A">19:42</text>
+      <text x="320" y="14" font-family="-apple-system, sans-serif" font-size="11" fill="#0F172A">📶 🔋</text>
+    </g>
+
+    <!-- LINE header -->
+    <g transform="translate(0, 78)">
+      <rect x="0" y="0" width="400" height="48" fill="url(#lineGrad)"/>
+      <text x="200" y="30" font-family="-apple-system, sans-serif" font-size="15" font-weight="800" fill="#fff" text-anchor="middle">RAKURAKU 自動通知 BOT</text>
+    </g>
+
+    <!-- Chat date -->
+    <g transform="translate(200, 144)" text-anchor="middle">
+      <rect x="-44" y="-12" width="88" height="22" rx="11" fill="#E5E7EB"/>
+      <text x="0" y="2" font-family="-apple-system, sans-serif" font-size="10" font-weight="600" fill="#6B7280">2026年6月5日(木)</text>
+    </g>
+
+    <!-- Message 1: シフト確定 -->
+    <g transform="translate(28, 170)">
+      <rect x="0" y="0" width="280" height="92" rx="14" fill="#fff"/>
+      <text x="14" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="900" fill="#06C755">📅 シフト確定のお知らせ</text>
+      <text x="14" y="42" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" fill="#0F172A">6月8日(日) 18:00-23:00</text>
+      <text x="14" y="58" font-family="-apple-system, sans-serif" font-size="11" fill="#475569">店舗: BAR RAKURAKU 港区店</text>
+      <text x="14" y="72" font-family="-apple-system, sans-serif" font-size="11" fill="#475569">担当: ホール / 売上目標 ¥180k</text>
+      <text x="14" y="86" font-family="-apple-system, sans-serif" font-size="10" fill="#94A3B8">タップで詳細 →</text>
+    </g>
+    <text x="316" y="266" font-family="-apple-system, sans-serif" font-size="9" fill="#94A3B8">19:30</text>
+
+    <!-- Message 2: アラート -->
+    <g transform="translate(28, 280)">
+      <rect x="0" y="0" width="280" height="78" rx="14" fill="#FEF3C7"/>
+      <text x="14" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="900" fill="#D97706">⚠️ 出勤予定 1時間前です</text>
+      <text x="14" y="42" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" fill="#0F172A">17:00 出勤予定</text>
+      <text x="14" y="58" font-family="-apple-system, sans-serif" font-size="11" fill="#78350F">店舗到着まで徒歩15分</text>
+      <text x="14" y="72" font-family="-apple-system, sans-serif" font-size="10" fill="#94A3B8">タップで打刻 →</text>
+    </g>
+    <text x="316" y="362" font-family="-apple-system, sans-serif" font-size="9" fill="#94A3B8">16:00</text>
+
+    <!-- Message 3: 募集 -->
+    <g transform="translate(28, 376)">
+      <rect x="0" y="0" width="280" height="92" rx="14" fill="#FCE7F3"/>
+      <text x="14" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="900" fill="#BE185D">🎯 緊急募集</text>
+      <text x="14" y="42" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" fill="#0F172A">6/8 22:00-翌2:00 入れる方</text>
+      <text x="14" y="58" font-family="-apple-system, sans-serif" font-size="11" fill="#831843">時給+100円 (¥1,600/h)</text>
+      <text x="14" y="76" font-family="-apple-system, sans-serif" font-size="11" fill="#831843">先着 1 名 → 即確定</text>
+      <text x="14" y="88" font-family="-apple-system, sans-serif" font-size="10" fill="#94A3B8">「OK」と返信</text>
+    </g>
+    <text x="316" y="472" font-family="-apple-system, sans-serif" font-size="9" fill="#94A3B8">19:35</text>
+
+    <!-- Input area -->
+    <g transform="translate(0, 484)">
+      <rect x="0" y="0" width="400" height="44" fill="#E5E7EB"/>
+      <rect x="12" y="8" width="320" height="28" rx="14" fill="#fff"/>
+      <text x="22" y="26" font-family="-apple-system, sans-serif" font-size="11" fill="#9CA3AF">メッセージを入力</text>
+      <circle cx="360" cy="22" r="14" fill="url(#lineGrad)"/>
+      <text x="360" y="27" font-family="-apple-system, sans-serif" font-size="12" font-weight="900" fill="#fff" text-anchor="middle">▶</text>
+    </g>
+  </g>
+
+  <!-- Left -->
+  <g transform="translate(60, 180)" font-family="-apple-system, sans-serif" fill="#fff">
+    <text x="0" y="0" font-size="18" font-weight="900">解決する課題</text>
+    <g transform="translate(0, 40)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ メールは読まれない</text>
+      <text x="0" y="20" font-size="11" fill="#86EFAC">スタッフの開封率 20%</text>
+    </g>
+    <g transform="translate(0, 90)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ アプリ DL 嫌がる</text>
+      <text x="0" y="20" font-size="11" fill="#86EFAC">「LINE で済ませたい」</text>
+    </g>
+    <g transform="translate(0, 140)">
+      <text x="0" y="0" font-size="14" font-weight="700">❌ シフト連絡漏れ</text>
+      <text x="0" y="20" font-size="11" fill="#86EFAC">確定して伝わらない</text>
+    </g>
+  </g>
+
+  <!-- Right -->
+  <g transform="translate(900, 180)" font-family="-apple-system, sans-serif" fill="#fff">
+    <text x="0" y="0" font-size="18" font-weight="900">LINE 連携 6 機能</text>
+    <g transform="translate(0, 40)">
+      <text x="0" y="0" font-size="14" font-weight="700">📅 シフト確定通知</text>
+      <text x="0" y="20" font-size="11" fill="#86EFAC">確定後 即配信</text>
+    </g>
+    <g transform="translate(0, 90)">
+      <text x="0" y="0" font-size="14" font-weight="700">⏰ 出勤リマインド</text>
+      <text x="0" y="20" font-size="11" fill="#86EFAC">1時間前に自動</text>
+    </g>
+    <g transform="translate(0, 140)">
+      <text x="0" y="0" font-size="14" font-weight="700">🎯 募集 → 即返信</text>
+      <text x="0" y="20" font-size="11" fill="#86EFAC">「OK」だけで確定</text>
+    </g>
+    <g transform="translate(0, 190)">
+      <text x="0" y="0" font-size="14" font-weight="700">🌐 多言語 BOT</text>
+      <text x="0" y="20" font-size="11" fill="#86EFAC">スタッフの母国語で送信</text>
+    </g>
+  </g>
+</svg>
