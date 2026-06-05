@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>RAKURAKU 機能ショーケース (画像一覧)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:#0F0F23;color:#fff;line-height:1.6}
+.hero{text-align:center;padding:60px 20px 40px;background:linear-gradient(135deg,#0F172A,#1E1B4B,#312E81)}
+.hero h1{font-size:36px;font-weight:900;margin-bottom:8px}
+.hero p{font-size:14px;color:#A5B4FC;letter-spacing:.1em}
+.grid{max-width:1400px;margin:40px auto;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:24px}
+.card{background:#1E1B4B;border:1px solid #312E81;border-radius:16px;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,.4)}
+.card-header{padding:18px 24px;display:flex;justify-content:space-between;align-items:center;background:#0F172A;border-bottom:1px solid #312E81}
+.card-title{font-size:14px;font-weight:900}
+.card-num{font-size:10px;color:#FBBF24;font-weight:700;letter-spacing:.3em}
+.card-img{display:block;width:100%;height:auto;background:#fff}
+.card-foot{padding:16px 24px;font-size:11px;color:#A5B4FC;display:flex;justify-content:space-between;align-items:center}
+.dl-btn{background:#4F46E5;color:#fff;text-decoration:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:11px;transition:background .15s}
+.dl-btn:hover{background:#3730A3}
+.controls{position:fixed;top:14px;right:14px;background:#fff;padding:10px 14px;border-radius:6px;z-index:9999;display:flex;gap:8px}
+.controls button{background:#4F46E5;color:#fff;border:none;padding:9px 16px;border-radius:5px;font-weight:700;font-size:12px;cursor:pointer}
+.controls button.alt{background:#0F172A}
+@media print{.controls,.dl-btn{display:none}}
+.footer{text-align:center;padding:40px 20px;color:#64748B;font-size:11px}
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <button onclick="window.print()">📄 一括 PDF</button>
+  <button class="alt" onclick="downloadAll()">⬇ 個別ダウンロード</button>
+</div>
+
+<div class="hero">
+  <h1>🎨 RAKURAKU 機能ショーケース</h1>
+  <p>SERVICE FEATURES SVG GALLERY</p>
+  <p style="margin-top:8px;font-size:12px;color:#94A3B8">各画像を右クリック→「画像を保存」で個別 DL 可能 / 印刷で一括 PDF 化可能</p>
+</div>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-num">FEATURE 01</div>
+        <div class="card-title">🤖 AI シフト自動作成</div>
+      </div>
+    </div>
+    <img class="card-img" src="screen-shift.svg" alt="シフト管理画面">
+    <div class="card-foot">
+      <span>1280×720 / SVG</span>
+      <a class="dl-btn" href="screen-shift.svg" download>⬇ ダウンロード</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-num">FEATURE 02</div>
+        <div class="card-title">📍 GPS 打刻</div>
+      </div>
+    </div>
+    <img class="card-img" src="screen-timecard.svg" alt="GPS 打刻画面">
+    <div class="card-foot">
+      <span>1280×720 / SVG</span>
+      <a class="dl-btn" href="screen-timecard.svg" download>⬇ ダウンロード</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-num">FEATURE 03</div>
+        <div class="card-title">💰 給与自動計算</div>
+      </div>
+    </div>
+    <img class="card-img" src="screen-payroll.svg" alt="給与計算画面">
+    <div class="card-foot">
+      <span>1280×720 / SVG</span>
+      <a class="dl-btn" href="screen-payroll.svg" download>⬇ ダウンロード</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-num">FEATURE 04</div>
+        <div class="card-title">⚠️ 労基法アラート</div>
+      </div>
+    </div>
+    <img class="card-img" src="screen-alert.svg" alt="労基法アラート画面">
+    <div class="card-foot">
+      <span>1280×720 / SVG</span>
+      <a class="dl-btn" href="screen-alert.svg" download>⬇ ダウンロード</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-num">FEATURE 05</div>
+        <div class="card-title">🌐 5 言語対応</div>
+      </div>
+    </div>
+    <img class="card-img" src="screen-multilingual.svg" alt="多言語対応画面">
+    <div class="card-foot">
+      <span>1280×720 / SVG</span>
+      <a class="dl-btn" href="screen-multilingual.svg" download>⬇ ダウンロード</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-num">FEATURE 06</div>
+        <div class="card-title">🎯 3 段階 自動募集</div>
+      </div>
+    </div>
+    <img class="card-img" src="screen-recruit.svg" alt="スタッフ募集画面">
+    <div class="card-foot">
+      <span>1280×720 / SVG</span>
+      <a class="dl-btn" href="screen-recruit.svg" download>⬇ ダウンロード</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-num">FEATURE 07</div>
+        <div class="card-title">📊 月次レポート</div>
+      </div>
+    </div>
+    <img class="card-img" src="screen-report.svg" alt="月次レポート画面">
+    <div class="card-foot">
+      <span>1280×720 / SVG</span>
+      <a class="dl-btn" href="screen-report.svg" download>⬇ ダウンロード</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-num">FEATURE 08</div>
+        <div class="card-title">📱 LINE 通知連携</div>
+      </div>
+    </div>
+    <img class="card-img" src="screen-line.svg" alt="LINE 通知連携画面">
+    <div class="card-foot">
+      <span>1280×720 / SVG</span>
+      <a class="dl-btn" href="screen-line.svg" download>⬇ ダウンロード</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>計 8 画像 / 全て 1280×720 SVG / 印刷・動画・PDF 利用可</p>
+  <p style="margin-top:8px">© 2026 RAKURAKU</p>
+</div>
+
+<script>
+function downloadAll(){
+  const files = ['screen-shift.svg','screen-timecard.svg','screen-payroll.svg','screen-alert.svg','screen-multilingual.svg','screen-recruit.svg','screen-report.svg','screen-line.svg'];
+  files.forEach((f, i) => {
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = f;
+      a.download = f;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }, i * 300);
+  });
+}
+</script>
+
+</body>
+</html>
