@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>MBTI 性格診断 × シフト相性分析 (無料) | RAKURAKU</title>
+<meta name="description" content="従業員の MBTI を 12 問で診断 (無料)。相性の悪い組み合わせを自動警告。話題の MBTI でシフトを最適化。" />
+<meta name="theme-color" content="#7C3AED">
+<meta property="og:title" content="MBTI × シフト相性分析 — RAKURAKU"/>
+<meta property="og:description" content="話題の MBTI でシフトを最適化。相性の悪い組み合わせを自動警告。"/>
+<meta property="og:image" content="https://rakuraku-shift-production.up.railway.app/icon-512.png"/>
+<meta property="og:type" content="website"/>
+<link rel="canonical" href="https://rakuraku-shift-production.up.railway.app/mbti.html"/>
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #7C3AED;outline-offset:2px;border-radius:4px;}
+  :root{
+    --purple:#7C3AED; --purple-d:#5B21B6; --purple-l:#F3E8FF;
+    --indigo:#4F46E5; --rose:#EC4899;
+    --green:#10B981; --amber:#F59E0B; --red:#EF4444;
+    --slate-900:#0F172A; --slate-700:#334155; --slate-500:#64748B;
+    --slate-200:#E2E8F0; --slate-100:#F1F5F9; --slate-50:#F8FAFC;
+  }
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(180deg,#FAFAFC,#F3E8FF 40%,#FAFAFC);min-height:100vh;line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:var(--purple);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .skip-link{position:absolute;left:-9999px;}.skip-link:focus{left:10px;top:10px;background:#0F172A;color:#fff;padding:10px;z-index:9999;}
+
+  .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);}
+  .nav-inner{max-width:920px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--purple),var(--rose));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;}
+  .nav-back{font-size:13px;color:var(--slate-700);font-weight:700;}
+
+  .container{max-width:920px;margin:0 auto;padding:0 24px;}
+
+  /* ─── Hero ─── */
+  .hero{padding:60px 0 30px;text-align:center;}
+  .hero-eyebrow{display:inline-block;background:linear-gradient(135deg,var(--purple),var(--rose));color:#fff;font-size:11px;font-weight:900;padding:6px 16px;border-radius:20px;letter-spacing:.06em;margin-bottom:16px;}
+  .hero h1{font-size:40px;font-weight:900;letter-spacing:-.02em;line-height:1.25;margin-bottom:14px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--purple),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:15px;color:var(--slate-500);font-weight:600;max-width:720px;margin:0 auto;}
+  @media(max-width:640px){.hero h1{font-size:30px;}}
+
+  /* ─── Test Card ─── */
+  .test-card{background:#fff;border-radius:22px;padding:32px;box-shadow:0 18px 50px rgba(124,58,237,.08);border:1.5px solid var(--purple-l);margin:30px 0;}
+  .progress-bar{height:6px;background:var(--slate-100);border-radius:3px;overflow:hidden;margin-bottom:20px;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--rose));transition:width .3s;width:0%;}
+  .q-num{font-size:11px;font-weight:900;color:var(--purple);letter-spacing:.1em;margin-bottom:6px;text-align:center;}
+  .q-text{font-size:20px;font-weight:800;line-height:1.55;text-align:center;margin-bottom:24px;}
+  @media(max-width:640px){.q-text{font-size:17px;}}
+  .q-opts{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:640px){.q-opts{grid-template-columns:1fr;}}
+  .opt-btn{padding:18px 18px;border:2px solid var(--slate-200);background:#fff;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--slate-700);transition:all .15s;text-align:left;display:flex;align-items:center;gap:12px;}
+  .opt-btn:hover{border-color:var(--purple);background:var(--purple-l);transform:translateY(-2px);}
+  .opt-btn .opt-ic{font-size:24px;flex-shrink:0;width:42px;height:42px;border-radius:10px;background:var(--purple-l);display:flex;align-items:center;justify-content:center;}
+  .opt-btn:hover .opt-ic{background:var(--purple);color:#fff;}
+  .nav-row{display:flex;justify-content:space-between;margin-top:24px;align-items:center;}
+  .back-btn{background:none;border:none;color:var(--slate-500);font-size:13px;font-weight:700;cursor:pointer;padding:8px 14px;border-radius:8px;}
+  .back-btn:hover{background:var(--slate-100);}
+  .back-btn:disabled{opacity:0.3;cursor:not-allowed;}
+
+  /* ─── Result ─── */
+  .result-card{background:#fff;border-radius:22px;padding:36px;box-shadow:0 18px 50px rgba(124,58,237,.08);border:1.5px solid var(--purple-l);margin:30px 0;display:none;}
+  .result-card.show{display:block;}
+  .result-type{font-size:64px;font-weight:900;letter-spacing:-.03em;text-align:center;background:linear-gradient(135deg,var(--purple),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+  .result-name{font-size:20px;font-weight:900;text-align:center;margin-bottom:6px;}
+  .result-emoji{text-align:center;font-size:48px;margin-bottom:14px;}
+  .result-desc{font-size:13px;color:var(--slate-700);line-height:1.85;text-align:center;max-width:560px;margin:0 auto 24px;}
+  .traits{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+  @media(max-width:600px){.traits{grid-template-columns:repeat(2,1fr);}}
+  .trait{background:var(--purple-l);border-radius:12px;padding:14px 12px;text-align:center;}
+  .trait .v{font-size:18px;font-weight:900;color:var(--purple-d);}
+  .trait .l{font-size:10px;font-weight:700;color:var(--slate-700);margin-top:3px;}
+  .save-area{background:var(--slate-50);border-radius:14px;padding:20px;}
+  .save-area h3{font-size:14px;font-weight:900;margin-bottom:10px;}
+  .save-form{display:grid;grid-template-columns:1fr auto;gap:10px;}
+  @media(max-width:520px){.save-form{grid-template-columns:1fr;}}
+  .save-form input{padding:11px 14px;border:1.5px solid var(--slate-200);border-radius:10px;font-size:13px;font-family:inherit;outline:none;background:#fff;}
+  .save-form input:focus{border-color:var(--purple);}
+  .save-btn{padding:11px 22px;background:linear-gradient(135deg,var(--purple),var(--rose));color:#fff;border:none;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;font-family:inherit;}
+
+  /* ─── Roster ─── */
+  .roster-card{background:#fff;border-radius:22px;padding:30px;box-shadow:0 10px 30px rgba(0,0,0,.05);border:1.5px solid var(--slate-100);margin:30px 0;}
+  .roster-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px;flex-wrap:wrap;gap:8px;}
+  .roster-head h2{font-size:18px;font-weight:900;}
+  .roster-head .tag{font-size:10px;font-weight:800;color:var(--purple);background:var(--purple-l);padding:4px 12px;border-radius:12px;letter-spacing:.06em;}
+  .staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;}
+  .staff{background:var(--slate-50);border-radius:14px;padding:16px;text-align:center;border:1.5px solid transparent;position:relative;transition:transform .15s, border-color .15s;}
+  .staff:hover{transform:translateY(-2px);border-color:var(--purple);}
+  .staff .nm{font-size:13px;font-weight:900;margin-bottom:4px;}
+  .staff .ty{font-size:18px;font-weight:900;letter-spacing:-.01em;background:linear-gradient(135deg,var(--purple),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .staff .em{font-size:24px;margin:4px 0;}
+  .staff .del{position:absolute;top:6px;right:8px;background:none;border:none;color:var(--slate-500);cursor:pointer;font-size:11px;font-weight:800;}
+  .staff .del:hover{color:var(--red);}
+
+  /* ─── Compatibility ─── */
+  .compat-card{background:linear-gradient(135deg,#FDF4FF,#F0F9FF);border-radius:22px;padding:30px;border:1.5px solid #E9D5FF;margin:30px 0;}
+  .compat-card h2{font-size:18px;font-weight:900;margin-bottom:18px;}
+  .compat-row{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;border-left:5px solid var(--green);}
+  .compat-row.warn{border-left-color:var(--amber);}
+  .compat-row.danger{border-left-color:var(--red);}
+  .compat-pair{font-size:13px;font-weight:900;flex:1;min-width:0;}
+  .compat-pair .types{display:inline-flex;gap:6px;margin-right:8px;}
+  .compat-pair .ty-tag{font-size:11px;font-weight:900;padding:2px 8px;border-radius:8px;background:var(--purple-l);color:var(--purple-d);}
+  .compat-score{font-size:14px;font-weight:900;padding:6px 14px;border-radius:10px;flex-shrink:0;}
+  .compat-score.good{background:#DCFCE7;color:#15803D;}
+  .compat-score.warn{background:#FEF3C7;color:#92400E;}
+  .compat-score.bad{background:#FEE2E2;color:#B91C1C;}
+  .compat-note{font-size:11px;color:var(--slate-500);font-weight:600;margin-top:4px;}
+
+  /* ─── Info card ─── */
+  .info-card{background:linear-gradient(135deg,#F0F9FF,#FAFAFC);border:1.5px solid #BAE6FD;border-radius:18px;padding:24px;margin:24px 0;}
+  .info-card h3{font-size:14px;font-weight:900;color:#0369A1;margin-bottom:6px;}
+  .info-card p{font-size:12px;color:var(--slate-700);line-height:1.85;}
+
+  .cta-box{background:linear-gradient(135deg,var(--purple),var(--rose));border-radius:22px;padding:40px 30px;text-align:center;color:#fff;margin-top:50px;}
+  .cta-box h2{font-size:24px;font-weight:900;margin-bottom:10px;}
+  .cta-box p{font-size:14px;opacity:.9;margin-bottom:20px;}
+  .cta-btn{display:inline-block;background:#fff;color:var(--purple);padding:14px 32px;border-radius:30px;font-weight:900;font-size:14px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.15);}
+
+  .footer{text-align:center;padding:36px 24px;font-size:11px;color:var(--slate-500);border-top:1px solid var(--slate-100);margin-top:50px;}
+  .footer a{color:var(--purple);font-weight:700;margin:0 8px;}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
+    <a href="/shift.html" class="nav-back">← シフト管理に戻る</a>
+  </div>
+</header>
+
+<main id="main">
+<div class="container">
+
+  <section class="hero">
+    <div class="hero-eyebrow">🧠 MBTI × SHIFT</div>
+    <h1>従業員の MBTI で、<br><span class="grad">シフトを科学する</span></h1>
+    <p>話題の MBTI を 12 問で診断 (完全無料・1 分)。<br>相性の悪い組み合わせを自動警告して、現場の人間関係トラブルを未然に防ぎます。</p>
+  </section>
+
+  <!-- ===== TEST ===== -->
+  <section class="test-card" id="testCard">
+    <div class="progress-bar"><div class="progress-fill" id="pBar"></div></div>
+    <div class="q-num" id="qNum">Q 1 / 12</div>
+    <div class="q-text" id="qText">読み込み中…</div>
+    <div class="q-opts" id="qOpts"></div>
+    <div class="nav-row">
+      <button class="back-btn" id="backBtn" onclick="prev()">← 戻る</button>
+      <div style="font-size:11px;color:#94A3B8;font-weight:700;">12 問 · 約 1 分</div>
+    </div>
+  </section>
+
+  <!-- ===== RESULT ===== -->
+  <section class="result-card" id="resultCard">
+    <div class="result-type" id="resType">—</div>
+    <div class="result-emoji" id="resEmoji">🎉</div>
+    <div class="result-name" id="resName">—</div>
+    <div class="result-desc" id="resDesc">—</div>
+    <div class="traits" id="resTraits"></div>
+
+    <div class="save-area">
+      <h3>📝 この結果をスタッフプロフィールに保存</h3>
+      <form class="save-form" onsubmit="event.preventDefault();saveStaff();">
+        <input type="text" id="staffName" required placeholder="お名前 (例: スタッフ A)" />
+        <button type="submit" class="save-btn">＋ 保存</button>
+      </form>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;">
+      <button onclick="restart()" style="background:none;border:none;color:#7C3AED;font-weight:800;cursor:pointer;font-size:13px;">🔄 もう一度診断する</button>
+    </div>
+  </section>
+
+  <!-- ===== ROSTER ===== -->
+  <section class="roster-card" id="rosterCard">
+    <div class="roster-head">
+      <h2>👥 登録済みスタッフ <span id="rosterCount" style="color:#7C3AED;">(0 名)</span></h2>
+      <span class="tag">STAFF ROSTER</span>
+    </div>
+    <div class="staff-grid" id="staffGrid"></div>
+    <p id="emptyMsg" style="text-align:center;color:#94A3B8;font-size:13px;padding:30px 0;">まだ登録がありません。診断結果を保存すると、ここに表示されます。</p>
+  </section>
+
+  <!-- ===== COMPATIBILITY ===== -->
+  <section class="compat-card" id="compatCard" style="display:none;">
+    <h2>💑 シフト相性分析 — ペア組み合わせ</h2>
+    <div id="compatList"></div>
+  </section>
+
+  <!-- ===== Info ===== -->
+  <div class="info-card">
+    <h3>🧪 この MBTI 機能の使い方</h3>
+    <p>
+      ① 全スタッフが自分のスマホで <strong>12 問の診断</strong> を受ける (約 1 分)<br>
+      ② シフト管理画面のスタッフ情報に MBTI 型が表示される<br>
+      ③ シフト作成時、<strong>相性が悪いペア</strong>が同じ時間帯に組まれると AI が警告 ⚠️<br>
+      ④ 店長は警告を見て、シフトを微調整 → 現場の人間関係トラブルを未然に防ぐ<br><br>
+      ※ 本機能は <strong>Free プラン</strong> でもご利用いただけます。MBTI 公式の知見を参考に、独自の質問セットで実装。
+    </p>
+  </div>
+
+  <!-- ===== CTA ===== -->
+  <div class="cta-box">
+    <h2>シフトを「相性で」最適化</h2>
+    <p>人間関係トラブルが減ると、離職率も下がります</p>
+    <a href="/" class="cta-btn">🎁 RAKURAKU を試す</a>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <p><a href="/">トップ</a> · <a href="/shift.html">シフト管理</a> · <a href="/weather-events.html">🌤️ 天気・イベント</a> · <a href="/help.html">FAQ</a></p>
+  <p style="margin-top:14px;opacity:.8;">© 2026 RAKURAKU · MBTI® は The Myers & Briggs Foundation の登録商標です。本機能は独自の簡易診断で、公式診断とは異なります。</p>
+</footer>
+
+</main>
+
+<script>
+// ========== QUESTIONS (12 問 / 4 次元 × 3 問) ==========
+const QUESTIONS = [
+  // E/I
+  { dim:'EI', q:'休憩中、好きなのは?', a:[{ic:'🥳',t:'みんなと雑談する', s:'E'},{ic:'📱',t:'一人でスマホ', s:'I'}]},
+  { dim:'EI', q:'新人歓迎会、本音は?', a:[{ic:'🎉',t:'楽しみ!行きたい', s:'E'},{ic:'😅',t:'できれば早めに帰りたい', s:'I'}]},
+  { dim:'EI', q:'シフト中、エネルギー充電は?', a:[{ic:'🤝',t:'お客さんと話してチャージ', s:'E'},{ic:'🍵',t:'裏で一人で深呼吸', s:'I'}]},
+  // S/N
+  { dim:'SN', q:'マニュアル、どう読む?', a:[{ic:'📖',t:'順番に・細かく読む', s:'S'},{ic:'💡',t:'ざっと見て全体像をつかむ', s:'N'}]},
+  { dim:'SN', q:'お店の改善アイデア、考え方は?', a:[{ic:'🔧',t:'今ある問題から改善', s:'S'},{ic:'🚀',t:'新しい仕組みを作りたい', s:'N'}]},
+  { dim:'SN', q:'ベテランから聞きたいのは?', a:[{ic:'📝',t:'具体的な手順とコツ', s:'S'},{ic:'🌟',t:'仕事の本質や考え方', s:'N'}]},
+  // T/F
+  { dim:'TF', q:'同僚がミスしたら?', a:[{ic:'📊',t:'原因を一緒に分析', s:'T'},{ic:'🤗',t:'まず励ます・元気付ける', s:'F'}]},
+  { dim:'TF', q:'店長との関係で大事なのは?', a:[{ic:'⚖️',t:'公平な評価と論理', s:'T'},{ic:'❤️',t:'共感とあたたかさ', s:'F'}]},
+  { dim:'TF', q:'お客さんへの対応、優先するのは?', a:[{ic:'✅',t:'正確さ・効率', s:'T'},{ic:'😊',t:'気持ちに寄り添う', s:'F'}]},
+  // J/P
+  { dim:'JP', q:'シフト前夜、どう過ごす?', a:[{ic:'📅',t:'明日の段取りを確認', s:'J'},{ic:'😌',t:'なるようになる、リラックス', s:'P'}]},
+  { dim:'JP', q:'忙しい日、頼りになるのは?', a:[{ic:'📋',t:'事前の準備とルール', s:'J'},{ic:'⚡',t:'臨機応変な判断力', s:'P'}]},
+  { dim:'JP', q:'休日の予定は?', a:[{ic:'📌',t:'計画を立てて動く', s:'J'},{ic:'🎲',t:'気分で決める', s:'P'}]},
+];
+
+// ========== TYPE DATA ==========
+const TYPES = {
+  INTJ:{name:'戦略家',emoji:'♟️',desc:'独立心が強く、論理的に物事を考える分析家。長期的視点でシフト改善のアイデアを生む。'},
+  INTP:{name:'論理学者',emoji:'🔬',desc:'好奇心旺盛で、システムや仕組みを理解するのが得意。マニュアル整理が光る。'},
+  ENTJ:{name:'指揮官',emoji:'👑',desc:'リーダーシップに長け、目標達成へ周囲を導く。チーフ・店長候補。'},
+  ENTP:{name:'討論者',emoji:'💡',desc:'発想力豊かで、新しい企画やキャンペーンに強い。ムードメーカー。'},
+  INFJ:{name:'提唱者',emoji:'🌙',desc:'静かで深い洞察力。お客様の機微を察するのが上手い。'},
+  INFP:{name:'仲介者',emoji:'🎨',desc:'共感力が高く、創造的。スタッフ同士の橋渡し役。'},
+  ENFJ:{name:'主人公',emoji:'🌟',desc:'人を励まし、チームをまとめる力。新人指導が得意。'},
+  ENFP:{name:'運動家',emoji:'🎉',desc:'明るく社交的でエネルギッシュ。お客様を笑顔にできる。'},
+  ISTJ:{name:'管理者',emoji:'📊',desc:'責任感が強く、正確さを重んじる。会計・棚卸の信頼の柱。'},
+  ISFJ:{name:'擁護者',emoji:'🤲',desc:'献身的でサポート上手。常連のお客様の好みを覚えるのが得意。'},
+  ESTJ:{name:'幹部',emoji:'🏛️',desc:'秩序とルールを大切にし、運営を回す。マネージャー向き。'},
+  ESFJ:{name:'領事',emoji:'💝',desc:'人当たりが良く、店舗の雰囲気を温かく保つ。接客の達人。'},
+  ISTP:{name:'巨匠',emoji:'🔧',desc:'実践的で柔軟。機材トラブル対応や厨房ピーク時に冷静。'},
+  ISFP:{name:'冒険家',emoji:'🌸',desc:'感性が豊かで、お客様一人一人に丁寧。盛り付け・ラッピング上手。'},
+  ESTP:{name:'起業家',emoji:'⚡',desc:'瞬発力があり、現場対応に強い。混雑時の頼れる存在。'},
+  ESFP:{name:'エンターテイナー',emoji:'🎤',desc:'明るく場を盛り上げる。常連客との会話・楽しい雰囲気作りの天才。'},
+};
+
+// ========== COMPATIBILITY MATRIX (simplified by axis sum) ==========
+function compatScore(t1, t2){
+  let same = 0;
+  for (let i=0; i<4; i++) if (t1[i] === t2[i]) same++;
+  // 0=完全反対, 4=完全同一
+  // 経験則: 中間 (2-3 同) が最良、両極端は意見対立
+  if (same === 2 || same === 3) return 'good';
+  if (same === 4) return 'warn';   // 同質すぎ
+  if (same === 1) return 'warn';   // 違いすぎ
+  return 'bad';                    // 全反対
+}
+function compatLabel(s){
+  return {good:'相性◎', warn:'要注意', bad:'相性△'}[s];
+}
+function compatScoreNum(s){
+  return {good:'95', warn:'62', bad:'38'}[s];
+}
+function compatNote(t1, t2, s){
+  if (s === 'good') return '異なる強みが補完し合う良い組み合わせ。シフトを組んで良し。';
+  if (s === 'bad')  return '価値観が真逆。同じ時間帯で組むと衝突しやすい。可能なら時間帯を分けると安全。';
+  // warn
+  let same = 0;
+  for (let i=0; i<4; i++) if (t1[i] === t2[i]) same++;
+  return same === 4 ? '似すぎていてアイデアが偏る可能性。違うタイプも混ぜると良い。'
+                    : '一部のスタイルが噛み合わない場面あり。役割分担を明確にすると良い。';
+}
+
+// ========== STATE ==========
+let qIndex = 0;
+const answers = []; // 'E'|'I'|... per question
+
+function render(){
+  const q = QUESTIONS[qIndex];
+  document.getElementById('qNum').textContent = `Q ${qIndex+1} / ${QUESTIONS.length}`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('pBar').style.width = ((qIndex)/QUESTIONS.length*100) + '%';
+  const opts = document.getElementById('qOpts');
+  opts.innerHTML = '';
+  q.a.forEach(opt => {
+    const b = document.createElement('button');
+    b.className = 'opt-btn';
+    b.innerHTML = `<span class="opt-ic">${opt.ic}</span><span>${opt.t}</span>`;
+    b.onclick = () => answer(opt.s);
+    opts.appendChild(b);
+  });
+  document.getElementById('backBtn').disabled = qIndex === 0;
+}
+
+function answer(s){
+  answers[qIndex] = s;
+  qIndex++;
+  if (qIndex >= QUESTIONS.length) finish();
+  else render();
+}
+function prev(){
+  if (qIndex > 0){ qIndex--; render(); }
+}
+
+function finish(){
+  const c = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  answers.forEach(a => c[a]++);
+  const t = (c.E>=c.I?'E':'I') + (c.S>=c.N?'S':'N') + (c.T>=c.F?'T':'F') + (c.J>=c.P?'J':'P');
+  showResult(t, c);
+}
+
+function showResult(t, c){
+  document.getElementById('testCard').style.display = 'none';
+  document.getElementById('resultCard').classList.add('show');
+  document.getElementById('pBar').style.width = '100%';
+  const info = TYPES[t];
+  document.getElementById('resType').textContent = t;
+  document.getElementById('resEmoji').textContent = info.emoji;
+  document.getElementById('resName').textContent = info.name;
+  document.getElementById('resDesc').textContent = info.desc;
+  // traits bar
+  const tr = document.getElementById('resTraits');
+  tr.innerHTML = '';
+  const dims = [['E','I'],['S','N'],['T','F'],['J','P']];
+  const names = [['外向','内向'],['現実','直観'],['思考','感情'],['判断','知覚']];
+  dims.forEach((d, i) => {
+    const winner = c[d[0]] >= c[d[1]] ? 0 : 1;
+    const score = Math.round((c[d[winner]]/(c[d[0]]+c[d[1]]))*100);
+    tr.innerHTML += `<div class="trait"><div class="v">${d[winner]} ${score}%</div><div class="l">${names[i][winner]}型</div></div>`;
+  });
+  // hold current type for save
+  window._currentType = t;
+}
+
+function restart(){
+  qIndex = 0;
+  answers.length = 0;
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('testCard').style.display = 'block';
+  render();
+}
+
+// ========== ROSTER ==========
+function getRoster(){
+  try { return JSON.parse(localStorage.getItem('rakuraku_mbti') || '[]'); }
+  catch(e){ return []; }
+}
+function setRoster(arr){
+  try { localStorage.setItem('rakuraku_mbti', JSON.stringify(arr)); }
+  catch(e){}
+}
+function saveStaff(){
+  const name = document.getElementById('staffName').value.trim();
+  const type = window._currentType;
+  if (!name || !type) return;
+  const r = getRoster();
+  r.push({name, type, ts: Date.now()});
+  setRoster(r);
+  document.getElementById('staffName').value = '';
+  renderRoster();
+}
+function renderRoster(){
+  const r = getRoster();
+  document.getElementById('rosterCount').textContent = `(${r.length} 名)`;
+  const grid = document.getElementById('staffGrid');
+  const empty = document.getElementById('emptyMsg');
+  if (!r.length){
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    document.getElementById('compatCard').style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = r.map((s, i) => `
+    <div class="staff">
+      <button class="del" onclick="delStaff(${i})">削除</button>
+      <div class="nm">${s.name}</div>
+      <div class="em">${TYPES[s.type].emoji}</div>
+      <div class="ty">${s.type}</div>
+      <div style="font-size:10px;color:#64748B;margin-top:2px;">${TYPES[s.type].name}</div>
+    </div>
+  `).join('');
+  renderCompatibility();
+}
+function delStaff(i){
+  const r = getRoster();
+  r.splice(i, 1);
+  setRoster(r);
+  renderRoster();
+}
+function renderCompatibility(){
+  const r = getRoster();
+  if (r.length < 2){
+    document.getElementById('compatCard').style.display = 'none';
+    return;
+  }
+  document.getElementById('compatCard').style.display = 'block';
+  const pairs = [];
+  for (let i=0; i<r.length; i++){
+    for (let j=i+1; j<r.length; j++){
+      const s = compatScore(r[i].type, r[j].type);
+      pairs.push({a: r[i], b: r[j], s, num: compatScoreNum(s)});
+    }
+  }
+  // sort: bad → warn → good
+  const order = {bad:0, warn:1, good:2};
+  pairs.sort((a,b) => order[a.s] - order[b.s]);
+  document.getElementById('compatList').innerHTML = pairs.map(p => `
+    <div class="compat-row ${p.s === 'good' ? '' : p.s === 'warn' ? 'warn' : 'danger'}">
+      <div class="compat-pair">
+        <div>
+          <span class="types"><span class="ty-tag">${p.a.type}</span><span class="ty-tag">${p.b.type}</span></span>
+          <strong>${p.a.name} × ${p.b.name}</strong>
+        </div>
+        <div class="compat-note">${compatNote(p.a.type, p.b.type, p.s)}</div>
+      </div>
+      <div class="compat-score ${p.s === 'good' ? 'good' : p.s === 'warn' ? 'warn' : 'bad'}">${p.num}点</div>
+    </div>
+  `).join('');
+}
+
+// ========== INIT ==========
+render();
+renderRoster();
+</script>
+</body>
+</html>

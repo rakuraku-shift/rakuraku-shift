@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>シフト編集モード — 営業時間・個別時間変更 | RAKURAKU</title>
+<meta name="description" content="シフト作成後、店長が営業時間や個人の出退勤時間を1タップで編集。早退・遅刻・延長も即時反映。" />
+<meta name="theme-color" content="#4F46E5">
+<meta property="og:title" content="シフト編集モード — RAKURAKU"/>
+<meta property="og:description" content="シフト作成後の柔軟編集機能"/>
+<link rel="canonical" href="https://rakuraku-shift-production.up.railway.app/shift-edit.html"/>
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #4F46E5;outline-offset:2px;border-radius:4px;}
+  :root{
+    --indigo:#4F46E5; --indigo-d:#3730A3; --indigo-l:#EEF2FF;
+    --purple:#7C3AED; --green:#10B981; --amber:#F59E0B; --red:#EF4444;
+    --slate-900:#0F172A; --slate-700:#334155; --slate-500:#64748B;
+    --slate-200:#E2E8F0; --slate-100:#F1F5F9; --slate-50:#F8FAFC;
+  }
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:#fff;min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:var(--indigo);text-decoration:none;}
+  .skip-link{position:absolute;left:-9999px;}.skip-link:focus{left:10px;top:10px;background:#0F172A;color:#fff;padding:10px;z-index:9999;}
+
+  .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);}
+  .nav-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;}
+  .nav-back{font-size:13px;color:var(--slate-700);font-weight:700;}
+
+  .container{max-width:1100px;margin:0 auto;padding:24px;}
+
+  .hero{text-align:center;padding:40px 0 24px;}
+  .hero-eyebrow{display:inline-block;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;font-size:11px;font-weight:900;padding:6px 16px;border-radius:20px;letter-spacing:.05em;margin-bottom:14px;}
+  .hero h1{font-size:34px;font-weight:900;letter-spacing:-.02em;line-height:1.25;margin-bottom:10px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:14px;color:var(--slate-500);font-weight:600;max-width:660px;margin:0 auto;}
+
+  /* === Sticky Edit Toolbar === */
+  .toolbar{background:linear-gradient(135deg,#EEF2FF,#F5F3FF);border:1.5px solid #C7D2FE;border-radius:16px;padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .toolbar-ic{width:42px;height:42px;flex-shrink:0;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+  .toolbar-body{flex:1;min-width:200px;}
+  .toolbar-body h3{font-size:14px;font-weight:900;margin-bottom:2px;}
+  .toolbar-body p{font-size:11px;color:var(--slate-500);font-weight:600;}
+  .toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .t-btn{background:#fff;border:1.5px solid var(--slate-200);padding:9px 14px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;color:var(--slate-700);display:inline-flex;align-items:center;gap:6px;}
+  .t-btn:hover{border-color:var(--indigo);color:var(--indigo);background:var(--indigo-l);}
+  .t-btn.primary{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-color:transparent;}
+  .t-btn.primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(79,70,229,.3);}
+
+  /* === Business Hours Card === */
+  .bh-card{background:#fff;border:1.5px solid var(--slate-200);border-radius:16px;padding:24px;margin-bottom:20px;}
+  .bh-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+  .bh-head h2{font-size:16px;font-weight:900;}
+  .bh-head .badge{font-size:10px;font-weight:800;background:var(--green);color:#fff;padding:3px 10px;border-radius:10px;letter-spacing:.05em;}
+  .bh-row{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+  @media(max-width:760px){.bh-row{grid-template-columns:repeat(2,1fr);}}
+  .bh-cell{background:var(--slate-50);border:1.5px solid var(--slate-200);border-radius:11px;padding:10px;text-align:center;cursor:pointer;transition:all .15s;}
+  .bh-cell:hover{border-color:var(--indigo);background:var(--indigo-l);transform:translateY(-1px);}
+  .bh-cell .day{font-size:10px;font-weight:800;color:var(--slate-500);letter-spacing:.05em;}
+  .bh-cell .day.sat{color:var(--indigo);}
+  .bh-cell .day.sun{color:var(--red);}
+  .bh-cell .time{font-size:13px;font-weight:900;margin-top:4px;}
+  .bh-cell .closed{color:var(--red);font-size:11px;font-weight:800;margin-top:4px;}
+  .bh-cell.edited{border-color:var(--amber);background:#FFFBEB;}
+  .bh-cell.edited::after{content:"✏️";position:absolute;}
+
+  /* === Shift Table === */
+  .shift-card{background:#fff;border:1.5px solid var(--slate-200);border-radius:16px;padding:24px;margin-bottom:20px;overflow-x:auto;}
+  .shift-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+  .shift-head h2{font-size:16px;font-weight:900;}
+  .shift-table{width:100%;border-collapse:separate;border-spacing:6px;min-width:720px;}
+  .shift-table th{font-size:11px;font-weight:800;color:var(--slate-500);padding:8px 6px;text-align:center;letter-spacing:.04em;}
+  .shift-table th.staff-col{text-align:left;width:120px;}
+  .shift-table th.sat{color:var(--indigo);}
+  .shift-table th.sun{color:var(--red);}
+  .shift-table td{padding:0;text-align:center;}
+  .shift-table td.staff-name{font-size:13px;font-weight:800;text-align:left;padding:10px 8px;}
+  .shift-table td.staff-name .role{font-size:10px;color:var(--slate-500);font-weight:600;display:block;}
+  .shift-cell{background:var(--slate-50);border:1.5px solid transparent;border-radius:10px;padding:8px 4px;font-size:11px;font-weight:800;cursor:pointer;transition:all .15s;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+  .shift-cell:hover{border-color:var(--indigo);background:var(--indigo-l);transform:scale(1.05);}
+  .shift-cell.morning{background:#FEF3C7;color:#92400E;}
+  .shift-cell.lunch{background:#DBEAFE;color:#1E40AF;}
+  .shift-cell.evening{background:#F3E8FF;color:#6B21A8;}
+  .shift-cell.off{background:#F1F5F9;color:#94A3B8;cursor:default;}
+  .shift-cell.off:hover{transform:none;background:#F1F5F9;border-color:transparent;}
+  .shift-cell.edited{background:#FFE4E6;color:#9F1239;border-color:var(--amber);}
+  .shift-cell .ic{font-size:14px;line-height:1;}
+  .shift-cell .badge-early{font-size:9px;background:var(--amber);color:#fff;padding:1px 5px;border-radius:6px;margin-top:2px;}
+  .shift-cell .badge-late{font-size:9px;background:var(--red);color:#fff;padding:1px 5px;border-radius:6px;margin-top:2px;}
+
+  /* === Modal === */
+  .modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.65);backdrop-filter:blur(8px);z-index:200;align-items:center;justify-content:center;padding:18px;}
+  .modal.show{display:flex;}
+  .modal-card{background:#fff;border-radius:20px;max-width:480px;width:100%;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.3);}
+  .modal-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+  .modal-head h3{font-size:18px;font-weight:900;}
+  .modal-head .close{background:var(--slate-100);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:14px;color:var(--slate-700);font-weight:800;}
+  .modal-meta{background:var(--slate-50);border-radius:11px;padding:12px 14px;margin-bottom:18px;font-size:12px;color:var(--slate-700);}
+  .modal-meta strong{color:var(--slate-900);}
+  .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  .modal-field label{display:block;font-size:10px;font-weight:800;color:var(--slate-700);margin-bottom:5px;letter-spacing:.05em;}
+  .modal-field input{width:100%;padding:11px 14px;border:1.5px solid var(--slate-200);border-radius:10px;font-size:14px;font-weight:800;font-family:inherit;outline:none;background:#fff;}
+  .modal-field input:focus{border-color:var(--indigo);}
+  .modal-presets{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+  .preset{background:var(--indigo-l);color:var(--indigo-d);border:1px solid #C7D2FE;padding:6px 11px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;}
+  .preset:hover{background:var(--indigo);color:#fff;}
+  .preset.danger{background:#FEE2E2;color:#991B1B;border-color:#FCA5A5;}
+  .preset.danger:hover{background:var(--red);color:#fff;}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+  .modal-btn{padding:11px 22px;border-radius:10px;border:none;font-weight:900;font-size:13px;cursor:pointer;font-family:inherit;}
+  .modal-btn.save{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;}
+  .modal-btn.cancel{background:var(--slate-100);color:var(--slate-700);}
+  .modal-btn.delete{background:#FEE2E2;color:#991B1B;margin-right:auto;}
+
+  /* Info card */
+  .info{background:linear-gradient(135deg,#F0F9FF,#FAFAFC);border:1.5px solid #BAE6FD;border-radius:14px;padding:20px;margin:24px 0;font-size:12px;color:var(--slate-700);line-height:1.85;}
+  .info strong{color:#0369A1;}
+
+  .footer{text-align:center;padding:36px 24px;font-size:11px;color:var(--slate-500);border-top:1px solid var(--slate-100);margin-top:40px;}
+  .footer a{color:var(--indigo);font-weight:700;margin:0 8px;}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
+    <a href="/shift.html" class="nav-back">← シフト管理に戻る</a>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="container">
+  <section class="hero">
+    <div class="hero-eyebrow">✏️ POST-CREATE EDITING</div>
+    <h1>作成後も <span class="grad">柔軟に編集できる</span></h1>
+    <p>シフト作成ボタンを押した後、店長が営業時間や個別の出退勤時間を 1 タップで変更できます。<br>早退・遅刻・延長・休業も即時反映 → スタッフへ自動通知。</p>
+  </section>
+
+  <!-- Edit Mode Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-ic">✏️</div>
+    <div class="toolbar-body">
+      <h3>編集モード — 2026 年 6 月第 2 週</h3>
+      <p>下のセルや日付をタップして編集 · 変更は即座に保存・スタッフ通知</p>
+    </div>
+    <div class="toolbar-actions">
+      <button class="t-btn">↶ 取り消し</button>
+      <button class="t-btn">↷ やり直し</button>
+      <button class="t-btn primary">💾 編集を確定 (LINE通知)</button>
+    </div>
+  </div>
+
+  <!-- Business Hours Section -->
+  <section class="bh-card">
+    <div class="bh-head">
+      <h2>🏪 営業時間 (各日タップで編集)</h2>
+      <span class="badge">編集可能</span>
+    </div>
+    <div class="bh-row">
+      <div class="bh-cell" onclick="editBH('月')"><div class="day">月 6/9</div><div class="time">17:00-翌2:00</div></div>
+      <div class="bh-cell" onclick="editBH('火')"><div class="day">火 6/10</div><div class="time">17:00-翌2:00</div></div>
+      <div class="bh-cell edited" onclick="editBH('水')"><div class="day">水 6/11</div><div class="time">18:00-翌1:00 ✏️</div></div>
+      <div class="bh-cell" onclick="editBH('木')"><div class="day">木 6/12</div><div class="time">17:00-翌2:00</div></div>
+      <div class="bh-cell" onclick="editBH('金')"><div class="day sat">金 6/13</div><div class="time">17:00-翌3:00</div></div>
+      <div class="bh-cell" onclick="editBH('土')"><div class="day sat">土 6/14</div><div class="time">17:00-翌3:00</div></div>
+      <div class="bh-cell" onclick="editBH('日')"><div class="day sun">日 6/15</div><div class="closed">🚫 休業</div></div>
+    </div>
+  </section>
+
+  <!-- Shift Grid -->
+  <section class="shift-card">
+    <div class="shift-head">
+      <h2>👥 スタッフ別シフト (セルをタップで編集)</h2>
+      <span style="font-size:11px;color:#94A3B8;font-weight:700;">💡 早退・遅刻・延長は色で表示</span>
+    </div>
+    <table class="shift-table">
+      <thead>
+        <tr>
+          <th class="staff-col">スタッフ</th>
+          <th>月 9</th>
+          <th>火 10</th>
+          <th>水 11</th>
+          <th>木 12</th>
+          <th class="sat">金 13</th>
+          <th class="sat">土 14</th>
+          <th class="sun">日 15</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="staff-name">スタッフA <span class="role">バーテン / リーダー</span></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフA','月','18-2')">18:00<br>翌2:00</div></td>
+          <td><div class="shift-cell off">休</div></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフA','水','18-1')">18:00<br>翌1:00</div></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフA','木','18-2')">18:00<br>翌2:00</div></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフA','金','17-3')">17:00<br>翌3:00</div></td>
+          <td><div class="shift-cell evening edited" onclick="editShift('スタッフA','土','17-1')">17:00<br>翌1:00<span class="badge-early">早退</span></div></td>
+          <td><div class="shift-cell off">休業</div></td>
+        </tr>
+        <tr>
+          <td class="staff-name">スタッフB <span class="role">ホール</span></td>
+          <td><div class="shift-cell off">休</div></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフB','火','17-23')">17:00<br>23:00</div></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフB','水','18-23')">18:00<br>23:00</div></td>
+          <td><div class="shift-cell off">休</div></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフB','金','17-翌1')">17:00<br>翌1:00</div></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフB','土','17-翌1')">17:00<br>翌1:00</div></td>
+          <td><div class="shift-cell off">休業</div></td>
+        </tr>
+        <tr>
+          <td class="staff-name">スタッフC <span class="role">ホール / 留学生</span></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフC','月','19-23')">19:00<br>23:00</div></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフC','火','19-23')">19:00<br>23:00</div></td>
+          <td><div class="shift-cell off">休</div></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフC','木','19-23')">19:00<br>23:00</div></td>
+          <td><div class="shift-cell evening edited" onclick="editShift('スタッフC','金','20-翌1')">20:00<br>翌1:00<span class="badge-late">遅刻</span></div></td>
+          <td><div class="shift-cell evening" onclick="editShift('スタッフC','土','19-翌1')">19:00<br>翌1:00</div></td>
+          <td><div class="shift-cell off">休業</div></td>
+        </tr>
+        <tr>
+          <td class="staff-name">スタッフD <span class="role">キッチン</span></td>
+          <td><div class="shift-cell lunch" onclick="editShift('スタッフD','月','16-22')">16:00<br>22:00</div></td>
+          <td><div class="shift-cell lunch" onclick="editShift('スタッフD','火','16-22')">16:00<br>22:00</div></td>
+          <td><div class="shift-cell lunch" onclick="editShift('スタッフD','水','17-22')">17:00<br>22:00</div></td>
+          <td><div class="shift-cell off">休</div></td>
+          <td><div class="shift-cell lunch" onclick="editShift('スタッフD','金','16-23')">16:00<br>23:00</div></td>
+          <td><div class="shift-cell lunch" onclick="editShift('スタッフD','土','16-23')">16:00<br>23:00</div></td>
+          <td><div class="shift-cell off">休業</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Legend -->
+  <div class="info">
+    <strong>💡 編集後の挙動</strong><br>
+    ・営業時間を変更すると、その日のシフトが全員 <strong>自動で短縮</strong>されます<br>
+    ・スタッフのセルをタップすると <strong>個別編集モーダル</strong>が開きます (早退・遅刻・延長・休み変更)<br>
+    ・変更を確定すると、対象スタッフに <strong>LINE通知が自動送信</strong>されます<br>
+    ・給与計算 (深夜手当 25%) にも即時反映 — 手動修正は不要
+  </div>
+
+  <!-- CTA -->
+  <div style="background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:22px;padding:36px 30px;text-align:center;color:#fff;margin-top:30px;">
+    <h2 style="font-size:22px;font-weight:900;margin-bottom:10px;">柔軟なシフト編集を、RAKURAKU で</h2>
+    <p style="font-size:13px;opacity:.9;margin-bottom:20px;">作成後に編集できないツールはもう古い</p>
+    <a href="/" style="display:inline-block;background:#fff;color:var(--indigo);padding:13px 30px;border-radius:24px;font-weight:900;font-size:13px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.15);">🎁 30 日 Pro 体験で試す</a>
+  </div>
+
+</div>
+
+<!-- ========== Edit Modals ========== -->
+<div class="modal" id="modalBH">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="modalBHTitle">営業時間の編集</h3>
+      <button class="close" onclick="closeModal('modalBH')">✕</button>
+    </div>
+    <div class="modal-meta">店舗: <strong>BAR RAKURAKU 港区店</strong> · 通常: 17:00-翌2:00</div>
+    <div class="modal-grid">
+      <div class="modal-field">
+        <label>開店時間</label>
+        <input type="time" value="17:00" />
+      </div>
+      <div class="modal-field">
+        <label>閉店時間</label>
+        <input type="time" value="02:00" />
+      </div>
+    </div>
+    <div class="modal-presets">
+      <span class="preset">🌙 深夜営業 (17:00-翌3:00)</span>
+      <span class="preset">⏰ 早閉め (17:00-翌1:00)</span>
+      <span class="preset">📆 通常 (17:00-翌2:00)</span>
+      <span class="preset danger">🚫 当日休業</span>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeModal('modalBH')">キャンセル</button>
+      <button class="modal-btn save" onclick="closeModal('modalBH')">💾 保存 (全員に通知)</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalShift">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="modalShiftTitle">個別シフトの編集</h3>
+      <button class="close" onclick="closeModal('modalShift')">✕</button>
+    </div>
+    <div class="modal-meta" id="modalShiftMeta">スタッフ: <strong>—</strong> · 日付: <strong>—</strong></div>
+    <div class="modal-grid">
+      <div class="modal-field">
+        <label>出勤時間</label>
+        <input type="time" value="18:00" />
+      </div>
+      <div class="modal-field">
+        <label>退勤時間</label>
+        <input type="time" value="02:00" />
+      </div>
+    </div>
+    <div class="modal-presets">
+      <span class="preset">⚡ 早退 (1h 早く)</span>
+      <span class="preset">⏰ 遅刻記録</span>
+      <span class="preset">🌙 延長 (1h 残業)</span>
+      <span class="preset danger">🚫 休みに変更</span>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn delete" onclick="closeModal('modalShift')">休みに変更</button>
+      <button class="modal-btn cancel" onclick="closeModal('modalShift')">キャンセル</button>
+      <button class="modal-btn save" onclick="closeModal('modalShift')">💾 保存 (LINE通知)</button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer class="footer">
+  <p><a href="/">トップ</a> · <a href="/shift.html">シフト管理</a> · <a href="/weather-events.html">🌤️ 天気・イベント</a> · <a href="/mbti.html">🧠 MBTI</a> · <a href="/help.html">FAQ</a></p>
+  <p style="margin-top:14px;opacity:.7;">© 2026 RAKURAKU</p>
+</footer>
+
+<script>
+  function editBH(day){
+    document.getElementById('modalBHTitle').textContent = `営業時間の編集 — ${day}曜日`;
+    document.getElementById('modalBH').classList.add('show');
+  }
+  function editShift(name, day, time){
+    document.getElementById('modalShiftTitle').textContent = '個別シフトの編集';
+    document.getElementById('modalShiftMeta').innerHTML =
+      `スタッフ: <strong>${name}</strong> · 日付: <strong>${day}</strong> · 現在: <strong>${time}</strong>`;
+    document.getElementById('modalShift').classList.add('show');
+  }
+  function closeModal(id){
+    document.getElementById(id).classList.remove('show');
+  }
+  // ESC to close
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+  });
+  // Click outside to close
+  document.querySelectorAll('.modal').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+  });
+</script>
+
+</body>
+</html>
