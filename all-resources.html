@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>RAKURAKU 全資産 一覧</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif;background:#0F0F23;color:#fff;line-height:1.6}
+a{color:inherit;text-decoration:none}
+
+.hero{background:linear-gradient(135deg,#0F172A 0%,#1E1B4B 50%,#312E81 100%);padding:60px 24px 50px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(251,191,36,.15),transparent 50%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.15),transparent 50%)}
+.hero-content{position:relative;z-index:2}
+.hero h1{font-size:42px;font-weight:900;letter-spacing:-.02em;margin-bottom:10px;line-height:1.2}
+.hero h1 .grad{background:linear-gradient(135deg,#FBBF24,#F59E0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:14px;color:#A5B4FC;letter-spacing:.2em}
+.stats{display:inline-flex;gap:24px;margin-top:24px;background:rgba(255,255,255,.08);padding:16px 28px;border-radius:30px;border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px)}
+.stat-item{text-align:center}
+.stat-num{font-size:24px;font-weight:900;color:#FBBF24}
+.stat-lbl{font-size:10px;color:#A5B4FC;letter-spacing:.1em;margin-top:2px}
+
+.section{max-width:1200px;margin:50px auto;padding:0 24px}
+.section-title{font-size:22px;font-weight:900;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.section-title .ic{font-size:28px}
+.section-sub{font-size:12px;color:#A5B4FC;margin-bottom:24px;letter-spacing:.1em}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+
+.card{background:linear-gradient(135deg,#1E1B4B,#312E81);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;transition:all .2s;display:block;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-3px);border-color:rgba(251,191,36,.4);box-shadow:0 14px 30px rgba(0,0,0,.3)}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#FBBF24,#F59E0B);opacity:0;transition:opacity .2s}
+.card:hover::before{opacity:1}
+.card.featured{border:1.5px solid #FBBF24;background:linear-gradient(135deg,#312E81,#1E1B4B)}
+.card.featured::before{opacity:1}
+
+.card-tag{display:inline-block;font-size:9px;font-weight:900;color:#FBBF24;letter-spacing:.3em;margin-bottom:8px}
+.card-title{font-size:15px;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.card-title .em{font-size:18px}
+.card-desc{font-size:11px;color:#94A3B8;line-height:1.6;margin-bottom:8px}
+.card-meta{font-size:10px;color:#64748B;display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid rgba(255,255,255,.05)}
+.card-meta .arr{color:#FBBF24;font-weight:900}
+
+/* Category colors */
+.cat-sales::before{background:linear-gradient(180deg,#FBBF24,#F59E0B)}
+.cat-pitch::before{background:linear-gradient(180deg,#A78BFA,#7C3AED)}
+.cat-image::before{background:linear-gradient(180deg,#10B981,#059669)}
+.cat-public::before{background:linear-gradient(180deg,#3B82F6,#1D4ED8)}
+.cat-compare::before{background:linear-gradient(180deg,#EF4444,#DC2626)}
+
+/* Footer */
+.footer{background:#0F172A;padding:30px 24px;text-align:center;font-size:11px;color:#64748B;margin-top:60px;border-top:1px solid rgba(255,255,255,.05)}
+
+/* Recommended section */
+.recommend{background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(167,139,250,.1));border:1.5px solid rgba(251,191,36,.3);border-radius:18px;padding:28px;margin:30px auto;max-width:1200px}
+.recommend h2{font-size:16px;font-weight:900;color:#FBBF24;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.recommend table{width:100%;font-size:13px;border-collapse:collapse}
+.recommend th{text-align:left;padding:10px 14px;background:rgba(255,255,255,.04);color:#FBBF24;font-weight:900;font-size:11px;letter-spacing:.05em;border-bottom:1px solid rgba(251,191,36,.2)}
+.recommend td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);color:#E2E8F0}
+.recommend tr:last-child td{border-bottom:none}
+.recommend td a{color:#FBBF24;font-weight:700;text-decoration:underline;text-decoration-color:rgba(251,191,36,.3)}
+
+/* Print */
+@media print{
+  html,body{background:#fff;color:#000}
+  .card{background:#fff;border:1px solid #ddd;color:#000;break-inside:avoid}
+  .card-desc,.card-meta{color:#666}
+  .hero{background:#fff;color:#000}
+  .hero h1 .grad{-webkit-text-fill-color:#F59E0B}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-content">
+    <h1>RAKURAKU<br><span class="grad">全資産 一覧</span></h1>
+    <p>ALL RESOURCES INDEX</p>
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-num">104</div>
+        <div class="stat-lbl">HTML</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">8</div>
+        <div class="stat-lbl">SVG 機能画像</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5</div>
+        <div class="stat-lbl">言語対応</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">120+</div>
+        <div class="stat-lbl">ヒアリング店舗</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- 用途別おすすめ -->
+<div class="recommend">
+  <h2>🎯 用途別おすすめ — これを送る</h2>
+  <table>
+    <thead>
+      <tr><th>送る相手</th><th>推奨資料</th><th>備考</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>採用候補 (佐藤れん様)</td>
+        <td><a href="佐藤れん様へ — RAKURAKU 創業メンバー招待状.html">佐藤れん様招待状</a></td>
+        <td>7 ページ A4 / PDF 化推奨</td>
+      </tr>
+      <tr>
+        <td>投資家 (JAFCO 等)</td>
+        <td><a href="pitch-deck-jafco.html">ピッチデッキ</a> + <a href="RAKURAKU 事業概要・製品説明資料.html">事業概要資料</a></td>
+        <td>15 ページ + 9 ページ</td>
+      </tr>
+      <tr>
+        <td>チェーン店本部</td>
+        <td><a href="talk-script-chain.html">営業台本</a> + <a href="flyer.html">チラシ</a></td>
+        <td>飛び込み・電話・初訪用</td>
+      </tr>
+      <tr>
+        <td>個人店オーナー</td>
+        <td><a href="flyer.html">チラシ</a> + URL</td>
+        <td>個人店永久無料を訴求</td>
+      </tr>
+      <tr>
+        <td>AI 動画生成</td>
+        <td><a href="images/features-showcase.html">機能ショーケース</a></td>
+        <td>8 種 SVG 一括 DL 可</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 営業・採用資料 -->
+<section class="section">
+  <h2 class="section-title"><span class="ic">📨</span>営業・採用資料</h2>
+  <p class="section-sub">SALES & RECRUITMENT — 直接 PDF 化して送付</p>
+  <div class="grid">
+    <a class="card featured cat-sales" href="佐藤れん様へ — RAKURAKU 創業メンバー招待状.html">
+      <div class="card-tag">★ NEW</div>
+      <div class="card-title"><span class="em">📄</span>佐藤れん様 招待状</div>
+      <div class="card-desc">創業営業メンバー採用用の個別招待状 (7ページ・明朝体・モットー入り)</div>
+      <div class="card-meta"><span>29KB / 7p A4</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-sales" href="RAKURAKU 事業概要・製品説明資料.html">
+      <div class="card-tag">DOC</div>
+      <div class="card-title"><span class="em">📊</span>事業概要・製品説明資料</div>
+      <div class="card-desc">投資家・取引先向けの事業全体像 + 資金調達計画</div>
+      <div class="card-meta"><span>28KB / 9p A4</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-sales" href="talk-script-chain.html">
+      <div class="card-tag">SCRIPT</div>
+      <div class="card-title"><span class="em">📞</span>チェーン店本社 営業台本</div>
+      <div class="card-desc">飛び込み・電話・初訪向け会話スクリプト v2.0</div>
+      <div class="card-meta"><span>30KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-sales" href="flyer.html">
+      <div class="card-tag">FLYER</div>
+      <div class="card-title"><span class="em">📋</span>営業チラシ A4 両面</div>
+      <div class="card-desc">120 店舗ヒアリング実績 + 30 日 Pro 体験 訴求</div>
+      <div class="card-meta"><span>24KB / 印刷推奨</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-sales" href="business-card.html">
+      <div class="card-tag">CARD</div>
+      <div class="card-title"><span class="em">🪪</span>名刺デザイン</div>
+      <div class="card-desc">RAKURAKU ブランド統一の名刺</div>
+      <div class="card-meta"><span>7.7KB</span><span class="arr">→ 開く</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- ピッチ・投資家資料 -->
+<section class="section">
+  <h2 class="section-title"><span class="ic">💼</span>ピッチ・投資家資料</h2>
+  <p class="section-sub">PITCH MATERIALS — ピッチコンテスト・投資家向け</p>
+  <div class="grid">
+    <a class="card cat-pitch" href="pitch-deck-jafco.html">
+      <div class="card-tag">DECK</div>
+      <div class="card-title"><span class="em">🎤</span>ピッチデッキ (JAFCO 用)</div>
+      <div class="card-desc">15 スライド構成 — ビジョン / 市場 / トラクション / 競合 / 資金使途</div>
+      <div class="card-meta"><span>15 slides</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-pitch" href="images/pitch-cover.html">
+      <div class="card-tag">COVER</div>
+      <div class="card-title"><span class="em">🖼️</span>ピッチ表紙</div>
+      <div class="card-desc">1920×1080 SVG・全画面表示対応・PDF 化可</div>
+      <div class="card-meta"><span>Full HD</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-pitch" href="video-promo.html">
+      <div class="card-tag">VIDEO</div>
+      <div class="card-title"><span class="em">🎬</span>動画用プロモページ</div>
+      <div class="card-desc">6 シーン / 40 秒 / 全画面再生 / 画面録画で動画化</div>
+      <div class="card-meta"><span>40 秒</span><span class="arr">→ 開く</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- 機能画像 -->
+<section class="section">
+  <h2 class="section-title"><span class="ic">🎨</span>機能画像 (SVG 1280×720)</h2>
+  <p class="section-sub">FEATURE MOCKUPS — AI 動画・印刷・ピッチに使える高解像度画像</p>
+  <div class="grid">
+    <a class="card featured cat-image" href="images/features-showcase.html">
+      <div class="card-tag">★ 一覧ページ</div>
+      <div class="card-title"><span class="em">🎨</span>機能ショーケース</div>
+      <div class="card-desc">全 8 画像一覧 + 一括 PDF + 個別ダウンロード</div>
+      <div class="card-meta"><span>INDEX</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-image" href="images/screen-shift.svg">
+      <div class="card-tag">FEATURE 01</div>
+      <div class="card-title"><span class="em">🤖</span>AI シフト自動作成</div>
+      <div class="card-desc">週シフト表 / 3 スタッフ色分け</div>
+      <div class="card-meta"><span>1280×720 SVG</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-image" href="images/screen-timecard.svg">
+      <div class="card-tag">FEATURE 02</div>
+      <div class="card-title"><span class="em">📍</span>GPS 打刻</div>
+      <div class="card-desc">スマホ画面 / GPS 精度 ±5m / 30 日自動削除</div>
+      <div class="card-meta"><span>1280×720 SVG</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-image" href="images/screen-payroll.svg">
+      <div class="card-tag">FEATURE 03</div>
+      <div class="card-title"><span class="em">💰</span>給与自動計算</div>
+      <div class="card-desc">深夜+25% / 残業+25% 自動加算</div>
+      <div class="card-meta"><span>1280×720 SVG</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-image" href="images/screen-alert.svg">
+      <div class="card-tag">FEATURE 04</div>
+      <div class="card-title"><span class="em">⚠️</span>労基法アラート</div>
+      <div class="card-desc">連勤 / 休憩不足 / 深夜計算漏れを検知</div>
+      <div class="card-meta"><span>1280×720 SVG</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-image" href="images/screen-multilingual.svg">
+      <div class="card-tag">FEATURE 05</div>
+      <div class="card-title"><span class="em">🌐</span>5 言語対応</div>
+      <div class="card-desc">日英中韓越のシフト確認画面</div>
+      <div class="card-meta"><span>1280×720 SVG</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-image" href="images/screen-recruit.svg">
+      <div class="card-tag">FEATURE 06</div>
+      <div class="card-title"><span class="em">🎯</span>3 段階 自動募集</div>
+      <div class="card-desc">既存 → 時給UP → Timee の段階的フロー</div>
+      <div class="card-meta"><span>1280×720 SVG</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-image" href="images/screen-report.svg">
+      <div class="card-tag">FEATURE 07</div>
+      <div class="card-title"><span class="em">📊</span>月次レポート</div>
+      <div class="card-desc">KPI 4 枚 + 売上 vs 人件費 グラフ</div>
+      <div class="card-meta"><span>1280×720 SVG</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-image" href="images/screen-line.svg">
+      <div class="card-tag">FEATURE 08</div>
+      <div class="card-title"><span class="em">📱</span>LINE 通知連携</div>
+      <div class="card-desc">シフト確定 / 急募 / 給与明細を LINE で配信</div>
+      <div class="card-meta"><span>1280×720 SVG</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-image" href="images/rakuraku-logo.svg">
+      <div class="card-tag">LOGO</div>
+      <div class="card-title"><span class="em">🅁</span>RAKURAKU ロゴ</div>
+      <div class="card-desc">公式ロゴ (R アイコン + ワードマーク + タグライン)</div>
+      <div class="card-meta"><span>800×240 SVG</span><span class="arr">→ 開く</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- 公開サイト主要ページ -->
+<section class="section">
+  <h2 class="section-title"><span class="ic">🌐</span>公開サイト 主要ページ</h2>
+  <p class="section-sub">PUBLIC SITE — Google にインデックスされる顧客向けページ</p>
+  <div class="grid">
+    <a class="card cat-public" href="index.html">
+      <div class="card-tag">HOME</div>
+      <div class="card-title"><span class="em">🏠</span>トップページ</div>
+      <div class="card-desc">メインランディング (強力 SEO 最適化済み)</div>
+      <div class="card-meta"><span>104KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-public" href="demo.html">
+      <div class="card-tag">DEMO</div>
+      <div class="card-title"><span class="em">🎬</span>機能デモ</div>
+      <div class="card-desc">全機能のインタラクティブデモ</div>
+      <div class="card-meta"><span>44KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-public" href="case-studies.html">
+      <div class="card-tag">CASES</div>
+      <div class="card-title"><span class="em">📊</span>ヒアリング事例</div>
+      <div class="card-desc">120 店舗ヒアリングの実例集</div>
+      <div class="card-meta"><span>31KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-public" href="about.html">
+      <div class="card-tag">ABOUT</div>
+      <div class="card-title"><span class="em">🏢</span>会社概要</div>
+      <div class="card-desc">運営者情報・ミッション・連絡先</div>
+      <div class="card-meta"><span>26KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-public" href="blog.html">
+      <div class="card-tag">BLOG</div>
+      <div class="card-title"><span class="em">📝</span>ブログ</div>
+      <div class="card-desc">飲食店経営ノウハウブログ TOP</div>
+      <div class="card-meta"><span>82KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-public" href="help.html">
+      <div class="card-tag">FAQ</div>
+      <div class="card-title"><span class="em">❓</span>FAQ・サポート</div>
+      <div class="card-desc">よくある質問 + サポート窓口</div>
+      <div class="card-meta"><span>42KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-public" href="careers.html">
+      <div class="card-tag">CAREERS</div>
+      <div class="card-title"><span class="em">💼</span>採用情報</div>
+      <div class="card-desc">RAKURAKU の採用ページ</div>
+      <div class="card-meta"><span>23KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-public" href="referral.html">
+      <div class="card-tag">REFERRAL</div>
+      <div class="card-title"><span class="em">🤝</span>紹介プログラム</div>
+      <div class="card-desc">紹介 1 件で互いに 1 ヶ月無料</div>
+      <div class="card-meta"><span>13KB</span><span class="arr">→ 開く</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- 業態別 LP -->
+<section class="section">
+  <h2 class="section-title"><span class="ic">🍸</span>業態別 LP (SEO 流入用)</h2>
+  <p class="section-sub">INDUSTRY LANDING PAGES — Google 検索からの直接流入用</p>
+  <div class="grid">
+    <a class="card cat-public" href="bar.html">
+      <div class="card-title"><span class="em">🍸</span>バー向け</div>
+      <div class="card-meta"><span>bar.html</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-public" href="club.html">
+      <div class="card-title"><span class="em">🎉</span>クラブ向け</div>
+      <div class="card-meta"><span>club.html</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-public" href="izakaya.html">
+      <div class="card-title"><span class="em">🍶</span>居酒屋向け</div>
+      <div class="card-meta"><span>izakaya.html</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-public" href="cafe.html">
+      <div class="card-title"><span class="em">☕</span>カフェ向け</div>
+      <div class="card-meta"><span>cafe.html</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-public" href="lounge.html">
+      <div class="card-title"><span class="em">🍷</span>ラウンジ向け</div>
+      <div class="card-meta"><span>lounge.html</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-public" href="karaoke.html">
+      <div class="card-title"><span class="em">🎤</span>カラオケ向け</div>
+      <div class="card-meta"><span>karaoke.html</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-public" href="dining-bar.html">
+      <div class="card-title"><span class="em">🍽️</span>ダイニングバー向け</div>
+      <div class="card-meta"><span>dining-bar.html</span><span class="arr">→</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- 競合比較 -->
+<section class="section">
+  <h2 class="section-title"><span class="ic">⚔️</span>競合比較ページ</h2>
+  <p class="section-sub">COMPETITOR COMPARISONS — 比較検討中の顧客向け</p>
+  <div class="grid">
+    <a class="card cat-compare" href="competitor-matrix.html">
+      <div class="card-tag">MATRIX</div>
+      <div class="card-title"><span class="em">📋</span>12 社一覧表</div>
+      <div class="card-desc">主要シフト管理 SaaS 12 社の比較表</div>
+      <div class="card-meta"><span>11KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-compare" href="vs-airshift.html">
+      <div class="card-title"><span class="em">🅰</span>vs Airシフト</div>
+      <div class="card-meta"><span>vs-airshift.html</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-compare" href="vs-shiftee.html">
+      <div class="card-title"><span class="em">🅢</span>vs Shiftee</div>
+      <div class="card-meta"><span>vs-shiftee.html</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-compare" href="vs-freee.html">
+      <div class="card-title"><span class="em">🅕</span>vs freee 人事労務</div>
+      <div class="card-meta"><span>vs-freee.html</span><span class="arr">→</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- ガイド・ノウハウ -->
+<section class="section">
+  <h2 class="section-title"><span class="ic">📚</span>ガイド・ノウハウ</h2>
+  <p class="section-sub">GUIDES & KNOW-HOW</p>
+  <div class="grid">
+    <a class="card cat-public" href="guide.html">
+      <div class="card-title"><span class="em">📖</span>完全ガイド</div>
+      <div class="card-desc">8 章 30+ 表の包括ノウハウ集</div>
+      <div class="card-meta"><span>15KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-public" href="getting-started.html">
+      <div class="card-title"><span class="em">🚀</span>はじめ方</div>
+      <div class="card-desc">3 分で始められるクイックスタート</div>
+      <div class="card-meta"><span>20KB</span><span class="arr">→ 開く</span></div>
+    </a>
+    <a class="card cat-public" href="webinar.html">
+      <div class="card-title"><span class="em">🎥</span>ウェビナー</div>
+      <div class="card-desc">労基法を知らないと損する 10 のポイント</div>
+      <div class="card-meta"><span>—</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-public" href="testimonials.html">
+      <div class="card-title"><span class="em">💬</span>関係者の声</div>
+      <div class="card-desc">16 名のヒアリング協力者の生の声</div>
+      <div class="card-meta"><span>—</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-public" href="changelog.html">
+      <div class="card-title"><span class="em">📋</span>更新履歴</div>
+      <div class="card-desc">プロダクトアップデート履歴</div>
+      <div class="card-meta"><span>—</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-public" href="roadmap.html">
+      <div class="card-title"><span class="em">🛣️</span>ロードマップ</div>
+      <div class="card-desc">これから実装する機能・ご要望投票</div>
+      <div class="card-meta"><span>—</span><span class="arr">→</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- 戦略資料 -->
+<section class="section">
+  <h2 class="section-title"><span class="ic">🎯</span>戦略・運営資料</h2>
+  <p class="section-sub">STRATEGY & OPERATIONS</p>
+  <div class="grid">
+    <a class="card cat-sales" href="tiktok-strategy.html">
+      <div class="card-tag">SNS</div>
+      <div class="card-title"><span class="em">📱</span>TikTok 戦略</div>
+      <div class="card-desc">アカウント設計 + 投稿アイデア 13 種 + ハッシュタグ</div>
+      <div class="card-meta"><span>—</span><span class="arr">→</span></div>
+    </a>
+    <a class="card cat-sales" href="stripe-setup-guide.html">
+      <div class="card-tag">SETUP</div>
+      <div class="card-title"><span class="em">💳</span>Stripe 設定ガイド</div>
+      <div class="card-desc">Price ID 更新・環境変数の手順書</div>
+      <div class="card-meta"><span>—</span><span class="arr">→</span></div>
+    </a>
+  </div>
+</section>
+
+<footer class="footer">
+  <p><strong>RAKURAKU</strong> — 飲食店関係者が、家族と夕飯を食べられる国を作る。</p>
+  <p style="margin-top:8px">代表 小泉 咲太 / 2026年6月時点 / 計 113 ファイル</p>
+  <p style="margin-top:8px;font-size:10px">このページは内部用 (noindex)</p>
+</footer>
+
+</body>
+</html>

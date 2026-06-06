@@ -34,6 +34,7 @@ Disallow: /gacha.html
 Disallow: /video-promo.html
 Disallow: /images/pitch-cover.html
 Disallow: /images/timecard-print.html
+Disallow: /all-resources.html
 Disallow: /RAKURAKU%20%E4%BA%8B%E6%A5%AD%E6%A6%82%E8%A6%81%E3%83%BB%E8%A3%BD%E5%93%81%E8%AA%AC%E6%98%8E%E8%B3%87%E6%96%99.html
 
 Sitemap: https://rakuraku-shift-production.up.railway.app/sitemap.xml
