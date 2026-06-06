@@ -342,4 +342,10 @@
     <priority>0.75</priority>
     <lastmod>2026-06-04</lastmod>
   </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/weather-events.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-06-05</lastmod>
+  </url>
 </urlset>

@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgWX" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <linearGradient id="wxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+    <linearGradient id="evHigh" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#B91C1C"/>
+    </linearGradient>
+    <linearGradient id="evMed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <filter id="shadowWX" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="15" stdDeviation="25" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgWX)"/>
+
+  <text x="640" y="56" font-family="-apple-system, sans-serif" font-size="30" font-weight="900" fill="#fff" text-anchor="middle">天気 × 周辺イベント連動シフト最適化</text>
+  <text x="640" y="86" font-family="-apple-system, sans-serif" font-size="13" fill="#7DD3FC" text-anchor="middle" letter-spacing="3">CONTEXT-AWARE SHIFT INTELLIGENCE</text>
+
+  <!-- Desktop Mockup -->
+  <g transform="translate(60, 116)" filter="url(#shadowWX)">
+    <rect x="0" y="0" width="1160" height="568" rx="14" fill="#fff"/>
+    <rect x="0" y="0" width="1160" height="36" rx="14" fill="#0F172A"/>
+    <circle cx="20" cy="18" r="6" fill="#EF4444"/>
+    <circle cx="42" cy="18" r="6" fill="#F59E0B"/>
+    <circle cx="64" cy="18" r="6" fill="#10B981"/>
+    <rect x="100" y="9" width="500" height="18" rx="9" fill="#1E293B"/>
+    <text x="120" y="22" font-family="-apple-system, sans-serif" font-size="10" fill="#94A3B8">🔒 rakuraku-shift-production.up.railway.app/weather-events</text>
+
+    <rect x="8" y="44" width="1144" height="516" rx="8" fill="#F8FAFC"/>
+
+    <!-- AI Banner -->
+    <g transform="translate(28, 64)">
+      <rect x="0" y="0" width="1104" height="68" rx="14" fill="#FFFBEB" stroke="#FBBF24" stroke-width="1.5"/>
+      <rect x="16" y="14" width="40" height="40" rx="10" fill="url(#evMed)"/>
+      <text x="36" y="40" font-family="-apple-system, sans-serif" font-size="22" fill="#fff" text-anchor="middle">🤖</text>
+      <text x="72" y="28" font-family="-apple-system, sans-serif" font-size="12" font-weight="900" fill="#92400E">AI 客数予測 — 今週のハイライト</text>
+      <text x="72" y="48" font-family="-apple-system, sans-serif" font-size="11" fill="#78350F">金曜は花火大会の影響で来店数 +180% 予測 → スタッフ +4 名増を提案 / 日曜は終日雨予報のため -1 名減でコスト最適化</text>
+    </g>
+
+    <!-- Weather row title -->
+    <text x="28" y="160" font-family="-apple-system, sans-serif" font-size="14" font-weight="900" fill="#0F172A">🌤️ 7 日間の天気予報 + 客数影響</text>
+
+    <!-- Weather grid -->
+    <g transform="translate(28, 174)">
+      <!-- Today big card -->
+      <rect x="0" y="0" width="232" height="148" rx="12" fill="url(#wxGrad)"/>
+      <text x="20" y="22" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" fill="#fff" fill-opacity="0.85">今日 · 6/8 (土)</text>
+      <text x="20" y="68" font-family="-apple-system, sans-serif" font-size="36" fill="#fff">☀️</text>
+      <text x="80" y="62" font-family="-apple-system, sans-serif" font-size="32" font-weight="900" fill="#fff">28°</text>
+      <text x="138" y="62" font-family="-apple-system, sans-serif" font-size="14" fill="#fff" fill-opacity="0.7">/ 19°</text>
+      <text x="20" y="92" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#FCD34D">晴れ · 微風</text>
+      <text x="20" y="110" font-family="-apple-system, sans-serif" font-size="10" fill="#fff" fill-opacity="0.85">降水確率 10% · 湿度 45%</text>
+      <rect x="20" y="118" width="120" height="22" rx="11" fill="#fff" fill-opacity="0.2"/>
+      <text x="80" y="133" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" fill="#fff" text-anchor="middle">📈 通常想定</text>
+
+      <!-- Mini cards -->
+      <g transform="translate(248, 0)">
+        <!-- card 1 -->
+        <g>
+          <rect x="0" y="0" width="138" height="148" rx="12" fill="#fff" stroke="#E2E8F0"/>
+          <text x="69" y="20" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" fill="#64748B" text-anchor="middle">6/9 (日)</text>
+          <text x="69" y="60" font-family="-apple-system, sans-serif" font-size="32" fill="#0F172A" text-anchor="middle">🌧️</text>
+          <text x="69" y="82" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">雨</text>
+          <text x="69" y="104" font-family="-apple-system, sans-serif" font-size="16" font-weight="900" fill="#0F172A" text-anchor="middle">22°</text>
+          <text x="98" y="104" font-family="-apple-system, sans-serif" font-size="11" fill="#0369A1" fill-opacity="0.7">/16°</text>
+          <text x="69" y="120" font-family="-apple-system, sans-serif" font-size="9" fill="#64748B" text-anchor="middle">降水 80%</text>
+          <rect x="38" y="126" width="62" height="16" rx="8" fill="#FEE2E2"/>
+          <text x="69" y="138" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#B91C1C" text-anchor="middle">📉 -25%</text>
+        </g>
+
+        <!-- card 2 -->
+        <g transform="translate(146, 0)">
+          <rect x="0" y="0" width="138" height="148" rx="12" fill="#fff" stroke="#E2E8F0"/>
+          <text x="69" y="20" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" fill="#64748B" text-anchor="middle">6/10 (月)</text>
+          <text x="69" y="60" font-family="-apple-system, sans-serif" font-size="32" fill="#0F172A" text-anchor="middle">⛅</text>
+          <text x="69" y="82" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">曇り時々晴れ</text>
+          <text x="69" y="104" font-family="-apple-system, sans-serif" font-size="16" font-weight="900" fill="#0F172A" text-anchor="middle">26°</text>
+          <text x="98" y="104" font-family="-apple-system, sans-serif" font-size="11" fill="#0369A1" fill-opacity="0.7">/18°</text>
+          <text x="69" y="120" font-family="-apple-system, sans-serif" font-size="9" fill="#64748B" text-anchor="middle">降水 30%</text>
+          <rect x="38" y="126" width="62" height="16" rx="8" fill="#F1F5F9"/>
+          <text x="69" y="138" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#475569" text-anchor="middle">📊 通常</text>
+        </g>
+
+        <!-- card 3 -->
+        <g transform="translate(292, 0)">
+          <rect x="0" y="0" width="138" height="148" rx="12" fill="#fff" stroke="#E2E8F0"/>
+          <text x="69" y="20" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" fill="#64748B" text-anchor="middle">6/11 (火)</text>
+          <text x="69" y="60" font-family="-apple-system, sans-serif" font-size="32" fill="#0F172A" text-anchor="middle">☁️</text>
+          <text x="69" y="82" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">曇り</text>
+          <text x="69" y="104" font-family="-apple-system, sans-serif" font-size="16" font-weight="900" fill="#0F172A" text-anchor="middle">25°</text>
+          <text x="98" y="104" font-family="-apple-system, sans-serif" font-size="11" fill="#0369A1" fill-opacity="0.7">/19°</text>
+          <text x="69" y="120" font-family="-apple-system, sans-serif" font-size="9" fill="#64748B" text-anchor="middle">降水 40%</text>
+          <rect x="38" y="126" width="62" height="16" rx="8" fill="#F1F5F9"/>
+          <text x="69" y="138" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#475569" text-anchor="middle">📊 通常</text>
+        </g>
+
+        <!-- card 4 (highlight) -->
+        <g transform="translate(438, 0)">
+          <rect x="0" y="0" width="138" height="148" rx="12" fill="#FFFBEB" stroke="#FBBF24" stroke-width="2"/>
+          <text x="69" y="20" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" fill="#92400E" text-anchor="middle">6/12 (水)</text>
+          <text x="69" y="60" font-family="-apple-system, sans-serif" font-size="32" fill="#0F172A" text-anchor="middle">🌤️</text>
+          <text x="69" y="82" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#92400E" text-anchor="middle">晴れ</text>
+          <text x="69" y="104" font-family="-apple-system, sans-serif" font-size="16" font-weight="900" fill="#0F172A" text-anchor="middle">29°</text>
+          <text x="98" y="104" font-family="-apple-system, sans-serif" font-size="11" fill="#0369A1" fill-opacity="0.7">/21°</text>
+          <text x="69" y="120" font-family="-apple-system, sans-serif" font-size="9" fill="#92400E" text-anchor="middle">降水 10%</text>
+          <rect x="32" y="126" width="74" height="16" rx="8" fill="#DCFCE7"/>
+          <text x="69" y="138" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#15803D" text-anchor="middle">📈 +180%</text>
+        </g>
+
+        <!-- card 5 -->
+        <g transform="translate(584, 0)">
+          <rect x="0" y="0" width="138" height="148" rx="12" fill="#fff" stroke="#E2E8F0"/>
+          <text x="69" y="20" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" fill="#64748B" text-anchor="middle">6/13 (木)</text>
+          <text x="69" y="60" font-family="-apple-system, sans-serif" font-size="32" fill="#0F172A" text-anchor="middle">☀️</text>
+          <text x="69" y="82" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">快晴</text>
+          <text x="69" y="104" font-family="-apple-system, sans-serif" font-size="16" font-weight="900" fill="#0F172A" text-anchor="middle">30°</text>
+          <text x="98" y="104" font-family="-apple-system, sans-serif" font-size="11" fill="#0369A1" fill-opacity="0.7">/22°</text>
+          <text x="69" y="120" font-family="-apple-system, sans-serif" font-size="9" fill="#64748B" text-anchor="middle">降水 0%</text>
+          <rect x="38" y="126" width="62" height="16" rx="8" fill="#DCFCE7"/>
+          <text x="69" y="138" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#15803D" text-anchor="middle">📈 +15%</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Events title -->
+    <text x="28" y="356" font-family="-apple-system, sans-serif" font-size="14" font-weight="900" fill="#0F172A">🎪 周辺イベント (半径 3km)</text>
+
+    <!-- Event cards -->
+    <g transform="translate(28, 370)">
+      <!-- ev 1 -->
+      <g>
+        <rect x="0" y="0" width="358" height="76" rx="12" fill="#fff" stroke="#E2E8F0"/>
+        <rect x="14" y="14" width="48" height="48" rx="10" fill="url(#evHigh)"/>
+        <text x="38" y="38" font-family="-apple-system, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">12</text>
+        <text x="38" y="54" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#fff" text-anchor="middle">JUN</text>
+        <rect x="74" y="14" width="60" height="14" rx="7" fill="#FCE7F3"/>
+        <text x="104" y="24" font-family="-apple-system, sans-serif" font-size="8" font-weight="800" fill="#BE185D" text-anchor="middle">FESTIVAL</text>
+        <text x="74" y="40" font-family="-apple-system, sans-serif" font-size="12" font-weight="900" fill="#0F172A">東京湾大華火祭 2026</text>
+        <text x="74" y="54" font-family="-apple-system, sans-serif" font-size="9" fill="#64748B">📍 お台場 · 動員 60万人 · 19:00-21:00</text>
+        <rect x="74" y="58" width="124" height="14" rx="7" fill="#DCFCE7"/>
+        <text x="136" y="68" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#15803D" text-anchor="middle">📈 来店 +180%</text>
+      </g>
+
+      <!-- ev 2 -->
+      <g transform="translate(372, 0)">
+        <rect x="0" y="0" width="358" height="76" rx="12" fill="#fff" stroke="#E2E8F0"/>
+        <rect x="14" y="14" width="48" height="48" rx="10" fill="url(#evHigh)"/>
+        <text x="38" y="38" font-family="-apple-system, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">12</text>
+        <text x="38" y="54" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#fff" text-anchor="middle">JUN</text>
+        <rect x="74" y="14" width="46" height="14" rx="7" fill="#DBEAFE"/>
+        <text x="97" y="24" font-family="-apple-system, sans-serif" font-size="8" font-weight="800" fill="#1E40AF" text-anchor="middle">SPORTS</text>
+        <text x="74" y="40" font-family="-apple-system, sans-serif" font-size="12" font-weight="900" fill="#0F172A">J リーグ FC東京 vs 川崎</text>
+        <text x="74" y="54" font-family="-apple-system, sans-serif" font-size="9" fill="#64748B">📍 国立競技場 · 4.5万人 · 19:00 KO</text>
+        <rect x="74" y="58" width="106" height="14" rx="7" fill="#DCFCE7"/>
+        <text x="127" y="68" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#15803D" text-anchor="middle">📈 来店 +45%</text>
+      </g>
+
+      <!-- ev 3 -->
+      <g transform="translate(744, 0)">
+        <rect x="0" y="0" width="358" height="76" rx="12" fill="#fff" stroke="#E2E8F0"/>
+        <rect x="14" y="14" width="48" height="48" rx="10" fill="url(#evMed)"/>
+        <text x="38" y="38" font-family="-apple-system, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">13</text>
+        <text x="38" y="54" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#fff" text-anchor="middle">JUN</text>
+        <rect x="74" y="14" width="58" height="14" rx="7" fill="#F3E8FF"/>
+        <text x="103" y="24" font-family="-apple-system, sans-serif" font-size="8" font-weight="800" fill="#7C3AED" text-anchor="middle">CONCERT</text>
+        <text x="74" y="40" font-family="-apple-system, sans-serif" font-size="12" font-weight="900" fill="#0F172A">King Gnu 東京ドーム公演</text>
+        <text x="74" y="54" font-family="-apple-system, sans-serif" font-size="9" fill="#64748B">📍 東京ドーム · 5.5万人 · 18:00開演</text>
+        <rect x="74" y="58" width="106" height="14" rx="7" fill="#FEF3C7"/>
+        <text x="127" y="68" font-family="-apple-system, sans-serif" font-size="9" font-weight="800" fill="#92400E" text-anchor="middle">📈 来店 +30%</text>
+      </g>
+    </g>
+
+    <!-- Event Reg form preview -->
+    <g transform="translate(28, 470)">
+      <rect x="0" y="0" width="1104" height="74" rx="12" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1.5"/>
+      <text x="22" y="26" font-family="-apple-system, sans-serif" font-size="13" font-weight="900" fill="#0F172A">📝 自店オリジナルイベントを登録</text>
+      <text x="22" y="44" font-family="-apple-system, sans-serif" font-size="10" fill="#475569">貸切予約・常連の誕生日会・店内イベント — 登録すると Timee 募集ロジックと AI 客数予測に即反映</text>
+      <rect x="900" y="22" width="180" height="36" rx="18" fill="url(#wxGrad)"/>
+      <text x="990" y="44" font-family="-apple-system, sans-serif" font-size="12" font-weight="900" fill="#fff" text-anchor="middle">＋ イベント登録</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>天気 × 周辺イベント — シフト最適化 | RAKURAKU</title>
+<meta name="description" content="天気予報と周辺イベントを自動取得し、シフトを最適化。雨の日はスタッフ減、フェスの日は増。AI が客数予測してシフト提案。" />
+<meta name="theme-color" content="#0EA5E9">
+<meta property="og:title" content="天気 × 周辺イベント連動シフト — RAKURAKU"/>
+<meta property="og:description" content="天気・近隣イベントから客数を予測。シフトを賢く最適化。"/>
+<meta property="og:image" content="https://rakuraku-shift-production.up.railway.app/icon-512.png"/>
+<meta property="og:type" content="website"/>
+<link rel="canonical" href="https://rakuraku-shift-production.up.railway.app/weather-events.html"/>
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #0EA5E9;outline-offset:2px;border-radius:4px;}
+  :root{
+    --sky:#0EA5E9; --sky-d:#0369A1; --sky-l:#E0F2FE;
+    --indigo:#4F46E5; --purple:#7C3AED;
+    --emerald:#10B981; --amber:#F59E0B; --rose:#EF4444;
+    --slate-900:#0F172A; --slate-700:#334155; --slate-500:#64748B;
+    --slate-200:#E2E8F0; --slate-100:#F1F5F9; --slate-50:#F8FAFC;
+  }
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:#fff;line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:var(--sky-d);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  .skip-link{position:absolute;left:-9999px;}
+  .skip-link:focus{left:10px;top:10px;background:#0F172A;color:#fff;padding:10px;z-index:9999;}
+
+  /* ─── Nav ─── */
+  .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);}
+  .nav-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--sky),var(--indigo));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;}
+  .nav-back{font-size:13px;color:var(--slate-700);font-weight:700;}
+
+  .container{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+  /* ─── Hero ─── */
+  .hero{padding:60px 0 30px;text-align:center;}
+  .hero-eyebrow{display:inline-block;background:linear-gradient(135deg,var(--sky),var(--indigo));color:#fff;font-size:11px;font-weight:900;padding:6px 16px;border-radius:20px;letter-spacing:.06em;margin-bottom:16px;}
+  .hero h1{font-size:42px;font-weight:900;letter-spacing:-.02em;line-height:1.2;margin-bottom:16px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--sky),var(--indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:16px;color:var(--slate-500);font-weight:600;max-width:720px;margin:0 auto;}
+  @media(max-width:640px){.hero h1{font-size:30px;}}
+
+  /* ─── Store selector ─── */
+  .store-bar{display:flex;gap:10px;align-items:center;justify-content:center;margin:30px 0;flex-wrap:wrap;}
+  .store-select{padding:10px 16px;border:1.5px solid var(--slate-200);border-radius:10px;font-size:13px;font-weight:700;background:#fff;font-family:inherit;cursor:pointer;}
+  .store-label{font-size:12px;font-weight:800;color:var(--slate-500);letter-spacing:.05em;}
+  .updated{font-size:11px;color:var(--slate-500);font-weight:600;}
+
+  /* ─── AI Insight Banner ─── */
+  .ai-banner{background:linear-gradient(135deg,#FFF7E0,#FFFBEB);border:1.5px solid #FBBF24;border-radius:18px;padding:22px 26px;margin-bottom:30px;display:flex;align-items:center;gap:18px;}
+  .ai-banner .ai-ic{width:50px;height:50px;flex-shrink:0;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;}
+  .ai-banner .ai-body h3{font-size:14px;font-weight:900;color:#92400E;margin-bottom:4px;letter-spacing:.04em;}
+  .ai-banner .ai-body p{font-size:13px;color:#78350F;line-height:1.7;font-weight:600;}
+  .ai-banner .ai-body strong{color:#92400E;}
+
+  /* ─── Section ─── */
+  section.feat{padding:30px 0;}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+  .section-head h2{font-size:22px;font-weight:900;letter-spacing:-.01em;}
+  .section-head .tag{font-size:10px;font-weight:800;color:var(--sky-d);background:var(--sky-l);padding:4px 12px;border-radius:12px;letter-spacing:.06em;}
+
+  /* ─── Weather forecast grid ─── */
+  .wx-grid{display:grid;grid-template-columns:1.6fr repeat(6,1fr);gap:10px;}
+  @media(max-width:880px){.wx-grid{grid-template-columns:repeat(3,1fr);}}
+  .wx-card{background:#fff;border:1.5px solid var(--slate-200);border-radius:14px;padding:18px 14px;text-align:center;transition:transform .15s,box-shadow .15s;}
+  .wx-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(14,165,233,.12);}
+  .wx-card.today{background:linear-gradient(135deg,#0EA5E9,#0369A1);color:#fff;border-color:transparent;text-align:left;padding:22px 22px 18px;}
+  .wx-card.today .wx-date{color:rgba(255,255,255,.85);}
+  .wx-card.today .wx-cond{color:#FCD34D;font-weight:900;}
+  .wx-date{font-size:11px;font-weight:800;color:var(--slate-500);letter-spacing:.06em;margin-bottom:6px;}
+  .wx-ic{font-size:34px;line-height:1;margin:6px 0;}
+  .wx-cond{font-size:11px;font-weight:700;color:var(--slate-700);margin-bottom:6px;}
+  .wx-temp{font-size:18px;font-weight:900;letter-spacing:-.01em;}
+  .wx-temp .lo{color:var(--sky-d);opacity:.7;font-size:13px;margin-left:4px;}
+  .wx-card.today .wx-temp{font-size:34px;}
+  .wx-card.today .wx-temp .lo{color:rgba(255,255,255,.7);}
+  .wx-pop{font-size:10px;color:var(--slate-500);margin-top:4px;font-weight:700;}
+  .wx-card.today .wx-pop{color:rgba(255,255,255,.85);}
+  .wx-impact{font-size:10px;font-weight:800;margin-top:10px;padding:3px 8px;border-radius:8px;display:inline-block;}
+  .wx-impact.up{background:#DCFCE7;color:#15803D;}
+  .wx-impact.down{background:#FEE2E2;color:#B91C1C;}
+  .wx-impact.flat{background:var(--slate-100);color:var(--slate-700);}
+  .wx-card.today .wx-impact{background:rgba(255,255,255,.2);color:#fff;}
+
+  /* ─── Events list ─── */
+  .ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:760px){.ev-grid{grid-template-columns:1fr;}}
+  .ev-card{background:#fff;border:1.5px solid var(--slate-200);border-radius:14px;padding:18px 20px;transition:transform .15s,box-shadow .15s;display:flex;gap:14px;}
+  .ev-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06);}
+  .ev-card .ev-date{flex-shrink:0;width:60px;text-align:center;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border-radius:10px;padding:8px 6px;}
+  .ev-card .ev-date .day{font-size:22px;font-weight:900;line-height:1;}
+  .ev-card .ev-date .mo{font-size:9px;font-weight:800;letter-spacing:.06em;margin-top:2px;}
+  .ev-card.high .ev-date{background:linear-gradient(135deg,#EF4444,#B91C1C);}
+  .ev-card.med .ev-date{background:linear-gradient(135deg,#F59E0B,#D97706);}
+  .ev-card.low .ev-date{background:linear-gradient(135deg,#64748B,#475569);}
+  .ev-body{flex:1;min-width:0;}
+  .ev-body .ev-cat{font-size:9px;font-weight:800;letter-spacing:.06em;display:inline-block;padding:2px 8px;border-radius:10px;margin-bottom:4px;}
+  .ev-cat.fest{background:#FCE7F3;color:#BE185D;}
+  .ev-cat.sport{background:#DBEAFE;color:#1E40AF;}
+  .ev-cat.concert{background:#F3E8FF;color:#7C3AED;}
+  .ev-cat.holiday{background:#DCFCE7;color:#15803D;}
+  .ev-cat.local{background:#FEF3C7;color:#92400E;}
+  .ev-body h3{font-size:14px;font-weight:900;margin-bottom:4px;line-height:1.4;}
+  .ev-body .ev-meta{font-size:11px;color:var(--slate-500);font-weight:600;line-height:1.6;}
+  .ev-body .ev-impact{font-size:11px;font-weight:800;margin-top:8px;display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:8px;}
+  .ev-impact.up{background:#DCFCE7;color:#15803D;}
+  .ev-impact.down{background:#FEE2E2;color:#B91C1C;}
+  .ev-impact.med{background:#FEF3C7;color:#92400E;}
+
+  /* ─── Event registration form ─── */
+  .reg-card{background:linear-gradient(135deg,#F0F9FF,#FAFAFC);border:1.5px solid #BAE6FD;border-radius:18px;padding:30px;margin-top:30px;}
+  .reg-card h3{font-size:18px;font-weight:900;margin-bottom:6px;}
+  .reg-card .lead{font-size:13px;color:var(--slate-500);font-weight:600;margin-bottom:20px;}
+  .reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:640px){.reg-grid{grid-template-columns:1fr;}}
+  .reg-field{display:flex;flex-direction:column;}
+  .reg-field.full{grid-column:1/-1;}
+  .reg-field label{font-size:11px;font-weight:800;color:var(--slate-700);margin-bottom:5px;letter-spacing:.04em;}
+  .reg-field input,.reg-field select,.reg-field textarea{padding:11px 14px;border:1.5px solid var(--slate-200);border-radius:10px;font-size:13px;font-family:inherit;outline:none;background:#fff;}
+  .reg-field input:focus,.reg-field select:focus,.reg-field textarea:focus{border-color:var(--sky);}
+  .reg-field textarea{resize:vertical;min-height:60px;}
+  .reg-actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .reg-btn{padding:13px 24px;background:linear-gradient(135deg,var(--sky),var(--indigo));color:#fff;border:none;border-radius:11px;font-weight:900;font-size:13px;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(14,165,233,.3);}
+  .reg-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(14,165,233,.4);}
+  .reg-note{font-size:11px;color:var(--slate-500);font-weight:600;}
+  .reg-success{display:none;background:#DCFCE7;border:1.5px solid #16A34A;border-radius:12px;padding:14px 18px;margin-top:14px;font-size:13px;font-weight:800;color:#15803D;}
+  .reg-success.show{display:block;}
+
+  /* ─── Saved events ─── */
+  .saved-list{margin-top:20px;display:grid;gap:10px;}
+  .saved-item{background:#fff;border:1.5px dashed var(--slate-200);border-radius:12px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:14px;}
+  .saved-item .saved-info{flex:1;min-width:0;}
+  .saved-item .saved-title{font-size:13px;font-weight:900;}
+  .saved-item .saved-meta{font-size:11px;color:var(--slate-500);font-weight:600;margin-top:2px;}
+  .saved-item .saved-del{background:none;border:none;color:var(--rose);cursor:pointer;font-size:11px;font-weight:800;padding:6px 10px;border-radius:8px;}
+  .saved-item .saved-del:hover{background:#FEE2E2;}
+
+  /* ─── Footer ─── */
+  .footer{text-align:center;padding:40px 24px;font-size:11px;color:var(--slate-500);border-top:1px solid var(--slate-100);margin-top:60px;}
+  .footer a{color:var(--sky-d);font-weight:700;margin:0 8px;}
+
+  /* ─── CTA ─── */
+  .cta-box{background:linear-gradient(135deg,var(--sky),var(--indigo));border-radius:22px;padding:40px 30px;text-align:center;color:#fff;margin-top:50px;}
+  .cta-box h2{font-size:24px;font-weight:900;margin-bottom:10px;}
+  .cta-box p{font-size:14px;opacity:.9;margin-bottom:22px;}
+  .cta-btn{display:inline-block;background:#fff;color:var(--sky-d);padding:14px 32px;border-radius:30px;font-weight:900;font-size:14px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.15);transition:transform .15s;}
+  .cta-btn:hover{transform:translateY(-2px);text-decoration:none;}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
+    <a href="/shift.html" class="nav-back">← シフト管理に戻る</a>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="container">
+  <section class="hero">
+    <div class="hero-eyebrow">🌦️ × 🎪  CONTEXT-AWARE SHIFTS</div>
+    <h1>天気と街のイベントを見て、<br><span class="grad">シフトを賢く組む</span></h1>
+    <p>雨の日は静かな店内、花火大会の夜は満席。<br>気象 API と地域イベント情報を自動取得し、AI が客数予測 → シフト最適化案を提案します。</p>
+  </section>
+
+  <!-- Store selector -->
+  <div class="store-bar">
+    <span class="store-label">📍 店舗:</span>
+    <select class="store-select" id="storeSelect">
+      <option value="minato">BAR RAKURAKU 港区店</option>
+      <option value="shibuya">RAKURAKU 渋谷店</option>
+      <option value="ginza">RAKURAKU 銀座店</option>
+      <option value="shinjuku">RAKURAKU 新宿店</option>
+    </select>
+    <span class="updated" id="lastUpdate">最終更新: —</span>
+  </div>
+
+  <!-- AI Insight Banner -->
+  <div class="ai-banner">
+    <div class="ai-ic">🤖</div>
+    <div class="ai-body">
+      <h3>AI 客数予測 — 今週のハイライト</h3>
+      <p>
+        <strong>金曜 (6/12) は花火大会の影響で来店数 +180% 予測。</strong>
+        通常 +2 名増のところ <strong>+4 名増</strong>を提案します。
+        日曜 (6/14) は終日雨予報のため <strong>-1 名減</strong> でコスト最適化が可能です。
+      </p>
+    </div>
+  </div>
+
+  <!-- Weather Forecast -->
+  <section class="feat">
+    <div class="section-head">
+      <h2>🌤️ 7 日間の天気予報 + 客数影響</h2>
+      <span class="tag">WEATHER ANALYTICS</span>
+    </div>
+
+    <div class="wx-grid" id="wxGrid">
+      <!-- TODAY (大カード) -->
+      <div class="wx-card today">
+        <div class="wx-date">今日 · 6/8 (土)</div>
+        <div class="wx-ic">☀️</div>
+        <div class="wx-cond">晴れ · 微風</div>
+        <div class="wx-temp">28°<span class="lo">/ 19°</span></div>
+        <div class="wx-pop">降水確率 10% · 湿度 45%</div>
+        <div class="wx-impact">📈 通常想定</div>
+      </div>
+      <div class="wx-card"><div class="wx-date">6/9 (日)</div><div class="wx-ic">🌧️</div><div class="wx-cond">雨</div><div class="wx-temp">22°<span class="lo">/ 16°</span></div><div class="wx-pop">降水確率 80%</div><div class="wx-impact down">📉 -25%</div></div>
+      <div class="wx-card"><div class="wx-date">6/10 (月)</div><div class="wx-ic">⛅</div><div class="wx-cond">曇り時々晴れ</div><div class="wx-temp">26°<span class="lo">/ 18°</span></div><div class="wx-pop">降水確率 30%</div><div class="wx-impact flat">📊 通常</div></div>
+      <div class="wx-card"><div class="wx-date">6/11 (火)</div><div class="wx-ic">☁️</div><div class="wx-cond">曇り</div><div class="wx-temp">25°<span class="lo">/ 19°</span></div><div class="wx-pop">降水確率 40%</div><div class="wx-impact flat">📊 通常</div></div>
+      <div class="wx-card"><div class="wx-date">6/12 (水)</div><div class="wx-ic">🌤️</div><div class="wx-cond">晴れ</div><div class="wx-temp">29°<span class="lo">/ 21°</span></div><div class="wx-pop">降水確率 10%</div><div class="wx-impact up">📈 +180%</div></div>
+      <div class="wx-card"><div class="wx-date">6/13 (木)</div><div class="wx-ic">☀️</div><div class="wx-cond">快晴</div><div class="wx-temp">30°<span class="lo">/ 22°</span></div><div class="wx-pop">降水確率 0%</div><div class="wx-impact up">📈 +15%</div></div>
+      <div class="wx-card"><div class="wx-date">6/14 (金)</div><div class="wx-ic">🌦️</div><div class="wx-cond">雨時々曇り</div><div class="wx-temp">24°<span class="lo">/ 18°</span></div><div class="wx-pop">降水確率 70%</div><div class="wx-impact down">📉 -15%</div></div>
+    </div>
+  </section>
+
+  <!-- Nearby Events -->
+  <section class="feat">
+    <div class="section-head">
+      <h2>🎪 周辺イベント (港区・渋谷・銀座 半径 3km)</h2>
+      <span class="tag">LOCAL EVENTS</span>
+    </div>
+
+    <div class="ev-grid" id="evGrid">
+      <div class="ev-card high">
+        <div class="ev-date"><div class="day">12</div><div class="mo">JUN</div></div>
+        <div class="ev-body">
+          <span class="ev-cat fest">FESTIVAL</span>
+          <h3>東京湾大華火祭 2026</h3>
+          <div class="ev-meta">📍 お台場 海浜公園 · 19:00-21:00 · 動員想定 60万人</div>
+          <div class="ev-impact up">📈 来店数 +180% (大幅増)</div>
+        </div>
+      </div>
+
+      <div class="ev-card high">
+        <div class="ev-date"><div class="day">12</div><div class="mo">JUN</div></div>
+        <div class="ev-body">
+          <span class="ev-cat sport">SPORTS</span>
+          <h3>J リーグ FC東京 vs 川崎</h3>
+          <div class="ev-meta">📍 国立競技場 · 19:00 KO · 動員想定 4.5万人</div>
+          <div class="ev-impact up">📈 来店数 +45% (試合後)</div>
+        </div>
+      </div>
+
+      <div class="ev-card med">
+        <div class="ev-date"><div class="day">13</div><div class="mo">JUN</div></div>
+        <div class="ev-body">
+          <span class="ev-cat concert">CONCERT</span>
+          <h3>King Gnu 東京ドーム公演</h3>
+          <div class="ev-meta">📍 東京ドーム · 18:00開演 · 動員 5.5万人</div>
+          <div class="ev-impact med">📈 来店数 +30% (後楽園/水道橋方面)</div>
+        </div>
+      </div>
+
+      <div class="ev-card med">
+        <div class="ev-date"><div class="day">13</div><div class="mo">JUN</div></div>
+        <div class="ev-body">
+          <span class="ev-cat local">LOCAL</span>
+          <h3>渋谷区 商店街サマーフェス</h3>
+          <div class="ev-meta">📍 道玄坂・センター街 · 16:00-22:00 · 露店 80店</div>
+          <div class="ev-impact med">📈 来店数 +50% (渋谷店)</div>
+        </div>
+      </div>
+
+      <div class="ev-card low">
+        <div class="ev-date"><div class="day">14</div><div class="mo">JUN</div></div>
+        <div class="ev-body">
+          <span class="ev-cat holiday">HOLIDAY</span>
+          <h3>父の日</h3>
+          <div class="ev-meta">📍 全エリア · 通常営業日</div>
+          <div class="ev-impact up">📈 来店数 +20% (ファミリー客)</div>
+        </div>
+      </div>
+
+      <div class="ev-card low">
+        <div class="ev-date"><div class="day">15</div><div class="mo">JUN</div></div>
+        <div class="ev-body">
+          <span class="ev-cat local">LOCAL</span>
+          <h3>銀座 ホコ天 (土日恒例)</h3>
+          <div class="ev-meta">📍 銀座中央通り · 12:00-17:00</div>
+          <div class="ev-impact med">📈 来店数 +25% (銀座店)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Registration Form -->
+  <section class="feat">
+    <div class="section-head">
+      <h2>📝 自店オリジナルイベントを登録</h2>
+      <span class="tag">CUSTOM EVENT</span>
+    </div>
+
+    <div class="reg-card">
+      <h3>独自イベントを登録 → シフト予測に反映</h3>
+      <p class="lead">貸切予約・常連の誕生日会・店内イベントなど、自店だけが知っている予定を登録できます。AI 客数予測と Timee 自動募集ロジックに即時反映されます。</p>
+
+      <form id="evForm" onsubmit="event.preventDefault();saveEvent();">
+        <div class="reg-grid">
+          <div class="reg-field">
+            <label for="ev-name">イベント名 <span style="color:#EF4444;">*</span></label>
+            <input type="text" id="ev-name" required placeholder="例) 山田様 貸切誕生日会 / 50名" />
+          </div>
+          <div class="reg-field">
+            <label for="ev-cat">カテゴリ <span style="color:#EF4444;">*</span></label>
+            <select id="ev-cat" required>
+              <option value="">選択してください</option>
+              <option value="reservation">🎉 貸切・予約</option>
+              <option value="seasonal">🎁 季節催事</option>
+              <option value="promo">📢 自店プロモ</option>
+              <option value="private">🥂 常連イベント</option>
+              <option value="holiday">📅 営業日変更</option>
+              <option value="other">📌 その他</option>
+            </select>
+          </div>
+          <div class="reg-field">
+            <label for="ev-date">日付 <span style="color:#EF4444;">*</span></label>
+            <input type="date" id="ev-date" required />
+          </div>
+          <div class="reg-field">
+            <label for="ev-time">時間帯</label>
+            <input type="text" id="ev-time" placeholder="例) 19:00-22:00" />
+          </div>
+          <div class="reg-field">
+            <label for="ev-impact">客数影響予測 <span style="color:#EF4444;">*</span></label>
+            <select id="ev-impact" required>
+              <option value="">選択してください</option>
+              <option value="up200">📈 大幅増 (+150% 以上)</option>
+              <option value="up100">📈 大増 (+50〜100%)</option>
+              <option value="up50">📈 増 (+20〜50%)</option>
+              <option value="flat">📊 通常通り</option>
+              <option value="down30">📉 減 (-20〜40%)</option>
+              <option value="closed">🚫 営業休止</option>
+            </select>
+          </div>
+          <div class="reg-field">
+            <label for="ev-staff">追加スタッフ数の提案</label>
+            <select id="ev-staff">
+              <option value="0">自動 (AI に任せる)</option>
+              <option value="+1">+1 名</option>
+              <option value="+2">+2 名</option>
+              <option value="+3">+3 名</option>
+              <option value="-1">-1 名 (減らす)</option>
+              <option value="-2">-2 名 (減らす)</option>
+            </select>
+          </div>
+          <div class="reg-field full">
+            <label for="ev-notes">メモ (任意)</label>
+            <textarea id="ev-notes" placeholder="例) ベテランスタッフを優先配置 / バーテン2名必須 など"></textarea>
+          </div>
+        </div>
+
+        <div class="reg-actions">
+          <button type="submit" class="reg-btn">＋ イベントを登録 (シフトに即反映)</button>
+          <span class="reg-note">⚡ 登録すると Timee 募集ロジックと AI 予測に即連携</span>
+        </div>
+      </form>
+
+      <div class="reg-success" id="evSuccess">✅ イベントを登録しました。シフト予測に反映済みです。</div>
+
+      <div class="saved-list" id="savedList" style="margin-top:24px;"></div>
+    </div>
+  </section>
+
+  <!-- Why this matters -->
+  <section class="feat">
+    <div class="section-head">
+      <h2>💡 この機能で得られる効果</h2>
+      <span class="tag">BUSINESS IMPACT</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;">
+      <div style="background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:14px;padding:20px;">
+        <div style="font-size:22px;margin-bottom:8px;">💰</div>
+        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#15803D;">人件費 -8% 削減 (試算)</div>
+        <p style="font-size:12px;color:#166534;line-height:1.7;">雨の日に過剰人員を組まなくなり、月平均 ¥48,000 の削減が期待できます。</p>
+      </div>
+      <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:14px;padding:20px;">
+        <div style="font-size:22px;margin-bottom:8px;">📈</div>
+        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#1E40AF;">機会損失 -60% (試算)</div>
+        <p style="font-size:12px;color:#1E3A8A;line-height:1.7;">イベント日の人手不足で「お断り」が減り、売上機会を確保できます。</p>
+      </div>
+      <div style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:20px;">
+        <div style="font-size:22px;margin-bottom:8px;">😌</div>
+        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#92400E;">スタッフ満足度 ↑</div>
+        <p style="font-size:12px;color:#78350F;line-height:1.7;">忙しい日の事前共有でメンタル準備でき、急なヘルプ依頼も激減します。</p>
+      </div>
+      <div style="background:#F3E8FF;border:1.5px solid #E9D5FF;border-radius:14px;padding:20px;">
+        <div style="font-size:22px;margin-bottom:8px;">⚡</div>
+        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#7C3AED;">シフト作成時間 -50%</div>
+        <p style="font-size:12px;color:#6B21A8;line-height:1.7;">「来週どうなる?」の判断材料が揃い、シフト確定までの所要時間が半減します。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-box">
+    <h2>シフト作成を、もっと賢く</h2>
+    <p>天気 × イベント連動の最適化は Pro プランの機能です</p>
+    <a href="/" class="cta-btn">🎁 30 日 Pro 体験で試す</a>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <p><a href="/">トップ</a> · <a href="/shift.html">シフト管理</a> · <a href="/help.html">FAQ</a> · <a href="/about.html">会社情報</a></p>
+  <p style="margin-top:14px;opacity:.8;">天気データ: 気象庁 + OpenWeather API · イベントデータ: Peatix / 自治体公開情報を統合</p>
+  <p style="margin-top:6px;opacity:.7;">© 2026 RAKURAKU</p>
+</footer>
+
+</main>
+
+<script>
+// ============ 最終更新時刻 ============
+(function updateTime(){
+  const t = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('lastUpdate').textContent =
+    `最終更新: ${t.getMonth()+1}/${t.getDate()} ${pad(t.getHours())}:${pad(t.getMinutes())}`;
+})();
+
+// ============ 店舗切替: 影響値を変えるデモ ============
+document.getElementById('storeSelect').addEventListener('change', function(){
+  // 本番ではここで API 呼び出して天気+イベントを再取得
+  const store = this.value;
+  // フィードバック演出
+  document.querySelectorAll('.wx-card').forEach(c => {
+    c.style.transition = 'opacity .3s';
+    c.style.opacity = '0.5';
+    setTimeout(() => c.style.opacity = '1', 300);
+  });
+  console.log('[RAKURAKU] 店舗切替:', store);
+});
+
+// ============ イベント登録: localStorage 保存 ============
+function getEvents(){
+  try { return JSON.parse(localStorage.getItem('rakuraku_events') || '[]'); }
+  catch(e){ return []; }
+}
+function setEvents(arr){
+  try { localStorage.setItem('rakuraku_events', JSON.stringify(arr)); }
+  catch(e){}
+}
+function impactLabel(v){
+  const m = {
+    up200:'📈 大幅増 (+150%以上)', up100:'📈 大増 (+50〜100%)',
+    up50:'📈 増 (+20〜50%)', flat:'📊 通常',
+    down30:'📉 減 (-20〜40%)', closed:'🚫 営業休止'
+  };
+  return m[v] || v;
+}
+function catLabel(v){
+  const m = {
+    reservation:'🎉 貸切', seasonal:'🎁 季節催事',
+    promo:'📢 自店プロモ', private:'🥂 常連',
+    holiday:'📅 営業日変更', other:'📌 その他'
+  };
+  return m[v] || v;
+}
+function renderSaved(){
+  const list = getEvents();
+  const el = document.getElementById('savedList');
+  if (!list.length) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div style="font-size:12px;font-weight:800;color:#64748B;margin-bottom:8px;">📋 登録済みイベント (' + list.length + ' 件)</div>' +
+    list.map((e,i) => `
+      <div class="saved-item">
+        <div class="saved-info">
+          <div class="saved-title">${catLabel(e.cat)} ${e.name}</div>
+          <div class="saved-meta">${e.date} ${e.time || ''} · ${impactLabel(e.impact)} · ${e.staff || '自動配置'}</div>
+        </div>
+        <button class="saved-del" onclick="delEvent(${i})">削除</button>
+      </div>
+    `).join('');
+}
+function saveEvent(){
+  const ev = {
+    name: document.getElementById('ev-name').value,
+    cat: document.getElementById('ev-cat').value,
+    date: document.getElementById('ev-date').value,
+    time: document.getElementById('ev-time').value,
+    impact: document.getElementById('ev-impact').value,
+    staff: document.getElementById('ev-staff').value,
+    notes: document.getElementById('ev-notes').value,
+    created: new Date().toISOString()
+  };
+  const list = getEvents();
+  list.push(ev);
+  setEvents(list);
+  document.getElementById('evSuccess').classList.add('show');
+  document.getElementById('evForm').reset();
+  renderSaved();
+  setTimeout(() => document.getElementById('evSuccess').classList.remove('show'), 4000);
+}
+function delEvent(i){
+  const list = getEvents();
+  list.splice(i, 1);
+  setEvents(list);
+  renderSaved();
+}
+renderSaved();
+</script>
+
+</body>
+</html>
