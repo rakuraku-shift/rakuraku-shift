@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>1タップ・1秒の振り返り — 店長の勘を、AIが学習 | RAKURAKU</title>
+<meta name="description" content="シフト終わりに店長が1秒で「今日どうだった?😊😐😟」をタップ。データが溜まると、相性の悪い組み合わせを AI が提案。自動ブロックではなく、店長に確認させる仕組み。" />
+<meta name="theme-color" content="#F59E0B">
+<meta property="og:title" content="1タップ振り返り × AI 相性学習 — RAKURAKU"/>
+<meta property="og:description" content="店長の勘をデータで救い上げる、優しい仕組み"/>
+<link rel="canonical" href="https://rakuraku-shift-production.up.railway.app/mood-feedback.html"/>
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #F59E0B;outline-offset:2px;border-radius:4px;}
+  :root{
+    --amber:#F59E0B; --amber-d:#B45309; --amber-l:#FEF3C7;
+    --rose:#EC4899; --rose-l:#FCE7F3;
+    --indigo:#4F46E5; --purple:#7C3AED;
+    --green:#10B981; --green-l:#DCFCE7;
+    --red:#EF4444; --red-l:#FEE2E2;
+    --slate-900:#0F172A; --slate-700:#334155; --slate-500:#64748B;
+    --slate-200:#E2E8F0; --slate-100:#F1F5F9; --slate-50:#F8FAFC;
+  }
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(180deg,#FFFBF5,#FFF7E9 50%,#FFF);min-height:100vh;line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:var(--amber-d);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .skip-link{position:absolute;left:-9999px;}.skip-link:focus{left:10px;top:10px;background:#0F172A;color:#fff;padding:10px;z-index:9999;}
+
+  .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);}
+  .nav-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--amber),var(--rose));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;}
+  .nav-back{font-size:13px;color:var(--slate-700);font-weight:700;}
+
+  .container{max-width:1080px;margin:0 auto;padding:0 24px;}
+
+  .hero{text-align:center;padding:50px 0 30px;}
+  .hero-eyebrow{display:inline-block;background:linear-gradient(135deg,var(--amber),var(--rose));color:#fff;font-size:11px;font-weight:900;padding:6px 16px;border-radius:20px;letter-spacing:.06em;margin-bottom:14px;}
+  .hero h1{font-size:42px;font-weight:900;letter-spacing:-.02em;line-height:1.22;margin-bottom:16px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--amber),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:15px;color:var(--slate-500);font-weight:600;max-width:740px;margin:0 auto;}
+  @media(max-width:640px){.hero h1{font-size:30px;}}
+
+  /* 1-tap area */
+  .tap-card{background:#fff;border-radius:22px;padding:36px;box-shadow:0 18px 50px rgba(245,158,11,.10);border:1.5px solid var(--amber-l);margin:30px 0;}
+  .tap-head{text-align:center;margin-bottom:24px;}
+  .tap-head .label{font-size:11px;font-weight:900;color:var(--amber-d);letter-spacing:.1em;}
+  .tap-head h2{font-size:24px;font-weight:900;margin-top:4px;}
+  .tap-head .sub{font-size:12px;color:var(--slate-500);font-weight:600;margin-top:4px;}
+
+  .moods{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:24px 0;}
+  .mood{flex:1;min-width:80px;max-width:160px;background:#fff;border:2.5px solid var(--slate-200);border-radius:20px;padding:18px 8px;text-align:center;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--slate-700);}
+  .mood:hover{transform:translateY(-4px) scale(1.04);}
+  .mood.m5{border-color:#A7F3D0;}
+  .mood.m5:hover{background:#ECFDF5;border-color:#10B981;}
+  .mood.m4{border-color:#BBF7D0;}
+  .mood.m4:hover{background:#F0FDF4;border-color:#22C55E;}
+  .mood.m3{border-color:#E5E7EB;}
+  .mood.m3:hover{background:#F9FAFB;border-color:#94A3B8;}
+  .mood.m2{border-color:#FED7AA;}
+  .mood.m2:hover{background:#FFF7ED;border-color:#F97316;}
+  .mood.m1{border-color:#FECACA;}
+  .mood.m1:hover{background:#FEF2F2;border-color:#EF4444;}
+  .mood.selected{transform:translateY(-4px) scale(1.06);box-shadow:0 12px 30px rgba(245,158,11,.25);}
+  .mood.m5.selected{background:#ECFDF5;border-color:#10B981;}
+  .mood.m4.selected{background:#F0FDF4;border-color:#22C55E;}
+  .mood.m3.selected{background:#F9FAFB;border-color:#94A3B8;}
+  .mood.m2.selected{background:#FFF7ED;border-color:#F97316;}
+  .mood.m1.selected{background:#FEF2F2;border-color:#EF4444;}
+  .mood-em{font-size:50px;line-height:1;margin-bottom:6px;display:block;}
+  .mood-l{font-size:11px;font-weight:800;letter-spacing:.04em;}
+
+  .tap-confirm{display:none;background:linear-gradient(135deg,#10B981,#059669);color:#fff;padding:18px 24px;border-radius:14px;font-weight:900;text-align:center;margin-top:14px;animation:pop .3s;}
+  .tap-confirm.show{display:block;}
+  @keyframes pop{from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+  .who-was-in{margin-top:24px;display:none;}
+  .who-was-in.show{display:block;animation:pop .3s;}
+  .who-was-in .lbl{font-size:13px;font-weight:900;text-align:center;margin-bottom:10px;color:var(--slate-700);}
+  .who-was-in .sub{font-size:11px;color:var(--slate-500);text-align:center;margin-bottom:14px;}
+  .staff-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+  .staff-chip{padding:8px 14px;background:var(--slate-50);border:1.5px solid var(--slate-200);border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;color:var(--slate-700);font-family:inherit;}
+  .staff-chip:hover{border-color:var(--amber);}
+  .staff-chip.on{background:linear-gradient(135deg,var(--amber),var(--rose));color:#fff;border-color:transparent;}
+
+  /* Section */
+  section.feat{padding:30px 0;}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px;}
+  .section-head h2{font-size:22px;font-weight:900;}
+  .section-head .tag{font-size:10px;font-weight:800;color:var(--amber-d);background:var(--amber-l);padding:4px 12px;border-radius:12px;letter-spacing:.06em;}
+
+  /* AI Suggestion Popup */
+  .suggest{background:#fff;border:2px solid var(--amber);border-radius:18px;padding:24px;box-shadow:0 12px 30px rgba(245,158,11,.18);position:relative;margin-bottom:14px;}
+  .suggest::before{content:"💡";position:absolute;top:-14px;left:20px;background:linear-gradient(135deg,var(--amber),var(--rose));color:#fff;padding:6px 12px;border-radius:12px;font-size:16px;}
+  .suggest h3{font-size:15px;font-weight:900;margin-top:6px;margin-bottom:8px;}
+  .suggest .body{font-size:13px;color:var(--slate-700);line-height:1.8;margin-bottom:14px;}
+  .suggest .body strong{color:var(--amber-d);}
+  .suggest .evidence{background:var(--slate-50);border-radius:10px;padding:10px 14px;font-size:11px;color:var(--slate-700);font-weight:600;margin-bottom:14px;}
+  .suggest .actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .s-btn{padding:11px 22px;border-radius:11px;border:none;font-weight:900;font-size:12px;cursor:pointer;font-family:inherit;}
+  .s-btn.accept{background:linear-gradient(135deg,var(--amber),var(--rose));color:#fff;}
+  .s-btn.skip{background:var(--slate-100);color:var(--slate-700);}
+  .s-btn.never{background:none;color:var(--slate-500);font-size:11px;text-decoration:underline;}
+
+  /* Heatmap */
+  .heat-card{background:#fff;border-radius:18px;padding:24px;border:1.5px solid var(--slate-100);margin-bottom:14px;overflow-x:auto;}
+  .heat-card h3{font-size:14px;font-weight:900;margin-bottom:12px;}
+  .heat-grid{display:inline-grid;grid-template-columns:80px repeat(6, 60px);gap:4px;}
+  .heat-cell{padding:8px 4px;font-size:11px;font-weight:800;text-align:center;border-radius:6px;cursor:pointer;transition:transform .15s;}
+  .heat-cell:hover{transform:scale(1.1);z-index:5;position:relative;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+  .heat-label{background:var(--slate-50);color:var(--slate-700);}
+  .heat-row-l{background:var(--slate-50);color:var(--slate-700);text-align:left;padding-left:8px;}
+  .heat-empty{background:#F1F5F9;color:#CBD5E1;}
+  .heat-1{background:#FEE2E2;color:#991B1B;}
+  .heat-2{background:#FED7AA;color:#9A3412;}
+  .heat-3{background:#FEF3C7;color:#854D0E;}
+  .heat-4{background:#BBF7D0;color:#166534;}
+  .heat-5{background:#86EFAC;color:#14532D;}
+  .heat-legend{display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--slate-500);}
+  .heat-legend-cell{width:24px;height:18px;border-radius:4px;}
+
+  /* Bilateral comparison */
+  .bilateral{background:#fff;border-radius:18px;padding:24px;border:1.5px solid var(--slate-100);margin-bottom:14px;}
+  .bi-row{display:grid;grid-template-columns:120px 1fr 1fr 80px;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--slate-100);}
+  .bi-row:last-child{border-bottom:none;}
+  @media(max-width:600px){.bi-row{grid-template-columns:1fr 1fr 1fr;}.bi-row .date{grid-column:1/-1;}}
+  .bi-date{font-size:12px;font-weight:800;color:var(--slate-700);}
+  .bi-mood{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;}
+  .bi-mood .em{font-size:24px;}
+  .bi-mood.gap{color:var(--red);}
+  .bi-gap-tag{font-size:10px;font-weight:900;padding:3px 8px;border-radius:8px;background:var(--red-l);color:var(--red);text-align:center;}
+  .bi-gap-tag.ok{background:var(--green-l);color:var(--green);}
+
+  /* Privacy box */
+  .privacy{background:linear-gradient(135deg,#F0F9FF,#FAFAFC);border:1.5px solid #BAE6FD;border-radius:16px;padding:22px;font-size:12px;line-height:1.85;color:var(--slate-700);margin:24px 0;}
+  .privacy strong{color:#0369A1;}
+
+  /* CTA */
+  .cta-box{background:linear-gradient(135deg,var(--amber),var(--rose));border-radius:22px;padding:40px 30px;text-align:center;color:#fff;margin-top:40px;}
+  .cta-box h2{font-size:24px;font-weight:900;margin-bottom:10px;}
+  .cta-box p{font-size:14px;opacity:.9;margin-bottom:20px;}
+  .cta-btn{display:inline-block;background:#fff;color:var(--amber-d);padding:14px 32px;border-radius:30px;font-weight:900;font-size:14px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.15);}
+
+  .footer{text-align:center;padding:36px 24px;font-size:11px;color:var(--slate-500);border-top:1px solid var(--slate-100);margin-top:50px;}
+  .footer a{color:var(--amber-d);font-weight:700;margin:0 8px;}
+
+  /* Toggle viewer (manager / employee) */
+  .role-toggle{display:flex;justify-content:center;gap:10px;margin:20px 0 0;}
+  .role-tab{background:#fff;border:1.5px solid var(--slate-200);padding:10px 20px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;color:var(--slate-700);}
+  .role-tab.active{background:linear-gradient(135deg,var(--amber),var(--rose));color:#fff;border-color:transparent;}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
+    <a href="/shift.html" class="nav-back">← シフト管理に戻る</a>
+  </div>
+</header>
+
+<main id="main">
+<div class="container">
+
+  <section class="hero">
+    <div class="hero-eyebrow">💡 GUT FEELING AS DATA</div>
+    <h1>店長の勘を、<br><span class="grad">1秒で データに変える</span></h1>
+    <p>シフト終わりに「今日どうだった?」を1タップ。<br>溜まったデータから AI が <em>「この2人、相性悪いかも」</em> を提案。<br>店長は<strong>言葉にしなくていい</strong>。タップだけでいい。</p>
+  </section>
+
+  <!-- ===== Role toggle ===== -->
+  <div class="role-toggle">
+    <button class="role-tab active" onclick="setRole('manager')" id="rManager">👔 店長の画面</button>
+    <button class="role-tab" onclick="setRole('staff')" id="rStaff">👤 従業員の画面</button>
+  </div>
+
+  <!-- ===== 1-tap mood card (MANAGER) ===== -->
+  <section class="tap-card" id="cardManager">
+    <div class="tap-head">
+      <div class="label">SHIFT END · 1 TAP REVIEW</div>
+      <h2>今日のシフト、どうだった?</h2>
+      <div class="sub">2026/06/05 (木) 22:30 — 1 秒で完了 · 言葉にしなくていい</div>
+    </div>
+
+    <div class="moods" role="group" aria-label="本日の振り返り">
+      <button class="mood m5" data-v="5" onclick="pick(this)"><span class="mood-em">😄</span><div class="mood-l">最高</div></button>
+      <button class="mood m4" data-v="4" onclick="pick(this)"><span class="mood-em">😊</span><div class="mood-l">良い</div></button>
+      <button class="mood m3" data-v="3" onclick="pick(this)"><span class="mood-em">😐</span><div class="mood-l">普通</div></button>
+      <button class="mood m2" data-v="2" onclick="pick(this)"><span class="mood-em">😟</span><div class="mood-l">微妙</div></button>
+      <button class="mood m1" data-v="1" onclick="pick(this)"><span class="mood-em">😩</span><div class="mood-l">しんどい</div></button>
+    </div>
+
+    <div class="who-was-in" id="whoIn">
+      <div class="lbl">気になった人がいたら 1 タップ (任意)</div>
+      <div class="sub">※ 名前は店長以外には見えません。「なんとなく合わなかった」だけで OK。</div>
+      <div class="staff-chips" id="chips">
+        <button class="staff-chip" onclick="toggleChip(this)">スタッフA</button>
+        <button class="staff-chip" onclick="toggleChip(this)">スタッフB</button>
+        <button class="staff-chip" onclick="toggleChip(this)">スタッフC</button>
+        <button class="staff-chip" onclick="toggleChip(this)">スタッフD</button>
+        <button class="staff-chip" onclick="toggleChip(this)">スタッフE</button>
+      </div>
+      <div style="text-align:center;margin-top:14px;">
+        <button class="s-btn accept" onclick="confirmTap()">💾 これで OK (記録)</button>
+      </div>
+    </div>
+
+    <div class="tap-confirm" id="tapConfirm">✅ 記録しました。AI が学習に追加します。</div>
+  </section>
+
+  <!-- ===== 1-tap mood card (STAFF) ===== -->
+  <section class="tap-card" id="cardStaff" style="display:none;">
+    <div class="tap-head">
+      <div class="label">CLOCK OUT · 1 TAP REVIEW</div>
+      <h2>お疲れさまでした!<br>今日はどうでしたか?</h2>
+      <div class="sub">退勤打刻 → 1 タップで完了 · あなたの声が店長に届きます</div>
+    </div>
+
+    <div class="moods">
+      <button class="mood m5"><span class="mood-em">😄</span><div class="mood-l">楽しかった</div></button>
+      <button class="mood m4"><span class="mood-em">😊</span><div class="mood-l">良い感じ</div></button>
+      <button class="mood m3"><span class="mood-em">😐</span><div class="mood-l">普通</div></button>
+      <button class="mood m2"><span class="mood-em">😟</span><div class="mood-l">疲れた</div></button>
+      <button class="mood m1"><span class="mood-em">😩</span><div class="mood-l">きつかった</div></button>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;">
+      <p style="font-size:11px;color:#64748B;font-weight:600;">💝 タップだけで完了 · 内容は <strong style="color:#0369A1;">匿名集計</strong>のみ使用<br>(本人特定情報は店長にも見えません)</p>
+    </div>
+  </section>
+
+  <!-- ===== AI Suggestion Demo ===== -->
+  <section class="feat">
+    <div class="section-head">
+      <h2>🤖 データが溜まると、AI が提案します</h2>
+      <span class="tag">SMART SUGGESTION</span>
+    </div>
+
+    <div class="suggest">
+      <h3>来週のシフトを組む前に — 1 件、確認してほしいことがあります</h3>
+      <div class="body">
+        <strong>スタッフA × スタッフD</strong> の組み合わせは、過去 3 回中 <strong>2 回が 😟 評価</strong>でした。<br>
+        来週 (金) の <strong>20:00-23:00</strong> 帯で 2 人を同時配置する予定ですが、避けますか?
+      </div>
+      <div class="evidence">
+        📊 根拠データ: 5月17日 😟 · 5月24日 😟 · 5月31日 😊 / 平均評価 2.3 / 5<br>
+        💡 同時間帯の他の組み合わせでは平均 4.1 / 5
+      </div>
+      <div class="actions">
+        <button class="s-btn accept">✅ 避ける (別シフトに調整)</button>
+        <button class="s-btn skip">⏭ 今回は気にしない</button>
+        <button class="s-btn never">この提案を二度と表示しない</button>
+      </div>
+    </div>
+
+    <div class="suggest" style="border-color:#10B981;">
+      <h3>良い組み合わせも発見しました</h3>
+      <div class="body">
+        <strong>スタッフB × スタッフE</strong> の組み合わせは過去 4 回中 <strong>4 回が 😊 以上</strong>。<br>
+        繁忙日 (金土) に積極的に組むのがおすすめです。
+      </div>
+      <div class="actions">
+        <button class="s-btn accept" style="background:linear-gradient(135deg,#10B981,#059669);">✅ 優先的に組む</button>
+        <button class="s-btn skip">⏭ 普通に組む</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Heatmap ===== -->
+  <section class="feat">
+    <div class="section-head">
+      <h2>🗺️ 相性ヒートマップ — 過去 90 日の平均評価</h2>
+      <span class="tag">PAIR ANALYTICS</span>
+    </div>
+    <div class="heat-card">
+      <h3>スタッフ × スタッフ 平均評価 (5 段階)</h3>
+      <div class="heat-grid">
+        <div class="heat-cell heat-label"></div>
+        <div class="heat-cell heat-label">A</div>
+        <div class="heat-cell heat-label">B</div>
+        <div class="heat-cell heat-label">C</div>
+        <div class="heat-cell heat-label">D</div>
+        <div class="heat-cell heat-label">E</div>
+        <div class="heat-cell heat-label">F</div>
+
+        <div class="heat-cell heat-row-l">A</div>
+        <div class="heat-cell heat-empty">—</div>
+        <div class="heat-cell heat-4" title="A × B / 4.1点 (5回)">4.1</div>
+        <div class="heat-cell heat-3" title="A × C / 3.4点 (3回)">3.4</div>
+        <div class="heat-cell heat-1" title="A × D / 2.3点 (3回) ⚠️">2.3</div>
+        <div class="heat-cell heat-5" title="A × E / 4.8点 (4回)">4.8</div>
+        <div class="heat-cell heat-3" title="A × F / 3.2点 (2回)">3.2</div>
+
+        <div class="heat-cell heat-row-l">B</div>
+        <div class="heat-cell heat-4">4.1</div>
+        <div class="heat-cell heat-empty">—</div>
+        <div class="heat-cell heat-4">4.0</div>
+        <div class="heat-cell heat-3">3.6</div>
+        <div class="heat-cell heat-5" title="B × E / 5.0点 (4回) ★">5.0</div>
+        <div class="heat-cell heat-4">4.2</div>
+
+        <div class="heat-cell heat-row-l">C</div>
+        <div class="heat-cell heat-3">3.4</div>
+        <div class="heat-cell heat-4">4.0</div>
+        <div class="heat-cell heat-empty">—</div>
+        <div class="heat-cell heat-4">4.3</div>
+        <div class="heat-cell heat-3">3.5</div>
+        <div class="heat-cell heat-2">2.8</div>
+
+        <div class="heat-cell heat-row-l">D</div>
+        <div class="heat-cell heat-1">2.3</div>
+        <div class="heat-cell heat-3">3.6</div>
+        <div class="heat-cell heat-4">4.3</div>
+        <div class="heat-cell heat-empty">—</div>
+        <div class="heat-cell heat-4">4.1</div>
+        <div class="heat-cell heat-3">3.3</div>
+
+        <div class="heat-cell heat-row-l">E</div>
+        <div class="heat-cell heat-5">4.8</div>
+        <div class="heat-cell heat-5">5.0</div>
+        <div class="heat-cell heat-3">3.5</div>
+        <div class="heat-cell heat-4">4.1</div>
+        <div class="heat-cell heat-empty">—</div>
+        <div class="heat-cell heat-4">4.4</div>
+
+        <div class="heat-cell heat-row-l">F</div>
+        <div class="heat-cell heat-3">3.2</div>
+        <div class="heat-cell heat-4">4.2</div>
+        <div class="heat-cell heat-2">2.8</div>
+        <div class="heat-cell heat-3">3.3</div>
+        <div class="heat-cell heat-4">4.4</div>
+        <div class="heat-cell heat-empty">—</div>
+      </div>
+
+      <div class="heat-legend">
+        <span>低</span>
+        <span class="heat-legend-cell heat-1"></span>
+        <span class="heat-legend-cell heat-2"></span>
+        <span class="heat-legend-cell heat-3"></span>
+        <span class="heat-legend-cell heat-4"></span>
+        <span class="heat-legend-cell heat-5"></span>
+        <span>高</span>
+        <span style="margin-left:14px;color:#94A3B8;">※ 数値は店長 + 当日スタッフの平均評価</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Bilateral comparison ===== -->
+  <section class="feat">
+    <div class="section-head">
+      <h2>👔 vs 👤 店長と従業員の評価ギャップ</h2>
+      <span class="tag">BILATERAL CHECK</span>
+    </div>
+    <div class="bilateral">
+      <div class="bi-row" style="font-size:11px;font-weight:900;color:#64748B;border-bottom:2px solid #E2E8F0;letter-spacing:.04em;">
+        <div>日付</div>
+        <div>店長の評価</div>
+        <div>スタッフ平均</div>
+        <div style="text-align:center;">差分</div>
+      </div>
+      <div class="bi-row">
+        <div class="bi-date">6/05 (木)</div>
+        <div class="bi-mood"><span class="em">😊</span> 4.0</div>
+        <div class="bi-mood"><span class="em">😐</span> 3.2</div>
+        <div class="bi-gap-tag">⚠️ 0.8</div>
+      </div>
+      <div class="bi-row">
+        <div class="bi-date">6/04 (水)</div>
+        <div class="bi-mood"><span class="em">😄</span> 5.0</div>
+        <div class="bi-mood"><span class="em">😄</span> 4.8</div>
+        <div class="bi-gap-tag ok">✓ 0.2</div>
+      </div>
+      <div class="bi-row">
+        <div class="bi-date">6/03 (火)</div>
+        <div class="bi-mood gap"><span class="em">😊</span> 4.0</div>
+        <div class="bi-mood gap"><span class="em">😩</span> 1.5</div>
+        <div class="bi-gap-tag">🚨 2.5</div>
+      </div>
+      <div class="bi-row">
+        <div class="bi-date">6/02 (月)</div>
+        <div class="bi-mood"><span class="em">😐</span> 3.0</div>
+        <div class="bi-mood"><span class="em">😐</span> 3.1</div>
+        <div class="bi-gap-tag ok">✓ 0.1</div>
+      </div>
+      <div class="bi-row">
+        <div class="bi-date">6/01 (日)</div>
+        <div class="bi-mood"><span class="em">😟</span> 2.0</div>
+        <div class="bi-mood"><span class="em">😊</span> 4.0</div>
+        <div class="bi-gap-tag">⚠️ 2.0</div>
+      </div>
+    </div>
+
+    <div style="background:#FEF3C7;border:1.5px solid #FBBF24;border-radius:14px;padding:18px 22px;margin-top:14px;">
+      <h3 style="font-size:13px;font-weight:900;color:#92400E;margin-bottom:6px;">💡 6/3(火) に大きなギャップがあります</h3>
+      <p style="font-size:12px;color:#78350F;line-height:1.8;">
+        店長は満足 (😊) でしたが、<strong>スタッフは平均 1.5 (😩 きつかった)</strong> でした。<br>
+        現場では <strong>キャパオーバー</strong> の兆候があるかもしれません。次回シフトで人員を見直すか、ヒアリングをおすすめします。
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== Privacy ===== -->
+  <div class="privacy">
+    <strong>🔒 プライバシーと安心設計</strong><br>
+    ・<strong>従業員のタップは匿名集計のみ</strong> — 個人の評価は店長にも見せません<br>
+    ・店長がタップした「気になった人」は <strong>店長のみ閲覧可</strong>、当該スタッフには通知されません<br>
+    ・AI 提案は <strong>必ず "確認" 形式</strong>。自動でシフトを変更したりブロックしたりはしません<br>
+    ・90 日経過したデータは自動削除 — 古いギスギスを引きずらない設計
+  </div>
+
+  <!-- ===== CTA ===== -->
+  <div class="cta-box">
+    <h2>勘を言語化せずに、すくい上げる</h2>
+    <p>1秒のタップが、現場の人間関係を変える</p>
+    <a href="/" class="cta-btn">🎁 30 日 Pro 体験で試す</a>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <p><a href="/">トップ</a> · <a href="/shift.html">シフト管理</a> · <a href="/shift-edit.html">✏️ シフト編集</a> · <a href="/mbti.html">🧠 MBTI</a> · <a href="/weather-events.html">🌤️ 天気</a></p>
+  <p style="margin-top:14px;opacity:.8;">© 2026 RAKURAKU · 当機能は店長と従業員の心理的安全性を最優先に設計されています</p>
+</footer>
+
+</main>
+
+<script>
+let selectedV = null;
+function pick(btn){
+  document.querySelectorAll('#cardManager .mood').forEach(m => m.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedV = btn.getAttribute('data-v');
+  document.getElementById('whoIn').classList.add('show');
+}
+function toggleChip(b){ b.classList.toggle('on'); }
+function confirmTap(){
+  const flagged = Array.from(document.querySelectorAll('.staff-chip.on')).map(c => c.textContent);
+  // Save to localStorage
+  try {
+    const arr = JSON.parse(localStorage.getItem('rakuraku_mood') || '[]');
+    arr.push({ts: Date.now(), value: Number(selectedV), flagged});
+    localStorage.setItem('rakuraku_mood', JSON.stringify(arr));
+  } catch(e){}
+  document.getElementById('whoIn').classList.remove('show');
+  document.getElementById('tapConfirm').classList.add('show');
+  document.querySelectorAll('.staff-chip.on').forEach(c => c.classList.remove('on'));
+  setTimeout(() => {
+    document.getElementById('tapConfirm').classList.remove('show');
+    document.querySelectorAll('#cardManager .mood').forEach(m => m.classList.remove('selected'));
+    selectedV = null;
+  }, 3500);
+}
+
+function setRole(r){
+  document.getElementById('rManager').classList.toggle('active', r === 'manager');
+  document.getElementById('rStaff').classList.toggle('active', r === 'staff');
+  document.getElementById('cardManager').style.display = r === 'manager' ? 'block' : 'none';
+  document.getElementById('cardStaff').style.display = r === 'staff' ? 'block' : 'none';
+}
+</script>
+
+</body>
+</html>
