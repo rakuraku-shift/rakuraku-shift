@@ -191,6 +191,79 @@
     'role.cashier': { ja:'レジ', en:'Cashier', zh:'收银', ko:'계산대', vi:'Thu ngân' },
     'role.unassigned': { ja:'未設定', en:'Unassigned', zh:'未分配', ko:'미배정', vi:'Chưa phân công' },
     'mgr.position_supported': { ja:'ポジション対応', en:'positions supported', zh:'岗位支持', ko:'포지션 지원', vi:'vị trí hỗ trợ' },
+    'mgr.subtitle': { ja:'― 提出データをリアルタイムで確認', en:'― Review submitted data in real-time', zh:'― 实时查看提交数据', ko:'― 제출 데이터를 실시간으로 확인', vi:'― Xem dữ liệu đã nộp theo thời gian thực' },
+    'mgr.badge_sync': { ja:'データ同期中', en:'Data Sync', zh:'数据同步', ko:'데이터 동기화', vi:'Đồng bộ dữ liệu' },
+    'mgr.badge_auto': { ja:'自動生成対応', en:'Auto-Generate', zh:'自动生成', ko:'자동 생성', vi:'Tự động tạo' },
+    'mgr.badge_mail': { ja:'メール通知', en:'Email Alerts', zh:'邮件通知', ko:'이메일 알림', vi:'Thông báo email' },
+    'mgr.realtime_attendance': { ja:'⏰ 本日の出退勤（リアルタイム）', en:'⏰ Today\'s Attendance (Real-time)', zh:'⏰ 今日出勤（实时）', ko:'⏰ 오늘의 출퇴근 (실시간)', vi:'⏰ Chấm công hôm nay (Thời gian thực)' },
+    'mgr.staff_evaluation': { ja:'スタッフ評価', en:'Staff Evaluation', zh:'员工评价', ko:'직원 평가', vi:'Đánh giá nhân viên' },
+    'mgr.no_data': { ja:'データがありません', en:'No data', zh:'无数据', ko:'데이터가 없습니다', vi:'Không có dữ liệu' },
+    'mgr.money_this_month': { ja:'📊 今月のお金まわり ひと目チェック', en:'📊 This Month\'s Finances at a Glance', zh:'📊 一目了然查看本月财务', ko:'📊 이번 달 자금 흐름 한눈에 확인', vi:'📊 Tài chính tháng này' },
+    'mgr.expected_payroll': { ja:'今月の予想給与', en:'Expected Payroll This Month', zh:'本月预计工资', ko:'이번 달 예상 급여', vi:'Lương dự kiến tháng này' },
+    'mgr.man_yen': { ja:'万円', en:'10K yen', zh:'万日元', ko:'만엔', vi:'vạn yên' },
+
+    /* ─── スタッフ提出画面 (staff view) ─── */
+    'staff.title': { ja:'シフト提出', en:'Submit Shift', zh:'提交班次', ko:'시프트 제출', vi:'Nộp ca làm' },
+    'staff.sub': { ja:'希望の勤務日・時間帯を入力して提出してください', en:'Enter your preferred work days and times', zh:'请输入您希望的工作日和时间段', ko:'희망 근무일과 시간대를 입력해 제출해 주세요', vi:'Nhập ngày làm và khung giờ mong muốn rồi nộp' },
+
+    /* ─── 締切・リマインド ─── */
+    'rem.title_full': { ja:'⏰ 締切・リマインド管理', en:'⏰ Deadline & Reminders', zh:'⏰ 截止·提醒管理', ko:'⏰ 마감·리마인드 관리', vi:'⏰ Quản lý hạn chót & nhắc nhở' },
+
+    /* ─── アンケート ─── */
+    'survey.title': { ja:'📊 シフト後アンケート', en:'📊 Post-Shift Survey', zh:'📊 班次后问卷', ko:'📊 시프트 후 설문', vi:'📊 Khảo sát sau ca làm' },
+
+    /* ─── サイト全体ナビ ─── */
+    'nav.home': { ja:'ホーム', en:'Home', zh:'首页', ko:'홈', vi:'Trang chủ' },
+    'nav.shift_management': { ja:'シフト管理', en:'Shift Management', zh:'班次管理', ko:'시프트 관리', vi:'Quản lý ca' },
+    'nav.help': { ja:'ヘルプ', en:'Help', zh:'帮助', ko:'도움말', vi:'Trợ giúp' },
+    'nav.settings': { ja:'設定', en:'Settings', zh:'设置', ko:'설정', vi:'Cài đặt' },
+
+    /* ─── シフト提出フォーム チェックリスト ─── */
+    'sf.chk_name': { ja:'氏名を入力する', en:'Enter your name', zh:'输入您的姓名', ko:'이름 입력', vi:'Nhập tên của bạn' },
+    'sf.chk_dates': { ja:'希望日を選択する', en:'Select preferred dates', zh:'选择希望日期', ko:'희망일 선택', vi:'Chọn ngày mong muốn' },
+    'sf.chk_times': { ja:'希望時間帯を選択する', en:'Select preferred time slots', zh:'选择希望时间段', ko:'희망 시간대 선택', vi:'Chọn khung giờ mong muốn' },
+    'sf.anonymous': { ja:'匿名送信', en:'Anonymous', zh:'匿名提交', ko:'익명 전송', vi:'Gửi ẩn danh' },
+    'sf.eval_title': { ja:'職場評価<br>アンケート', en:'Workplace<br>Evaluation', zh:'职场评价<br>问卷', ko:'직장 평가<br>설문', vi:'Đánh giá<br>nơi làm' },
+    'sf.eval_step1': { ja:'各項目を評価', en:'Rate Each Item', zh:'评价各项目', ko:'각 항목 평가', vi:'Đánh giá từng mục' },
+    'sf.comment': { ja:'コメント', en:'Comment', zh:'评论', ko:'코멘트', vi:'Bình luận' },
+    'sf.comment_sub': { ja:'自由にご意見をどうぞ', en:'Share your thoughts freely', zh:'请自由分享您的意见', ko:'자유롭게 의견을 남겨주세요', vi:'Hãy chia sẻ ý kiến tự do' },
+
+    /* ─── 統計バッジ・ラベル ─── */
+    'stat.submitted_count': { ja:'提出人数', en:'Submitted', zh:'提交人数', ko:'제출 인원', vi:'Đã nộp' },
+    'stat.target_days': { ja:'対象日数', en:'Target Days', zh:'目标天数', ko:'대상 일수', vi:'Số ngày' },
+    'stat.assigned': { ja:'配置済み', en:'Assigned', zh:'已分配', ko:'배치 완료', vi:'Đã phân ca' },
+
+    /* ─── 主要ボタン (続き) ─── */
+    'btn.change': { ja:'変更する', en:'Change', zh:'更改', ko:'변경', vi:'Thay đổi' },
+    'btn.reset': { ja:'リセット', en:'Reset', zh:'重置', ko:'리셋', vi:'Đặt lại' },
+    'btn.delete': { ja:'削除', en:'Delete', zh:'删除', ko:'삭제', vi:'Xóa' },
+    'btn.edit': { ja:'編集', en:'Edit', zh:'编辑', ko:'편집', vi:'Sửa' },
+    'btn.back': { ja:'戻る', en:'Back', zh:'返回', ko:'뒤로', vi:'Quay lại' },
+    'btn.next': { ja:'次へ', en:'Next', zh:'下一步', ko:'다음', vi:'Tiếp' },
+
+    /* ─── 売上・給与 ─── */
+    'mgr.sales_explain': { ja:'月次の目標と実績だけ簡易入力。日別の詳細は売上取込ページから',
+                            en:'Enter monthly target and actuals only. Daily details from the Sales Import page.',
+                            zh:'仅输入月度目标和实际数据。每日详细信息可在销售导入页面查看。',
+                            ko:'월간 목표·실적만 간단 입력. 일별 상세는 매출 가져오기 페이지에서.',
+                            vi:'Chỉ nhập mục tiêu và thực tế hàng tháng. Chi tiết hàng ngày từ trang nhập doanh thu.' },
+    'mgr.sales_import_link': { ja:'売上取込ページ', en:'Sales Import', zh:'销售导入页面', ko:'매출 가져오기', vi:'Trang nhập doanh thu' },
+    'mgr.rec_recruiting': { ja:'募集中', en:'Recruiting', zh:'招募中', ko:'모집 중', vi:'Đang tuyển' },
+    'mgr.all_staff_total': { ja:'全スタッフ合計', en:'All Staff Total', zh:'全员合计', ko:'전 직원 합계', vi:'Tổng tất cả nhân viên' },
+
+    /* ─── 給与計算説明 ─── */
+    'mgr.payroll_explain': { ja:'提出シフトと給与設定から、深夜割増（22:00〜翌5:00 +25%）込みの月額を自動計算します。',
+                              en:'Auto-calculates monthly pay including night premium (22:00–5:00 next day +25%) from submitted shifts and wage settings.',
+                              zh:'根据提交的班次和工资设定，自动计算包含夜班加成（22:00–次日5:00 +25%）的月度工资。',
+                              ko:'제출된 시프트와 급여 설정에서 야간 수당(22:00–익일 5:00 +25%) 포함 월 급여를 자동 계산합니다.',
+                              vi:'Tự động tính lương tháng bao gồm phụ cấp đêm (22:00–5:00 hôm sau +25%) từ ca làm đã nộp và cài đặt lương.' },
+
+    /* ─── 時間帯設定 ─── */
+    'mgr.timeslot_explain': { ja:'各時間帯の下限〜上限を設定してください。下限未達なら警告、上限超は要調整。',
+                               en:'Set lower and upper limits per time slot. Below lower → warning; above upper → adjustment needed.',
+                               zh:'请设置各时段的下限~上限。低于下限会警告，超过上限需调整。',
+                               ko:'각 시간대 하한~상한을 설정하세요. 하한 미달은 경고, 상한 초과는 조정 필요.',
+                               vi:'Đặt giới hạn dưới ~ trên cho mỗi khung giờ. Dưới mức tối thiểu sẽ cảnh báo; trên tối đa cần điều chỉnh.' },
 
     /* ─── 締切・リマインド ─── */
     'rem.title': { ja:'⏰ 締切・リマインド管理', en:'⏰ Deadline & Reminders', zh:'⏰ 截止·提醒', ko:'⏰ 마감·리마인드' },
@@ -490,4 +563,6 @@
     buildSwitcher: buildLangSwitcher,
     supported: SUPPORTED_LANGS,
   };
+  /* 短縮エイリアス (shift.html や他のページが使う i18n.t() でアクセスできる) */
+  window.i18n = window.RakuI18n;
 })(window);

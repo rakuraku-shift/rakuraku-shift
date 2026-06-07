@@ -2458,10 +2458,10 @@
 
     <!-- ポジションは店長側でスタッフごとに登録するため、提出フォームからは削除 -->
     <select id="staff-role" style="display:none">
-      <option value="unassigned">未設定</option>
-      <option value="hall">ホール</option>
-      <option value="kitchen">キッチン</option>
-      <option value="cashier">レジ</option>
+      <option value="unassigned" data-i18n="role.unassigned">未設定</option>
+      <option value="hall" data-i18n="role.hall">ホール</option>
+      <option value="kitchen" data-i18n="role.kitchen">キッチン</option>
+      <option value="cashier" data-i18n="role.cashier">レジ</option>
     </select>
 
     <div class="sf-field sf-field--last">
@@ -2574,15 +2574,15 @@
     <div class="sf-checklist">
       <div class="sf-chk-item" id="chk-name">
         <span class="sf-chk-icon" id="ci-name">⭕</span>
-        <span class="sf-chk-text">氏名を入力する</span>
+        <span class="sf-chk-text" data-i18n="sf.chk_name">氏名を入力する</span>
       </div>
       <div class="sf-chk-item" id="chk-dates">
         <span class="sf-chk-icon" id="ci-dates">⭕</span>
-        <span class="sf-chk-text">希望日を選択する</span>
+        <span class="sf-chk-text" data-i18n="sf.chk_dates">希望日を選択する</span>
       </div>
       <div class="sf-chk-item" id="chk-times">
         <span class="sf-chk-icon" id="ci-times">⭕</span>
-        <span class="sf-chk-text">希望時間帯を選択する</span>
+        <span class="sf-chk-text" data-i18n="sf.chk_times">希望時間帯を選択する</span>
       </div>
     </div>
 
@@ -2613,9 +2613,9 @@
         </div>
         RAKURAKU
       </div>
-      <div class="sh-badge">匿名送信</div>
+      <div class="sh-badge" data-i18n="sf.anonymous">匿名送信</div>
     </div>
-    <div class="sh-title">職場評価<br>アンケート</div>
+    <div class="sh-title" data-i18n-html="sf.eval_title">職場評価<br>アンケート</div>
     <div class="sh-sub">回答は完全に匿名です。正直な評価をお願いします</div>
   </div>
 
@@ -2629,7 +2629,7 @@
           <span class="sf-step-pill">01</span>
         </div>
         <div>
-          <div class="sf-step-title">各項目を評価</div>
+          <div class="sf-step-title" data-i18n="sf.eval_step1">各項目を評価</div>
           <div class="sf-step-sub">星をタップして評価してください（1〜5）</div>
         </div>
       </div>
@@ -2661,8 +2661,8 @@
           <span class="sf-step-pill">03</span>
         </div>
         <div>
-          <div class="sf-step-title">コメント <span class="sf-opt-tag">任意</span></div>
-          <div class="sf-step-sub">自由にご意見をどうぞ</div>
+          <div class="sf-step-title"><span data-i18n="sf.comment">コメント</span> <span class="sf-opt-tag" data-i18n="common.optional">任意</span></div>
+          <div class="sf-step-sub" data-i18n="sf.comment_sub">自由にご意見をどうぞ</div>
         </div>
       </div>
       <textarea class="survey-comment" id="survey-comment"
@@ -2709,7 +2709,7 @@
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
       <div style="flex:1;">
         <div class="mh-title" data-i18n="mgr.title">シフト管理</div>
-        <div class="mh-sub" id="mh-shop-name">― 提出データをリアルタイムで確認</div>
+        <div class="mh-sub" id="mh-shop-name" data-i18n="mgr.subtitle">― 提出データをリアルタイムで確認</div>
       </div>
       <div id="manager-lang-switcher"></div>
     </div>
@@ -2758,7 +2758,7 @@
         <summary style="cursor:pointer;list-style:none;padding:6px 12px;background:var(--slate-100);border-radius:8px;font-size:11px;font-weight:800;color:var(--slate-700);user-select:none;">☰ メニュー</summary>
         <div style="position:absolute;right:0;top:calc(100% + 4px);background:#fff;border:1.5px solid #E2E8F0;border-radius:10px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.12);display:grid;grid-template-columns:1fr 1fr;gap:4px;z-index:50;min-width:280px;">
           <a href="payroll.html" target="_blank" style="color:#4F46E5;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background=''">📋 給与明細</a>
-          <a href="monthly-report.html" target="_blank" style="color:#4F46E5;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background=''">📊 月次レポート</a>
+          <a href="monthly-report.html" target="_blank" style="color:#4F46E5;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background=''" data-i18n="mgr.monthly_report">📊 月次レポート</a>
           <a href="master-data.html" target="_blank" style="color:#4F46E5;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background=''">⚙️ マスタ</a>
           <a href="sales-import.html" target="_blank" style="color:#F59E0B;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#FFFBEB'" onmouseout="this.style.background=''">💰 売上</a>
           <a href="announcements.html" target="_blank" style="color:#7C3AED;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:700;border-radius:6px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='#FAF5FF'" onmouseout="this.style.background=''">📢 お知らせ</a>
@@ -2791,17 +2791,17 @@
     <div class="stat-card">
       <span class="stat-icon">👥</span>
       <div class="stat-num" id="stat-staff">0</div>
-      <div class="stat-lbl">提出人数</div>
+      <div class="stat-lbl" data-i18n="stat.submitted_count">提出人数</div>
     </div>
     <div class="stat-card">
       <span class="stat-icon">📅</span>
       <div class="stat-num" id="stat-dates">0</div>
-      <div class="stat-lbl">対象日数</div>
+      <div class="stat-lbl" data-i18n="stat.target_days">対象日数</div>
     </div>
     <div class="stat-card">
       <span class="stat-icon">✅</span>
       <div class="stat-num" id="stat-shifts">0</div>
-      <div class="stat-lbl">配置済み</div>
+      <div class="stat-lbl" data-i18n="stat.assigned">配置済み</div>
     </div>
   </div>
 
@@ -2820,7 +2820,7 @@
   <!-- 内部募集ステータスカード -->
   <div id="recruit-status-card" data-mgr-section="dashboard shifts">
     <div class="rs-header">
-      <span class="rs-badge">募集中</span>
+      <span class="rs-badge" data-i18n="mgr.rec_recruiting">募集中</span>
       <span class="rs-close" onclick="closeRecruitStatus()">✕ 終了する</span>
     </div>
     <div class="rs-info">
@@ -2836,12 +2836,12 @@
     <div class="section-title" style="margin-bottom:14px;">⏰ 締切・リマインド管理</div>
 
     <!-- 締切設定 -->
-    <div class="notify-section-label">提出期限</div>
+    <div class="notify-section-label" data-i18n="rem.deadline">提出期限</div>
     <div class="datetime-row">
       <input class="datetime-input" type="datetime-local" id="deadline-input"
              onchange="onDeadlineChange()" />
       <button class="btn-set-dl primary" onclick="applyDeadline()">✅ 設定</button>
-      <button class="btn-set-dl ghost"   onclick="clearDeadline()">クリア</button>
+      <button class="btn-set-dl ghost"   onclick="clearDeadline()" data-i18n="rem.clear">クリア</button>
     </div>
 
     <!-- スタッフマスターリスト -->
@@ -2858,15 +2858,15 @@
     <div class="reminder-stats-row">
       <div class="reminder-stat">
         <div class="reminder-stat-num" id="rm-total">0</div>
-        <div class="reminder-stat-lbl">登録スタッフ</div>
+        <div class="reminder-stat-lbl" data-i18n="rem.stat_total">登録スタッフ</div>
       </div>
       <div class="reminder-stat">
         <div class="reminder-stat-num" id="rm-submitted" style="color:var(--emerald);">0</div>
-        <div class="reminder-stat-lbl">提出済み</div>
+        <div class="reminder-stat-lbl" data-i18n="rem.stat_submitted">提出済み</div>
       </div>
       <div class="reminder-stat">
         <div class="reminder-stat-num" id="rm-pending" style="color:var(--amber);">0</div>
-        <div class="reminder-stat-lbl">未提出</div>
+        <div class="reminder-stat-lbl" data-i18n="rem.stat_pending">未提出</div>
       </div>
     </div>
 
@@ -2914,7 +2914,7 @@
         <input type="password" id="pin-new-input" maxlength="4" pattern="[0-9]{4}"
                placeholder="新しいPIN（4桁）" inputmode="numeric"
                autocomplete="new-password" aria-label="新しい店長PIN" />
-        <button class="btn-pin-save" onclick="saveNewPin()">変更する</button>
+        <button class="btn-pin-save" onclick="saveNewPin()" data-i18n="btn.change">変更する</button>
         <button class="btn-pin-save" style="background:var(--slate-200);color:var(--slate-600);"
                 onclick="lockManagerAndGoHome()">🔒 ロック</button>
       </div>
@@ -2925,7 +2925,7 @@
   <div class="card" id="submissions-card" data-mgr-section="shifts">
     <div class="section-hdr">
       <div class="section-title">📥 提出一覧</div>
-      <button class="btn-danger-ghost" onclick="clearAll()">リセット</button>
+      <button class="btn-danger-ghost" onclick="clearAll()" data-i18n="btn.reset">リセット</button>
     </div>
     <div id="submissions-list">
       <div class="empty-state"><div class="e-icon">📭</div><p>まだ提出がありません</p></div>
@@ -2950,7 +2950,7 @@
   <!-- ════════ 💴 給与・売上 KPI サマリ (タブ最上部) ════════ -->
   <div class="card" data-mgr-section="payroll" style="margin-top:12px;background:linear-gradient(135deg,#FAF5FF,#EEF2FF);border:1.5px solid #C7D2FE;">
     <div class="section-title" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-      <span>📊 今月のお金まわり ひと目チェック</span>
+      <span data-i18n="mgr.money_this_month">📊 今月のお金まわり ひと目チェック</span>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;" id="payroll-kpi-grid">
       <div style="background:#fff;border-radius:10px;padding:14px;text-align:center;border:1.5px solid var(--slate-100);">
@@ -2961,7 +2961,7 @@
       <div style="background:#fff;border-radius:10px;padding:14px;text-align:center;border:1.5px solid var(--slate-100);">
         <div style="font-size:9px;font-weight:800;color:var(--slate-500);letter-spacing:.04em;">💴 予想給与</div>
         <div style="font-size:22px;font-weight:900;color:var(--indigo);margin-top:3px;letter-spacing:-.02em;">¥<span id="kpi-payroll-total">—</span></div>
-        <div style="font-size:9px;color:var(--slate-500);font-weight:700;margin-top:2px;">全スタッフ合計</div>
+        <div style="font-size:9px;color:var(--slate-500);font-weight:700;margin-top:2px;" data-i18n="mgr.all_staff_total">全スタッフ合計</div>
       </div>
       <div style="background:#fff;border-radius:10px;padding:14px;text-align:center;border:1.5px solid var(--slate-100);">
         <div style="font-size:9px;font-weight:800;color:var(--slate-500);letter-spacing:.04em;">📊 人件費率</div>
@@ -2983,7 +2983,7 @@
       </a>
       <a href="monthly-report.html" target="_blank" style="padding:11px;background:#fff;color:var(--indigo);text-decoration:none;text-align:center;border-radius:8px;font-size:11px;font-weight:800;border:1.5px solid #C7D2FE;display:flex;flex-direction:column;align-items:center;gap:3px;">
         <span style="font-size:18px;">📊</span>
-        <span>月次レポート</span>
+        <span data-i18n="mgr.monthly_report">月次レポート</span>
       </a>
       <a href="sales-import.html" target="_blank" style="padding:11px;background:#fff;color:#F59E0B;text-decoration:none;text-align:center;border-radius:8px;font-size:11px;font-weight:800;border:1.5px solid #FED7AA;display:flex;flex-direction:column;align-items:center;gap:3px;">
         <span style="font-size:18px;">💰</span>
@@ -3004,7 +3004,7 @@
     </div>
 
     <div style="font-size:11px;color:var(--slate-500);margin-bottom:12px;line-height:1.6;">
-      💡 月次の目標と実績だけ簡易入力。日別の詳細は <a href="sales-import.html" target="_blank" style="color:#F59E0B;font-weight:700;">売上取込ページ</a> から
+      💡 <span data-i18n="mgr.sales_explain">月次の目標と実績だけ簡易入力。日別の詳細は売上取込ページから</span> <a href="sales-import.html" target="_blank" style="color:#F59E0B;font-weight:700;" data-i18n="mgr.sales_import_link">売上取込ページ</a>
     </div>
 
     <div class="sales-input-grid">
@@ -3081,7 +3081,7 @@
   <!-- Shift rules (朝/昼/夜 下限〜上限) -->
   <div class="card" id="rule-section" data-mgr-section="shifts">
     <div class="section-title" style="margin-bottom:4px;">⚙️ シフトルール</div>
-    <div style="font-size:11px;color:var(--slate-400);margin-bottom:14px;">各時間帯の<strong>下限〜上限</strong>を設定してください。下限未達なら警告、上限超は要調整。</div>
+    <div style="font-size:11px;color:var(--slate-400);margin-bottom:14px;" data-i18n="mgr.timeslot_explain">各時間帯の下限〜上限を設定してください。下限未達なら警告、上限超は要調整。</div>
 
     <div class="tp-rule-row tp-vstack">
       <div class="tp-row-head">
@@ -3344,7 +3344,7 @@
       <!-- 給与表示 -->
       <div id="pp-result" style="display:none;">
         <div style="text-align:center;margin-bottom:14px;padding:18px;background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-radius:14px;">
-          <div style="font-size:10px;font-weight:800;opacity:.9;letter-spacing:.04em;">今月の予想給与</div>
+          <div style="font-size:10px;font-weight:800;opacity:.9;letter-spacing:.04em;" data-i18n="mgr.expected_payroll">今月の予想給与</div>
           <div style="font-size:30px;font-weight:900;letter-spacing:-.02em;margin-top:4px;">¥<span id="pp-total">0</span></div>
           <div style="font-size:10px;opacity:.85;margin-top:3px;" id="pp-month-label"></div>
         </div>
