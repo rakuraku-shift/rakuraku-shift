@@ -334,6 +334,26 @@
     'founders.days': { ja:'日', en:'Days', zh:'天', ko:'일', vi:'Ngày' },
     'founders.hours': { ja:'時間', en:'Hours', zh:'小时', ko:'시간', vi:'Giờ' },
 
+    /* ─── ホーム index.html ─── */
+    'home.hero_badge': { ja:'🏆 ヒアリング120店舗+ ・ 🆓 個人店は永久無料 ・ 🎁 30日 Pro 体験',
+                          en:'🏆 120+ Stores Surveyed · 🆓 Free Forever for Individual Stores · 🎁 30-Day Pro Trial',
+                          zh:'🏆 调研120+家店铺 · 🆓 个人店永久免费 · 🎁 30天Pro体验',
+                          ko:'🏆 120+ 매장 청취 · 🆓 개인 매장 영구 무료 · 🎁 30일 Pro 체험',
+                          vi:'🏆 Khảo sát 120+ cửa hàng · 🆓 Cửa hàng cá nhân miễn phí · 🎁 Pro thử 30 ngày' },
+    'home.pain_title': { ja:'飲食店の「シフト疲れ」', en:'Restaurant "Shift Fatigue"', zh:'餐饮业的"班次疲劳"', ko:'음식점의 "시프트 피로"', vi:'"Mệt mỏi vì xếp ca" trong nhà hàng' },
+    'home.pain_sub': { ja:'手書き・Excel・LINEのやり取りで毎月毎月、店長の貴重な時間を奪っていませんか？',
+                        en:'Are handwritten schedules, Excel, and LINE messages stealing your precious manager hours every month?',
+                        zh:'手写、Excel、LINE 交流是否每月都在夺走店长宝贵的时间？',
+                        ko:'손글씨·Excel·LINE 소통이 매달 점장님의 귀중한 시간을 빼앗고 있지 않나요?',
+                        vi:'Sổ tay, Excel, LINE đang lấy đi giờ quý báu của quản lý mỗi tháng?' },
+    'home.solution_title': { ja:'RAKURAKU が解決します', en:'RAKURAKU Solves This', zh:'RAKURAKU 解决这些问题', ko:'RAKURAKU가 해결합니다', vi:'RAKURAKU giải quyết' },
+    'home.solution_sub': { ja:'飲食店関係者の現場経験から生まれた、本当に必要な機能だけを搭載。',
+                            en:'Built from restaurant industry insights with only the features you truly need.',
+                            zh:'源于餐饮业现场经验，只搭载真正必需的功能。',
+                            ko:'음식점 현장 경험에서 탄생한, 진짜 필요한 기능만 탑재.',
+                            vi:'Sinh ra từ kinh nghiệm thực tế ngành nhà hàng, chỉ có tính năng cần thiết.' },
+    'home.steps_title': { ja:'3ステップで導入完了', en:'Get Started in 3 Steps', zh:'3 步即可完成导入', ko:'3 단계로 도입 완료', vi:'Hoàn tất trong 3 bước' },
+
     /* ─── 締切・リマインド ─── */
     'rem.title': { ja:'⏰ 締切・リマインド管理', en:'⏰ Deadline & Reminders', zh:'⏰ 截止·提醒', ko:'⏰ 마감·리마인드' },
     'rem.deadline': { ja:'提出期限', en:'Submission Deadline', zh:'提交截止', ko:'제출 기한' },
