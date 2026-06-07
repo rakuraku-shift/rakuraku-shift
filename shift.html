@@ -2648,9 +2648,9 @@
         </div>
       </div>
       <div class="rec-grid">
-        <button type="button" class="rec-btn" data-val="yes"   onclick="selectRecommend(this)">👍<br>おすすめする</button>
-        <button type="button" class="rec-btn" data-val="maybe" onclick="selectRecommend(this)">🤔<br>場合による</button>
-        <button type="button" class="rec-btn" data-val="no"    onclick="selectRecommend(this)">👎<br>しない</button>
+        <button type="button" class="rec-btn" data-val="yes"   onclick="selectRecommend(this)" data-i18n-html="rec.yes">👍<br>おすすめする</button>
+        <button type="button" class="rec-btn" data-val="maybe" onclick="selectRecommend(this)" data-i18n-html="rec.maybe">🤔<br>場合による</button>
+        <button type="button" class="rec-btn" data-val="no"    onclick="selectRecommend(this)" data-i18n-html="rec.no">👎<br>しない</button>
       </div>
     </div>
 
@@ -2928,7 +2928,7 @@
       <button class="btn-danger-ghost" onclick="clearAll()" data-i18n="btn.reset">リセット</button>
     </div>
     <div id="submissions-list">
-      <div class="empty-state"><div class="e-icon">📭</div><p>まだ提出がありません</p></div>
+      <div class="empty-state"><div class="e-icon">📭</div><p data-i18n="mgr.no_submissions_yet">まだ提出がありません</p></div>
     </div>
   </div>
 
@@ -2987,11 +2987,11 @@
       </a>
       <a href="sales-import.html" target="_blank" style="padding:11px;background:#fff;color:#F59E0B;text-decoration:none;text-align:center;border-radius:8px;font-size:11px;font-weight:800;border:1.5px solid #FED7AA;display:flex;flex-direction:column;align-items:center;gap:3px;">
         <span style="font-size:18px;">💰</span>
-        <span>日別売上取込</span>
+        <span data-i18n="mgr.daily_sales_import">日別売上取込</span>
       </a>
       <a href="staff-monthly.html" target="_blank" style="padding:11px;background:#fff;color:var(--indigo);text-decoration:none;text-align:center;border-radius:8px;font-size:11px;font-weight:800;border:1.5px solid #C7D2FE;display:flex;flex-direction:column;align-items:center;gap:3px;">
         <span style="font-size:18px;">📈</span>
-        <span>スタッフ別月次</span>
+        <span data-i18n="mgr.staff_monthly">スタッフ別月次</span>
       </a>
     </div>
   </div>
@@ -3175,7 +3175,7 @@
     ontouchstart="this.style.transform='scale(.98)'"
     ontouchend="this.style.transform='scale(1)'">
     <span style="font-size:24px;">✨</span>
-    <span>ワンタップでシフト作成</span>
+    <span data-i18n="mgr.one_tap_generate">ワンタップでシフト作成</span>
   </button>
   <div style="text-align:center;margin-bottom:14px;">
     <button onclick="showSampleShift()" style="background:none;border:none;color:var(--slate-400);font-size:12px;cursor:pointer;text-decoration:underline;font-family:inherit;padding:4px;">
@@ -3199,7 +3199,7 @@
   <div class="card" id="generated-card" data-mgr-section="shifts" style="display:none;">
     <!-- Print-only header -->
     <div id="print-header" style="display:none;margin-bottom:16px;border-bottom:2px solid var(--slate-200);padding-bottom:12px;">
-      <div style="font-size:18pt;font-weight:800;" id="print-title">シフト表</div>
+      <div style="font-size:18pt;font-weight:800;" id="print-title" data-i18n="mgr.shift_table_title">シフト表</div>
       <div style="font-size:10pt;color:var(--slate-500);margin-top:4px;" id="print-date"></div>
     </div>
 

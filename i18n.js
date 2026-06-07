@@ -265,6 +265,38 @@
                                ko:'각 시간대 하한~상한을 설정하세요. 하한 미달은 경고, 상한 초과는 조정 필요.',
                                vi:'Đặt giới hạn dưới ~ trên cho mỗi khung giờ. Dưới mức tối thiểu sẽ cảnh báo; trên tối đa cần điều chỉnh.' },
 
+    /* ─── おすすめする / 場合による / しない ─── */
+    'rec.yes': { ja:'👍<br>おすすめする', en:'👍<br>Recommend', zh:'👍<br>推荐', ko:'👍<br>추천함', vi:'👍<br>Đề xuất' },
+    'rec.maybe': { ja:'🤔<br>場合による', en:'🤔<br>Depends', zh:'🤔<br>视情况', ko:'🤔<br>경우에 따라', vi:'🤔<br>Tùy lúc' },
+    'rec.no': { ja:'👎<br>しない', en:'👎<br>No', zh:'👎<br>不推荐', ko:'👎<br>않음', vi:'👎<br>Không' },
+
+    /* ─── その他のシフト管理ラベル ─── */
+    'mgr.no_submissions_yet': { ja:'まだ提出がありません', en:'No submissions yet', zh:'尚无提交', ko:'아직 제출이 없습니다', vi:'Chưa có nội dung nộp' },
+    'mgr.daily_sales_import': { ja:'日別売上取込', en:'Daily Sales Import', zh:'每日销售导入', ko:'일별 매출 가져오기', vi:'Nhập doanh thu hàng ngày' },
+    'mgr.staff_monthly': { ja:'スタッフ別月次', en:'Monthly by Staff', zh:'按员工月度', ko:'직원별 월간', vi:'Hàng tháng theo nhân viên' },
+    'mgr.one_tap_generate': { ja:'ワンタップでシフト作成', en:'One-Tap Generate', zh:'一键生成班次', ko:'원탭 시프트 생성', vi:'Tạo ca 1 chạm' },
+    'mgr.shift_table_title': { ja:'シフト表', en:'Shift Table', zh:'班次表', ko:'시프트표', vi:'Bảng ca làm' },
+
+    /* ─── パスワード関連 ─── */
+    'pw.first_setup_title': { ja:'初回パスワード設定', en:'First-Time Password Setup', zh:'首次密码设置', ko:'첫 비밀번호 설정', vi:'Đặt mật khẩu lần đầu' },
+    'pw.first_setup_hint': { ja:'このパスワードはあなたの端末にハッシュ化して保存されます。',
+                              en:'This password will be hashed and stored on your device.',
+                              zh:'此密码将经过哈希处理后保存在您的设备上。',
+                              ko:'이 비밀번호는 해시 처리되어 귀하의 기기에 저장됩니다.',
+                              vi:'Mật khẩu này sẽ được mã hóa và lưu trên thiết bị của bạn.' },
+    'pw.confirm_again': { ja:'確認のためもう一度', en:'Confirm Again', zh:'请再次确认', ko:'확인을 위해 한 번 더', vi:'Xác nhận lại' },
+    'pw.password': { ja:'パスワード', en:'Password', zh:'密码', ko:'비밀번호', vi:'Mật khẩu' },
+    'pw.view_payroll_title': { ja:'給与情報の閲覧', en:'View Payroll Info', zh:'查看工资信息', ko:'급여 정보 조회', vi:'Xem thông tin lương' },
+    'pw.view_payroll_hint': { ja:'設定済みの個人パスワードを入力してください。',
+                               en:'Please enter your personal password that you set up.',
+                               zh:'请输入您设置的个人密码。',
+                               ko:'설정한 개인 비밀번호를 입력해 주세요.',
+                               vi:'Vui lòng nhập mật khẩu cá nhân đã đặt.' },
+
+    /* ─── 勤務日数・登録済み 等 ─── */
+    'mgr.work_days': { ja:'勤務日数', en:'Work Days', zh:'工作天数', ko:'근무일수', vi:'Số ngày làm' },
+    'mgr.registered': { ja:'登録済み', en:'Registered', zh:'已登记', ko:'등록 완료', vi:'Đã đăng ký' },
+
     /* ─── 締切・リマインド ─── */
     'rem.title': { ja:'⏰ 締切・リマインド管理', en:'⏰ Deadline & Reminders', zh:'⏰ 截止·提醒', ko:'⏰ 마감·리마인드' },
     'rem.deadline': { ja:'提出期限', en:'Submission Deadline', zh:'提交截止', ko:'제출 기한' },
