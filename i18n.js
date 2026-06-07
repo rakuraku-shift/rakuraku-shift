@@ -354,6 +354,16 @@
                             vi:'Sinh ra từ kinh nghiệm thực tế ngành nhà hàng, chỉ có tính năng cần thiết.' },
     'home.steps_title': { ja:'3ステップで導入完了', en:'Get Started in 3 Steps', zh:'3 步即可完成导入', ko:'3 단계로 도입 완료', vi:'Hoàn tất trong 3 bước' },
 
+    /* ─── スタッフ招待 ─── */
+    'invite.title': { ja:'📨 スタッフを招待', en:'📨 Invite Staff', zh:'📨 邀请员工', ko:'📨 직원 초대', vi:'📨 Mời nhân viên' },
+
+    /* ─── 創業メンバー Welcome ─── */
+    'founder_welcome.title': { ja:'ようこそ、<br><span class="grad">創業メンバー</span> へ',
+                                en:'Welcome,<br><span class="grad">Founding Member</span>',
+                                zh:'欢迎您，<br><span class="grad">创始会员</span>',
+                                ko:'환영합니다,<br><span class="grad">창업 멤버</span>',
+                                vi:'Chào mừng,<br><span class="grad">Thành viên sáng lập</span>' },
+
     /* ─── 締切・リマインド ─── */
     'rem.title': { ja:'⏰ 締切・リマインド管理', en:'⏰ Deadline & Reminders', zh:'⏰ 截止·提醒', ko:'⏰ 마감·리마인드' },
     'rem.deadline': { ja:'提出期限', en:'Submission Deadline', zh:'提交截止', ko:'제출 기한' },
