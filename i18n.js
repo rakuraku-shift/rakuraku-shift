@@ -363,6 +363,16 @@
                                 zh:'欢迎您，<br><span class="grad">创始会员</span>',
                                 ko:'환영합니다,<br><span class="grad">창업 멤버</span>',
                                 vi:'Chào mừng,<br><span class="grad">Thành viên sáng lập</span>' },
+    'founder_welcome.lead': { ja:'Pro プラン <strong>1 年間 完全無料</strong> でご利用いただけます',
+                               en:'Use the Pro plan <strong>FREE for 1 full year</strong>',
+                               zh:'Pro 套餐 <strong>完全免费 1 年</strong>',
+                               ko:'Pro 플랜 <strong>1년간 완전 무료</strong>로 이용 가능',
+                               vi:'Sử dụng Pro <strong>miễn phí 1 năm</strong>' },
+    'invite.sub': { ja:'QR コード or リンクで簡単招待。LINE で送って 1 タップで参加できます',
+                     en:'Invite easily with QR code or link. Send via LINE, join with one tap.',
+                     zh:'用二维码或链接轻松邀请。通过 LINE 发送，一键参与。',
+                     ko:'QR 코드 또는 링크로 간편 초대. LINE으로 보내 한 탭으로 참여.',
+                     vi:'Mời dễ dàng bằng QR hoặc link. Gửi qua LINE, tham gia 1 chạm.' },
 
     /* ─── 締切・リマインド ─── */
     'rem.title': { ja:'⏰ 締切・リマインド管理', en:'⏰ Deadline & Reminders', zh:'⏰ 截止·提醒', ko:'⏰ 마감·리마인드' },
