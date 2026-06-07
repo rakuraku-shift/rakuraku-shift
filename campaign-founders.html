@@ -467,28 +467,66 @@ update();
 setInterval(update, 1000);
 
 // ============ Application form ============
-function submitApp(){
-  // Demo: localStorage 保存 + 成功メッセージ
+async function submitApp(){
+  const data = {
+    shop: document.getElementById('shop').value,
+    owner: document.getElementById('owner').value,
+    email: document.getElementById('email').value,
+    tel: document.getElementById('tel').value,
+    biz: document.getElementById('biz').value,
+    staff: document.getElementById('staff').value,
+    stores: document.getElementById('stores').value,
+    region: document.getElementById('region').value,
+    pain: document.getElementById('pain').value,
+    ts: new Date().toISOString()
+  };
+
+  // バックアップ: localStorage に保存
   try {
-    const data = {
-      shop: document.getElementById('shop').value,
-      owner: document.getElementById('owner').value,
-      email: document.getElementById('email').value,
-      tel: document.getElementById('tel').value,
-      biz: document.getElementById('biz').value,
-      staff: document.getElementById('staff').value,
-      stores: document.getElementById('stores').value,
-      region: document.getElementById('region').value,
-      pain: document.getElementById('pain').value,
-      ts: new Date().toISOString()
-    };
     const arr = JSON.parse(localStorage.getItem('rakuraku_founders') || '[]');
     arr.push(data);
     localStorage.setItem('rakuraku_founders', JSON.stringify(arr));
   } catch(e){}
 
-  // 本番では: fetch('/api/apply-founders', {method:'POST', body:...}) を実装
+  // ① サーバー側 API に POST (もし /api/apply-founders が実装されていれば通知)
+  let serverOK = false;
+  try {
+    const res = await fetch('/api/apply-founders', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    if (res && res.ok) serverOK = true;
+  } catch(e){ /* API 未実装の場合は mailto: にフォールバック */ }
+
+  // ② サーバー API が無い場合は mailto: でユーザーのメールアプリを開く
+  if (!serverOK) {
+    const subject = `【RAKURAKU 創業メンバー応募】${data.shop} 様`;
+    const body =
+      `RAKURAKU 創業メンバープログラムに応募します。\n\n` +
+      `■ 店舗名: ${data.shop}\n` +
+      `■ 代表者: ${data.owner}\n` +
+      `■ メール: ${data.email}\n` +
+      `■ 電話: ${data.tel}\n` +
+      `■ 業態: ${data.biz}\n` +
+      `■ スタッフ数: ${data.staff}\n` +
+      `■ 店舗数: ${data.stores}\n` +
+      `■ 所在地: ${data.region}\n\n` +
+      `■ 現在のシフト管理・お困りごと:\n${data.pain || '(なし)'}\n\n` +
+      `─────────────────\n` +
+      `※ このメールを送信すると応募が完了します。\n` +
+      `※ 24 時間以内に代表 小泉 よりご返信いたします。`;
+    const mailto = `mailto:koizumishota0323@gmail.com` +
+      `?subject=${encodeURIComponent(subject)}` +
+      `&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+  }
+
+  // 成功メッセージ表示
   document.getElementById('appSuccess').classList.add('show');
+  document.getElementById('appSuccess').innerHTML = serverOK
+    ? '✅ 応募ありがとうございます!<br><span style="font-size:12px;opacity:.9;font-weight:600;">24 時間以内に代表よりご返信いたします</span>'
+    : '📧 メールアプリが起動します<br><span style="font-size:12px;opacity:.9;font-weight:600;">送信ボタンを押して応募完了です (24 時間以内に返信)</span>';
   document.getElementById('appForm').reset();
   document.getElementById('appSuccess').scrollIntoView({behavior:'smooth', block:'center'});
 }

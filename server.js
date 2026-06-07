@@ -918,6 +918,109 @@ app.get('/api/churn-survey', (req, res) => {
   res.json(readJSON(file, []));
 });
 
+/* ════════════════════════════════════════════
+ * 🔥 創業メンバー 100 店舗プログラム 応募 API
+ * 応募 → JSON保存 + 代表 (EMAIL_USER) にメール通知
+ ════════════════════════════════════════════ */
+app.post('/api/apply-founders', async (req, res) => {
+  const data = req.body || {};
+  const record = {
+    id: 'fnd' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    ...data,
+    ip: (req.headers['x-forwarded-for'] || req.connection.remoteAddress || '').split(',')[0].trim(),
+    userAgent: req.headers['user-agent'] || '',
+    receivedAt: Date.now(),
+  };
+  const file = path.join(DATA_DIR, 'founders-applications.json');
+  const all = readJSON(file, []);
+  all.push(record);
+  writeJSON(file, all);
+
+  const seatNumber = all.length;
+  console.log(`[founders] 🎉 応募受信 #${seatNumber} — ${data.shop} / ${data.owner} / ${data.region}`);
+
+  /* 代表 (運営者) にメール通知 */
+  if (emailTransporter && process.env.EMAIL_USER) {
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: `🔥 [RAKURAKU 創業メンバー応募 #${seatNumber}] ${data.shop || '?'} 様`,
+        html: `
+          <h2 style="color:#EF4444;">🎉 創業メンバー応募が届きました!</h2>
+          <p style="font-size:14px;background:#FEF3C7;padding:10px 14px;border-radius:8px;border-left:4px solid #F59E0B;">
+            <strong>受付番号:</strong> #${seatNumber} / 100
+          </p>
+          <table style="border-collapse:collapse;font-size:14px;">
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗名</td><td style="padding:6px 10px;">${data.shop || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">代表者</td><td style="padding:6px 10px;">${data.owner || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">メール</td><td style="padding:6px 10px;"><a href="mailto:${data.email || ''}">${data.email || '-'}</a></td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">電話</td><td style="padding:6px 10px;"><a href="tel:${data.tel || ''}">${data.tel || '-'}</a></td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">業態</td><td style="padding:6px 10px;">${data.biz || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">スタッフ数</td><td style="padding:6px 10px;">${data.staff || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗数</td><td style="padding:6px 10px;">${data.stores || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">所在地</td><td style="padding:6px 10px;">${data.region || '-'}</td></tr>
+          </table>
+          <h3 style="margin-top:20px;">現在のお困りごと:</h3>
+          <div style="padding:12px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${(data.pain || '(未記入)').replace(/</g, '&lt;')}</div>
+          <hr style="margin:24px 0;">
+          <p style="font-size:12px;color:#64748B;">
+            💡 24 時間以内に <a href="mailto:${data.email}">${data.email}</a> へご返信してください<br>
+            📊 累計応募数: ${seatNumber} / 100 席<br>
+            🌐 IP: ${record.ip}<br>
+            🕐 受信時刻: ${new Date(record.receivedAt).toLocaleString('ja-JP', {timeZone: 'Asia/Tokyo'})}
+          </p>
+        `,
+      });
+      console.log(`[founders] 📧 admin email 送信成功 -> ${process.env.EMAIL_USER}`);
+    } catch(e) { console.warn('[founders] admin email failed:', e.message); }
+
+    /* 応募者にも自動返信 (任意) */
+    if (data.email) {
+      try {
+        await emailTransporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: data.email,
+          subject: `🎉 [RAKURAKU] 創業メンバー応募ありがとうございます`,
+          html: `
+            <h2 style="color:#EF4444;">🔥 ${data.owner || ''} 様</h2>
+            <p>RAKURAKU 創業メンバー 100 店舗プログラムにご応募いただき、誠にありがとうございます。</p>
+            <p style="font-size:14px;background:#FEF3C7;padding:14px 18px;border-radius:10px;border-left:4px solid #F59E0B;">
+              <strong>受付番号:</strong> #${seatNumber} / 100<br>
+              <strong>店舗名:</strong> ${data.shop}
+            </p>
+            <p><strong>24 時間以内に</strong>代表 小泉 よりご返信いたします。</p>
+            <p>創業メンバーになっていただいた場合の特典:</p>
+            <ul style="line-height:1.85;">
+              <li>🎁 Pro プラン 1 年間 完全無料 (¥59,880 相当)</li>
+              <li>⚡ 初期セットアップ 無料 (¥30,000 相当)</li>
+              <li>🎓 スタッフ説明会 無料 (¥20,000 相当)</li>
+              <li>🏆 創業メンバー認定 + 機能要望の優先実装権</li>
+            </ul>
+            <hr style="margin:24px 0;">
+            <p style="font-size:12px;color:#64748B;">
+              RAKURAKU 代表 小泉 咲太<br>
+              📨 <a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a><br>
+              📞 080-5168-3303<br>
+              🌐 <a href="https://rakuraku-shift-production.up.railway.app/">rakuraku-shift-production.up.railway.app</a>
+            </p>
+          `,
+        });
+        console.log(`[founders] 📧 applicant auto-reply 送信成功 -> ${data.email}`);
+      } catch(e) { console.warn('[founders] applicant email failed:', e.message); }
+    }
+  }
+
+  res.json({ ok: true, seatNumber, record });
+});
+
+app.get('/api/apply-founders', (req, res) => {
+  /* 管理者用: 応募一覧を取得 (代表専用ページから参照) */
+  const file = path.join(DATA_DIR, 'founders-applications.json');
+  const all = readJSON(file, []);
+  res.json({ total: all.length, remaining: Math.max(0, 100 - all.length), applications: all });
+});
+
 app.use(express.json({ limit: '6mb' }));
 
 /* ════════════════════════════════════════════
