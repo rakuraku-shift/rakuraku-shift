@@ -1315,20 +1315,38 @@
     } catch(e){}
   })();
 
-  /* ============ 創業メンバー キャンペーンバナー ============ */
+  /* ============ 創業メンバー キャンペーンバナー (サーバー実データ優先) ============ */
   (function campaignBanner(){
     const DEADLINE = new Date('2026-07-05T14:59:59Z').getTime();
     const START    = new Date('2026-06-05T00:00:00Z').getTime();
     const TOTAL    = 100;
     const INITIAL  = 13;
+    let serverTaken = null;
+
+    async function fetchSeats(){
+      try {
+        const r = await fetch('/api/apply-founders');
+        if (!r.ok) return;
+        const data = await r.json();
+        if (typeof data.total === 'number') serverTaken = data.total;
+      } catch(e){}
+    }
+
     function update(){
       const now = Date.now();
       const dt  = DEADLINE - now;
-      const elapsed = Math.max(0, now - START);
-      const duration = Math.max(1, DEADLINE - START);
-      const ratio = Math.max(0, Math.min(1, elapsed / duration));
-      const taken = Math.floor(INITIAL + (TOTAL - INITIAL) * ratio);
-      const remain = Math.max(0, TOTAL - taken);
+      let remain;
+      if (serverTaken !== null){
+        /* サーバー実データ優先 (申込即座に反映) */
+        remain = Math.max(0, TOTAL - serverTaken);
+      } else {
+        /* フォールバック: 線形デモ */
+        const elapsed = Math.max(0, now - START);
+        const duration = Math.max(1, DEADLINE - START);
+        const ratio = Math.max(0, Math.min(1, elapsed / duration));
+        const taken = Math.floor(INITIAL + (TOTAL - INITIAL) * ratio);
+        remain = Math.max(0, TOTAL - taken);
+      }
       const seatsEl = document.getElementById('banner-seats');
       const cdEl    = document.getElementById('banner-cd');
       if (seatsEl) seatsEl.textContent = remain;
@@ -1342,8 +1360,10 @@
         }
       }
     }
-    update();
-    setInterval(update, 60000);   // 毎分更新
+
+    fetchSeats().then(update);
+    /* 60 秒ごとにサーバーから再取得 */
+    setInterval(() => { fetchSeats().then(update); }, 60000);
   })();
 
   /* Cookie 同意 (accept = '1', decline = '0') */

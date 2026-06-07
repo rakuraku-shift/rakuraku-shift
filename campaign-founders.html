@@ -419,14 +419,33 @@ const START   = new Date('2026-06-05T00:00:00Z').getTime();
 const TOTAL   = 100;
 const INITIAL = 13;     // 募集開始時点で既に確保済み
 
+/* 残席はサーバー実データを優先。取得失敗時のみ線形デモ値にフォールバック */
+let _serverTaken = null;     // サーバー側 total (null = 未取得)
+let _localTaken  = 0;        // 自分が今日申し込んだ分 (即時反映用)
+
 function calcRemain(){
+  /* サーバー値が取れている → 実申込数 + 自分の申込分 */
+  if (_serverTaken !== null){
+    return Math.max(0, TOTAL - _serverTaken - _localTaken);
+  }
+  /* フォールバック: 線形デモ計算 */
   const now = Date.now();
   const elapsed = Math.max(0, now - START);
   const duration = Math.max(1, DEADLINE - START);
   const ratio = Math.max(0, Math.min(1, elapsed / duration));
-  // 線形 + 微妙な揺らぎ
   const taken = Math.floor(INITIAL + (TOTAL - INITIAL) * ratio);
-  return Math.max(0, TOTAL - taken);
+  return Math.max(0, TOTAL - taken - _localTaken);
+}
+
+async function fetchSeats(){
+  try {
+    const r = await fetch('/api/apply-founders');
+    if (!r.ok) return;
+    const data = await r.json();
+    if (typeof data.total === 'number'){
+      _serverTaken = data.total;
+    }
+  } catch(e){}
 }
 
 function pad(n){ return String(Math.max(0, Math.floor(n))).padStart(2, '0'); }
@@ -461,9 +480,22 @@ function update(){
   document.getElementById('seatsBar').style.width = pct + '%';
   document.getElementById('urgentSeats').textContent = remain + ' 席';
   document.getElementById('stSeats').textContent = remain;
+
+  /* 満員時の処理 */
+  if (remain <= 0){
+    const btn = document.querySelector('.submit-btn');
+    if (btn && !btn.disabled){
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.style.cursor = 'not-allowed';
+      btn.textContent = '🚫 募集を締め切りました (100 / 100 席)';
+    }
+  }
 }
 
-update();
+/* 初回フェッチ → 30 秒ごとにサーバー残席を取り直す */
+fetchSeats().then(update);
+setInterval(() => { fetchSeats(); }, 30000);
 setInterval(update, 1000);
 
 // ============ Application form ============
@@ -522,11 +554,19 @@ async function submitApp(){
     window.location.href = mailto;
   }
 
+  /* ★ 残席を即座に -1 (申込ユーザーへの即時フィードバック) */
+  _localTaken += 1;
+  /* サーバー側でも増えたので、3 秒後に最新値を再取得 */
+  setTimeout(() => { _localTaken = 0; fetchSeats().then(update); }, 3000);
+  update();
+
   // 成功メッセージ表示
+  const newRemain = calcRemain();
+  const seatMsg = `🎉 受付番号 #${TOTAL - newRemain} / 100`;
   document.getElementById('appSuccess').classList.add('show');
   document.getElementById('appSuccess').innerHTML = serverOK
-    ? '✅ 応募ありがとうございます!<br><span style="font-size:12px;opacity:.9;font-weight:600;">24 時間以内に代表よりご返信いたします</span>'
-    : '📧 メールアプリが起動します<br><span style="font-size:12px;opacity:.9;font-weight:600;">送信ボタンを押して応募完了です (24 時間以内に返信)</span>';
+    ? `✅ 応募ありがとうございます! ${seatMsg}<br><span style="font-size:12px;opacity:.9;font-weight:600;">24 時間以内に代表よりご返信いたします</span>`
+    : `📧 メールアプリが起動します ${seatMsg}<br><span style="font-size:12px;opacity:.9;font-weight:600;">送信ボタンを押して応募完了です (24 時間以内に返信)</span>`;
   document.getElementById('appForm').reset();
   document.getElementById('appSuccess').scrollIntoView({behavior:'smooth', block:'center'});
 }
