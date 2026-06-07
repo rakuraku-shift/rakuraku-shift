@@ -840,26 +840,65 @@
 
   let currentLang = detectLang();
 
+  /* dev モード: ?i18n-debug=1 で未翻訳キーをコンソール警告 */
+  const DEBUG_MODE = (function(){
+    try { return location.search.indexOf('i18n-debug=1') !== -1; } catch(e) { return false; }
+  })();
+  const _missingKeys = new Set();
+
   function t(key) {
     const entry = TRANSLATIONS[key];
-    if (!entry) return key;
-    /* フォールバック順: 現在言語 → en (vi が無い場合) → ja → key */
-    return entry[currentLang] || entry.en || entry.ja || key;
+    if (!entry) {
+      if (DEBUG_MODE && !_missingKeys.has(key)) {
+        _missingKeys.add(key);
+        console.warn('[i18n] Missing translation key:', key);
+      }
+      return key;
+    }
+    /* フォールバック順: 現在言語 → en (vi が無い場合) → ja → key
+       (currentLang のエントリが存在しない場合のみ fallback) */
+    if (entry[currentLang] !== undefined) return entry[currentLang];
+    if (DEBUG_MODE) {
+      const missing = `${key}[${currentLang}]`;
+      if (!_missingKeys.has(missing)) {
+        _missingKeys.add(missing);
+        console.warn('[i18n] Missing language for key:', key, '— falling back to en/ja');
+      }
+    }
+    return entry.en || entry.ja || key;
   }
 
   function applyTranslations() {
     document.documentElement.lang = currentLang;
+    /* テキストノード置換 */
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
       const key = el.getAttribute('data-i18n');
       el.textContent = t(key);
     });
+    /* HTML 置換 (バグ修正: 以前は data-i18n-html が無視されていた) */
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
+      const key = el.getAttribute('data-i18n-html');
+      el.innerHTML = t(key);
+    });
+    /* placeholder 置換 */
     document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
       const key = el.getAttribute('data-i18n-placeholder');
       el.placeholder = t(key);
     });
+    /* aria-label 置換 (アクセシビリティ) */
     document.querySelectorAll('[data-i18n-aria]').forEach(function(el) {
       const key = el.getAttribute('data-i18n-aria');
       el.setAttribute('aria-label', t(key));
+    });
+    /* title 属性 (ツールチップ) 置換 */
+    document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
+      const key = el.getAttribute('data-i18n-title');
+      el.setAttribute('title', t(key));
+    });
+    /* alt 属性 (画像) 置換 */
+    document.querySelectorAll('[data-i18n-alt]').forEach(function(el) {
+      const key = el.getAttribute('data-i18n-alt');
+      el.setAttribute('alt', t(key));
     });
     /* イベント発火（カスタムレンダリングの再実行用） */
     window.dispatchEvent(new CustomEvent('rakuraku-lang-changed', { detail: { lang: currentLang } }));
