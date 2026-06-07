@@ -63,6 +63,27 @@
                        ko:'📨 일괄 전송',
                        vi:'📨 Gửi tất cả cùng lúc' },
 
+    /* ─── 時間帯 tp.* ─── */
+    'tp.morning': { ja:'朝', en:'Morning', zh:'早班', ko:'아침', vi:'Sáng' },
+    'tp.lunch': { ja:'昼', en:'Lunch', zh:'午班', ko:'점심', vi:'Trưa' },
+    'tp.evening': { ja:'夜', en:'Evening', zh:'晚班', ko:'저녁', vi:'Tối' },
+    'tp.morning_time': { ja:'〜12:00まで出勤', en:'Until 12:00', zh:'12:00 之前到岗', ko:'12:00까지 출근', vi:'Vào trước 12:00' },
+    'tp.lunch_time': { ja:'12:00〜17:00に出勤', en:'12:00 to 17:00', zh:'12:00-17:00 到岗', ko:'12:00-17:00 출근', vi:'12:00-17:00' },
+    'tp.evening_time': { ja:'17:00以降に出勤', en:'After 17:00', zh:'17:00 之后到岗', ko:'17:00 이후 출근', vi:'Sau 17:00' },
+    'common.persons': { ja:'名', en:'persons', zh:'人', ko:'명', vi:'người' },
+
+    /* ─── 評価 eval.* 追加 ─── */
+    'eval.overall': { ja:'総合評価', en:'Overall Rating', zh:'综合评价', ko:'종합 평가', vi:'Đánh giá tổng' },
+    'eval.skills': { ja:'ポジション別スキル', en:'Skills by Position', zh:'按职位的技能', ko:'포지션별 스킬', vi:'Kỹ năng theo vị trí' },
+    'eval.memo_label': { ja:'メモ（管理者のみ表示）', en:'Memo (Admin only)', zh:'备忘录（仅管理员可见）', ko:'메모 (관리자만 표시)', vi:'Ghi chú (Chỉ admin)' },
+
+    /* ─── パスワード pw.* 追加 ─── */
+    'pw.confirm_again': { ja:'確認のためもう一度',
+                          en:'Re-enter to Confirm',
+                          zh:'请再次输入确认',
+                          ko:'확인을 위해 다시 입력',
+                          vi:'Nhập lại để xác nhận' },
+
     /* ─── 曜日 ─── */
     'dow.0': { ja:'日', en:'Sun', zh:'日', ko:'일' },
     'dow.1': { ja:'月', en:'Mon', zh:'一', ko:'월' },

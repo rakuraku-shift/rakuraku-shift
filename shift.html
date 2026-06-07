@@ -3087,8 +3087,8 @@
       <div class="tp-row-head">
         <span class="tp-period-icon">☀️</span>
         <div class="tp-period-meta">
-          <div class="tp-period-label">朝</div>
-          <div class="tp-period-time">〜12:00まで出勤</div>
+          <div class="tp-period-label" data-i18n="tp.morning">朝</div>
+          <div class="tp-period-time" data-i18n="tp.morning_time">〜12:00まで出勤</div>
         </div>
       </div>
       <div class="tp-minmax">
@@ -3105,7 +3105,7 @@
           <span class="tp-mm-val" id="tp-val-morning-max">4</span>
           <button class="tp-mm-btn" onclick="adjustRule('morning','max',1)">＋</button>
         </div>
-        <span class="tp-mm-unit">名</span>
+        <span class="tp-mm-unit" data-i18n="common.persons">名</span>
       </div>
     </div>
 
@@ -3113,8 +3113,8 @@
       <div class="tp-row-head">
         <span class="tp-period-icon">🌤</span>
         <div class="tp-period-meta">
-          <div class="tp-period-label">昼</div>
-          <div class="tp-period-time">12:00〜17:00に出勤</div>
+          <div class="tp-period-label" data-i18n="tp.lunch">昼</div>
+          <div class="tp-period-time" data-i18n="tp.lunch_time">12:00〜17:00に出勤</div>
         </div>
       </div>
       <div class="tp-minmax">
@@ -3131,7 +3131,7 @@
           <span class="tp-mm-val" id="tp-val-lunch-max">5</span>
           <button class="tp-mm-btn" onclick="adjustRule('lunch','max',1)">＋</button>
         </div>
-        <span class="tp-mm-unit">名</span>
+        <span class="tp-mm-unit" data-i18n="common.persons">名</span>
       </div>
     </div>
 
@@ -3139,8 +3139,8 @@
       <div class="tp-row-head">
         <span class="tp-period-icon">🌙</span>
         <div class="tp-period-meta">
-          <div class="tp-period-label">夜</div>
-          <div class="tp-period-time">17:00以降に出勤</div>
+          <div class="tp-period-label" data-i18n="tp.evening">夜</div>
+          <div class="tp-period-time" data-i18n="tp.evening_time">17:00以降に出勤</div>
         </div>
       </div>
       <div class="tp-minmax">
@@ -3157,7 +3157,7 @@
           <span class="tp-mm-val" id="tp-val-evening-max">6</span>
           <button class="tp-mm-btn" onclick="adjustRule('evening','max',1)">＋</button>
         </div>
-        <span class="tp-mm-unit">名</span>
+        <span class="tp-mm-unit" data-i18n="common.persons">名</span>
       </div>
     </div>
   </div>
@@ -3323,7 +3323,7 @@
         </div>
         <label style="font-size:11px;font-weight:800;color:var(--slate-700);">新しいパスワード (4-12文字)</label>
         <input type="password" id="pp-set-pass1" class="wage-input" style="width:100%;margin-bottom:10px;padding:11px;" placeholder="例) 8765 / abc123" minlength="4" maxlength="12" autocomplete="new-password" aria-label="新しい給与照会パスワード" />
-        <label style="font-size:11px;font-weight:800;color:var(--slate-700);">確認のためもう一度</label>
+        <label style="font-size:11px;font-weight:800;color:var(--slate-700);" data-i18n="pw.confirm_again">確認のためもう一度</label>
         <input type="password" id="pp-set-pass2" class="wage-input" style="width:100%;margin-bottom:14px;padding:11px;" placeholder="同じパスワードを入力" minlength="4" maxlength="12" autocomplete="new-password" aria-label="パスワード確認" />
         <button class="edit-btn save" onclick="setupPersonalPassword()" style="background:linear-gradient(135deg,#10B981,#059669);">🔐 パスワードを設定して給与を見る</button>
       </div>
@@ -3413,12 +3413,12 @@
       <div class="eval-ov-name" id="eval-ov-name"></div>
       <button class="eval-ov-close" onclick="closeEvalOverlay()" aria-label="評価モーダルを閉じる">×</button>
     </div>
-    <div class="eval-section-label">総合評価</div>
+    <div class="eval-section-label" data-i18n="eval.overall">総合評価</div>
     <div class="eval-star-row" id="eval-overall-stars"></div>
-    <div class="eval-section-label" style="margin-top:16px;">ポジション別スキル</div>
+    <div class="eval-section-label" style="margin-top:16px;" data-i18n="eval.skills">ポジション別スキル</div>
     <div class="eval-tab-row" id="eval-tabs"></div>
     <div id="eval-skills-panel"></div>
-    <div class="eval-section-label" style="margin-top:14px;">メモ（管理者のみ表示）</div>
+    <div class="eval-section-label" style="margin-top:14px;" data-i18n="eval.memo_label">メモ（管理者のみ表示）</div>
     <textarea id="eval-note-area" class="eval-note-area" placeholder="仕事ぶりや改善点など…" rows="3"></textarea>
     <button class="btn-submit" style="margin-top:16px;width:100%;position:relative;" onclick="saveEval()" data-i18n="eval.save">💾 評価を保存</button>
   </div>
