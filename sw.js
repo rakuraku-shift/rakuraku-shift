@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v13 — Wave1-43 完了 + 個別事例 3本 + competitor-matrix + success-tips 追加 */
-var CACHE = 'rakuraku-v13';
+/* RAKURAKU Service Worker v20 — 全料金 ¥4,990 統一 + 創業メンバーキャンペーン + HTML ネット優先 + 旧キャッシュ全削除 */
+var CACHE = 'rakuraku-v20';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
