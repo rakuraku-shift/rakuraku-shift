@@ -324,5 +324,11 @@
     <priority>1.00</priority>
     <lastmod>2026-06-05</lastmod>
   </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/bank-transfer.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-06-07</lastmod>
+  </url>
   <!-- 代表専用 (noindex 設定済み) -->
 </urlset>

@@ -1041,6 +1041,117 @@ app.post('/api/apply-founders/cleanup', (req, res) => {
   res.json({ ok: true, removed: before - cleaned.length, remaining: cleaned.length });
 });
 
+/* ════════════════════════════════════════════
+ * 💴 銀行振込でのお申し込み受付 API
+ ════════════════════════════════════════════ */
+app.post('/api/bank-transfer-request', express.json({ limit: '1mb' }), async (req, res) => {
+  const data = req.body || {};
+  const file = path.join(DATA_DIR, 'bank-transfer-requests.json');
+  const all = readJSON(file, []);
+  const refNumber = 'RKR-' + String(all.length + 1).padStart(4, '0');
+  const record = {
+    id: 'bt' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    refNumber,
+    ...data,
+    ip: (req.headers['x-forwarded-for'] || req.connection.remoteAddress || '').split(',')[0].trim(),
+    userAgent: req.headers['user-agent'] || '',
+    receivedAt: Date.now(),
+    status: 'pending', // pending / paid / cancelled
+  };
+  all.push(record);
+  writeJSON(file, all);
+
+  console.log(`[bank-transfer] 💴 申込受信 ${refNumber} — ${data.shop} / ${data.plan}`);
+
+  /* 代表 (運営者) にメール通知 */
+  if (emailTransporter && process.env.EMAIL_USER) {
+    try {
+      const planLabel = data.plan === 'annual' ? '年払い ¥49,900' : '月払い ¥4,990';
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: `💴 [RAKURAKU 銀行振込申込 ${refNumber}] ${data.shop || '?'} 様 / ${planLabel}`,
+        html: `
+          <h2 style="color:#DC2626;">💴 銀行振込でのお申し込みが届きました</h2>
+          <p style="font-size:14px;background:#FEF3C7;padding:10px 14px;border-radius:8px;border-left:4px solid #F59E0B;">
+            <strong>申込番号:</strong> ${refNumber}<br>
+            <strong>プラン:</strong> ${planLabel}
+          </p>
+          <table style="border-collapse:collapse;font-size:14px;">
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗名</td><td style="padding:6px 10px;">${data.shop || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">代表者</td><td style="padding:6px 10px;">${data.owner || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">メール</td><td style="padding:6px 10px;"><a href="mailto:${data.email || ''}">${data.email || '-'}</a></td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">電話</td><td style="padding:6px 10px;"><a href="tel:${data.tel || ''}">${data.tel || '-'}</a></td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">請求書宛名</td><td style="padding:6px 10px;">${data.billing || '(同上)'}</td></tr>
+          </table>
+          ${data.notes ? `<h3 style="margin-top:18px;">連絡事項:</h3><div style="padding:14px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${String(data.notes).replace(/</g, '&lt;')}</div>` : ''}
+          <hr style="margin:20px 0;">
+          <p style="font-size:12px;color:#64748B;">
+            💡 24 時間以内に <a href="mailto:${data.email}">${data.email}</a> へ振込先案内を返信してください<br>
+            🌐 IP: ${record.ip}<br>
+            🕐 受信: ${new Date(record.receivedAt).toLocaleString('ja-JP', {timeZone: 'Asia/Tokyo'})}
+          </p>
+        `,
+      });
+      console.log(`[bank-transfer] 📧 admin mail OK -> ${process.env.EMAIL_USER}`);
+    } catch(e) { console.warn('[bank-transfer] admin mail failed:', e.message); }
+
+    /* 申込者に振込先 + 申込番号を自動返信 */
+    if (data.email){
+      try {
+        const planLabel = data.plan === 'annual' ? '年払い ¥49,900' : '月払い ¥4,990';
+        const amount = data.plan === 'annual' ? '¥49,900' : '¥4,990';
+        await emailTransporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: data.email,
+          subject: `💴 [RAKURAKU] 銀行振込のご案内 (申込番号: ${refNumber})`,
+          html: `
+            <h2 style="color:#DC2626;">💴 ${data.owner || ''} 様</h2>
+            <p>RAKURAKU へのお申し込みありがとうございます。<br>下記の口座へお振込みください。</p>
+            <p style="font-size:14px;background:#FEF3C7;padding:14px 18px;border-radius:10px;border-left:4px solid #F59E0B;">
+              <strong>申込番号:</strong> <span style="font-family:monospace;letter-spacing:.1em;">${refNumber}</span><br>
+              <strong>プラン:</strong> ${planLabel}<br>
+              <strong>金額:</strong> ${amount} (税込)
+            </p>
+            <h3 style="margin-top:18px;color:#DC2626;">📋 振込先</h3>
+            <table style="border-collapse:collapse;font-size:14px;">
+              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">銀行名</td><td style="padding:6px 10px;">ゆうちょ銀行 (店番 008)</td></tr>
+              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">口座番号</td><td style="padding:6px 10px;">普通 1234567</td></tr>
+              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">口座名義</td><td style="padding:6px 10px;">コイズミ ショウタ</td></tr>
+              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">振込手数料</td><td style="padding:6px 10px;">お客様ご負担</td></tr>
+            </table>
+            <p style="font-size:13px;background:#EFF6FF;padding:14px 18px;border-radius:10px;border-left:4px solid #4F46E5;margin-top:14px;">
+              💡 <strong>振込人名義の末尾に申込番号 (${refNumber}) を追記</strong>していただくと、入金確認がスムーズです<br>
+              例: <strong>カブシキガイシャ○○ ${refNumber}</strong>
+            </p>
+            <h3 style="margin-top:20px;">入金確認後の流れ</h3>
+            <ol style="line-height:1.85;">
+              <li>入金確認 (営業日 1-2 日)</li>
+              <li>Pro プラン有効化 (即日)</li>
+              <li>領収書 PDF をメールでお送り</li>
+              <li>${data.plan === 'annual' ? '次年度のご請求は 12 ヶ月後にお送りします' : '次月のご請求書を月末にお送りします'}</li>
+            </ol>
+            <hr style="margin:24px 0;">
+            <p style="font-size:12px;color:#64748B;">
+              ご質問は <a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a> までどうぞ<br>
+              RAKURAKU 代表 小泉 咲太
+            </p>
+          `,
+        });
+        console.log(`[bank-transfer] 📧 applicant mail OK -> ${data.email}`);
+      } catch(e) { console.warn('[bank-transfer] applicant mail failed:', e.message); }
+    }
+  }
+
+  res.json({ ok: true, refNumber, record });
+});
+
+app.get('/api/bank-transfer-request', (req, res) => {
+  const file = path.join(DATA_DIR, 'bank-transfer-requests.json');
+  const all = readJSON(file, []);
+  res.json({ total: all.length, pending: all.filter(r => r.status === 'pending').length, requests: all });
+});
+
 /* 管理者用: 問い合わせも同様 cleanup */
 app.post('/api/contact-inquiries/cleanup', (req, res) => {
   const file = path.join(DATA_DIR, 'contact-inquiries.json');
