@@ -48,9 +48,13 @@
   .code-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(252,211,77,.15);}
   .code-input::placeholder{color:rgba(255,255,255,.3);letter-spacing:.12em;}
   .hint{font-size:11px;color:#94A3B8;text-align:center;margin-bottom:18px;}
-  .activate-btn{width:100%;padding:18px;background:linear-gradient(135deg,var(--red),var(--amber));color:#fff;border:none;border-radius:14px;font-weight:900;font-size:15px;cursor:pointer;font-family:inherit;letter-spacing:.04em;box-shadow:0 10px 28px rgba(220,38,38,.4);transition:transform .15s;}
-  .activate-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(220,38,38,.5);}
-  .activate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+  .activate-btn{width:100%;padding:18px;background:linear-gradient(135deg,var(--red),var(--amber));color:#fff;border:none;border-radius:14px;font-weight:900;font-size:15px;cursor:pointer;font-family:inherit;letter-spacing:.04em;box-shadow:0 10px 28px rgba(220,38,38,.4);transition:transform .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .activate-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 36px rgba(220,38,38,.5);}
+  .activate-btn:disabled{opacity:.6;cursor:wait;transform:none;}
+  .activate-btn .spinner{display:none;width:16px;height:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+  .activate-btn.loading .spinner{display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion: reduce){.activate-btn .spinner{animation-duration:2s;}}
 
   .alert{display:none;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:700;text-align:center;}
   .alert.show{display:block;}
@@ -96,10 +100,10 @@
     <div class="card">
       <form onsubmit="event.preventDefault();activate();">
         <div class="input-wrap">
-          <input type="text" class="code-input" id="code" placeholder="RKR-FNDR-XXXX-XXXX" maxlength="19" autocomplete="off" oninput="formatCode(this)" autofocus />
+          <input type="text" class="code-input" id="code" placeholder="RKR-FNDR-XXXX-XXXX" maxlength="19" autocomplete="one-time-code" inputmode="text" autocapitalize="characters" spellcheck="false" oninput="formatCode(this)" onpaste="setTimeout(()=>formatCode(this),0)" aria-label="アクティベートコード" autofocus />
         </div>
-        <div class="hint">RKR-FNDR-XXXX-XXXX の形式 (大文字小文字どちらでも可)</div>
-        <button type="submit" class="activate-btn" id="actBtn">🔓 アクティベートする</button>
+        <div class="hint">RKR-FNDR-XXXX-XXXX の形式 (大文字小文字どちらでも可・コピペ対応)</div>
+        <button type="submit" class="activate-btn" id="actBtn"><span class="spinner" aria-hidden="true"></span><span id="actBtnLabel">🔓 アクティベートする</span></button>
       </form>
 
       <div class="alert err" id="errMsg"></div>
@@ -163,43 +167,56 @@ function formatCode(input){
 }
 
 async function activate(){
-  const code = document.getElementById('code').value.trim().toUpperCase();
+  const codeInput = document.getElementById('code');
+  const code = codeInput.value.trim().toUpperCase();
   const errEl = document.getElementById('errMsg');
   const btn = document.getElementById('actBtn');
+  const btnLabel = document.getElementById('actBtnLabel');
 
   errEl.classList.remove('show');
 
   if (!/^RKR-FNDR-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)){
-    errEl.textContent = 'コードの形式が正しくありません (RKR-FNDR-XXXX-XXXX)';
+    errEl.textContent = '⚠️ コードの形式が正しくありません (RKR-FNDR-XXXX-XXXX)';
     errEl.classList.add('show');
+    codeInput.focus();
+    codeInput.select();
     return;
   }
 
+  /* ローディング状態 (スピナー表示 + 二重送信防止) */
   btn.disabled = true;
-  btn.textContent = '確認中...';
+  btn.classList.add('loading');
+  btnLabel.textContent = '確認中…';
+
+  /* タイムアウト対応 (10 秒で fail) */
+  const ctrl = new AbortController();
+  const timeoutId = setTimeout(() => ctrl.abort(), 10000);
 
   try {
     const res = await fetch('/api/validate-founder-license', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({code})
+      body: JSON.stringify({code}),
+      signal: ctrl.signal
     });
+    clearTimeout(timeoutId);
 
     if (!res.ok){
-      const txt = await res.text();
-      errEl.textContent = txt.includes('not found') ? 'コードが見つかりません。メールをご確認ください' :
-                          txt.includes('already used') ? 'このコードは既に使用済みです' :
-                          txt.includes('expired') ? 'このコードは期限切れです' :
-                          'アクティベートに失敗しました。再度お試しください';
+      const txt = await res.text().catch(() => '');
+      errEl.textContent = txt.includes('not found') ? '❌ コードが見つかりません。メールをご確認ください' :
+                          txt.includes('already used') ? '⚠️ このコードは既に使用済みです (別の端末でアクティベート済み)' :
+                          txt.includes('expired') ? '⏰ このコードは期限切れです。再発行をご依頼ください' :
+                          '❌ アクティベートに失敗しました。再度お試しください';
       errEl.classList.add('show');
       btn.disabled = false;
-      btn.textContent = '🔓 アクティベートする';
+      btn.classList.remove('loading');
+      btnLabel.textContent = '🔄 もう一度試す';
       return;
     }
 
     const data = await res.json();
 
-    // localStorage に保存 (PWA 認証)
+    /* localStorage に保存 (PWA 認証) */
     try {
       localStorage.setItem('rakuraku_founder_license', JSON.stringify({
         code, refNumber: data.refNumber, shop: data.shop,
@@ -207,7 +224,10 @@ async function activate(){
       }));
     } catch(e){}
 
-    // 表示切替
+    /* スクリーンリーダーへ成功通知 */
+    btn.setAttribute('aria-busy', 'false');
+
+    /* 表示切替 */
     document.getElementById('inputView').style.display = 'none';
     document.getElementById('successView').classList.add('show');
     document.getElementById('okRef').textContent = data.refNumber || code;
@@ -216,11 +236,24 @@ async function activate(){
     document.getElementById('okExpire').textContent =
       `${exp.getFullYear()} 年 ${exp.getMonth()+1} 月 ${exp.getDate()} 日 まで`;
 
+    /* 成功画面にフォーカス移動 (アクセシビリティ) */
+    setTimeout(() => {
+      const successView = document.getElementById('successView');
+      successView.setAttribute('tabindex', '-1');
+      successView.focus();
+    }, 100);
+
   } catch(e){
-    errEl.textContent = '通信エラー。インターネット接続をご確認ください';
+    clearTimeout(timeoutId);
+    if (e.name === 'AbortError'){
+      errEl.textContent = '⏱ サーバー応答がタイムアウトしました。通信状況をご確認の上、もう一度お試しください';
+    } else {
+      errEl.textContent = '📡 通信エラー。インターネット接続をご確認ください';
+    }
     errEl.classList.add('show');
     btn.disabled = false;
-    btn.textContent = '🔓 アクティベートする';
+    btn.classList.remove('loading');
+    btnLabel.textContent = '🔄 もう一度試す';
   }
 }
 
