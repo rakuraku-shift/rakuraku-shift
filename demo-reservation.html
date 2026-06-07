@@ -83,6 +83,10 @@
   .success-card p{font-size:13px;color:var(--slate-700);}
 
   .footer{text-align:center;padding:24px 0;font-size:11px;color:var(--slate-500);}
+  @keyframes dr-spin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion: reduce){
+    .btn-submit span{animation-duration:2s !important;}
+  }
 </style>
 </head>
 <body>
@@ -208,7 +212,27 @@ function isPastDateTime(s) {
   return new Date(s).getTime() < Date.now();
 }
 
+/* インラインエラー表示ヘルパ (alert より UX 良い) */
+function showInlineError(fieldId, msg){
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  const existing = el.parentNode.querySelector('.dr-field-err');
+  if (existing) existing.remove();
+  const err = document.createElement('div');
+  err.className = 'dr-field-err';
+  err.setAttribute('role','alert');
+  err.style.cssText = 'color:#DC2626;font-size:11px;font-weight:700;margin-top:4px;';
+  err.textContent = msg;
+  el.parentNode.appendChild(err);
+  el.style.borderColor = '#EF4444';
+  el.focus();
+}
+function clearInlineErrors(){
+  document.querySelectorAll('.dr-field-err').forEach(e => e.remove());
+}
+
 async function submitDemo() {
+  clearInlineErrors();
   const shop  = document.getElementById('f-shop').value.trim();
   const name  = document.getElementById('f-name').value.trim();
   const email = document.getElementById('f-email').value.trim();
@@ -218,49 +242,59 @@ async function submitDemo() {
   const type  = document.getElementById('f-type').value;
   const note  = document.getElementById('f-note').value.trim();
 
-  /* バリデーション (個別エラーメッセージ) */
-  if (!shop) { alert('⚠️ 店舗名を入力してください'); document.getElementById('f-shop').focus(); return; }
-  if (!name) { alert('⚠️ お名前を入力してください'); document.getElementById('f-name').focus(); return; }
-  if (!email) { alert('⚠️ メールアドレスを入力してください'); document.getElementById('f-email').focus(); return; }
-  if (!isValidEmail(email)) { alert('⚠️ メールアドレスの形式が正しくありません\n例: example@gmail.com'); document.getElementById('f-email').focus(); return; }
-  if (!isValidPhone(phone)) { alert('⚠️ 電話番号の形式が正しくありません\n例: 090-0000-0000'); document.getElementById('f-phone').focus(); return; }
-  if (!time1) { alert('⚠️ 第1希望日時を選択してください'); document.getElementById('f-time1').focus(); return; }
-  if (isPastDateTime(time1)) { alert('⚠️ 第1希望は過去の日時です。未来の日時を選んでください'); document.getElementById('f-time1').focus(); return; }
-  if (time2 && isPastDateTime(time2)) { alert('⚠️ 第2希望は過去の日時です'); document.getElementById('f-time2').focus(); return; }
+  /* バリデーション (インラインエラー) */
+  if (!shop) { showInlineError('f-shop', '⚠️ 店舗名を入力してください'); return; }
+  if (!name) { showInlineError('f-name', '⚠️ お名前を入力してください'); return; }
+  if (!email) { showInlineError('f-email', '⚠️ メールアドレスを入力してください'); return; }
+  if (!isValidEmail(email)) { showInlineError('f-email', '⚠️ メール形式が正しくありません (例: example@gmail.com)'); return; }
+  if (!isValidPhone(phone)) { showInlineError('f-phone', '⚠️ 電話番号形式が正しくありません (例: 090-0000-0000)'); return; }
+  if (!time1) { showInlineError('f-time1', '⚠️ 第1希望日時を選択してください'); return; }
+  if (isPastDateTime(time1)) { showInlineError('f-time1', '⚠️ 第1希望は過去の日時です。未来をお選びください'); return; }
+  if (time2 && isPastDateTime(time2)) { showInlineError('f-time2', '⚠️ 第2希望は過去の日時です'); return; }
 
   /* ボタン状態: 送信中表示 */
   const btn = document.querySelector('.btn-submit');
   const originalText = btn.textContent;
   btn.disabled = true;
-  btn.textContent = '⏳ 送信中…';
+  btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:dr-spin .7s linear infinite;vertical-align:middle;margin-right:8px;"></span>送信中…';
 
+  /* 12秒タイムアウト */
+  const ctrl = new AbortController();
+  const timeoutId = setTimeout(() => ctrl.abort(), 12000);
+
+  let serverOK = false;
   try {
     const res = await fetch('/api/demo-reservation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ shop, name, email, phone, time1, time2, type, note }),
+      signal: ctrl.signal
     });
-    /* APIが無くてもmailtoでフォールバック */
+    clearTimeout(timeoutId);
     if (!res.ok) throw new Error('api-failed');
-    document.getElementById('success-email').textContent = email;
-    document.getElementById('form-card').style.display = 'none';
-    document.getElementById('success-card').classList.add('show');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    serverOK = true;
   } catch(e) {
+    clearTimeout(timeoutId);
     /* メール代替送信 */
     const body = encodeURIComponent(
       `デモ予約\n\n店舗: ${shop}\nお名前: ${name}\nメール: ${email}\n電話: ${phone}\n\n第1希望: ${time1}\n第2希望: ${time2}\n業態: ${type}\n\n備考: ${note}`
     );
     window.location.href = `mailto:koizumishota0323@gmail.com?subject=【RAKURAKU デモ予約】${shop}&body=${body}`;
-    setTimeout(() => {
-      document.getElementById('success-email').textContent = email;
-      document.getElementById('form-card').style.display = 'none';
-      document.getElementById('success-card').classList.add('show');
-    }, 500);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = originalText;
   }
+
+  /* 成功画面に遷移 (serverOK でもmailto でも) */
+  setTimeout(() => {
+    document.getElementById('success-email').textContent = email;
+    document.getElementById('form-card').style.display = 'none';
+    const successCard = document.getElementById('success-card');
+    successCard.classList.add('show');
+    successCard.setAttribute('tabindex', '-1');
+    successCard.focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, serverOK ? 0 : 500);
+
+  btn.disabled = false;
+  btn.textContent = originalText;
 }
 </script>
 <script src="/help-widget.js" defer></script>
