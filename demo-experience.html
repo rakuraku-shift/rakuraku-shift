@@ -159,9 +159,9 @@
 <main class="container">
 
   <section class="hero">
-    <div class="hero-badge">🎬 IMMERSIVE EXPERIENCE</div>
-    <h1>30 分で<span class="grad">店舗運営を疑似体験</span></h1>
-    <p>あなたのお店の情報を入力して、シフト自動作成 → 給与計算 → 労基法アラートまで本物と同じ流れで触ってみてください。</p>
+    <div class="hero-badge" data-i18n="demo.badge">🎬 IMMERSIVE EXPERIENCE</div>
+    <h1 data-i18n-html="demo.title">30 分で<span class="grad">店舗運営を疑似体験</span></h1>
+    <p data-i18n="demo.lead">あなたのお店の情報を入力して、シフト自動作成 → 給与計算 → 労基法アラートまで本物と同じ流れで触ってみてください。</p>
   </section>
 
   <nav class="step-nav" id="stepNav"></nav>
@@ -170,8 +170,8 @@
   <div class="step-card active" data-step="1">
     <div class="step-header">
       <span class="step-num">STEP 1 / 8</span>
-      <h2 class="step-title">🏪 まずはあなたのお店の情報</h2>
-      <p class="step-sub">店舗名と営業時間を入力してください。シフト作成の基準になります。</p>
+      <h2 class="step-title" data-i18n="demo.s1_title">🏪 まずはあなたのお店の情報</h2>
+      <p class="step-sub" data-i18n="demo.s1_sub">店舗名と営業時間を入力してください。シフト作成の基準になります。</p>
     </div>
 
     <div class="grid-2">
@@ -208,8 +208,8 @@
   <div class="step-card" data-step="2">
     <div class="step-header">
       <span class="step-num">STEP 2 / 8</span>
-      <h2 class="step-title">👥 スタッフを 5〜10 名登録</h2>
-      <p class="step-sub">名前 / ポジション / 時給を入力してください。「サンプル一括追加」で 5 名分が一瞬で入ります。</p>
+      <h2 class="step-title" data-i18n="demo.s2_title">👥 スタッフを 5〜10 名登録</h2>
+      <p class="step-sub" data-i18n="demo.s2_sub">名前 / ポジション / 時給を入力してください。「サンプル一括追加」で 5 名分が一瞬で入ります。</p>
     </div>
 
     <div class="quick-staff">
@@ -257,8 +257,8 @@
   <div class="step-card" data-step="3">
     <div class="step-header">
       <span class="step-num">STEP 3 / 8</span>
-      <h2 class="step-title">⚡ AI が 1 週間分のシフトを自動作成 <span class="ai-badge">AI</span></h2>
-      <p class="step-sub">登録したスタッフ・ポジション・時給を元に、最適なシフトが自動で組まれます。</p>
+      <h2 class="step-title" data-i18n-html="demo.s3_title">⚡ AI が 1 週間分のシフトを自動作成 <span class="ai-badge">AI</span></h2>
+      <p class="step-sub" data-i18n="demo.s3_sub">登録したスタッフ・ポジション・時給を元に、最適なシフトが自動で組まれます。</p>
     </div>
 
     <div style="text-align:center;margin:20px 0;">
@@ -289,8 +289,8 @@
   <div class="step-card" data-step="4">
     <div class="step-header">
       <span class="step-num">STEP 4 / 8</span>
-      <h2 class="step-title">💰 月間給与の予想</h2>
-      <p class="step-sub">深夜手当 (+25%) を自動加算した、月額の予想給与です。</p>
+      <h2 class="step-title" data-i18n="demo.s4_title">💰 月間給与の予想</h2>
+      <p class="step-sub" data-i18n="demo.s4_sub">深夜手当 (+25%) を自動加算した、月額の予想給与です。</p>
     </div>
 
     <div class="result-grid" id="payrollGrid">
@@ -312,8 +312,8 @@
   <div class="step-card" data-step="5">
     <div class="step-header">
       <span class="step-num">STEP 5 / 8</span>
-      <h2 class="step-title">📊 売上 × 人件費比率</h2>
-      <p class="step-sub">月間売上の見込みを入力すると、人件費率が分かります。業界平均は 28〜32%。</p>
+      <h2 class="step-title" data-i18n="demo.s5_title">📊 売上 × 人件費比率</h2>
+      <p class="step-sub" data-i18n="demo.s5_sub">月間売上の見込みを入力すると、人件費率が分かります。業界平均は 28〜32%。</p>
     </div>
 
     <div class="field" style="max-width:380px;">
@@ -340,8 +340,8 @@
   <div class="step-card" data-step="6">
     <div class="step-header">
       <span class="step-num">STEP 6 / 8</span>
-      <h2 class="step-title">⚖️ 労基法アラートをチェック</h2>
-      <p class="step-sub">作成したシフトに労基法違反のリスクがないか、システムが自動チェックします。</p>
+      <h2 class="step-title" data-i18n="demo.s6_title">⚖️ 労基法アラートをチェック</h2>
+      <p class="step-sub" data-i18n="demo.s6_sub">作成したシフトに労基法違反のリスクがないか、システムが自動チェックします。</p>
     </div>
 
     <div id="alertList">
@@ -358,8 +358,8 @@
   <div class="step-card" data-step="7">
     <div class="step-header">
       <span class="step-num">STEP 7 / 8</span>
-      <h2 class="step-title">📱 スタッフ側の画面 (多言語対応)</h2>
-      <p class="step-sub">あなたのスタッフが見る画面です。外国人スタッフは母国語で操作可能。</p>
+      <h2 class="step-title" data-i18n="demo.s7_title">📱 スタッフ側の画面 (多言語対応)</h2>
+      <p class="step-sub" data-i18n="demo.s7_sub">あなたのスタッフが見る画面です。外国人スタッフは母国語で操作可能。</p>
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:18px 0;">
@@ -410,8 +410,8 @@
   <div class="step-card" data-step="8">
     <div class="step-header">
       <span class="step-num">STEP 8 / 8</span>
-      <h2 class="step-title">🎉 体験完了！あなたが触ったのは…</h2>
-      <p class="step-sub">これは RAKURAKU の本物の機能の一部です。実際の業務でも全部使えます。</p>
+      <h2 class="step-title" data-i18n="demo.s8_title">🎉 体験完了！あなたが触ったのは…</h2>
+      <p class="step-sub" data-i18n="demo.s8_sub">これは RAKURAKU の本物の機能の一部です。実際の業務でも全部使えます。</p>
     </div>
 
     <div class="result-grid">
@@ -760,5 +760,5 @@ renderStepNav();
 updateProgress();
 </script>
 
-</body>
+<script src="/i18n.js"></script><script>if(window.RakuI18n){var s=document.createElement("div");s.id="rakuraku-lang-switcher";s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";document.body.appendChild(s);RakuI18n.buildSwitcher("rakuraku-lang-switcher");}</script></body>
 </html>
