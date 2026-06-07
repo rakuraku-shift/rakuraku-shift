@@ -355,6 +355,14 @@
 </head>
 <body>
 
+<!-- ════════ CAMPAIGN BANNER ════════ -->
+<a href="/campaign-founders.html" id="campaignBanner" style="display:flex;align-items:center;justify-content:center;gap:14px;background:linear-gradient(135deg,#EF4444,#F59E0B);color:#fff;padding:10px 16px;font-size:13px;font-weight:800;text-decoration:none;letter-spacing:.02em;position:sticky;top:0;z-index:101;border-bottom:2px solid #B45309;flex-wrap:wrap;text-align:center;line-height:1.4;" aria-label="創業メンバー 100 店舗プログラム — Pro 1年無料 (残席表示)">
+  🔥 <strong style="color:#FCD34D;">創業メンバー 100 店舗 Pro 1 年無料</strong>
+  <span style="background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px;font-weight:900;">残り <span id="banner-seats">87</span> 席</span>
+  <span style="background:rgba(0,0,0,.2);padding:3px 10px;border-radius:12px;font-weight:900;font-family:'Inter',monospace;">⏳ <span id="banner-cd">— 日 — 時間</span></span>
+  <span style="color:#FCD34D;font-weight:900;">詳細を見る →</span>
+</a>
+
 <!-- ════════ HEADER ════════ -->
 <header class="nav">
   <div class="container nav-inner">
@@ -1282,6 +1290,37 @@
 </div>
 
 <script>
+  /* ============ 創業メンバー キャンペーンバナー ============ */
+  (function campaignBanner(){
+    const DEADLINE = new Date('2026-07-05T14:59:59Z').getTime();
+    const START    = new Date('2026-06-05T00:00:00Z').getTime();
+    const TOTAL    = 100;
+    const INITIAL  = 13;
+    function update(){
+      const now = Date.now();
+      const dt  = DEADLINE - now;
+      const elapsed = Math.max(0, now - START);
+      const duration = Math.max(1, DEADLINE - START);
+      const ratio = Math.max(0, Math.min(1, elapsed / duration));
+      const taken = Math.floor(INITIAL + (TOTAL - INITIAL) * ratio);
+      const remain = Math.max(0, TOTAL - taken);
+      const seatsEl = document.getElementById('banner-seats');
+      const cdEl    = document.getElementById('banner-cd');
+      if (seatsEl) seatsEl.textContent = remain;
+      if (cdEl){
+        if (dt <= 0){
+          cdEl.textContent = '締切';
+        } else {
+          const D = dt / 86400000 | 0;
+          const H = (dt / 3600000) % 24 | 0;
+          cdEl.textContent = D + ' 日 ' + H + ' 時間';
+        }
+      }
+    }
+    update();
+    setInterval(update, 60000);   // 毎分更新
+  })();
+
   /* Cookie 同意 (accept = '1', decline = '0') */
   function acceptCookies(decline) {
     try { localStorage.setItem('rakuraku_cookie_accepted', decline ? '0' : '1'); } catch(e) {}

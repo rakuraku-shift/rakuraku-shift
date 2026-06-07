@@ -366,4 +366,10 @@
     <priority>0.90</priority>
     <lastmod>2026-06-05</lastmod>
   </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/campaign-founders.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.00</priority>
+    <lastmod>2026-06-05</lastmod>
+  </url>
 </urlset>
