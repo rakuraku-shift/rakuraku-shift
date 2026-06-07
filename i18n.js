@@ -1,6 +1,7 @@
 /* ══════════════════════════════════════════
    RAKURAKU i18n (国際化)
-   サポート言語: ja (日本語) / en (English) / zh (中文) / ko (한국어)
+   サポート言語: ja (日本語) / en (English) / zh (中文) / ko (한국어) / vi (Tiếng Việt)
+   既存の 240+ エントリは vi: が未追加のものは英語にフォールバック (translate() で自動)
    ══════════════════════════════════════════ */
 
 (function(window) {
@@ -157,6 +158,39 @@
     'mgr.payroll': { ja:'📋 給与明細', en:'📋 Payroll', zh:'📋 工资单', ko:'📋 급여 명세' },
     'mgr.monthly_report': { ja:'📊 月次レポート', en:'📊 Monthly Report', zh:'📊 月度报告', ko:'📊 월간 리포트' },
     'mgr.no_records': { ja:'本日まだ打刻なし', en:'No punches today', zh:'今日尚无打卡', ko:'오늘 타각 없음' },
+
+    /* ─── シフト管理タブ・ナビゲーション ─── */
+    'mgr.tab_dashboard': { ja:'ダッシュボード', en:'Dashboard', zh:'仪表板', ko:'대시보드', vi:'Bảng điều khiển' },
+    'mgr.tab_shifts': { ja:'シフト管理', en:'Shifts', zh:'班次管理', ko:'시프트 관리', vi:'Quản lý ca' },
+    'mgr.tab_staff': { ja:'スタッフ', en:'Staff', zh:'员工', ko:'직원', vi:'Nhân viên' },
+    'mgr.tab_payroll': { ja:'給与・売上', en:'Payroll & Sales', zh:'工资·营业额', ko:'급여·매출', vi:'Lương & Doanh thu' },
+    'mgr.tab_deadline': { ja:'締切・リマインド', en:'Deadline', zh:'截止·提醒', ko:'마감·리마인드', vi:'Hạn chót' },
+    'mgr.tab_survey': { ja:'アンケート', en:'Survey', zh:'问卷', ko:'설문', vi:'Khảo sát' },
+    'mgr.tab_all': { ja:'全表示', en:'All', zh:'全部显示', ko:'전체 표시', vi:'Tất cả' },
+    'mgr.prev_month': { ja:'‹ 前月', en:'‹ Prev', zh:'‹ 上月', ko:'‹ 이전 달', vi:'‹ Tháng trước' },
+    'mgr.next_month': { ja:'翌月 ›', en:'Next ›', zh:'下月 ›', ko:'다음 달 ›', vi:'Tháng sau ›' },
+    'mgr.this_month': { ja:'今月', en:'This Month', zh:'本月', ko:'이번 달', vi:'Tháng này' },
+
+    /* ─── スタッフ登録メール一覧 ─── */
+    'mgr.staff_registry_title': { ja:'📇 スタッフ登録メール一覧', en:'📇 Staff Registered Emails', zh:'📇 员工注册邮箱列表', ko:'📇 직원 등록 이메일 목록', vi:'📇 Email nhân viên đã đăng ký' },
+    'mgr.staff_registry_desc': { ja:'アルバイトがシフト提出時に登録したメールアドレス。内部募集・リマインドに使用されます。',
+                                  en:'Email addresses staff registered when submitting shifts. Used for internal recruiting and reminders.',
+                                  zh:'员工提交班次时注册的邮箱地址。用于内部招聘和提醒。',
+                                  ko:'직원이 시프트 제출 시 등록한 이메일 주소. 내부 모집·리마인드에 사용됩니다.',
+                                  vi:'Địa chỉ email nhân viên đã đăng ký khi nộp ca. Dùng cho tuyển dụng nội bộ và nhắc nhở.' },
+    'mgr.refresh': { ja:'🔄 更新', en:'🔄 Refresh', zh:'🔄 刷新', ko:'🔄 새로고침', vi:'🔄 Làm mới' },
+    'mgr.delete_all': { ja:'🗑 全削除', en:'🗑 Delete All', zh:'🗑 全部删除', ko:'🗑 전체 삭제', vi:'🗑 Xóa tất cả' },
+    'mgr.position_not_set': { ja:'⚠️ ポジション未設定', en:'⚠️ Position Not Set', zh:'⚠️ 岗位未设定', ko:'⚠️ 포지션 미설정', vi:'⚠️ Chưa đặt vị trí' },
+    'mgr.payroll_not_set': { ja:'未設定', en:'Not Set', zh:'未设定', ko:'미설정', vi:'Chưa đặt' },
+    'mgr.payroll_setting': { ja:'💴 給与設定', en:'💴 Payroll', zh:'💴 工资设定', ko:'💴 급여 설정', vi:'💴 Cài đặt lương' },
+    'mgr.not_registered': { ja:'未登録', en:'Not Registered', zh:'未注册', ko:'미등록', vi:'Chưa đăng ký' },
+
+    /* ─── 役職 (role) ─── */
+    'role.hall': { ja:'ホール', en:'Hall', zh:'前厅', ko:'홀', vi:'Phòng khách' },
+    'role.kitchen': { ja:'キッチン', en:'Kitchen', zh:'厨房', ko:'주방', vi:'Bếp' },
+    'role.cashier': { ja:'レジ', en:'Cashier', zh:'收银', ko:'계산대', vi:'Thu ngân' },
+    'role.unassigned': { ja:'未設定', en:'Unassigned', zh:'未分配', ko:'미배정', vi:'Chưa phân công' },
+    'mgr.position_supported': { ja:'ポジション対応', en:'positions supported', zh:'岗位支持', ko:'포지션 지원', vi:'vị trí hỗ trợ' },
 
     /* ─── 締切・リマインド ─── */
     'rem.title': { ja:'⏰ 締切・リマインド管理', en:'⏰ Deadline & Reminders', zh:'⏰ 截止·提醒', ko:'⏰ 마감·리마인드' },
@@ -346,7 +380,7 @@
     'hq.metrics':             { ja:'📊 業務効率 指標', en:'📊 Operational Metrics', zh:'📊 业务效率指标', ko:'📊 업무 효율 지표' },
   };
 
-  const SUPPORTED_LANGS = ['ja', 'en', 'zh', 'ko'];
+  const SUPPORTED_LANGS = ['ja', 'en', 'zh', 'ko', 'vi'];
 
   /* 言語検出 */
   function detectLang() {
@@ -367,7 +401,8 @@
   function t(key) {
     const entry = TRANSLATIONS[key];
     if (!entry) return key;
-    return entry[currentLang] || entry.ja || key;
+    /* フォールバック順: 現在言語 → en (vi が無い場合) → ja → key */
+    return entry[currentLang] || entry.en || entry.ja || key;
   }
 
   function applyTranslations() {
@@ -409,7 +444,7 @@
     SUPPORTED_LANGS.forEach(function(lang) {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.textContent = lang === 'ja' ? '日' : lang === 'en' ? 'EN' : lang === 'zh' ? '中' : '한';
+      btn.textContent = lang === 'ja' ? '日' : lang === 'en' ? 'EN' : lang === 'zh' ? '中' : lang === 'ko' ? '한' : 'VI';
       btn.style.cssText = 'padding:4px 9px;border:none;background:transparent;color:inherit;cursor:pointer;border-radius:5px;font-family:inherit;font-weight:800;transition:background .15s;';
       if (lang === currentLang) btn.style.background = 'rgba(255,255,255,.25)';
       btn.addEventListener('click', function() {

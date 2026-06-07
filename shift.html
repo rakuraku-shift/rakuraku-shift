@@ -2725,25 +2725,25 @@
    ════════════════════════════════════════════ -->
   <nav class="mgr-tabs" role="tablist" aria-label="シフト管理メニュー">
     <button class="mgr-tab active" onclick="switchMgrTab('dashboard')" data-tab="dashboard" role="tab" aria-selected="true">
-      <span class="mgr-tab-ic">🏠</span><span>ダッシュボード</span>
+      <span class="mgr-tab-ic">🏠</span><span data-i18n="mgr.tab_dashboard">ダッシュボード</span>
     </button>
     <button class="mgr-tab" onclick="switchMgrTab('shifts')" data-tab="shifts" role="tab" aria-selected="false">
-      <span class="mgr-tab-ic">📅</span><span>シフト管理</span>
+      <span class="mgr-tab-ic">📅</span><span data-i18n="mgr.tab_shifts">シフト管理</span>
     </button>
     <button class="mgr-tab" onclick="switchMgrTab('staff')" data-tab="staff" role="tab" aria-selected="false">
-      <span class="mgr-tab-ic">👥</span><span>スタッフ</span>
+      <span class="mgr-tab-ic">👥</span><span data-i18n="mgr.tab_staff">スタッフ</span>
     </button>
     <button class="mgr-tab" onclick="switchMgrTab('payroll')" data-tab="payroll" role="tab" aria-selected="false">
-      <span class="mgr-tab-ic">💴</span><span>給与・売上</span>
+      <span class="mgr-tab-ic">💴</span><span data-i18n="mgr.tab_payroll">給与・売上</span>
     </button>
     <button class="mgr-tab" onclick="switchMgrTab('deadline')" data-tab="deadline" role="tab" aria-selected="false">
-      <span class="mgr-tab-ic">⏰</span><span>締切・リマインド</span>
+      <span class="mgr-tab-ic">⏰</span><span data-i18n="mgr.tab_deadline">締切・リマインド</span>
     </button>
     <button class="mgr-tab" onclick="switchMgrTab('survey')" data-tab="survey" role="tab" aria-selected="false">
-      <span class="mgr-tab-ic">📊</span><span>アンケート</span>
+      <span class="mgr-tab-ic">📊</span><span data-i18n="mgr.tab_survey">アンケート</span>
     </button>
     <button class="mgr-tab" onclick="switchMgrTab('all')" data-tab="all" role="tab" aria-selected="false" style="color:var(--slate-400);">
-      <span class="mgr-tab-ic">📋</span><span>全表示</span>
+      <span class="mgr-tab-ic">📋</span><span data-i18n="mgr.tab_all">全表示</span>
     </button>
   </nav>
 
@@ -2777,10 +2777,10 @@
 
   <!-- ─── Month Navigation ─── (常時表示) -->
   <div class="month-nav-row" data-mgr-section="dashboard shifts staff payroll deadline survey">
-    <button class="month-nav-btn" onclick="changeViewMonth(-1)">‹ 前月</button>
+    <button class="month-nav-btn" onclick="changeViewMonth(-1)" data-i18n="mgr.prev_month">‹ 前月</button>
     <div class="month-nav-center">
       <div class="month-nav-label" id="month-nav-label">2026年5月</div>
-      <div id="month-current-badge" class="month-current-badge">今月</div>
+      <div id="month-current-badge" class="month-current-badge" data-i18n="mgr.this_month">今月</div>
       <div id="month-archive-badge" class="month-archive-badge" style="display:none;">📦 アーカイブ</div>
     </div>
     <button class="month-nav-btn" id="month-nav-next" onclick="changeViewMonth(1)">翌月 ›</button>
@@ -2935,11 +2935,11 @@
   <!-- Staff Registry（登録メール一覧） -->
   <div class="card" id="registry-card" data-mgr-section="staff">
     <div class="section-hdr" style="display:flex;align-items:center;gap:8px;">
-      <div class="section-title" style="flex:1;">📇 スタッフ登録メール一覧</div>
-      <button class="reg-refresh" onclick="loadRegistrySection()">🔄 更新</button>
-      <button onclick="clearAllStaffRegistry()" style="padding:6px 12px;background:#FEE2E2;color:#DC2626;border:1.5px solid #FCA5A5;border-radius:6px;font-size:10px;font-weight:800;cursor:pointer;font-family:inherit;">🗑 全削除</button>
+      <div class="section-title" style="flex:1;" data-i18n="mgr.staff_registry_title">📇 スタッフ登録メール一覧</div>
+      <button class="reg-refresh" onclick="loadRegistrySection()" data-i18n="mgr.refresh">🔄 更新</button>
+      <button onclick="clearAllStaffRegistry()" data-i18n="mgr.delete_all" style="padding:6px 12px;background:#FEE2E2;color:#DC2626;border:1.5px solid #FCA5A5;border-radius:6px;font-size:10px;font-weight:800;cursor:pointer;font-family:inherit;">🗑 全削除</button>
     </div>
-    <div style="font-size:11px;color:var(--slate-400);margin-bottom:2px;">
+    <div style="font-size:11px;color:var(--slate-400);margin-bottom:2px;" data-i18n="mgr.staff_registry_desc">
       アルバイトがシフト提出時に登録したメールアドレス。内部募集・リマインドに使用されます。
     </div>
     <div class="reg-list" id="registry-list">
@@ -3718,8 +3718,38 @@
 </div>
 
 <script>
-  const DAY_NAMES  = ['日','月','火','水','木','金','土'];
-  const ROLE_LABELS = { hall:'ホール', kitchen:'キッチン', cashier:'レジ', unassigned:'未設定' };
+  /* ROLE_LABELS と DAY_NAMES は i18n に依存。get() で都度取得する Proxy で実装 */
+  function getDayNames() {
+    if (typeof i18n !== 'undefined' && i18n.t){
+      return [0,1,2,3,4,5,6].map(i => i18n.t('dow.' + i));
+    }
+    return ['日','月','火','水','木','金','土'];
+  }
+  function getRoleLabels() {
+    if (typeof i18n !== 'undefined' && i18n.t){
+      return {
+        hall:       i18n.t('role.hall')       || 'ホール',
+        kitchen:    i18n.t('role.kitchen')    || 'キッチン',
+        cashier:    i18n.t('role.cashier')    || 'レジ',
+        unassigned: i18n.t('role.unassigned') || '未設定'
+      };
+    }
+    return { hall:'ホール', kitchen:'キッチン', cashier:'レジ', unassigned:'未設定' };
+  }
+  /* 後方互換: 既存コードが ROLE_LABELS[s.role] でアクセスする想定のため、
+     Proxy で動的に i18n を引く */
+  const DAY_NAMES = new Proxy([], {
+    get(_, prop){
+      const arr = getDayNames();
+      return arr[prop];
+    }
+  });
+  const ROLE_LABELS = new Proxy({}, {
+    get(_, prop){
+      const labels = getRoleLabels();
+      return labels[prop] || prop;
+    }
+  });
   const TIME_LABELS = { morning:'9:00〜13:00', lunch:'11:00〜15:00', afternoon:'15:00〜19:00', evening:'18:00〜22:00', full:'フルタイム' };
 
   let currentYear, currentMonth;
@@ -5252,25 +5282,29 @@
 
       var emailHtml = w.email
         ? '<a href="mailto:'+w.email+'" style="color:var(--indigo);text-decoration:none;">'+w.email+'</a>'
-        : '<span style="color:var(--slate-300);">未登録</span>';
+        : '<span style="color:var(--slate-300);">' + ((typeof i18n!=='undefined'&&i18n.t)?i18n.t('mgr.not_registered'):'未登録') + '</span>';
 
+      var posNotSetLbl = (typeof i18n!=='undefined'&&i18n.t) ? i18n.t('mgr.position_not_set') : '⚠️ ポジション未設定';
+      var posOkLbl     = (typeof i18n!=='undefined'&&i18n.t) ? i18n.t('mgr.position_supported') : 'ポジション対応';
       var countLbl = positions.length === 0
-        ? '<span style="color:var(--red);font-size:10px;font-weight:700;">⚠️ ポジション未設定</span>'
-        : '<span style="color:var(--emerald);font-size:10px;font-weight:700;">✓ '+positions.length+'ポジション対応</span>';
+        ? '<span style="color:var(--red);font-size:10px;font-weight:700;">' + posNotSetLbl + '</span>'
+        : '<span style="color:var(--emerald);font-size:10px;font-weight:700;">✓ '+positions.length+' '+posOkLbl+'</span>';
 
       /* 給与設定パネル */
       var hourly    = w.hourlyWage || '';
       var commute   = w.commute    || '';
       var allowance = w.allowance  || '';
+      var notSetLbl = (typeof i18n!=='undefined'&&i18n.t) ? i18n.t('mgr.payroll_not_set') : '未設定';
+      var payrollLbl = (typeof i18n!=='undefined'&&i18n.t) ? i18n.t('mgr.payroll_setting') : '💴 給与設定';
       var wageSummary = w.hourlyWage
         ? '<span style="color:var(--indigo);font-size:10px;font-weight:700;">¥'+Number(w.hourlyWage).toLocaleString()+'/時</span>'
-        : '<span style="color:var(--slate-300);font-size:10px;">未設定</span>';
+        : '<span style="color:var(--slate-300);font-size:10px;">'+notSetLbl+'</span>';
       var wagePanel =
         '<button onclick="toggleWagePanel(\''+safeNameId+'\')" '+
           'style="display:flex;align-items:center;justify-content:space-between;width:100%;'+
           'padding:8px 10px;border:1.5px dashed var(--slate-200);background:var(--slate-50);'+
           'border-radius:8px;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;">'+
-          '<span style="font-size:11px;font-weight:700;color:var(--slate-700);">💴 給与設定 '+wageSummary+'</span>'+
+          '<span style="font-size:11px;font-weight:700;color:var(--slate-700);">'+payrollLbl+' '+wageSummary+'</span>'+
           '<span id="wp-arrow-'+safeNameId+'" style="font-size:9px;color:var(--slate-400);transition:transform .2s;">▸</span>'+
         '</button>'+
         '<div id="wp-panel-'+safeNameId+'" style="display:none;background:var(--white);border:1.5px solid var(--slate-100);border-radius:8px;padding:10px;margin-top:4px;">'+
