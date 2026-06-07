@@ -263,12 +263,30 @@ function checkAuth(){
   } catch(e){}
   return false;
 }
+let pollTimer = null;
+function startPolling(){
+  stopPolling();
+  /* 30 秒ごとに更新。document.hidden の場合はスキップ (省バッテリー) */
+  pollTimer = setInterval(() => {
+    if (document.hidden) return;
+    loadAll();
+  }, 30000);
+}
+function stopPolling(){
+  if (pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+}
 function showMain(){
   document.getElementById('gate').style.display = 'none';
   document.getElementById('topbar').style.display = 'block';
   document.getElementById('main').style.display = 'block';
   loadAll();
-  setInterval(loadAll, 30000);    // 30 秒ごとに更新
+  startPolling();
+  /* タブ非表示時はポーリング停止 / 復帰時は即時更新 (UX 向上) */
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden){
+      loadAll();  /* タブ復帰即時更新 */
+    }
+  });
 }
 
 /* ============== DATA ============== */
@@ -276,6 +294,8 @@ let allItems = [];
 let activeTab = 'all';
 let prevCount = 0;
 let soundOn = true;
+/* ID → raw map (onclick で JSON.stringify を HTML 埋め込みする XSS/壊れリスクを排除) */
+const rawById = {};
 
 function ago(ts){
   const dt = Date.now() - new Date(ts).getTime();
@@ -303,21 +323,78 @@ function markHandled(id){
   showToast('✅ 対応済みにマーク');
 }
 
+/* fetch ヘルパ: ステータスを区別して返す (network error / 404 / 500 / OK) */
 async function fetchOne(url){
   try {
-    const r = await fetch(url, {credentials: 'same-origin'});
-    if (!r.ok) return null;
-    return await r.json();
-  } catch(e){ return null; }
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), 8000);
+    const r = await fetch(url, {credentials: 'same-origin', signal: ctrl.signal});
+    clearTimeout(timeout);
+    if (!r.ok) return {ok:false, status: r.status, data: null};
+    const data = await r.json();
+    return {ok:true, status: 200, data};
+  } catch(e){
+    return {ok:false, status: 0, data: null, err: e.name === 'AbortError' ? 'timeout' : 'network'};
+  }
+}
+
+/* ロード中インジケータ */
+function setLoading(isLoading){
+  const refreshBtn = document.querySelector('.topbar [onclick="loadAll()"]');
+  if (refreshBtn) refreshBtn.textContent = isLoading ? '🔄 更新中…' : '🔄 今すぐ更新';
+}
+
+/* 最終更新時刻表示 */
+function setLastUpdated(){
+  let el = document.getElementById('lastUpdated');
+  if (!el){
+    el = document.createElement('span');
+    el.id = 'lastUpdated';
+    el.style.cssText = 'font-size:11px;color:#64748B;margin-left:8px;font-weight:600;';
+    const status = document.querySelector('.auto-status');
+    if (status && status.parentNode) status.parentNode.insertBefore(el, status.nextSibling);
+  }
+  const d = new Date();
+  el.textContent = `(最終更新: ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')})`;
 }
 
 async function loadAll(){
-  const [founders, contacts, subs, demos] = await Promise.all([
+  setLoading(true);
+  const results = await Promise.all([
     fetchOne('/api/apply-founders'),
     fetchOne('/api/contact-inquiries'),
     fetchOne('/api/subscriptions'),
     fetchOne('/api/demo-bookings'),
   ]);
+  const [foundersRes, contactsRes, subsRes, demosRes] = results;
+  setLoading(false);
+
+  /* どれかが失敗していたら警告 */
+  const failedCount = results.filter(r => !r.ok).length;
+  if (failedCount === results.length){
+    /* 全件失敗 = 完全 offline / サーバーダウン */
+    const inbox = document.getElementById('inbox');
+    if (inbox && allItems.length === 0){
+      inbox.innerHTML = `
+        <div class="inbox-empty">
+          <div class="ic">⚠️</div>
+          <h3>接続できません</h3>
+          <p>サーバーに接続できませんでした。<br>インターネット接続をご確認の上、「今すぐ更新」ボタンをお試しください。</p>
+        </div>`;
+    }
+    showToast('⚠️ 接続エラー (再試行: 30 秒後)');
+    return;
+  }
+  if (failedCount > 0){
+    /* 一部失敗 = 警告のみ、表示は継続 */
+    console.warn('[owner-inbox] 一部 API 失敗:', results.map((r,i) => r.ok ? null : ['founders','contacts','subs','demos'][i]).filter(Boolean));
+  }
+
+  setLastUpdated();
+  const founders = foundersRes.data;
+  const contacts = contactsRes.data;
+  const subs = subsRes.data;
+  const demos = demosRes.data;
 
   const handled = getHandled();
   const items = [];
@@ -445,6 +522,10 @@ function setTab(cat){
 }
 
 function render(){
+  /* rawById Map を最新化 (古いレコードのリークも防止) */
+  Object.keys(rawById).forEach(k => delete rawById[k]);
+  allItems.forEach(i => { rawById[i.id] = i.raw; });
+
   const handled = getHandled();
   const filtered = activeTab === 'all' ? allItems : allItems.filter(i => i.cat === activeTab);
   const box = document.getElementById('inbox');
@@ -488,7 +569,7 @@ function render(){
         <div class="row-actions">
           ${i.email ? `<a class="act-btn primary" href="mailto:${i.email}?subject=${encodeURIComponent('Re: RAKURAKU ' + (i.title.replace(/[🔥📨💎🎬]/g,'').trim()))}">📧 返信</a>` : ''}
           ${i.tel ? `<a class="act-btn" href="tel:${i.tel}">📞 電話</a>` : ''}
-          ${i.cat === 'founders' && i.email ? `<button class="act-btn" style="background:linear-gradient(135deg,#DC2626,#F59E0B);color:#fff;border-color:transparent;" onclick="issueFounderLicense('${i.id}', ${JSON.stringify(i.raw).replace(/'/g, '&#39;').replace(/"/g, '&quot;')})">🎁 ライセンス発行</button>` : ''}
+          ${i.cat === 'founders' && i.email ? `<button class="act-btn" style="background:linear-gradient(135deg,#DC2626,#F59E0B);color:#fff;border-color:transparent;" onclick="issueFounderLicense('${escapeHtml(i.id)}')">🎁 ライセンス発行</button>` : ''}
           <button class="act-btn handle ${isHandled ? 'done' : ''}" onclick="markHandled('${i.id}')">${isHandled ? '✓ 対応済み' : '対応済みに'}</button>
         </div>
       </div>
@@ -528,9 +609,14 @@ function playBeep(){
 }
 
 /* ============== Founder License Issuing ============== */
-async function issueFounderLicense(itemId, rawJson){
+async function issueFounderLicense(itemId){
   try {
-    const raw = typeof rawJson === 'string' ? JSON.parse(rawJson) : rawJson;
+    /* rawById Map から安全に取得 (XSS 対策で onclick から直接 JSON 渡さない) */
+    const raw = rawById[itemId];
+    if (!raw){
+      alert('対象データが見つかりませんでした。ページを更新してください。');
+      return;
+    }
     const confirmMsg = `🎁 ${raw.shop || '?'} 様にライセンスを発行しますか?\n\n` +
                        `・受付番号: 自動採番\n` +
                        `・有効期間: 1 年間\n` +
