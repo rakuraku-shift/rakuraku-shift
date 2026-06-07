@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>🎁 創業メンバー専用 — Pro 1 年無料 アクティベート</title>
+<meta name="description" content="RAKURAKU 創業メンバー専用 Pro 1 年無料プランのアクティベートページ。メールで届いたコードを入力してください。" />
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#DC2626">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #FCD34D;outline-offset:2px;border-radius:4px;}
+  :root{
+    --red:#DC2626; --red-d:#991B1B; --gold:#FCD34D;
+    --amber:#F59E0B; --green:#10B981;
+    --slate-900:#0F172A; --slate-700:#334155; --slate-500:#64748B;
+  }
+  html,body{font-family:'Inter','Noto Sans JP',sans-serif;color:#fff;background:radial-gradient(ellipse at top, #1E1B4B 0%, #0F0F23 100%);min-height:100vh;line-height:1.7;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .wrap{max-width:520px;width:100%;}
+  .badge{display:inline-block;background:linear-gradient(135deg,var(--red),var(--amber));color:#fff;font-size:11px;font-weight:900;padding:6px 16px;border-radius:20px;letter-spacing:.08em;margin-bottom:20px;text-transform:uppercase;}
+  h1{font-size:34px;font-weight:900;letter-spacing:-.02em;line-height:1.25;margin-bottom:12px;text-align:center;}
+  h1 .grad{background:linear-gradient(135deg,var(--gold),#FBBF24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .lead{font-size:14px;color:#C7D2FE;text-align:center;margin-bottom:30px;}
+
+  .card{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1.5px solid rgba(255,255,255,.12);border-radius:22px;padding:32px;box-shadow:0 24px 60px rgba(0,0,0,.45);}
+  .input-wrap{position:relative;margin-bottom:14px;}
+  .code-input{width:100%;padding:18px 18px;background:rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.15);border-radius:14px;color:#fff;font-size:18px;font-family:Menlo,monospace;font-weight:900;letter-spacing:.18em;outline:none;text-align:center;text-transform:uppercase;}
+  .code-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(252,211,77,.15);}
+  .code-input::placeholder{color:rgba(255,255,255,.3);letter-spacing:.12em;}
+  .hint{font-size:11px;color:#94A3B8;text-align:center;margin-bottom:18px;}
+  .activate-btn{width:100%;padding:18px;background:linear-gradient(135deg,var(--red),var(--amber));color:#fff;border:none;border-radius:14px;font-weight:900;font-size:15px;cursor:pointer;font-family:inherit;letter-spacing:.04em;box-shadow:0 10px 28px rgba(220,38,38,.4);transition:transform .15s;}
+  .activate-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(220,38,38,.5);}
+  .activate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+  .alert{display:none;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:700;text-align:center;}
+  .alert.show{display:block;}
+  .alert.err{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#FCA5A5;}
+  .alert.ok{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#6EE7B7;}
+
+  .info{margin-top:24px;font-size:11px;color:#94A3B8;line-height:1.85;text-align:center;}
+  .info strong{color:#C7D2FE;}
+  .info a{color:#FCD34D;text-decoration:none;}
+
+  /* Success layout */
+  .success-card{display:none;}
+  .success-card.show{display:block;}
+  .success-card .check{font-size:80px;text-align:center;margin-bottom:12px;}
+  .success-card h2{font-size:24px;font-weight:900;text-align:center;margin-bottom:8px;background:linear-gradient(135deg,var(--gold),#FBBF24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .success-card .sub{font-size:13px;color:#C7D2FE;text-align:center;margin-bottom:20px;}
+  .info-box{background:rgba(252,211,77,.1);border:1px solid rgba(252,211,77,.3);border-radius:14px;padding:18px;margin-bottom:18px;font-size:13px;line-height:1.85;}
+  .info-box dt{font-size:10px;color:#94A3B8;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-top:8px;}
+  .info-box dd{font-weight:700;color:#fff;}
+  .info-box dt:first-child{margin-top:0;}
+  .cta{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-radius:14px;font-weight:900;font-size:14px;text-align:center;text-decoration:none;box-shadow:0 10px 28px rgba(16,185,129,.4);margin-bottom:10px;}
+  .cta:hover{transform:translateY(-2px);}
+  .cta.secondary{background:rgba(255,255,255,.08);box-shadow:none;}
+
+  @media(max-width:540px){
+    h1{font-size:26px;}
+    .card{padding:24px 20px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div style="text-align:center;margin-bottom:16px;">
+    <span class="badge">🔥 FOUNDING 100 MEMBERS</span>
+  </div>
+
+  <!-- ===== INPUT VIEW ===== -->
+  <div id="inputView">
+    <h1>創業メンバー<br><span class="grad">アクティベート</span></h1>
+    <p class="lead">メールで届いた <strong style="color:#FCD34D;">アクティベートコード</strong> を<br>入力してください</p>
+
+    <div class="card">
+      <form onsubmit="event.preventDefault();activate();">
+        <div class="input-wrap">
+          <input type="text" class="code-input" id="code" placeholder="RKR-FNDR-XXXX-XXXX" maxlength="19" autocomplete="off" oninput="formatCode(this)" autofocus />
+        </div>
+        <div class="hint">RKR-FNDR-XXXX-XXXX の形式 (大文字小文字どちらでも可)</div>
+        <button type="submit" class="activate-btn" id="actBtn">🔓 アクティベートする</button>
+      </form>
+
+      <div class="alert err" id="errMsg"></div>
+
+      <div class="info">
+        💡 コードを紛失した方は<br>
+        <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】創業メンバーコード再発行依頼">koizumishota0323@gmail.com</a><br>
+        へご連絡ください (24 時間以内に再発行)
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:18px;font-size:11px;color:#64748B;">
+      <a href="/campaign-founders.html" style="color:#A5B4FC;text-decoration:none;">← まだ応募していない方はこちら</a>
+    </div>
+  </div>
+
+  <!-- ===== SUCCESS VIEW ===== -->
+  <div class="success-card" id="successView">
+    <div class="check">🎉</div>
+    <h2>アクティベート完了</h2>
+    <p class="sub">Pro プラン 1 年間の無料利用が開始されました</p>
+
+    <div class="card">
+      <div class="info-box">
+        <dl>
+          <dt>受付番号</dt>
+          <dd id="okRef">RKR-FNDR-0001</dd>
+          <dt>店舗名</dt>
+          <dd id="okShop">—</dd>
+          <dt>プラン</dt>
+          <dd>🎁 創業メンバー Pro (1 年間無料)</dd>
+          <dt>有効期限</dt>
+          <dd id="okExpire">—</dd>
+          <dt>次回更新</dt>
+          <dd>1 年経過後、自動で Free プランに降格 (請求一切なし)</dd>
+        </dl>
+      </div>
+
+      <a href="/shift.html" class="cta">🚀 すぐにシフト管理を始める</a>
+      <a href="/getting-started.html" class="cta secondary">📚 3 ステップ ガイドを見る</a>
+
+      <div class="info" style="margin-top:18px;">
+        🎁 Pro プラン全機能をご利用いただけます<br>
+        🔔 <a href="/notification-settings.html">LINE 通知の設定</a> もお忘れなく
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function formatCode(input){
+  let v = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  let formatted = '';
+  // RKR-FNDR-XXXX-XXXX
+  for (let i = 0; i < v.length && i < 14; i++){
+    if (i === 3 || i === 7 || i === 11) formatted += '-';
+    formatted += v[i];
+  }
+  input.value = formatted;
+}
+
+async function activate(){
+  const code = document.getElementById('code').value.trim().toUpperCase();
+  const errEl = document.getElementById('errMsg');
+  const btn = document.getElementById('actBtn');
+
+  errEl.classList.remove('show');
+
+  if (!/^RKR-FNDR-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)){
+    errEl.textContent = 'コードの形式が正しくありません (RKR-FNDR-XXXX-XXXX)';
+    errEl.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '確認中...';
+
+  try {
+    const res = await fetch('/api/validate-founder-license', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({code})
+    });
+
+    if (!res.ok){
+      const txt = await res.text();
+      errEl.textContent = txt.includes('not found') ? 'コードが見つかりません。メールをご確認ください' :
+                          txt.includes('already used') ? 'このコードは既に使用済みです' :
+                          txt.includes('expired') ? 'このコードは期限切れです' :
+                          'アクティベートに失敗しました。再度お試しください';
+      errEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = '🔓 アクティベートする';
+      return;
+    }
+
+    const data = await res.json();
+
+    // localStorage に保存 (PWA 認証)
+    try {
+      localStorage.setItem('rakuraku_founder_license', JSON.stringify({
+        code, refNumber: data.refNumber, shop: data.shop,
+        expiresAt: data.expiresAt, activatedAt: Date.now()
+      }));
+    } catch(e){}
+
+    // 表示切替
+    document.getElementById('inputView').style.display = 'none';
+    document.getElementById('successView').classList.add('show');
+    document.getElementById('okRef').textContent = data.refNumber || code;
+    document.getElementById('okShop').textContent = data.shop || '—';
+    const exp = new Date(data.expiresAt);
+    document.getElementById('okExpire').textContent =
+      `${exp.getFullYear()} 年 ${exp.getMonth()+1} 月 ${exp.getDate()} 日 まで`;
+
+  } catch(e){
+    errEl.textContent = '通信エラー。インターネット接続をご確認ください';
+    errEl.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = '🔓 アクティベートする';
+  }
+}
+
+// 既にアクティベート済みなら自動でショートカット
+(function checkExisting(){
+  try {
+    const saved = localStorage.getItem('rakuraku_founder_license');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    if (data.expiresAt && data.expiresAt > Date.now()){
+      // 自動で成功画面を表示
+      document.getElementById('inputView').style.display = 'none';
+      document.getElementById('successView').classList.add('show');
+      document.getElementById('okRef').textContent = data.refNumber || data.code;
+      document.getElementById('okShop').textContent = data.shop || '—';
+      const exp = new Date(data.expiresAt);
+      document.getElementById('okExpire').textContent =
+        `${exp.getFullYear()} 年 ${exp.getMonth()+1} 月 ${exp.getDate()} 日 まで`;
+    }
+  } catch(e){}
+})();
+</script>
+</body>
+</html>

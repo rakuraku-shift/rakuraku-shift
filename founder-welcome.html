@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>🎁 創業メンバー Welcome — RAKURAKU</title>
+<meta name="description" content="RAKURAKU 創業メンバーへようこそ。Pro 1 年無料でフル機能を体験。" />
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#DC2626">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --red:#DC2626; --red-d:#991B1B; --gold:#FCD34D;
+    --indigo:#4F46E5; --purple:#7C3AED;
+    --green:#10B981; --amber:#F59E0B;
+    --slate-900:#0F172A; --slate-700:#334155; --slate-500:#64748B;
+    --slate-200:#E2E8F0; --slate-100:#F1F5F9; --slate-50:#F8FAFC;
+  }
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(180deg,#FFFBF5,#FFF);min-height:100vh;line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:var(--red-d);text-decoration:none;}
+
+  .nav{background:#fff;border-bottom:1px solid var(--slate-100);}
+  .nav-inner{max-width:920px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;}
+  .logo-mark{width:30px;height:30px;background:#DC2626;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;box-shadow:0 4px 12px rgba(220,38,38,.35);}
+
+  .container{max-width:780px;margin:0 auto;padding:40px 24px 60px;}
+
+  .hero{text-align:center;margin-bottom:30px;}
+  .hero-badge{display:inline-block;background:linear-gradient(135deg,var(--red),var(--amber));color:#fff;font-size:11px;font-weight:900;padding:6px 16px;border-radius:20px;letter-spacing:.06em;margin-bottom:18px;}
+  .hero h1{font-size:38px;font-weight:900;letter-spacing:-.02em;line-height:1.2;margin-bottom:14px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--red),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero .lead{font-size:16px;color:var(--slate-700);font-weight:600;}
+  @media(max-width:520px){.hero h1{font-size:28px;}}
+
+  /* Plan info */
+  .plan-card{background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border:2px solid var(--gold);border-radius:18px;padding:28px;margin-bottom:24px;text-align:center;box-shadow:0 16px 40px rgba(252,211,77,.18);}
+  .plan-card h2{font-size:20px;font-weight:900;color:#92400E;margin-bottom:10px;}
+  .plan-card .amt{font-size:48px;font-weight:900;color:var(--red-d);letter-spacing:-.03em;line-height:1;margin:6px 0;}
+  .plan-card .amt .strike{font-size:18px;text-decoration:line-through;color:var(--slate-500);font-weight:600;margin-right:8px;}
+  .plan-card .period{font-size:13px;color:#78350F;font-weight:700;margin:6px 0 14px;}
+  .plan-card .ref{display:inline-block;background:#fff;padding:8px 16px;border-radius:10px;font-family:monospace;font-weight:900;font-size:14px;letter-spacing:.1em;color:var(--red-d);border:1.5px dashed var(--red);}
+
+  /* Quick start */
+  h2.section-title{font-size:18px;font-weight:900;margin:30px 0 14px;letter-spacing:-.01em;}
+  .step-grid{display:grid;gap:12px;margin-bottom:24px;}
+  .step{background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:18px 20px;display:flex;align-items:flex-start;gap:14px;}
+  .step-num{flex-shrink:0;width:34px;height:34px;background:#DC2626;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;}
+  .step h3{font-size:14px;font-weight:900;margin-bottom:4px;}
+  .step p{font-size:12px;color:var(--slate-700);line-height:1.75;}
+  .step a{color:var(--red-d);font-weight:700;}
+
+  /* Features */
+  .feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+  @media(max-width:520px){.feat-grid{grid-template-columns:1fr;}}
+  .feat{background:#fff;border:1.5px solid var(--slate-100);border-radius:12px;padding:14px;}
+  .feat .ic{font-size:22px;margin-bottom:6px;}
+  .feat h4{font-size:12px;font-weight:900;margin-bottom:2px;}
+  .feat p{font-size:11px;color:var(--slate-500);font-weight:600;}
+
+  /* CTA */
+  .cta-card{background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-radius:18px;padding:28px;text-align:center;margin-top:30px;}
+  .cta-card h2{font-size:22px;font-weight:900;margin-bottom:6px;}
+  .cta-card p{font-size:13px;opacity:.9;margin-bottom:18px;}
+  .cta-btn{display:inline-block;background:#fff;color:#047857;padding:14px 32px;border-radius:30px;font-weight:900;font-size:14px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.15);}
+
+  /* Footer */
+  .footer{text-align:center;padding:30px 0;font-size:11px;color:var(--slate-500);}
+  .footer a{color:var(--red-d);font-weight:700;margin:0 8px;}
+
+  /* Support box */
+  .support{background:#F0F9FF;border:1.5px solid #BAE6FD;border-radius:14px;padding:18px 22px;font-size:12px;line-height:1.85;color:var(--slate-700);}
+  .support strong{color:#0369A1;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;">← トップへ</a>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="hero-badge">🔥 FOUNDING 100 MEMBER</div>
+    <h1>ようこそ、<br><span class="grad">創業メンバー</span> へ</h1>
+    <p class="lead">Pro プラン <strong>1 年間 完全無料</strong> でご利用いただけます</p>
+  </section>
+
+  <!-- プラン情報 -->
+  <div class="plan-card">
+    <h2>🎁 創業メンバー Pro プラン</h2>
+    <div class="amt"><span class="strike">¥59,880</span>¥0</div>
+    <div class="period">2026/06 〜 2027/06 (1 年間)</div>
+    <div class="ref" id="refNum">RKR-FNDR-XXXX-XXXX</div>
+    <p style="font-size:11px;color:#92400E;margin-top:12px;font-weight:700;">
+      ※ 1 年経過後は自動で Free プランに降格 (請求発生なし)
+    </p>
+  </div>
+
+  <!-- クイックスタート -->
+  <h2 class="section-title">🚀 3 ステップで開始</h2>
+  <div class="step-grid">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <h3>店舗情報を登録</h3>
+        <p>店舗名・営業時間・スタッフを登録。<br><a href="/master-data.html">マスターデータ設定 →</a></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <h3>スタッフに招待メール送信</h3>
+        <p>QR コードまたは LINE で簡単招待。<br><a href="/notification-settings.html">LINE 連携 →</a></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <h3>1 タップでシフト作成</h3>
+        <p>希望が集まったら、ボタン一発で確定。<br><a href="/shift.html">シフト管理を開く →</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 解放される機能 -->
+  <h2 class="section-title">✨ Pro プランで使える機能 (全 9 つ)</h2>
+  <div class="feat-grid">
+    <div class="feat"><div class="ic">⚡</div><h4>AI シフト自動作成</h4><p>3 分で完成</p></div>
+    <div class="feat"><div class="ic">📍</div><h4>GPS 出退勤打刻</h4><p>50m 圏内のみ</p></div>
+    <div class="feat"><div class="ic">🛡️</div><h4>労基法アラート</h4><p>深夜手当・連勤検知</p></div>
+    <div class="feat"><div class="ic">💰</div><h4>給与自動計算</h4><p>+25% 深夜割増</p></div>
+    <div class="feat"><div class="ic">🌐</div><h4>5 言語対応</h4><p>英中韓越 + 日</p></div>
+    <div class="feat"><div class="ic">📊</div><h4>売上 × 人件費</h4><p>月次レポート</p></div>
+    <div class="feat"><div class="ic">🎯</div><h4>3 段階自動募集</h4><p>Timee 連携</p></div>
+    <div class="feat"><div class="ic">🤖</div><h4>AI 改善提案</h4><p>削減ポイント分析</p></div>
+    <div class="feat"><div class="ic">🏢</div><h4>多店舗管理</h4><p>本部ダッシュボード</p></div>
+  </div>
+
+  <!-- メインCTA -->
+  <div class="cta-card">
+    <h2>準備はできましたか?</h2>
+    <p>シフト作成 5 時間 → 1 時間。今日から体験できます</p>
+    <a href="/shift.html" class="cta-btn">🚀 シフト管理を開始する</a>
+  </div>
+
+  <!-- サポート -->
+  <h2 class="section-title">📞 困ったとき</h2>
+  <div class="support">
+    <strong>🎁 創業メンバー専用サポート</strong><br>
+    通常の Pro プランより<strong>優先対応</strong>します。<br><br>
+    📨 <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU 創業メンバー】サポート依頼">koizumishota0323@gmail.com</a><br>
+    📞 080-5168-3303 (代表 小泉 直通 / 平日 10-18 時)<br>
+    💬 <a href="/community.html">創業メンバー専用 Slack コミュニティ</a><br><br>
+    <strong>📝 機能要望は優先実装枠です</strong> — 「こんな機能欲しい」をぜひお聞かせください
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p><a href="/">トップ</a> · <a href="/shift.html">シフト管理</a> · <a href="/help.html">FAQ</a> · <a href="/about.html">会社情報</a></p>
+  <p style="margin-top:10px;opacity:.8;">© 2026 RAKURAKU · 創業メンバー Welcome ページ</p>
+</footer>
+
+<script>
+// アクティベート情報を表示
+try {
+  const saved = localStorage.getItem('rakuraku_founder_license');
+  if (saved){
+    const data = JSON.parse(saved);
+    if (data.refNumber) document.getElementById('refNum').textContent = data.refNumber;
+  }
+} catch(e){}
+</script>
+</body>
+</html>

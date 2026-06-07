@@ -40,6 +40,10 @@ Disallow: /RAKURAKU%20%E4%BA%8B%E6%A5%AD%E6%A6%82%E8%A6%81%E3%83%BB%E8%A3%BD%E5%
 # 代表専用受信ボックス (絶対にインデックスさせない)
 Disallow: /owner-inbox.html
 
+# 創業メンバー専用ページ (応募者のみアクセス・noindex 設定済み)
+Disallow: /founder-activate.html
+Disallow: /founder-welcome.html
+
 # 業種別 LP (顧客数拡大後に再公開予定・現在は一時的に非公開)
 Disallow: /bar.html
 Disallow: /izakaya.html

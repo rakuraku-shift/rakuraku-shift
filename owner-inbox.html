@@ -488,6 +488,7 @@ function render(){
         <div class="row-actions">
           ${i.email ? `<a class="act-btn primary" href="mailto:${i.email}?subject=${encodeURIComponent('Re: RAKURAKU ' + (i.title.replace(/[🔥📨💎🎬]/g,'').trim()))}">📧 返信</a>` : ''}
           ${i.tel ? `<a class="act-btn" href="tel:${i.tel}">📞 電話</a>` : ''}
+          ${i.cat === 'founders' && i.email ? `<button class="act-btn" style="background:linear-gradient(135deg,#DC2626,#F59E0B);color:#fff;border-color:transparent;" onclick="issueFounderLicense('${i.id}', ${JSON.stringify(i.raw).replace(/'/g, '&#39;').replace(/"/g, '&quot;')})">🎁 ライセンス発行</button>` : ''}
           <button class="act-btn handle ${isHandled ? 'done' : ''}" onclick="markHandled('${i.id}')">${isHandled ? '✓ 対応済み' : '対応済みに'}</button>
         </div>
       </div>
@@ -524,6 +525,42 @@ function playBeep(){
     o.start();
     o.stop(ctx.currentTime + 0.3);
   } catch(e){}
+}
+
+/* ============== Founder License Issuing ============== */
+async function issueFounderLicense(itemId, rawJson){
+  try {
+    const raw = typeof rawJson === 'string' ? JSON.parse(rawJson) : rawJson;
+    const confirmMsg = `🎁 ${raw.shop || '?'} 様にライセンスを発行しますか?\n\n` +
+                       `・受付番号: 自動採番\n` +
+                       `・有効期間: 1 年間\n` +
+                       `・アクティベートコードがメールで自動送信されます\n\n` +
+                       `送信先: ${raw.email}`;
+    if (!confirm(confirmMsg)) return;
+
+    const res = await fetch('/api/issue-founder-license', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        applicationId: itemId,
+        shop: raw.shop,
+        owner: raw.owner,
+        email: raw.email,
+        durationDays: 365
+      })
+    });
+    if (!res.ok){
+      showToast('❌ 発行に失敗しました');
+      return;
+    }
+    const data = await res.json();
+    showToast(`✅ 発行完了: ${data.code}`);
+    /* マーク済みにする */
+    const h = getHandled();
+    h[itemId] = Date.now();
+    setHandled(h);
+    loadAll();
+  } catch(e){ showToast('❌ エラー: ' + e.message); }
 }
 
 /* ============== INIT ============== */

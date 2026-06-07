@@ -565,8 +565,12 @@ async function submitApp(){
   const seatMsg = `🎉 受付番号 #${TOTAL - newRemain} / 100`;
   document.getElementById('appSuccess').classList.add('show');
   document.getElementById('appSuccess').innerHTML = serverOK
-    ? `✅ 応募ありがとうございます! ${seatMsg}<br><span style="font-size:12px;opacity:.9;font-weight:600;">24 時間以内に代表よりご返信いたします</span>`
-    : `📧 メールアプリが起動します ${seatMsg}<br><span style="font-size:12px;opacity:.9;font-weight:600;">送信ボタンを押して応募完了です (24 時間以内に返信)</span>`;
+    ? `✅ 応募ありがとうございます! ${seatMsg}<br>
+       <span style="font-size:12px;opacity:.9;font-weight:600;line-height:1.6;display:block;margin-top:6px;">
+       📧 24 時間以内に代表から <strong>アクティベートコード</strong> が記載されたメールが届きます<br>
+       🔑 コード受信後、<a href="/founder-activate.html" style="color:#FFF;text-decoration:underline;">こちらのページ</a> から 1 タップで Pro 1 年無料が即時開始されます
+       </span>`
+    : `📧 メールアプリが起動します ${seatMsg}<br><span style="font-size:12px;opacity:.9;font-weight:600;">送信後、24 時間以内にアクティベートコードを返信します</span>`;
   document.getElementById('appForm').reset();
   document.getElementById('appSuccess').scrollIntoView({behavior:'smooth', block:'center'});
 }

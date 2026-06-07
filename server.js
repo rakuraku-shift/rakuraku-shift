@@ -1167,6 +1167,185 @@ app.get('/api/bank-transfer-request', (req, res) => {
   res.json({ total: all.length, pending: all.filter(r => r.status === 'pending').length, requests: all });
 });
 
+/* ════════════════════════════════════════════
+ * 🎁 創業メンバー Pro 1 年無料 ライセンス発行 API (管理者専用)
+ ════════════════════════════════════════════ */
+function genFounderCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';   // 紛らわしい O, 0, 1, I を除外
+  let p1 = '', p2 = '';
+  for (let i = 0; i < 4; i++) p1 += chars[Math.floor(Math.random() * chars.length)];
+  for (let i = 0; i < 4; i++) p2 += chars[Math.floor(Math.random() * chars.length)];
+  return `RKR-FNDR-${p1}-${p2}`;
+}
+
+app.post('/api/issue-founder-license', express.json({ limit: '1mb' }), async (req, res) => {
+  const { applicationId, shop, owner, email, durationDays } = req.body || {};
+  if (!shop || !email){
+    return res.status(400).json({ error: 'shop and email are required' });
+  }
+
+  /* コード生成 (重複しないように) */
+  const file = path.join(DATA_DIR, 'founder-licenses.json');
+  const all = readJSON(file, []);
+  let code;
+  let attempts = 0;
+  do {
+    code = genFounderCode();
+    attempts++;
+  } while (all.some(l => l.code === code) && attempts < 50);
+
+  const now = Date.now();
+  const days = Number(durationDays) || 365;
+  const expiresAt = now + days * 86400000;
+  const seatNumber = all.length + 1;
+  const license = {
+    code,
+    refNumber: `RKR-FNDR-${String(seatNumber).padStart(4, '0')}`,
+    applicationId: applicationId || null,
+    shop, owner, email,
+    issuedAt: now,
+    expiresAt,
+    activatedAt: null,
+    status: 'issued',   // issued / activated / expired / cancelled
+  };
+  all.push(license);
+  writeJSON(file, all);
+
+  console.log(`[founder-license] 🎁 発行 ${code} → ${shop} / ${email}`);
+
+  /* 申込者にアクティベートコードを送信 */
+  if (emailTransporter && process.env.EMAIL_USER) {
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: `🎁 [RAKURAKU 創業メンバー] アクティベートコードのご案内`,
+        html: `
+          <h2 style="color:#DC2626;">🎉 ${owner || shop || ''} 様</h2>
+          <p>RAKURAKU 創業メンバー 100 店舗プログラムへのご応募、ありがとうございました。<br>厳正な審査の結果、<strong>創業メンバー</strong>としてご承認させていただきました。</p>
+
+          <p style="font-size:14px;background:#FEF3C7;padding:16px 20px;border-radius:12px;border-left:5px solid #F59E0B;margin:20px 0;">
+            <strong>受付番号:</strong> ${license.refNumber}<br>
+            <strong>店舗名:</strong> ${shop}<br>
+            <strong>プラン:</strong> Pro プラン 1 年間 完全無料 (¥59,880 相当)
+          </p>
+
+          <h3 style="color:#DC2626;margin-top:24px;">🔑 アクティベートコード</h3>
+          <div style="background:#0F0F23;color:#FCD34D;padding:24px;border-radius:14px;text-align:center;font-family:Menlo,monospace;font-size:24px;font-weight:900;letter-spacing:0.15em;margin:14px 0;">
+            ${code}
+          </div>
+
+          <h3 style="margin-top:24px;">🚀 アクティベート方法</h3>
+          <ol style="line-height:1.9;">
+            <li>下記の URL をクリック</li>
+            <li>上記のコードを入力</li>
+            <li>「🔓 アクティベート」をクリック</li>
+            <li>すぐに Pro プラン全機能をご利用いただけます</li>
+          </ol>
+
+          <p style="text-align:center;margin:24px 0;">
+            <a href="https://rakuraku-shift-production.up.railway.app/founder-activate.html"
+               style="display:inline-block;background:linear-gradient(135deg,#DC2626,#F59E0B);color:#fff;padding:14px 32px;border-radius:30px;font-weight:900;font-size:14px;text-decoration:none;">
+              🔓 今すぐアクティベートする
+            </a>
+          </p>
+
+          <p style="font-size:12px;color:#64748B;background:#F1F5F9;padding:14px;border-radius:10px;line-height:1.7;">
+            ⚠️ このコードは <strong>1 回のみ</strong>使用できます<br>
+            📅 有効期限: ${new Date(expiresAt).toLocaleDateString('ja-JP', {timeZone: 'Asia/Tokyo'})} まで<br>
+            🔒 紛失した場合は <a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a> へご連絡ください
+          </p>
+
+          <hr style="margin:24px 0;">
+          <p style="font-size:12px;color:#64748B;">
+            創業メンバー特典:<br>
+            ・🎁 Pro プラン 1 年間 完全無料<br>
+            ・⚡ 初期セットアップ 無料サポート<br>
+            ・🎓 スタッフ向け Zoom 説明会 無料<br>
+            ・📞 代表 直通サポート (平日 10-18 時)<br>
+            ・🔧 機能要望の優先実装枠<br>
+            ・🏆 公式サイトへの店舗紹介 (任意・許諾済みのみ)<br><br>
+
+            RAKURAKU 代表 小泉 咲太<br>
+            📨 <a href="mailto:koizumishota0323@gmail.com">koizumishota0323@gmail.com</a><br>
+            📞 080-5168-3303
+          </p>
+        `,
+      });
+      console.log(`[founder-license] 📧 activation mail OK -> ${email}`);
+    } catch(e) { console.warn('[founder-license] mail failed:', e.message); }
+  }
+
+  res.json({ ok: true, code, refNumber: license.refNumber, expiresAt });
+});
+
+app.post('/api/validate-founder-license', express.json({ limit: '64kb' }), (req, res) => {
+  const { code } = req.body || {};
+  if (!code) return res.status(400).send('code is required');
+
+  const file = path.join(DATA_DIR, 'founder-licenses.json');
+  const all = readJSON(file, []);
+  const license = all.find(l => l.code.toUpperCase() === String(code).toUpperCase());
+
+  if (!license) return res.status(404).send('not found');
+  if (license.status === 'activated' && license.activatedAt && Date.now() - license.activatedAt < 60000){
+    // 1 分以内の重複叩きは無視 (タブ切替で 2 回叩かれた場合)
+  } else if (license.status === 'activated'){
+    // 既に activated だが、まだ有効期限内なら成功扱い
+    if (license.expiresAt > Date.now()){
+      return res.json({
+        ok: true,
+        refNumber: license.refNumber,
+        shop: license.shop,
+        expiresAt: license.expiresAt,
+        message: 'already activated'
+      });
+    }
+  }
+  if (license.expiresAt < Date.now()) return res.status(410).send('expired');
+
+  /* activate */
+  license.status = 'activated';
+  license.activatedAt = Date.now();
+  writeJSON(file, all);
+
+  console.log(`[founder-license] ✅ activated ${license.code} -> ${license.shop}`);
+
+  /* 代表にアクティベート通知 */
+  if (emailTransporter && process.env.EMAIL_USER) {
+    emailTransporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: `✅ [創業メンバー Activate] ${license.shop} 様`,
+      html: `
+        <h2>✅ 創業メンバーがアクティベートしました</h2>
+        <p>店舗: <strong>${license.shop}</strong><br>
+           受付: ${license.refNumber}<br>
+           コード: ${license.code}<br>
+           申込から: ${Math.floor((Date.now() - license.issuedAt) / 3600000)} 時間</p>
+      `,
+    }).catch(() => {});
+  }
+
+  res.json({
+    ok: true,
+    refNumber: license.refNumber,
+    shop: license.shop,
+    expiresAt: license.expiresAt
+  });
+});
+
+app.get('/api/founder-licenses', (req, res) => {
+  const file = path.join(DATA_DIR, 'founder-licenses.json');
+  const all = readJSON(file, []);
+  res.json({
+    total: all.length,
+    issued: all.filter(l => l.status === 'issued').length,
+    activated: all.filter(l => l.status === 'activated').length,
+    licenses: all
+  });
+});
+
 /* 管理者用: 問い合わせも同様 cleanup */
 app.post('/api/contact-inquiries/cleanup', (req, res) => {
   const file = path.join(DATA_DIR, 'contact-inquiries.json');
