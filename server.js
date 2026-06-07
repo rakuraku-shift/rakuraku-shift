@@ -903,18 +903,27 @@ app.post('/api/churn-survey', async (req, res) => {
   /* 管理者にも通知 */
   if (emailTransporter && process.env.EMAIL_USER) {
     try {
+      /* XSS 対策: 解約アンケートのユーザー入力を全 escape */
+      const cs = {
+        shop: escHtml(data.shop || '-'),
+        email: escHtml(data.email || '-'),
+        nps: escHtml(String(data.nps)),
+        reasons: (data.reasons || []).map(r => escHtml(r)),
+        competitor: escHtml(data.competitor || '-'),
+        improvement: escHtml(data.improvement || '-').replace(/\n/g, '<br>')
+      };
       await emailTransporter.sendMail({
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
         subject: `[RAKURAKU] 📊 解約アンケート — ${data.shop || '?'} (NPS: ${data.nps}/10)`,
         html: `
           <h2>解約アンケート 回答</h2>
-          <p><strong>店舗:</strong> ${data.shop || '-'}<br>
-             <strong>メール:</strong> ${data.email || '-'}</p>
-          <p><strong>NPS:</strong> ${data.nps}/10</p>
-          <p><strong>解約理由:</strong><br>${(data.reasons || []).map(r => '• ' + r).join('<br>')}</p>
-          <p><strong>検討中の他社:</strong> ${data.competitor || '-'}</p>
-          <p><strong>改善要望:</strong><br>${(data.improvement || '-').replace(/\n/g, '<br>')}</p>
+          <p><strong>店舗:</strong> ${cs.shop}<br>
+             <strong>メール:</strong> ${cs.email}</p>
+          <p><strong>NPS:</strong> ${cs.nps}/10</p>
+          <p><strong>解約理由:</strong><br>${cs.reasons.map(r => '• ' + r).join('<br>')}</p>
+          <p><strong>検討中の他社:</strong> ${cs.competitor}</p>
+          <p><strong>改善要望:</strong><br>${cs.improvement}</p>
           <p><strong>再連絡可否:</strong> ${data.recontact ? '✅ OK' : '❌ 不要'}</p>
         `,
       });
@@ -984,9 +993,9 @@ app.post('/api/apply-founders', express.json({ limit: '1mb' }), async (req, res)
           <div style="padding:12px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${d.pain}</div>
           <hr style="margin:24px 0;">
           <p style="font-size:12px;color:#64748B;">
-            💡 24 時間以内に <a href="mailto:${data.email}">${data.email}</a> へご返信してください<br>
+            💡 24 時間以内に <a href="mailto:${d.email}">${d.email}</a> へご返信してください<br>
             📊 累計応募数: ${seatNumber} / 100 席<br>
-            🌐 IP: ${record.ip}<br>
+            🌐 IP: ${escHtml(String(record.ip || '-'))}<br>
             🕐 受信時刻: ${new Date(record.receivedAt).toLocaleString('ja-JP', {timeZone: 'Asia/Tokyo'})}
           </p>
         `,
@@ -1090,14 +1099,28 @@ app.post('/api/bank-transfer-request', express.json({ limit: '1mb' }), async (re
   if (emailTransporter && process.env.EMAIL_USER) {
     try {
       const planLabel = data.plan === 'annual' ? '年払い ¥49,900' : '月払い ¥4,990';
+      /* ⚠️ XSS 対策: ユーザー入力の bank info を escape */
+      const bd = {
+        bankName: escHtml(data.bankName || '-'),
+        branchName: escHtml(data.branchName || '-'),
+        accountType: escHtml(data.accountType || '-'),
+        accountNumber: escHtml(data.accountNumber || '-'),
+        accountHolder: escHtml(data.accountHolder || '-'),
+        shop: escHtml(data.shop || '-'),
+        owner: escHtml(data.owner || '-'),
+        email: escHtml(data.email || ''),
+        tel: escHtml(data.tel || ''),
+        billing: escHtml(data.billing || '(同上)'),
+        notes: escHtml(data.notes || '')
+      };
       const debitHTML = data.payType === 'debit' ? `
         <h3 style="margin-top:18px;color:#047857;">🔁 引落口座情報 (口座振替依頼書発行用)</h3>
         <table style="border-collapse:collapse;font-size:14px;background:#F0FDF4;">
-          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">銀行名</td><td style="padding:6px 10px;">${data.bankName || '-'}</td></tr>
-          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">支店名</td><td style="padding:6px 10px;">${data.branchName || '-'}</td></tr>
-          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">預金種目</td><td style="padding:6px 10px;">${data.accountType || '-'}</td></tr>
-          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">口座番号</td><td style="padding:6px 10px;font-family:monospace;">${data.accountNumber || '-'}</td></tr>
-          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">名義人カナ</td><td style="padding:6px 10px;">${data.accountHolder || '-'}</td></tr>
+          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">銀行名</td><td style="padding:6px 10px;">${bd.bankName}</td></tr>
+          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">支店名</td><td style="padding:6px 10px;">${bd.branchName}</td></tr>
+          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">預金種目</td><td style="padding:6px 10px;">${bd.accountType}</td></tr>
+          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">口座番号</td><td style="padding:6px 10px;font-family:monospace;">${bd.accountNumber}</td></tr>
+          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">名義人カナ</td><td style="padding:6px 10px;">${bd.accountHolder}</td></tr>
         </table>
         <p style="font-size:11px;color:#15803D;margin-top:8px;">⚠️ 口座振替依頼書 PDF を作成して 24 時間以内に送付してください</p>
       ` : '';
@@ -1108,23 +1131,23 @@ app.post('/api/bank-transfer-request', express.json({ limit: '1mb' }), async (re
         html: `
           <h2 style="color:#DC2626;">${payTypeLabel} のお申し込みが届きました</h2>
           <p style="font-size:14px;background:#FEF3C7;padding:10px 14px;border-radius:8px;border-left:4px solid #F59E0B;">
-            <strong>申込番号:</strong> ${refNumber}<br>
+            <strong>申込番号:</strong> ${escHtml(refNumber)}<br>
             <strong>プラン:</strong> ${planLabel}<br>
             <strong>支払方式:</strong> ${payTypeLabel}
           </p>
           <table style="border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗名</td><td style="padding:6px 10px;">${data.shop || '-'}</td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">代表者</td><td style="padding:6px 10px;">${data.owner || '-'}</td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">メール</td><td style="padding:6px 10px;"><a href="mailto:${data.email || ''}">${data.email || '-'}</a></td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">電話</td><td style="padding:6px 10px;"><a href="tel:${data.tel || ''}">${data.tel || '-'}</a></td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">請求書宛名</td><td style="padding:6px 10px;">${data.billing || '(同上)'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗名</td><td style="padding:6px 10px;">${bd.shop}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">代表者</td><td style="padding:6px 10px;">${bd.owner}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">メール</td><td style="padding:6px 10px;"><a href="mailto:${bd.email}">${bd.email || '-'}</a></td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">電話</td><td style="padding:6px 10px;"><a href="tel:${bd.tel}">${bd.tel || '-'}</a></td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">請求書宛名</td><td style="padding:6px 10px;">${bd.billing}</td></tr>
           </table>
           ${debitHTML}
-          ${data.notes ? `<h3 style="margin-top:18px;">連絡事項:</h3><div style="padding:14px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${String(data.notes).replace(/</g, '&lt;')}</div>` : ''}
+          ${data.notes ? `<h3 style="margin-top:18px;">連絡事項:</h3><div style="padding:14px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${bd.notes}</div>` : ''}
           <hr style="margin:20px 0;">
           <p style="font-size:12px;color:#64748B;">
-            💡 24 時間以内に <a href="mailto:${data.email}">${data.email}</a> へ詳細案内を返信してください<br>
-            🌐 IP: ${record.ip}<br>
+            💡 24 時間以内に <a href="mailto:${bd.email}">${bd.email}</a> へ詳細案内を返信してください<br>
+            🌐 IP: ${escHtml(String(record.ip || '-'))}<br>
             🕐 受信: ${new Date(record.receivedAt).toLocaleString('ja-JP', {timeZone: 'Asia/Tokyo'})}
           </p>
         `,
@@ -1137,15 +1160,18 @@ app.post('/api/bank-transfer-request', express.json({ limit: '1mb' }), async (re
       try {
         const planLabel = data.plan === 'annual' ? '年払い ¥49,900' : '月払い ¥4,990';
         const amount = data.plan === 'annual' ? '¥49,900' : '¥4,990';
+        /* XSS 対策: data.owner / refNumber を escape */
+        const safeOwn = escHtml(data.owner || '');
+        const safeRef = escHtml(refNumber);
         await emailTransporter.sendMail({
           from: process.env.EMAIL_USER,
           to: data.email,
           subject: `💴 [RAKURAKU] 銀行振込のご案内 (申込番号: ${refNumber})`,
           html: `
-            <h2 style="color:#DC2626;">💴 ${data.owner || ''} 様</h2>
+            <h2 style="color:#DC2626;">💴 ${safeOwn} 様</h2>
             <p>RAKURAKU へのお申し込みありがとうございます。<br>下記の口座へお振込みください。</p>
             <p style="font-size:14px;background:#FEF3C7;padding:14px 18px;border-radius:10px;border-left:4px solid #F59E0B;">
-              <strong>申込番号:</strong> <span style="font-family:monospace;letter-spacing:.1em;">${refNumber}</span><br>
+              <strong>申込番号:</strong> <span style="font-family:monospace;letter-spacing:.1em;">${safeRef}</span><br>
               <strong>プラン:</strong> ${planLabel}<br>
               <strong>金額:</strong> ${amount} (税込)
             </p>
@@ -1409,6 +1435,15 @@ app.post('/api/contact-inquiries', express.json({ limit: '1mb' }), async (req, r
 
   if (emailTransporter && process.env.EMAIL_USER) {
     try {
+      /* XSS 対策: 問い合わせ ユーザー入力を全 escape */
+      const ci = {
+        name: escHtml(data.name || '-'),
+        email: escHtml(data.email || ''),
+        tel: escHtml(data.tel || '-'),
+        shop: escHtml(data.shop || '-'),
+        subject: escHtml(data.subject || '-'),
+        message: escHtml(data.message || '(本文なし)')
+      };
       await emailTransporter.sendMail({
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
@@ -1416,18 +1451,18 @@ app.post('/api/contact-inquiries', express.json({ limit: '1mb' }), async (req, r
         html: `
           <h2 style="color:#4F46E5;">📨 新しい問い合わせが届きました</h2>
           <table style="border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">お名前</td><td style="padding:6px 10px;">${data.name || '-'}</td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">メール</td><td style="padding:6px 10px;"><a href="mailto:${data.email || ''}">${data.email || '-'}</a></td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">電話</td><td style="padding:6px 10px;">${data.tel || '-'}</td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗名</td><td style="padding:6px 10px;">${data.shop || '-'}</td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">件名</td><td style="padding:6px 10px;">${data.subject || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">お名前</td><td style="padding:6px 10px;">${ci.name}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">メール</td><td style="padding:6px 10px;"><a href="mailto:${ci.email}">${ci.email || '-'}</a></td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">電話</td><td style="padding:6px 10px;">${ci.tel}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗名</td><td style="padding:6px 10px;">${ci.shop}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">件名</td><td style="padding:6px 10px;">${ci.subject}</td></tr>
           </table>
           <h3 style="margin-top:18px;">メッセージ:</h3>
-          <div style="padding:14px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${(data.message || '(本文なし)').replace(/</g, '&lt;')}</div>
+          <div style="padding:14px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${ci.message}</div>
           <hr style="margin:20px 0;">
           <p style="font-size:12px;color:#64748B;">
             💡 <a href="https://rakuraku-shift-production.up.railway.app/owner-inbox.html">受信ボックスで確認</a><br>
-            🌐 IP: ${record.ip}<br>
+            🌐 IP: ${escHtml(String(record.ip || '-'))}<br>
             🕐 受信: ${new Date(record.receivedAt).toLocaleString('ja-JP', {timeZone: 'Asia/Tokyo'})}
           </p>
         `,
