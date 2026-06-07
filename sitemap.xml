@@ -330,5 +330,11 @@
     <priority>0.85</priority>
     <lastmod>2026-06-07</lastmod>
   </url>
+  <url>
+    <loc>https://rakuraku-shift-production.up.railway.app/demo-experience.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <lastmod>2026-06-07</lastmod>
+  </url>
   <!-- 代表専用 (noindex 設定済み) -->
 </urlset>
