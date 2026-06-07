@@ -111,15 +111,15 @@
 </nav>
 
 <section class="hero">
-  <div class="hero-eyebrow">🎁 完全無料 ・ オンライン15分</div>
+  <div class="hero-eyebrow" data-i18n="demoresv.eyebrow">🎁 完全無料 ・ オンライン15分</div>
   <h1 data-i18n-html="demoresv.title">無料 <span class="grad">オンラインデモ</span> 予約</h1>
-  <p>代表が画面を共有しながら、お店に合わせた使い方をご案内します。</p>
+  <p data-i18n="demoresv.lead">代表が画面を共有しながら、お店に合わせた使い方をご案内します。</p>
 </section>
 
 <div class="features">
-  <div class="ft"><div class="ic">⏱</div><div class="lbl">所要 15分</div></div>
+  <div class="ft"><div class="ic">⏱</div><div class="lbl" data-i18n="demoresv.feat_time">所要 15分</div></div>
   <div class="ft"><div class="ic">💻</div><div class="lbl">Zoom / Google Meet</div></div>
-  <div class="ft"><div class="ic">🆓</div><div class="lbl">完全無料</div></div>
+  <div class="ft"><div class="ic">🆓</div><div class="lbl" data-i18n="demoresv.feat_free">完全無料</div></div>
 </div>
 
 <div class="form-card" id="form-card">
@@ -165,8 +165,8 @@
     <label for="f-note">気になっている機能・質問（任意）</label>
     <textarea id="f-note" rows="3" placeholder="例) Timeeの代替として検討、深夜割増の計算ミスを減らしたい、外国人スタッフ対応が必要…"></textarea>
   </div>
-  <button class="btn-submit" onclick="submitDemo()">📅 デモを予約する</button>
-  <p class="info-text">
+  <button class="btn-submit" onclick="submitDemo()" data-i18n="demoresv.submit">📅 デモを予約する</button>
+  <p class="info-text" data-i18n-html="demoresv.info">
     ✓ 24時間以内に Zoom URL をメールでお送りします<br>
     ✓ 強引な営業は一切ありません<br>
     ✓ 当日 RAKURAKU をその場で試せます
@@ -175,8 +175,8 @@
 
 <div class="success-card" id="success-card">
   <div class="ic">🎉</div>
-  <h2>デモ予約 受付完了</h2>
-  <p>24時間以内に <strong id="success-email"></strong> 宛に<br>Zoom URL をお送りします。お楽しみに！</p>
+  <h2 data-i18n="demoresv.success_title">デモ予約 受付完了</h2>
+  <p data-i18n-html="demoresv.success_msg">24時間以内に <strong id="success-email"></strong> 宛に<br>Zoom URL をお送りします。お楽しみに！</p>
   <p style="margin-top:14px;"><a href="/" style="color:var(--indigo);font-weight:800;">← トップへ戻る</a></p>
 </div>
 
