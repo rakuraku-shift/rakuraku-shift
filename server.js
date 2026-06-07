@@ -922,7 +922,7 @@ app.get('/api/churn-survey', (req, res) => {
  * 🔥 創業メンバー 100 店舗プログラム 応募 API
  * 応募 → JSON保存 + 代表 (EMAIL_USER) にメール通知
  ════════════════════════════════════════════ */
-app.post('/api/apply-founders', async (req, res) => {
+app.post('/api/apply-founders', express.json({ limit: '1mb' }), async (req, res) => {
   const data = req.body || {};
   const record = {
     id: 'fnd' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
@@ -1025,7 +1025,7 @@ app.get('/api/apply-founders', (req, res) => {
  * 📨 問い合わせ受信 API
  * mailto: の代替として Web フォーム経由でも受け取れる
  ════════════════════════════════════════════ */
-app.post('/api/contact-inquiries', async (req, res) => {
+app.post('/api/contact-inquiries', express.json({ limit: '1mb' }), async (req, res) => {
   const data = req.body || {};
   const record = {
     id: 'inq' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
