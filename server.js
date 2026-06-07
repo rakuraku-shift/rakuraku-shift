@@ -1021,6 +1021,36 @@ app.get('/api/apply-founders', (req, res) => {
   res.json({ total: all.length, remaining: Math.max(0, 100 - all.length), applications: all });
 });
 
+/* 管理者用: 空レコード or 特定 ID の応募を削除 */
+app.delete('/api/apply-founders/:id', express.json({ limit: '64kb' }), (req, res) => {
+  const id = req.params.id;
+  const file = path.join(DATA_DIR, 'founders-applications.json');
+  const all = readJSON(file, []);
+  const next = all.filter(a => a.id !== id);
+  writeJSON(file, next);
+  res.json({ ok: true, deleted: all.length - next.length, total: next.length });
+});
+
+/* 管理者用: shop/owner/email が全て空のゴミレコードを一括掃除 */
+app.post('/api/apply-founders/cleanup', (req, res) => {
+  const file = path.join(DATA_DIR, 'founders-applications.json');
+  const all = readJSON(file, []);
+  const before = all.length;
+  const cleaned = all.filter(a => a.shop || a.owner || a.email);
+  writeJSON(file, cleaned);
+  res.json({ ok: true, removed: before - cleaned.length, remaining: cleaned.length });
+});
+
+/* 管理者用: 問い合わせも同様 cleanup */
+app.post('/api/contact-inquiries/cleanup', (req, res) => {
+  const file = path.join(DATA_DIR, 'contact-inquiries.json');
+  const all = readJSON(file, []);
+  const before = all.length;
+  const cleaned = all.filter(c => c.name || c.email || c.message);
+  writeJSON(file, cleaned);
+  res.json({ ok: true, removed: before - cleaned.length, remaining: cleaned.length });
+});
+
 /* ════════════════════════════════════════════
  * 📨 問い合わせ受信 API
  * mailto: の代替として Web フォーム経由でも受け取れる
