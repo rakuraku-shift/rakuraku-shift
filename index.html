@@ -12,7 +12,7 @@
 <link rel="canonical" href="https://rakuraku-shift-production.up.railway.app/"/>
 <link rel="alternate" hreflang="ja" href="https://rakuraku-shift-production.up.railway.app/"/>
 <link rel="alternate" hreflang="x-default" href="https://rakuraku-shift-production.up.railway.app/"/>
-<meta name="theme-color" content="#4F46E5">
+<meta name="theme-color" content="#DC2626">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="icon" href="/icon-192.png">
 <link rel="manifest" href="/manifest.json">
@@ -132,7 +132,7 @@
   .skip-link{position:absolute;top:-100px;left:0;background:#0F172A;color:#fff;padding:12px 20px;z-index:99999;font-weight:800;border-radius:0 0 8px 0;transition:top .2s;text-decoration:none;}
   .skip-link:focus{top:0;outline:3px solid #FCD34D;outline-offset:-3px;}
   /* トップに戻るボタン (一定スクロール後に表示) */
-  .scroll-top-btn{position:fixed;bottom:80px;right:18px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(79,70,229,.4);font-size:18px;display:none;align-items:center;justify-content:center;z-index:90;transition:transform .2s, opacity .2s;font-family:inherit;}
+  .scroll-top-btn{position:fixed;bottom:80px;right:18px;width:44px;height:44px;border-radius:50%;background:#DC2626;color:#fff;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(79,70,229,.4);font-size:18px;display:none;align-items:center;justify-content:center;z-index:90;transition:transform .2s, opacity .2s;font-family:inherit;}
   .scroll-top-btn.visible{display:flex;}
   .scroll-top-btn:hover{transform:translateY(-3px);}
   .scroll-top-btn:focus{outline:3px solid #FCD34D;outline-offset:3px;}
@@ -154,7 +154,7 @@
   .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);}
   .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;}
   .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;letter-spacing:-.01em;}
-  .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--indigo),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;box-shadow:0 4px 12px rgba(79,70,229,.3);}
+  .logo-mark{width:32px;height:32px;background:#DC2626;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;box-shadow:0 4px 12px rgba(220,38,38,.35);}
   .nav-links{display:flex;gap:24px;align-items:center;font-size:14px;font-weight:600;}
   .nav-links a{color:var(--slate-700);}
   .nav-cta{padding:9px 18px;background:var(--indigo);color:#fff!important;border-radius:8px;font-size:13px;font-weight:700;}
@@ -171,10 +171,10 @@
   .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(79,70,229,.08),transparent 60%);pointer-events:none;}
   .hero-badge{display:inline-block;padding:6px 14px;background:var(--indigo-l);color:var(--indigo);border-radius:20px;font-size:12px;font-weight:800;margin-bottom:20px;letter-spacing:.04em;}
   .hero h1{font-size:48px;font-weight:900;line-height:1.2;letter-spacing:-.02em;margin-bottom:18px;}
-  .hero h1 .grad{background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero h1 .grad{background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .hero p.lead{font-size:18px;color:var(--slate-500);max-width:600px;margin:0 auto 36px;}
   .hero-cta{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;}
-  .btn-primary{padding:16px 32px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff!important;border-radius:12px;font-size:15px;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(79,70,229,.35);transition:transform .15s;display:inline-flex;align-items:center;gap:8px;}
+  .btn-primary{padding:16px 32px;background:#DC2626;color:#fff!important;border-radius:12px;font-size:15px;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(79,70,229,.35);transition:transform .15s;display:inline-flex;align-items:center;gap:8px;}
   .btn-primary:hover{transform:translateY(-2px);text-decoration:none;}
   .btn-secondary{padding:16px 28px;background:#fff;color:var(--slate-700)!important;border:1.5px solid var(--slate-200);border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;}
   .btn-secondary:hover{text-decoration:none;border-color:var(--indigo);color:var(--indigo)!important;}
@@ -208,7 +208,7 @@
   /* ─── Pricing ─── */
   .pricing{background:linear-gradient(180deg,var(--slate-50),#fff);}
   .price-card{max-width:480px;margin:0 auto;background:#fff;border:2px solid var(--indigo);border-radius:20px;padding:40px 32px;text-align:center;box-shadow:0 20px 60px rgba(79,70,229,.15);position:relative;}
-  .price-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.06em;}
+  .price-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#DC2626;color:#fff;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.06em;}
   .price-plan{font-size:14px;color:var(--slate-500);font-weight:700;margin-bottom:8px;}
   .price-amount{font-size:60px;font-weight:900;line-height:1;color:var(--slate-900);margin:8px 0;}
   .price-amount .yen{font-size:24px;font-weight:800;vertical-align:top;margin-right:4px;}
@@ -250,7 +250,7 @@
   .sub-plan-opt em{color:var(--emerald);font-style:normal;font-size:10px;margin-left:4px;font-weight:800;}
   /* 「人気」バッジは年払い側に常時表示 */
   .sub-plan-popular-badge{position:absolute;top:-8px;right:-6px;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;font-size:8px;font-weight:900;padding:2px 7px;border-radius:8px;box-shadow:0 2px 6px rgba(245,158,11,.4);}
-  .sub-submit{width:100%;padding:16px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(79,70,229,.3);transition:all .15s;margin-top:6px;}
+  .sub-submit{width:100%;padding:16px;border:none;border-radius:12px;background:#DC2626;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(79,70,229,.3);transition:all .15s;margin-top:6px;}
   .sub-submit:hover:not(:disabled){transform:translateY(-1px);}
   .sub-submit:disabled{opacity:.6;cursor:wait;transform:none;}
   .sub-fine{font-size:10px;color:var(--slate-400);text-align:center;margin-top:10px;line-height:1.5;}
@@ -275,7 +275,7 @@
   .faq-item.open .faq-a{max-height:400px;padding-top:12px;}
 
   /* ─── CTA strip ─── */
-  .cta-strip{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-radius:24px;padding:50px 32px;text-align:center;margin:0 24px;}
+  .cta-strip{background:#DC2626;color:#fff;border-radius:24px;padding:50px 32px;text-align:center;margin:0 24px;}
   .cta-strip h2{font-size:28px;font-weight:900;margin-bottom:8px;color:#fff;}
   .cta-strip p{color:rgba(255,255,255,.85);margin-bottom:26px;font-size:14px;}
   .cta-strip .btn-primary{background:#fff;color:var(--indigo)!important;box-shadow:none;}
@@ -287,14 +287,14 @@
   .cmp-table thead th{background:var(--slate-50);font-weight:800;color:var(--slate-700);font-size:13px;letter-spacing:.02em;}
   .cmp-table td:first-child, .cmp-table th:first-child{text-align:left;font-weight:700;color:var(--slate-700);}
   .cmp-table .cmp-self{background:linear-gradient(180deg,var(--indigo-l),rgba(238,242,255,.4));color:var(--indigo);font-weight:900;border-left:2px solid var(--indigo);border-right:2px solid var(--indigo);}
-  .cmp-table thead .cmp-self{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;font-size:14px;border-color:transparent;}
+  .cmp-table thead .cmp-self{background:#DC2626;color:#fff;font-size:14px;border-color:transparent;}
   .cmp-yes{color:var(--emerald);font-weight:900;}
   .cmp-no{color:var(--slate-300);font-weight:600;}
   @media(max-width:640px){.cmp-table{font-size:12px;}.cmp-table th,.cmp-table td{padding:9px 8px;}}
 
   /* ─── Founder ─── */
   .founder-card{max-width:760px;margin:0 auto;background:linear-gradient(135deg,#fff,var(--slate-50));border:1.5px solid var(--slate-100);border-radius:20px;padding:30px;display:flex;align-items:flex-start;gap:24px;box-shadow:0 8px 32px rgba(0,0,0,.04);}
-  .founder-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;flex-shrink:0;box-shadow:0 6px 16px rgba(79,70,229,.3);}
+  .founder-avatar{width:80px;height:80px;border-radius:50%;background:#DC2626;color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;flex-shrink:0;box-shadow:0 6px 16px rgba(79,70,229,.3);}
   .founder-body{flex:1;}
   .founder-name{font-size:20px;font-weight:900;letter-spacing:-.01em;margin-bottom:8px;}
   .founder-role{font-size:11px;font-weight:700;color:var(--indigo);background:var(--indigo-l);padding:3px 10px;border-radius:20px;margin-left:8px;vertical-align:middle;letter-spacing:.04em;}
@@ -310,7 +310,7 @@
     .sticky-cta{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:99;background:rgba(15,23,42,.95);backdrop-filter:blur(10px);padding:10px 14px;align-items:center;gap:10px;border-top:1px solid rgba(255,255,255,.1);box-shadow:0 -4px 20px rgba(0,0,0,.2);}
     .sticky-cta-text{flex:1;color:#fff;font-size:12px;font-weight:700;line-height:1.4;}
     .sticky-cta-text small{font-size:10px;color:#94A3B8;font-weight:600;display:block;}
-    .sticky-cta-btn{padding:11px 18px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;white-space:nowrap;box-shadow:0 4px 12px rgba(79,70,229,.4);}
+    .sticky-cta-btn{padding:11px 18px;background:#DC2626;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;white-space:nowrap;box-shadow:0 4px 12px rgba(79,70,229,.4);}
     body{padding-bottom:64px;}
   }
 
@@ -319,7 +319,7 @@
   .cookie-banner.show{display:flex;}
   .cookie-banner-text{flex:1;}
   .cookie-banner-text a{color:#A5B4FC;}
-  .cookie-banner-btn{padding:8px 16px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;}
+  .cookie-banner-btn{padding:8px 16px;background:#DC2626;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;}
   @media(max-width:768px){.cookie-banner{bottom:78px;}}
 
   /* ─── Footer / 特商法 ─── */
@@ -634,8 +634,8 @@
 <!-- ════════ 差別化機能 ════════ -->
 <section id="unique" style="background:linear-gradient(180deg,#fff,#FAF5FF);padding:60px 0;">
   <div class="container">
-    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;">RAKURAKU だけの強み</span>
-    <h2 class="section-title">他社にはない <span style="background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">6つの差別化機能</span></h2>
+    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;background:#DC2626;color:#fff;">RAKURAKU だけの強み</span>
+    <h2 class="section-title">他社にはない <span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">6つの差別化機能</span></h2>
     <p class="section-sub">これがあるから「他のシフトSaaSじゃなくRAKURAKU」を選んでいただいています。</p>
 
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:1000px;margin:36px auto 0;">
@@ -644,7 +644,7 @@
       <div style="background:#fff;border:1.5px solid var(--slate-100);border-radius:18px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.04);">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
           <span style="font-size:32px;">🔐</span>
-          <span style="font-size:10px;font-weight:900;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:3px 10px;border-radius:10px;letter-spacing:.04em;">RAKURAKU 独自</span>
+          <span style="font-size:10px;font-weight:900;background:#DC2626;color:#fff;padding:3px 10px;border-radius:10px;letter-spacing:.04em;">RAKURAKU 独自</span>
         </div>
         <h3 style="font-size:17px;font-weight:900;margin-bottom:8px;">個人給与照会 (パスワード保護)</h3>
         <p style="font-size:13px;color:var(--slate-700);line-height:1.8;margin-bottom:10px;">スタッフが自分のパスワードで自分の今月給与だけを確認できる。SHA-256ハッシュで安全保管。<strong>「給料いくら?」のLINEが消える</strong>。</p>
@@ -782,7 +782,7 @@
 
       <div style="background:#fff;border:1.5px solid #E2E8F0;border-radius:18px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.04);position:relative;transition:transform .2s, box-shadow .2s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,.08)';" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(0,0,0,.04)';">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-          <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;">A</div>
+          <div style="width:42px;height:42px;border-radius:50%;background:#DC2626;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;">A</div>
           <div>
             <div style="font-size:13px;font-weight:900;color:var(--slate-900);">A様</div>
             <div style="font-size:11px;color:var(--slate-500);font-weight:600;">バー / 東京都内 / スタッフ12名</div>
@@ -830,7 +830,7 @@
 <section id="why-safe" style="padding:60px 0;background:linear-gradient(180deg,#fff,#FAFAFA);">
   <div class="container">
     <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;">RISK FREE</span>
-    <h2 class="section-title">安心して試せる <span style="background:linear-gradient(135deg,var(--indigo),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">5つの理由</span></h2>
+    <h2 class="section-title">安心して試せる <span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">5つの理由</span></h2>
     <p class="section-sub">「導入したら戻れなくなったら困る」そんな不安をすべて解消します</p>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;max-width:980px;margin:36px auto 0;">
@@ -921,7 +921,7 @@
       <!-- 年払いプラン (推奨) -->
       <div class="price-card" style="margin:0;border:3px solid var(--indigo);box-shadow:0 16px 60px rgba(79,70,229,.25);position:relative;background:linear-gradient(180deg,#fff,#FAFBFF);">
         <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;padding:6px 18px;border-radius:18px;font-size:11px;font-weight:900;letter-spacing:.05em;box-shadow:0 4px 12px rgba(245,158,11,.4);white-space:nowrap;">🏆 一番選ばれている</div>
-        <span class="price-badge" style="background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;">⭐ 年払いプラン (おすすめ)</span>
+        <span class="price-badge" style="background:#DC2626;color:#fff;">⭐ 年払いプラン (おすすめ)</span>
         <div class="price-plan" style="color:var(--indigo);">スタンダード (年払い)</div>
         <div class="trial-banner" style="background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border:1.5px solid #FBBF24;">
           <div class="trial-banner-title" style="color:#92400E;">🎁 14日間 無料 + 年払い特典</div>
@@ -943,7 +943,7 @@
           <li>🎁 <strong>機能要望 優先実装</strong> 投票で月1件</li>
           <li>🎁 <strong>カスタムロゴ表示</strong> 給与明細PDFに自店ロゴ</li>
         </ul>
-        <a href="#" onclick="event.preventDefault();openSubModal('annual');" class="btn-primary" style="width:100%;justify-content:center;background:linear-gradient(135deg,var(--indigo),var(--purple));font-size:15px;padding:14px;font-weight:900;">⭐ 年払いで始める (おすすめ)</a>
+        <a href="#" onclick="event.preventDefault();openSubModal('annual');" class="btn-primary" style="width:100%;justify-content:center;background:#DC2626;font-size:15px;padding:14px;font-weight:900;">⭐ 年払いで始める (おすすめ)</a>
         <div class="price-note">
           ※ 14日間トライアル後、年払いを選択 → 自動で特典が適用<br>
           ※ 中途解約時は残月数を月額換算で返金 (最大 ¥4,990/月)<br>

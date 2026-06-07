@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v20 — 全料金 ¥4,990 統一 + 創業メンバーキャンペーン + HTML ネット優先 + 旧キャッシュ全削除 */
-var CACHE = 'rakuraku-v20';
+/* RAKURAKU Service Worker v21 — Coca-Cola風赤ロゴへ統一 + HTML ネット優先 + 旧キャッシュ全削除 */
+var CACHE = 'rakuraku-v21';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',

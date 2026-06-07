@@ -1,20 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240">
   <defs>
-    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4F46E5"/>
-      <stop offset="100%" stop-color="#7C3AED"/>
-    </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.12"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#7F1D1D" flood-opacity="0.30"/>
     </filter>
   </defs>
   <rect width="800" height="240" fill="#FFFFFF"/>
+  <!-- Red square mark (Coca-Cola style) -->
   <g transform="translate(60, 60)">
-    <rect x="0" y="0" width="120" height="120" rx="24" fill="url(#logoGrad)" filter="url(#shadow)"/>
-    <text x="60" y="78" font-family="-apple-system, 'Hiragino Sans', sans-serif" font-size="56" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="-2">R</text>
+    <rect x="0" y="0" width="120" height="120" rx="24" fill="#DC2626" filter="url(#shadow)"/>
+    <text x="60" y="86" font-family="-apple-system, 'Hiragino Sans', sans-serif" font-size="68" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="-2">R</text>
   </g>
+  <!-- Wordmark -->
   <g transform="translate(220, 78)">
-    <text x="0" y="60" font-family="-apple-system, 'Hiragino Sans', sans-serif" font-size="76" font-weight="900" fill="#0F172A" letter-spacing="-3">RAKU<tspan fill="url(#logoGrad)">RAKU</tspan></text>
+    <text x="0" y="60" font-family="-apple-system, 'Hiragino Sans', sans-serif" font-size="76" font-weight="900" fill="#0F172A" letter-spacing="-3">RAKU<tspan fill="#DC2626">RAKU</tspan></text>
     <text x="0" y="110" font-family="-apple-system, 'Hiragino Sans', sans-serif" font-size="20" font-weight="500" fill="#64748B" letter-spacing="2">飲食店向けシフト管理 SaaS</text>
   </g>
 </svg>
