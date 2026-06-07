@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>銀行振込でお申し込み — RAKURAKU</title>
-<meta name="description" content="クレジットカードをお持ちでない方向けの銀行振込でのお申し込みフォーム。" />
+<title>銀行振込・口座振替でお申し込み — RAKURAKU</title>
+<meta name="description" content="クレジットカードをお持ちでない方向けの銀行振込・口座振替(自動引落し)のお申し込みフォーム。口座振替なら気づかないうちに毎月自動課金。" />
 <meta name="theme-color" content="#DC2626">
 <link rel="canonical" href="https://rakuraku-shift-production.up.railway.app/bank-transfer.html"/>
 <link rel="apple-touch-icon" href="/icon-192.png">
@@ -109,10 +109,38 @@
 
 <main class="container">
   <section class="hero">
-    <div class="hero-eyebrow">💴 BANK TRANSFER · 銀行振込</div>
-    <h1>銀行振込で<br>お申し込み</h1>
-    <p>クレジットカードをお持ちでない方も、銀行振込でご契約いただけます</p>
+    <div class="hero-eyebrow">💴 BANK · 銀行振込 / 口座振替</div>
+    <h1>銀行で<br>お申し込み</h1>
+    <p>クレジットカードをお持ちでなくてもご契約いただけます</p>
   </section>
+
+  <!-- 支払い方式選択 -->
+  <h2 style="font-size:15px;font-weight:900;margin-bottom:10px;">💳 お支払い方式</h2>
+  <div class="plans" style="margin-bottom:18px;">
+    <div class="plan" data-pay="transfer" onclick="selectPayType(this)">
+      <h3>📤 銀行振込</h3>
+      <div class="amt" style="font-size:18px;">毎回振込</div>
+      <div class="per">手動で月次振込</div>
+    </div>
+    <div class="plan selected" data-pay="debit" onclick="selectPayType(this)">
+      <h3>🔁 口座振替 (おすすめ)</h3>
+      <div class="amt" style="font-size:18px;">自動引落し</div>
+      <div class="per">毎月 27 日 自動引落し</div>
+      <div class="note">気づかないうちに自動課金 ✓</div>
+    </div>
+  </div>
+
+  <!-- 口座振替のメリット -->
+  <div id="debitInfo" style="background:linear-gradient(135deg,#ECFDF5,#F0FDFA);border:1.5px solid #6EE7B7;border-radius:14px;padding:18px 22px;margin-bottom:24px;">
+    <h3 style="font-size:13px;font-weight:900;color:#047857;margin-bottom:8px;">✨ 口座振替 (自動引落し) のメリット</h3>
+    <ul style="font-size:12px;color:#065F46;line-height:1.85;padding-left:20px;">
+      <li><strong>毎月の振込手続き不要</strong> — 一度登録すれば自動で引落とし</li>
+      <li><strong>振込忘れによるサービス停止のリスクゼロ</strong></li>
+      <li><strong>クレカと違って有効期限切れの心配なし</strong></li>
+      <li><strong>振込手数料が無料</strong> (クレカ手数料 / 振込手数料の節約)</li>
+      <li><strong>領収書・経費処理が楽</strong> (毎月の引落明細が経費証拠に)</li>
+    </ul>
+  </div>
 
   <!-- Steps -->
   <section class="steps">
@@ -155,13 +183,13 @@
     </div>
   </div>
 
-  <!-- Bank info -->
-  <div class="bank-card">
+  <!-- Bank info (transfer only) -->
+  <div class="bank-card" id="transferInfo" style="display:none;">
     <h3>💴 振込先口座 (お申込後にメールで再送します)</h3>
     <dl class="bank-info">
-      <div class="row"><dt>銀行名</dt><dd>ゆうちょ銀行 (店番 008)</dd></div>
-      <div class="row"><dt>口座番号</dt><dd>普通 1234567 <button class="copy-btn" onclick="copy(this,'1234567')">コピー</button></dd></div>
-      <div class="row"><dt>口座名義</dt><dd>コイズミ ショウタ</dd></div>
+      <div class="row"><dt>銀行名</dt><dd>申込後にメール送付</dd></div>
+      <div class="row"><dt>口座番号</dt><dd>申込後にメール送付</dd></div>
+      <div class="row"><dt>口座名義</dt><dd>申込後にメール送付</dd></div>
       <div class="row"><dt>振込手数料</dt><dd>お客様ご負担</dd></div>
     </dl>
     <p class="note">
@@ -197,13 +225,50 @@
           <label>請求書宛名 (任意・法人の場合)</label>
           <input type="text" id="billing" placeholder="例) 株式会社○○ 経理部御中" />
         </div>
-        <div class="field full">
-          <label>連絡事項 (任意)</label>
-          <textarea id="notes" placeholder="例) インボイス登録番号必要 / 月末締めで請求書希望 など"></textarea>
-        </div>
       </div>
 
-      <button type="submit" class="submit-btn" id="btSubmit">💴 銀行振込でお申し込み</button>
+      <!-- 口座振替時の追加項目 -->
+      <div id="debitFields" style="display:block;margin-top:18px;padding:18px;background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:12px;">
+        <h4 style="font-size:13px;font-weight:900;color:#047857;margin-bottom:12px;">🔁 引落口座情報 (口座振替用)</h4>
+        <p style="font-size:11px;color:#065F46;margin-bottom:14px;">下記情報を元に、口座振替依頼書 (PDF) を 24 時間以内にメールでお送りします。<br>署名捺印後、ご返送 (郵送 or 写真送付) で登録完了です。</p>
+        <div class="grid">
+          <div class="field">
+            <label>引落銀行名 <span class="req">*</span></label>
+            <input type="text" id="bankName" placeholder="例) 三菱UFJ銀行 / ゆうちょ銀行" />
+          </div>
+          <div class="field">
+            <label>支店名 <span class="req">*</span></label>
+            <input type="text" id="branchName" placeholder="例) 東京中央支店 / 店番 008" />
+          </div>
+          <div class="field">
+            <label>預金種目 <span class="req">*</span></label>
+            <select id="accountType">
+              <option value="普通">普通預金</option>
+              <option value="当座">当座預金</option>
+              <option value="貯蓄">貯蓄預金</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>口座番号 <span class="req">*</span></label>
+            <input type="text" id="accountNumber" placeholder="例) 1234567" maxlength="10" />
+          </div>
+          <div class="field full">
+            <label>口座名義人 (カナ) <span class="req">*</span></label>
+            <input type="text" id="accountHolder" placeholder="例) カブシキガイシャ コイズミショウタ" />
+          </div>
+        </div>
+        <p style="font-size:11px;color:#047857;margin-top:14px;font-weight:700;">
+          🔒 口座情報は SSL 暗号化通信で送信され、登録完了後は安全に削除されます<br>
+          🗓️ 引落日: <strong>毎月 27 日</strong> (休日の場合は翌営業日)
+        </p>
+      </div>
+
+      <div class="field full" style="margin-top:18px;">
+        <label>連絡事項 (任意)</label>
+        <textarea id="notes" placeholder="例) インボイス登録番号必要 / 月末締めで請求書希望 など"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="btSubmit">🔁 口座振替でお申し込み</button>
       <p class="form-note">
         送信 = 個人情報の取扱いに同意します<br>
         24 時間以内に代表 (小泉) よりご連絡いたします
@@ -244,11 +309,24 @@
 
 <script>
 let currentPlan = 'annual';
+let currentPayType = 'debit';   // 'debit' (口座振替) or 'transfer' (銀行振込)
 
 function selectPlan(el){
-  document.querySelectorAll('.plan').forEach(p => p.classList.remove('selected'));
+  document.querySelectorAll('.plan[data-plan]').forEach(p => p.classList.remove('selected'));
   el.classList.add('selected');
   currentPlan = el.getAttribute('data-plan');
+}
+
+function selectPayType(el){
+  document.querySelectorAll('.plan[data-pay]').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  currentPayType = el.getAttribute('data-pay');
+
+  const isDebit = currentPayType === 'debit';
+  document.getElementById('debitInfo').style.display    = isDebit ? 'block' : 'none';
+  document.getElementById('debitFields').style.display  = isDebit ? 'block' : 'none';
+  document.getElementById('transferInfo').style.display = isDebit ? 'none'  : 'block';
+  document.getElementById('btSubmit').innerHTML         = isDebit ? '🔁 口座振替でお申し込み' : '💴 銀行振込でお申し込み';
 }
 
 function copy(btn, text){
@@ -262,6 +340,7 @@ function copy(btn, text){
 async function submitBT(){
   const data = {
     plan: currentPlan,
+    payType: currentPayType,  // 'debit' or 'transfer'
     shop: document.getElementById('shop').value,
     owner: document.getElementById('owner').value,
     email: document.getElementById('email').value,
@@ -270,6 +349,15 @@ async function submitBT(){
     notes: document.getElementById('notes').value,
     ts: new Date().toISOString()
   };
+
+  // 口座振替の場合のみ口座情報を含める
+  if (currentPayType === 'debit'){
+    data.bankName      = document.getElementById('bankName').value;
+    data.branchName    = document.getElementById('branchName').value;
+    data.accountType   = document.getElementById('accountType').value;
+    data.accountNumber = document.getElementById('accountNumber').value;
+    data.accountHolder = document.getElementById('accountHolder').value;
+  }
 
   // バックアップ: localStorage
   try {
@@ -300,19 +388,31 @@ async function submitBT(){
 
   // フォールバック: mailto:
   if (!serverOK){
-    const subject = `【RAKURAKU 銀行振込申込】${data.shop} 様`;
-    const body =
-      `RAKURAKU を銀行振込で申し込みます。\n\n` +
+    const payLabel = currentPayType === 'debit' ? '口座振替 (自動引落)' : '銀行振込';
+    const subject = `【RAKURAKU ${payLabel}申込】${data.shop} 様`;
+    let bodyStr =
+      `RAKURAKU を${payLabel}で申し込みます。\n\n` +
       `■ プラン: ${data.plan === 'annual' ? '年払い ¥49,900' : '月払い ¥4,990'}\n` +
+      `■ 支払い方式: ${payLabel}\n` +
       `■ 店舗名: ${data.shop}\n` +
       `■ 代表者: ${data.owner}\n` +
       `■ メール: ${data.email}\n` +
       `■ 電話: ${data.tel}\n` +
-      `■ 請求書宛名: ${data.billing || '(同上)'}\n\n` +
-      `■ 連絡事項:\n${data.notes || '(なし)'}\n\n` +
+      `■ 請求書宛名: ${data.billing || '(同上)'}\n`;
+    if (currentPayType === 'debit'){
+      bodyStr +=
+        `\n--- 引落口座情報 (口座振替用) ---\n` +
+        `■ 銀行名: ${data.bankName}\n` +
+        `■ 支店名: ${data.branchName}\n` +
+        `■ 預金種目: ${data.accountType}\n` +
+        `■ 口座番号: ${data.accountNumber}\n` +
+        `■ 口座名義: ${data.accountHolder}\n`;
+    }
+    bodyStr +=
+      `\n■ 連絡事項:\n${data.notes || '(なし)'}\n\n` +
       `※ このメールを送信すると申込完了です。\n` +
-      `※ 24 時間以内に振込先詳細をお送りします。`;
-    window.location.href = `mailto:koizumishota0323@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      `※ 24 時間以内に詳細をお送りします。`;
+    window.location.href = `mailto:koizumishota0323@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyStr)}`;
   }
 
   document.getElementById('btSuccess').classList.add('show');
@@ -320,9 +420,12 @@ async function submitBT(){
   document.getElementById('btForm').reset();
   document.querySelector('.plan[data-plan="annual"]').classList.add('selected');
   btn.disabled = false;
-  btn.textContent = '💴 銀行振込でお申し込み';
+  btn.innerHTML = currentPayType === 'debit' ? '🔁 口座振替でお申し込み' : '💴 銀行振込でお申し込み';
   document.getElementById('btSuccess').scrollIntoView({behavior:'smooth', block:'center'});
 }
+
+// 初期表示の同期 (デフォルト 口座振替)
+selectPayType(document.querySelector('.plan[data-pay="debit"]'));
 </script>
 
 </body>

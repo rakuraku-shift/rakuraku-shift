@@ -1061,21 +1061,34 @@ app.post('/api/bank-transfer-request', express.json({ limit: '1mb' }), async (re
   all.push(record);
   writeJSON(file, all);
 
-  console.log(`[bank-transfer] 💴 申込受信 ${refNumber} — ${data.shop} / ${data.plan}`);
+  const payTypeLabel = data.payType === 'debit' ? '🔁 口座振替 (自動引落)' : '📤 銀行振込 (毎回)';
+  console.log(`[bank-transfer] 💴 申込受信 ${refNumber} — ${data.shop} / ${data.plan} / ${data.payType || 'transfer'}`);
 
   /* 代表 (運営者) にメール通知 */
   if (emailTransporter && process.env.EMAIL_USER) {
     try {
       const planLabel = data.plan === 'annual' ? '年払い ¥49,900' : '月払い ¥4,990';
+      const debitHTML = data.payType === 'debit' ? `
+        <h3 style="margin-top:18px;color:#047857;">🔁 引落口座情報 (口座振替依頼書発行用)</h3>
+        <table style="border-collapse:collapse;font-size:14px;background:#F0FDF4;">
+          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">銀行名</td><td style="padding:6px 10px;">${data.bankName || '-'}</td></tr>
+          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">支店名</td><td style="padding:6px 10px;">${data.branchName || '-'}</td></tr>
+          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">預金種目</td><td style="padding:6px 10px;">${data.accountType || '-'}</td></tr>
+          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">口座番号</td><td style="padding:6px 10px;font-family:monospace;">${data.accountNumber || '-'}</td></tr>
+          <tr><td style="padding:6px 10px;background:#DCFCE7;font-weight:bold;">名義人カナ</td><td style="padding:6px 10px;">${data.accountHolder || '-'}</td></tr>
+        </table>
+        <p style="font-size:11px;color:#15803D;margin-top:8px;">⚠️ 口座振替依頼書 PDF を作成して 24 時間以内に送付してください</p>
+      ` : '';
       await emailTransporter.sendMail({
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
-        subject: `💴 [RAKURAKU 銀行振込申込 ${refNumber}] ${data.shop || '?'} 様 / ${planLabel}`,
+        subject: `${payTypeLabel} [RAKURAKU ${refNumber}] ${data.shop || '?'} 様 / ${planLabel}`,
         html: `
-          <h2 style="color:#DC2626;">💴 銀行振込でのお申し込みが届きました</h2>
+          <h2 style="color:#DC2626;">${payTypeLabel} のお申し込みが届きました</h2>
           <p style="font-size:14px;background:#FEF3C7;padding:10px 14px;border-radius:8px;border-left:4px solid #F59E0B;">
             <strong>申込番号:</strong> ${refNumber}<br>
-            <strong>プラン:</strong> ${planLabel}
+            <strong>プラン:</strong> ${planLabel}<br>
+            <strong>支払方式:</strong> ${payTypeLabel}
           </p>
           <table style="border-collapse:collapse;font-size:14px;">
             <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗名</td><td style="padding:6px 10px;">${data.shop || '-'}</td></tr>
@@ -1084,10 +1097,11 @@ app.post('/api/bank-transfer-request', express.json({ limit: '1mb' }), async (re
             <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">電話</td><td style="padding:6px 10px;"><a href="tel:${data.tel || ''}">${data.tel || '-'}</a></td></tr>
             <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">請求書宛名</td><td style="padding:6px 10px;">${data.billing || '(同上)'}</td></tr>
           </table>
+          ${debitHTML}
           ${data.notes ? `<h3 style="margin-top:18px;">連絡事項:</h3><div style="padding:14px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${String(data.notes).replace(/</g, '&lt;')}</div>` : ''}
           <hr style="margin:20px 0;">
           <p style="font-size:12px;color:#64748B;">
-            💡 24 時間以内に <a href="mailto:${data.email}">${data.email}</a> へ振込先案内を返信してください<br>
+            💡 24 時間以内に <a href="mailto:${data.email}">${data.email}</a> へ詳細案内を返信してください<br>
             🌐 IP: ${record.ip}<br>
             🕐 受信: ${new Date(record.receivedAt).toLocaleString('ja-JP', {timeZone: 'Asia/Tokyo'})}
           </p>
