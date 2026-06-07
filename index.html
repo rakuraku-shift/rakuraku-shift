@@ -1243,8 +1243,18 @@
           <span class="sub-plan-popular-badge">人気</span>
         </label>
       </div>
-      <button type="submit" class="sub-submit" id="sub-submit-btn">🎁 次へ進む（Stripe決済ページへ）</button>
-      <p class="sub-fine">送信後、Stripeの安全な決済ページが開きます。<br>クレカ情報入力後、30日間は一切ご請求が発生しません。</p>
+      <button type="submit" class="sub-submit" id="sub-submit-btn">💳 次へ進む（クレジットカード決済）</button>
+
+      <div style="position:relative;text-align:center;margin:18px 0 12px;">
+        <hr style="border:none;border-top:1px solid #E2E8F0;">
+        <span style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#fff;padding:0 12px;font-size:11px;font-weight:700;color:#64748B;">または</span>
+      </div>
+
+      <a href="/bank-transfer.html" style="display:block;width:100%;padding:13px;background:#fff;border:2px solid #DC2626;color:#DC2626;border-radius:11px;font-weight:900;font-size:13px;text-align:center;text-decoration:none;">
+        💴 銀行振込で申し込む
+      </a>
+
+      <p class="sub-fine">クレジットカード: Stripeの安全な決済ページへ遷移。<br>銀行振込: 24 時間以内に振込先案内メールをお送りします。</p>
     </form>
   </div>
 </div>
