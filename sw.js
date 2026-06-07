@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v21 — Coca-Cola風赤ロゴへ統一 + HTML ネット優先 + 旧キャッシュ全削除 */
-var CACHE = 'rakuraku-v21';
+/* RAKURAKU Service Worker v22 — 新ページ群 (demo-experience / founder-* / staff-* / owner-inbox / bank-transfer) を追加 + 多言語キー更新 */
+var CACHE = 'rakuraku-v22';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -11,6 +11,7 @@ var ASSETS = [
   '/master-data.html',
   '/hq-dashboard.html',
   '/demo-reservation.html',
+  '/demo-experience.html',
   '/referral.html',
   '/case-studies.html',
   '/blog.html',
@@ -64,7 +65,13 @@ var ASSETS = [
   '/help-widget.js',
   '/roadmap.html',
   '/status.html',
-  '/churn-survey.html'
+  '/churn-survey.html',
+  '/campaign-founders.html',
+  '/founder-activate.html',
+  '/founder-welcome.html',
+  '/staff-login.html',
+  '/staff-invite.html',
+  '/bank-transfer.html'
 ];
 
 self.addEventListener('install', function(e) {
