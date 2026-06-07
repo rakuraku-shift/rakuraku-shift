@@ -77,6 +77,19 @@
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--slate-900);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:700;display:none;z-index:200;}
   .toast.show{display:block;animation:fadeUp .3s;}
   @keyframes fadeUp{from{opacity:0;transform:translate(-50%, 20px);}to{opacity:1;transform:translateX(-50%);}}
+
+  /* 印刷スタイル (店内貼り出し用) */
+  @media print{
+    .nav, .form, .info, .url-card .actions, .toast, #rakuraku-lang-switcher{display:none !important;}
+    body{background:#fff !important;}
+    main{padding:0;}
+    .result{display:block !important;}
+    .qr-card{box-shadow:none;border:1px solid #000;page-break-inside:avoid;}
+    .qr-box img{width:300px !important;height:300px !important;}
+    .url-card{box-shadow:none;border:1px solid #ccc;}
+    .url{font-size:14px;word-break:break-all;}
+    .qr-label::after{content: " (スタッフのスマホで QR を読み取ってください)";font-size:11px;display:block;margin-top:6px;}
+  }
 </style>
 </head>
 <body>
@@ -119,7 +132,9 @@
       <div class="url" id="urlText">—</div>
       <div class="actions">
         <button class="act" onclick="copyURL()">📋 URL コピー</button>
-        <a class="act line" id="lineLink" target="_blank">🟢 LINE で送る</a>
+        <a class="act line" id="lineLink" target="_blank" rel="noopener">🟢 LINE で送る</a>
+        <button class="act" onclick="shareURL()" id="shareBtn" style="display:none;">📲 シェア</button>
+        <button class="act" onclick="printQR()">🖨 印刷</button>
       </div>
     </div>
 
@@ -139,11 +154,42 @@
 <script>
 const BASE = window.location.origin;
 
+/* インライン エラー (alert より UX 良い) */
+function showShopErr(msg){
+  const input = document.getElementById('shopName');
+  const existing = input.parentNode.querySelector('.si-err');
+  if (existing) existing.remove();
+  const err = document.createElement('div');
+  err.className = 'si-err';
+  err.setAttribute('role','alert');
+  err.style.cssText = 'color:#DC2626;font-size:11px;font-weight:700;margin-top:6px;';
+  err.textContent = msg;
+  input.parentNode.appendChild(err);
+  input.style.borderColor = '#EF4444';
+  input.focus();
+}
+function clearShopErr(){
+  document.querySelectorAll('.si-err').forEach(e => e.remove());
+  const input = document.getElementById('shopName');
+  if (input) input.style.borderColor = '';
+}
+
+/* Toast 表示ヘルパ */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+let currentInviteData = null;  /* 共有用に保持 */
+
 function generate(){
+  clearShopErr();
   const name = document.getElementById('shopName').value.trim();
   let id = document.getElementById('shopId').value.trim();
   if (!name){
-    alert('店舗名を入力してください');
+    showShopErr('⚠️ 店舗名を入力してください');
     return;
   }
   if (!id){
@@ -152,23 +198,77 @@ function generate(){
   }
 
   const url = `${BASE}/staff-login.html?shop=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}`;
+  currentInviteData = { url, name, id };
 
-  /* QR コードを Google Chart API で生成 */
+  /* QR コードを api.qrserver.com で生成 + フォールバック */
   const qr = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}&margin=8`;
-  document.getElementById('qrImg').src = qr;
+  const qrImg = document.getElementById('qrImg');
+  qrImg.src = qr;
+  qrImg.onerror = function(){
+    /* QR API が落ちている場合のフォールバック (テキストのみ案内) */
+    qrImg.style.display = 'none';
+    if (!document.getElementById('qrFallback')){
+      const fb = document.createElement('div');
+      fb.id = 'qrFallback';
+      fb.style.cssText = 'padding:30px 20px;background:#F3F4F6;border-radius:12px;text-align:center;color:#6B7280;font-size:13px;font-weight:600;';
+      fb.innerHTML = '⚠️ QR コードの生成に失敗しました<br>下記の URL をコピーしてご利用ください';
+      qrImg.parentNode.appendChild(fb);
+    }
+  };
   document.getElementById('urlText').textContent = url;
   document.getElementById('lineLink').href = `https://line.me/R/msg/text/?${encodeURIComponent('【シフト管理 RAKURAKU】参加リンク\n' + name + '\n\n' + url)}`;
+
+  /* Web Share API が使えれば「シェア」ボタンを表示 (iOS Safari / Android Chrome) */
+  if (navigator.share){
+    document.getElementById('shareBtn').style.display = 'inline-flex';
+  }
+
   document.getElementById('result').classList.add('show');
   document.getElementById('result').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-function copyURL(){
+/* クリップボード コピー (HTTP / 古いブラウザ用フォールバック付き) */
+async function copyURL(){
   const url = document.getElementById('urlText').textContent;
-  navigator.clipboard.writeText(url).then(() => {
-    const t = document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2000);
-  });
+  try {
+    if (navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(url);
+    } else {
+      /* フォールバック: textarea で execCommand */
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      ta.style.cssText = 'position:fixed;left:-9999px;';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    showToast('✅ URL をコピーしました');
+  } catch(e){
+    /* コピー失敗時は手動コピーを促す */
+    showToast('⚠️ コピー失敗。URL を長押し選択してください');
+  }
+}
+
+/* Web Share API (システムシェアシート) */
+async function shareURL(){
+  if (!currentInviteData || !navigator.share) return;
+  try {
+    await navigator.share({
+      title: `【RAKURAKU】${currentInviteData.name} スタッフ招待`,
+      text: `シフト管理 RAKURAKU に参加してください`,
+      url: currentInviteData.url
+    });
+  } catch(e){
+    /* ユーザーがキャンセル or 失敗 → 無視 (AbortError は通常) */
+    if (e.name !== 'AbortError') showToast('シェアに失敗しました');
+  }
+}
+
+/* 印刷 (店内貼り出し用) */
+function printQR(){
+  if (!currentInviteData) return;
+  window.print();
 }
 </script>
 
