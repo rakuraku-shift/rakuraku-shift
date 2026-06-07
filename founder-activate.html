@@ -139,8 +139,8 @@
 function formatCode(input){
   let v = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
   let formatted = '';
-  // RKR-FNDR-XXXX-XXXX
-  for (let i = 0; i < v.length && i < 14; i++){
+  // RKR-FNDR-XXXX-XXXX (英数字 15 文字)
+  for (let i = 0; i < v.length && i < 15; i++){
     if (i === 3 || i === 7 || i === 11) formatted += '-';
     formatted += v[i];
   }
