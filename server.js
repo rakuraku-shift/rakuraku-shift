@@ -1021,6 +1021,82 @@ app.get('/api/apply-founders', (req, res) => {
   res.json({ total: all.length, remaining: Math.max(0, 100 - all.length), applications: all });
 });
 
+/* ════════════════════════════════════════════
+ * 📨 問い合わせ受信 API
+ * mailto: の代替として Web フォーム経由でも受け取れる
+ ════════════════════════════════════════════ */
+app.post('/api/contact-inquiries', async (req, res) => {
+  const data = req.body || {};
+  const record = {
+    id: 'inq' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    ...data,
+    ip: (req.headers['x-forwarded-for'] || req.connection.remoteAddress || '').split(',')[0].trim(),
+    userAgent: req.headers['user-agent'] || '',
+    receivedAt: Date.now(),
+  };
+  const file = path.join(DATA_DIR, 'contact-inquiries.json');
+  const all = readJSON(file, []);
+  all.push(record);
+  writeJSON(file, all);
+
+  console.log(`[contact] 📨 受信 #${all.length} — ${data.name || '?'} / ${data.subject || '件名なし'}`);
+
+  if (emailTransporter && process.env.EMAIL_USER) {
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: `📨 [RAKURAKU 問い合わせ #${all.length}] ${data.subject || data.name || '問い合わせ'}`,
+        html: `
+          <h2 style="color:#4F46E5;">📨 新しい問い合わせが届きました</h2>
+          <table style="border-collapse:collapse;font-size:14px;">
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">お名前</td><td style="padding:6px 10px;">${data.name || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">メール</td><td style="padding:6px 10px;"><a href="mailto:${data.email || ''}">${data.email || '-'}</a></td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">電話</td><td style="padding:6px 10px;">${data.tel || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗名</td><td style="padding:6px 10px;">${data.shop || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">件名</td><td style="padding:6px 10px;">${data.subject || '-'}</td></tr>
+          </table>
+          <h3 style="margin-top:18px;">メッセージ:</h3>
+          <div style="padding:14px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${(data.message || '(本文なし)').replace(/</g, '&lt;')}</div>
+          <hr style="margin:20px 0;">
+          <p style="font-size:12px;color:#64748B;">
+            💡 <a href="https://rakuraku-shift-production.up.railway.app/owner-inbox.html">受信ボックスで確認</a><br>
+            🌐 IP: ${record.ip}<br>
+            🕐 受信: ${new Date(record.receivedAt).toLocaleString('ja-JP', {timeZone: 'Asia/Tokyo'})}
+          </p>
+        `,
+      });
+      console.log(`[contact] 📧 admin mail OK -> ${process.env.EMAIL_USER}`);
+    } catch(e) { console.warn('[contact] admin mail failed:', e.message); }
+  }
+
+  res.json({ ok: true, id: record.id });
+});
+
+app.get('/api/contact-inquiries', (req, res) => {
+  const file = path.join(DATA_DIR, 'contact-inquiries.json');
+  const all = readJSON(file, []);
+  res.json({ total: all.length, inquiries: all });
+});
+
+/* ════════════════════════════════════════════
+ * 💎 Pro サブスクリプション申込 ログ取得 API
+ ════════════════════════════════════════════ */
+app.get('/api/subscriptions', (req, res) => {
+  const file = path.join(DATA_DIR, 'subscriptions.json');
+  const all = readJSON(file, []);
+  res.json({ total: all.length, subscriptions: all });
+});
+
+/* ════════════════════════════════════════════
+ * 🎬 デモ予約 ログ取得 API
+ ════════════════════════════════════════════ */
+app.get('/api/demo-bookings', (req, res) => {
+  const file = path.join(DATA_DIR, 'demo-bookings.json');
+  const all = readJSON(file, []);
+  res.json({ total: all.length, bookings: all });
+});
+
 app.use(express.json({ limit: '6mb' }));
 
 /* ════════════════════════════════════════════
