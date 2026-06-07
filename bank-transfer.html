@@ -112,6 +112,10 @@
   .footer a{color:var(--red);font-weight:700;margin:0 8px;}
 
   .back-btn{display:inline-block;margin-bottom:14px;font-size:12px;color:var(--slate-500);font-weight:700;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion: reduce){
+    button[disabled] span{animation-duration:2s !important;}
+  }
 </style>
 
 <!-- JSON-LD: WebPage + BreadcrumbList -->
@@ -265,7 +269,7 @@
         </div>
         <div class="field">
           <label>電話番号 <span class="req">*</span></label>
-          <input type="tel" id="tel" required placeholder="090-XXXX-XXXX" autocomplete="tel" />
+          <input type="tel" id="tel" required placeholder="090-XXXX-XXXX" autocomplete="tel" inputmode="tel" pattern="[0-9\-+()\s]{10,15}" />
         </div>
         <div class="field full">
           <label>請求書宛名 (任意・法人の場合)</label>
@@ -296,7 +300,7 @@
           </div>
           <div class="field">
             <label>口座番号 <span class="req">*</span></label>
-            <input type="text" id="accountNumber" placeholder="例) 1234567" maxlength="10" />
+            <input type="text" id="accountNumber" placeholder="例) 1234567" maxlength="10" inputmode="numeric" pattern="[0-9]{4,10}" autocomplete="off" />
           </div>
           <div class="field full">
             <label>口座名義人 (カナ) <span class="req">*</span></label>
@@ -383,26 +387,82 @@ function copy(btn, text){
   } catch(e){}
 }
 
+/* インラインエラー表示ヘルパ */
+function showFormError(fieldId, msg){
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  /* 既存エラー削除 */
+  const existing = el.parentNode.querySelector('.bt-field-err');
+  if (existing) existing.remove();
+  /* 新規追加 */
+  const err = document.createElement('div');
+  err.className = 'bt-field-err';
+  err.setAttribute('role', 'alert');
+  err.style.cssText = 'color:#DC2626;font-size:11px;font-weight:700;margin-top:4px;line-height:1.5;';
+  err.textContent = msg;
+  el.parentNode.appendChild(err);
+  el.style.borderColor = '#DC2626';
+  el.focus();
+}
+function clearAllFormErrors(){
+  document.querySelectorAll('.bt-field-err').forEach(e => e.remove());
+  document.querySelectorAll('#btForm input, #btForm select, #btForm textarea').forEach(el => {
+    el.style.borderColor = '';
+  });
+}
+
 async function submitBT(){
+  clearAllFormErrors();
+
+  /* ----- バリデーション (必須項目) ----- */
+  const shop = document.getElementById('shop').value.trim();
+  const owner = document.getElementById('owner').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const tel = document.getElementById('tel').value.trim();
+
+  if (!shop){ showFormError('shop', '⚠️ 店舗名を入力してください'); return; }
+  if (!owner){ showFormError('owner', '⚠️ ご担当者名を入力してください'); return; }
+  if (!email){ showFormError('email', '⚠️ メールアドレスを入力してください'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    showFormError('email', '⚠️ 正しいメールアドレス形式で入力してください'); return;
+  }
+  if (!tel){ showFormError('tel', '⚠️ 電話番号を入力してください'); return; }
+  /* 日本の電話番号形式 (簡易) */
+  if (!/^[0-9\-+()\s]{10,15}$/.test(tel)){
+    showFormError('tel', '⚠️ 電話番号は 10〜15 桁で入力してください'); return;
+  }
+
+  /* ----- 口座振替の場合、口座情報も必須 ----- */
+  if (currentPayType === 'debit'){
+    const bankName = document.getElementById('bankName').value.trim();
+    const branchName = document.getElementById('branchName').value.trim();
+    const accNum = document.getElementById('accountNumber').value.trim();
+    const accHolder = document.getElementById('accountHolder').value.trim();
+    if (!bankName){ showFormError('bankName', '⚠️ 銀行名を入力してください (口座振替時必須)'); return; }
+    if (!branchName){ showFormError('branchName', '⚠️ 支店名を入力してください'); return; }
+    if (!accNum){ showFormError('accountNumber', '⚠️ 口座番号を入力してください'); return; }
+    if (!/^\d{4,10}$/.test(accNum)){
+      showFormError('accountNumber', '⚠️ 口座番号は 4〜10 桁の数字で入力してください'); return;
+    }
+    if (!accHolder){ showFormError('accountHolder', '⚠️ 口座名義を入力してください'); return; }
+  }
+
   const data = {
     plan: currentPlan,
     payType: currentPayType,  // 'debit' or 'transfer'
-    shop: document.getElementById('shop').value,
-    owner: document.getElementById('owner').value,
-    email: document.getElementById('email').value,
-    tel: document.getElementById('tel').value,
-    billing: document.getElementById('billing').value,
-    notes: document.getElementById('notes').value,
+    shop, owner, email, tel,
+    billing: document.getElementById('billing').value.trim(),
+    notes: document.getElementById('notes').value.trim(),
     ts: new Date().toISOString()
   };
 
   // 口座振替の場合のみ口座情報を含める
   if (currentPayType === 'debit'){
-    data.bankName      = document.getElementById('bankName').value;
-    data.branchName    = document.getElementById('branchName').value;
+    data.bankName      = document.getElementById('bankName').value.trim();
+    data.branchName    = document.getElementById('branchName').value.trim();
     data.accountType   = document.getElementById('accountType').value;
-    data.accountNumber = document.getElementById('accountNumber').value;
-    data.accountHolder = document.getElementById('accountHolder').value;
+    data.accountNumber = document.getElementById('accountNumber').value.trim();
+    data.accountHolder = document.getElementById('accountHolder').value.trim();
   }
 
   // バックアップ: localStorage
@@ -413,8 +473,13 @@ async function submitBT(){
   } catch(e){}
 
   const btn = document.getElementById('btSubmit');
+  const originalBtnHTML = btn.innerHTML;
   btn.disabled = true;
-  btn.textContent = '送信中...';
+  btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px;"></span>送信中…';
+
+  // タイムアウト対応
+  const ctrl = new AbortController();
+  const timeoutId = setTimeout(() => ctrl.abort(), 12000);
 
   // サーバー API
   let serverOK = false;
@@ -423,14 +488,19 @@ async function submitBT(){
     const res = await fetch('/api/bank-transfer-request', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      signal: ctrl.signal
     });
+    clearTimeout(timeoutId);
     if (res && res.ok){
       const json = await res.json();
       if (json.refNumber) refNum = json.refNumber;
       serverOK = true;
     }
-  } catch(e){}
+  } catch(e){
+    clearTimeout(timeoutId);
+    /* タイムアウトor通信エラー → mailto: fallback で続行 */
+  }
 
   // フォールバック: mailto:
   if (!serverOK){
@@ -461,12 +531,20 @@ async function submitBT(){
     window.location.href = `mailto:koizumishota0323@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyStr)}`;
   }
 
-  document.getElementById('btSuccess').classList.add('show');
+  /* 成功画面表示 */
+  const successEl = document.getElementById('btSuccess');
+  successEl.classList.add('show');
+  successEl.setAttribute('tabindex', '-1');
   document.getElementById('btRef').textContent = refNum;
-  document.getElementById('btForm').reset();
-  document.querySelector('.plan[data-plan="annual"]').classList.add('selected');
+  /* サーバー OK 時のみ form reset (mailto: 失敗時はユーザー保護のため残す) */
+  if (serverOK){
+    document.getElementById('btForm').reset();
+    document.querySelector('.plan[data-plan="annual"]').classList.add('selected');
+  }
   btn.disabled = false;
   btn.innerHTML = currentPayType === 'debit' ? '🔁 口座振替でお申し込み' : '💴 銀行振込でお申し込み';
+  /* スクリーンリーダー対応: 完了画面へフォーカス移動 */
+  setTimeout(() => successEl.focus(), 200);
   document.getElementById('btSuccess').scrollIntoView({behavior:'smooth', block:'center'});
 }
 
