@@ -172,6 +172,17 @@ function writeJSON(file, data) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2));
 }
 
+/* ── HTML エスケープ (メールテンプレ XSS 対策) ──
+ * ユーザー入力 (shop, owner, email など) をメール HTML に埋め込む際に必須。
+ * 例: shop = "<script>alert(1)</script>" でも安全に表示される。
+ */
+function escHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[m]));
+}
+
 function loadConfig() {
   return readJSON(CONFIG_FILE, null);
 }
@@ -942,6 +953,14 @@ app.post('/api/apply-founders', express.json({ limit: '1mb' }), async (req, res)
   /* 代表 (運営者) にメール通知 */
   if (emailTransporter && process.env.EMAIL_USER) {
     try {
+      /* ⚠️ XSS 対策: data.* はユーザー入力なので必ず escHtml() */
+      const d = {
+        shop: escHtml(data.shop || '-'), owner: escHtml(data.owner || '-'),
+        email: escHtml(data.email || ''), tel: escHtml(data.tel || ''),
+        biz: escHtml(data.biz || '-'), staff: escHtml(data.staff || '-'),
+        stores: escHtml(data.stores || '-'), region: escHtml(data.region || '-'),
+        pain: escHtml(data.pain || '(未記入)')
+      };
       await emailTransporter.sendMail({
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
@@ -952,17 +971,17 @@ app.post('/api/apply-founders', express.json({ limit: '1mb' }), async (req, res)
             <strong>受付番号:</strong> #${seatNumber} / 100
           </p>
           <table style="border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗名</td><td style="padding:6px 10px;">${data.shop || '-'}</td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">代表者</td><td style="padding:6px 10px;">${data.owner || '-'}</td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">メール</td><td style="padding:6px 10px;"><a href="mailto:${data.email || ''}">${data.email || '-'}</a></td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">電話</td><td style="padding:6px 10px;"><a href="tel:${data.tel || ''}">${data.tel || '-'}</a></td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">業態</td><td style="padding:6px 10px;">${data.biz || '-'}</td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">スタッフ数</td><td style="padding:6px 10px;">${data.staff || '-'}</td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗数</td><td style="padding:6px 10px;">${data.stores || '-'}</td></tr>
-            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">所在地</td><td style="padding:6px 10px;">${data.region || '-'}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗名</td><td style="padding:6px 10px;">${d.shop}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">代表者</td><td style="padding:6px 10px;">${d.owner}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">メール</td><td style="padding:6px 10px;"><a href="mailto:${d.email}">${d.email || '-'}</a></td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">電話</td><td style="padding:6px 10px;"><a href="tel:${d.tel}">${d.tel || '-'}</a></td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">業態</td><td style="padding:6px 10px;">${d.biz}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">スタッフ数</td><td style="padding:6px 10px;">${d.staff}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">店舗数</td><td style="padding:6px 10px;">${d.stores}</td></tr>
+            <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">所在地</td><td style="padding:6px 10px;">${d.region}</td></tr>
           </table>
           <h3 style="margin-top:20px;">現在のお困りごと:</h3>
-          <div style="padding:12px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${(data.pain || '(未記入)').replace(/</g, '&lt;')}</div>
+          <div style="padding:12px;background:#F8FAFC;border-radius:8px;font-size:13px;white-space:pre-wrap;">${d.pain}</div>
           <hr style="margin:24px 0;">
           <p style="font-size:12px;color:#64748B;">
             💡 24 時間以内に <a href="mailto:${data.email}">${data.email}</a> へご返信してください<br>
@@ -978,16 +997,19 @@ app.post('/api/apply-founders', express.json({ limit: '1mb' }), async (req, res)
     /* 応募者にも自動返信 (任意) */
     if (data.email) {
       try {
+        /* XSS 対策 */
+        const safeOwn = escHtml(data.owner || '');
+        const safeShp = escHtml(data.shop || '');
         await emailTransporter.sendMail({
           from: process.env.EMAIL_USER,
           to: data.email,
           subject: `🎉 [RAKURAKU] 創業メンバー応募ありがとうございます`,
           html: `
-            <h2 style="color:#EF4444;">🔥 ${data.owner || ''} 様</h2>
+            <h2 style="color:#EF4444;">🔥 ${safeOwn} 様</h2>
             <p>RAKURAKU 創業メンバー 100 店舗プログラムにご応募いただき、誠にありがとうございます。</p>
             <p style="font-size:14px;background:#FEF3C7;padding:14px 18px;border-radius:10px;border-left:4px solid #F59E0B;">
               <strong>受付番号:</strong> #${seatNumber} / 100<br>
-              <strong>店舗名:</strong> ${data.shop}
+              <strong>店舗名:</strong> ${safeShp}
             </p>
             <p><strong>24 時間以内に</strong>代表 小泉 よりご返信いたします。</p>
             <p>創業メンバーになっていただいた場合の特典:</p>
@@ -1216,23 +1238,28 @@ app.post('/api/issue-founder-license', express.json({ limit: '1mb' }), async (re
   /* 申込者にアクティベートコードを送信 */
   if (emailTransporter && process.env.EMAIL_USER) {
     try {
+      /* ⚠️ 重要: shop/owner はユーザー入力なので escHtml() で XSS 防止 */
+      const safeOwner = escHtml(owner || shop || '');
+      const safeShop = escHtml(shop);
+      const safeRef = escHtml(license.refNumber);
+      const safeCode = escHtml(code);  // 内部生成なので念のため
       await emailTransporter.sendMail({
         from: process.env.EMAIL_USER,
         to: email,
         subject: `🎁 [RAKURAKU 創業メンバー] アクティベートコードのご案内`,
         html: `
-          <h2 style="color:#DC2626;">🎉 ${owner || shop || ''} 様</h2>
+          <h2 style="color:#DC2626;">🎉 ${safeOwner} 様</h2>
           <p>RAKURAKU 創業メンバー 100 店舗プログラムへのご応募、ありがとうございました。<br>厳正な審査の結果、<strong>創業メンバー</strong>としてご承認させていただきました。</p>
 
           <p style="font-size:14px;background:#FEF3C7;padding:16px 20px;border-radius:12px;border-left:5px solid #F59E0B;margin:20px 0;">
-            <strong>受付番号:</strong> ${license.refNumber}<br>
-            <strong>店舗名:</strong> ${shop}<br>
+            <strong>受付番号:</strong> ${safeRef}<br>
+            <strong>店舗名:</strong> ${safeShop}<br>
             <strong>プラン:</strong> Pro プラン 1 年間 完全無料 (¥59,880 相当)
           </p>
 
           <h3 style="color:#DC2626;margin-top:24px;">🔑 アクティベートコード</h3>
           <div style="background:#0F0F23;color:#FCD34D;padding:24px;border-radius:14px;text-align:center;font-family:Menlo,monospace;font-size:24px;font-weight:900;letter-spacing:0.15em;margin:14px 0;">
-            ${code}
+            ${safeCode}
           </div>
 
           <h3 style="margin-top:24px;">🚀 アクティベート方法</h3>
@@ -1313,15 +1340,19 @@ app.post('/api/validate-founder-license', express.json({ limit: '64kb' }), (req,
 
   /* 代表にアクティベート通知 */
   if (emailTransporter && process.env.EMAIL_USER) {
+    /* XSS 対策: ユーザー入力 (license.shop) を必ず escape */
+    const safeAdmShop = escHtml(license.shop);
+    const safeAdmRef = escHtml(license.refNumber);
+    const safeAdmCode = escHtml(license.code);
     emailTransporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
       subject: `✅ [創業メンバー Activate] ${license.shop} 様`,
       html: `
         <h2>✅ 創業メンバーがアクティベートしました</h2>
-        <p>店舗: <strong>${license.shop}</strong><br>
-           受付: ${license.refNumber}<br>
-           コード: ${license.code}<br>
+        <p>店舗: <strong>${safeAdmShop}</strong><br>
+           受付: ${safeAdmRef}<br>
+           コード: ${safeAdmCode}<br>
            申込から: ${Math.floor((Date.now() - license.issuedAt) / 3600000)} 時間</p>
       `,
     }).catch(() => {});
