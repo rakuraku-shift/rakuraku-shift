@@ -446,6 +446,30 @@
                             vi:'Sinh ra từ kinh nghiệm thực tế ngành nhà hàng, chỉ có tính năng cần thiết.' },
     'home.steps_title': { ja:'3ステップで導入完了', en:'Get Started in 3 Steps', zh:'3 步即可完成导入', ko:'3 단계로 도입 완료', vi:'Hoàn tất trong 3 bước' },
 
+    /* ─── 料金プラン pricing.html ─── */
+    'pricing.badge': { ja:'🎉 永久無料プラン誕生',
+                       en:'🎉 Forever-Free Plan Available',
+                       zh:'🎉 永久免费方案诞生',
+                       ko:'🎉 영구 무료 플랜 탄생',
+                       vi:'🎉 Gói miễn phí vĩnh viễn' },
+    'pricing.title': { ja:'💰 料金プラン',
+                       en:'💰 Pricing Plans',
+                       zh:'💰 价格方案',
+                       ko:'💰 요금제',
+                       vi:'💰 Bảng giá' },
+    'pricing.lead': { ja:'個人バー・スナックなら<strong>完全永久無料</strong>。30 日間は全機能を無料で試せます。',
+                      en:'Individual bars and snacks get <strong>forever free</strong>. Try all features free for 30 days.',
+                      zh:'个人酒吧或小酒馆<strong>完全永久免费</strong>。30 天免费试用全部功能。',
+                      ko:'개인 바・스낵은 <strong>완전 영구 무료</strong>. 30일간 모든 기능을 무료로 체험.',
+                      vi:'Bar & Snack cá nhân <strong>miễn phí vĩnh viễn</strong>. Dùng thử toàn bộ tính năng 30 ngày.' },
+
+    /* ─── 無料デモ予約 demo-reservation.html ─── */
+    'demoresv.title': { ja:'無料 <span class="grad">オンラインデモ</span> 予約',
+                        en:'Free <span class="grad">Online Demo</span> Reservation',
+                        zh:'免费 <span class="grad">在线演示</span> 预约',
+                        ko:'무료 <span class="grad">온라인 데모</span> 예약',
+                        vi:'Đặt <span class="grad">demo online</span> miễn phí' },
+
     /* ─── スタッフ招待 ─── */
     'invite.title': { ja:'📨 スタッフを招待', en:'📨 Invite Staff', zh:'📨 邀请员工', ko:'📨 직원 초대', vi:'📨 Mời nhân viên' },
 

@@ -44,6 +44,9 @@ Disallow: /owner-inbox.html
 Disallow: /founder-activate.html
 Disallow: /founder-welcome.html
 
+# 店長専用 スタッフ招待ページ (URL に shop ID を含むので noindex)
+Disallow: /staff-invite.html
+
 # 業種別 LP (顧客数拡大後に再公開予定・現在は一時的に非公開)
 Disallow: /bar.html
 Disallow: /izakaya.html

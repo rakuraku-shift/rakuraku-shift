@@ -112,7 +112,7 @@
 
 <section class="hero">
   <div class="hero-eyebrow">🎁 完全無料 ・ オンライン15分</div>
-  <h1>無料 <span class="grad">オンラインデモ</span> 予約</h1>
+  <h1 data-i18n-html="demoresv.title">無料 <span class="grad">オンラインデモ</span> 予約</h1>
   <p>代表が画面を共有しながら、お店に合わせた使い方をご案内します。</p>
 </section>
 
@@ -264,5 +264,15 @@ async function submitDemo() {
 }
 </script>
 <script src="/help-widget.js" defer></script>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body>
 </html>
