@@ -65,6 +65,13 @@
   .alert.show{display:block;}
   .alert.err{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#FCA5A5;}
 
+  /* Language switcher */
+  .lang-bar{position:absolute;top:20px;right:20px;display:flex;gap:4px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:4px;z-index:50;}
+  .lang-btn{background:transparent;border:none;color:#94A3B8;font-size:11px;font-weight:800;padding:6px 9px;border-radius:7px;cursor:pointer;font-family:inherit;letter-spacing:.04em;}
+  .lang-btn.active{background:rgba(252,211,77,.18);color:#FCD34D;}
+  .lang-btn:hover{color:#fff;}
+  @media(max-width:380px){.lang-bar{position:fixed;top:env(safe-area-inset-top,12px);right:12px;}}
+
   .info{margin-top:18px;font-size:11px;color:#94A3B8;line-height:1.8;text-align:center;}
   .info a{color:#FCD34D;text-decoration:none;font-weight:700;}
 
@@ -84,6 +91,16 @@
 </style>
 </head>
 <body>
+
+<!-- Language switcher -->
+<div class="lang-bar" role="group" aria-label="言語選択">
+  <button class="lang-btn" data-lang="ja" onclick="setLang('ja')">日本語</button>
+  <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" data-lang="zh" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" data-lang="ko" onclick="setLang('ko')">한국어</button>
+  <button class="lang-btn" data-lang="vi" onclick="setLang('vi')">VI</button>
+</div>
+
 <div class="wrap">
 
   <div class="brand">
@@ -101,7 +118,7 @@
       <div class="sub" id="qShop">—</div>
     </div>
 
-    <div class="info" style="margin-bottom:12px;">PIN を入力して続行 →</div>
+    <div class="info" style="margin-bottom:12px;" data-i18n="hint_enter_pin">PIN を入力して続行 →</div>
 
     <div class="card">
       <div class="pin-wrap">
@@ -128,14 +145,14 @@
 
       <div class="alert err" id="quickErr"></div>
 
-      <button class="quick-other" onclick="resetAccount()">別のアカウントでログイン</button>
+      <button class="quick-other" onclick="resetAccount()" data-i18n="other_account">別のアカウントでログイン</button>
     </div>
   </div>
 
   <!-- ========== New login (初回 or 別端末) ========== -->
   <div id="newView">
-    <h1>スタッフログイン</h1>
-    <p class="lead">店長からの<strong style="color:#FCD34D;">招待リンク</strong>を開いた方は<br>下記をご入力ください</p>
+    <h1 data-i18n="title">スタッフログイン</h1>
+    <p class="lead" data-i18n-html="lead">店長からの<strong style="color:#FCD34D;">招待リンク</strong>を開いた方は<br>下記をご入力ください</p>
 
     <div class="shop-chip" id="shopChip" style="display:none;">
       <span class="dot"></span>
@@ -145,12 +162,12 @@
     <div class="card">
       <form onsubmit="event.preventDefault();loginNew();">
         <div class="field">
-          <label>お名前</label>
-          <input type="text" class="input" id="newName" placeholder="例) 田中 太郎" autocomplete="name" autofocus />
+          <label data-i18n="name_label">お名前</label>
+          <input type="text" class="input" id="newName" data-i18n-placeholder="name_placeholder" placeholder="例) 田中 太郎" autocomplete="name" autofocus />
         </div>
 
         <div class="field">
-          <label>PIN コード (4 桁の数字)</label>
+          <label data-i18n="pin_label">PIN コード (4 桁の数字)</label>
           <div class="pin-wrap">
             <div class="pin-dot" id="np0"></div>
             <div class="pin-dot" id="np1"></div>
@@ -176,14 +193,14 @@
 
         <div class="alert err" id="newErr"></div>
 
-        <p class="info" style="margin-top:14px;">
+        <p class="info" style="margin-top:14px;" data-i18n-html="device_save">
           📌 ログイン情報は<strong style="color:#fff;">この端末に保存</strong>されます<br>
           次回からは <strong style="color:#FCD34D;">PIN 入力だけ</strong>でログイン可能
         </p>
       </form>
     </div>
 
-    <div class="info" style="margin-top:18px;">
+    <div class="info" style="margin-top:18px;" data-i18n-html="manager_link">
       店長の方は <a href="/founder-activate.html">こちら</a><br>
       🤔 招待リンクがない場合は店長にお問い合わせください
     </div>
@@ -194,9 +211,152 @@
 <script>
 const SHOP_KEY  = 'rakuraku_shop';
 const STAFF_KEY = 'rakuraku_staff';
+const LANG_KEY  = 'rakuraku_lang';
 
 let newPin = '';
 let quickPin = '';
+
+/* ============== i18n 翻訳辞書 ============== */
+const I18N = {
+  ja: {
+    title: 'スタッフログイン',
+    lead: '店長からの<strong style="color:#FCD34D;">招待リンク</strong>を開いた方は<br>下記をご入力ください',
+    name_label: 'お名前',
+    name_placeholder: '例) 田中 太郎',
+    pin_label: 'PIN コード (4 桁の数字)',
+    hint_enter_pin: 'PIN を入力して続行 →',
+    device_save: '📌 ログイン情報は<strong style="color:#fff;">この端末に保存</strong>されます<br>次回からは <strong style="color:#FCD34D;">PIN 入力だけ</strong>でログイン可能',
+    manager_link: '店長の方は <a href="/founder-activate.html">こちら</a><br>🤔 招待リンクがない場合は店長にお問い合わせください',
+    other_account: '別のアカウントでログイン',
+    err_name: 'お名前を入力してください',
+    err_pin: '4 桁の PIN を入力してください',
+    err_pin_wrong: 'PIN が違います',
+    err_no_account: 'ログイン情報が見つかりません',
+    confirm_reset: '別のアカウントでログインしますか?\n(現在の保存情報は削除されます)',
+    san_suffix: ' さん'
+  },
+  en: {
+    title: 'Staff Login',
+    lead: 'If you received an <strong style="color:#FCD34D;">invitation link</strong> from your manager,<br>please fill in below',
+    name_label: 'Your Name',
+    name_placeholder: 'e.g.) John Smith',
+    pin_label: 'PIN Code (4 digits)',
+    hint_enter_pin: 'Enter PIN to continue →',
+    device_save: '📌 Your login info is <strong style="color:#fff;">saved on this device</strong><br>Next time, just enter your <strong style="color:#FCD34D;">PIN</strong>',
+    manager_link: 'Manager? <a href="/founder-activate.html">Click here</a><br>🤔 No invitation link? Please ask your manager',
+    other_account: 'Login as different account',
+    err_name: 'Please enter your name',
+    err_pin: 'Please enter a 4-digit PIN',
+    err_pin_wrong: 'Incorrect PIN',
+    err_no_account: 'No account found',
+    confirm_reset: 'Login as different account?\n(Current saved info will be deleted)',
+    san_suffix: ''
+  },
+  zh: {
+    title: '员工登录',
+    lead: '收到店长发送的<strong style="color:#FCD34D;">邀请链接</strong>的员工<br>请在下方填写信息',
+    name_label: '姓名',
+    name_placeholder: '例) 张伟',
+    pin_label: 'PIN 码 (4 位数字)',
+    hint_enter_pin: '输入 PIN 继续 →',
+    device_save: '📌 登录信息将<strong style="color:#fff;">保存在此设备上</strong><br>下次只需输入 <strong style="color:#FCD34D;">PIN 码</strong>即可登录',
+    manager_link: '店长请 <a href="/founder-activate.html">点击这里</a><br>🤔 没有邀请链接? 请联系店长',
+    other_account: '使用其他账户登录',
+    err_name: '请输入您的姓名',
+    err_pin: '请输入 4 位 PIN 码',
+    err_pin_wrong: 'PIN 码错误',
+    err_no_account: '未找到账户',
+    confirm_reset: '使用其他账户登录?\n(当前保存信息将被删除)',
+    san_suffix: ' 先生/女士'
+  },
+  ko: {
+    title: '직원 로그인',
+    lead: '점장님으로부터 <strong style="color:#FCD34D;">초대 링크</strong>를 받으셨다면<br>아래 정보를 입력해주세요',
+    name_label: '이름',
+    name_placeholder: '예) 김민수',
+    pin_label: 'PIN 코드 (4자리 숫자)',
+    hint_enter_pin: 'PIN 입력하여 계속 →',
+    device_save: '📌 로그인 정보는 <strong style="color:#fff;">이 기기에 저장</strong>됩니다<br>다음부터는 <strong style="color:#FCD34D;">PIN 입력만</strong>으로 로그인 가능',
+    manager_link: '점장님은 <a href="/founder-activate.html">여기로</a><br>🤔 초대 링크가 없으신가요? 점장님께 문의해주세요',
+    other_account: '다른 계정으로 로그인',
+    err_name: '이름을 입력해주세요',
+    err_pin: '4자리 PIN을 입력해주세요',
+    err_pin_wrong: 'PIN이 일치하지 않습니다',
+    err_no_account: '계정을 찾을 수 없습니다',
+    confirm_reset: '다른 계정으로 로그인하시겠습니까?\n(현재 저장된 정보는 삭제됩니다)',
+    san_suffix: ' 님'
+  },
+  vi: {
+    title: 'Đăng nhập Nhân viên',
+    lead: 'Nếu bạn nhận được <strong style="color:#FCD34D;">liên kết mời</strong> từ quản lý,<br>vui lòng điền thông tin bên dưới',
+    name_label: 'Tên của bạn',
+    name_placeholder: 'VD) Nguyễn Văn A',
+    pin_label: 'Mã PIN (4 chữ số)',
+    hint_enter_pin: 'Nhập PIN để tiếp tục →',
+    device_save: '📌 Thông tin đăng nhập sẽ được <strong style="color:#fff;">lưu trên thiết bị này</strong><br>Lần sau chỉ cần nhập <strong style="color:#FCD34D;">PIN</strong>',
+    manager_link: 'Quản lý? <a href="/founder-activate.html">Nhấn vào đây</a><br>🤔 Không có liên kết mời? Vui lòng hỏi quản lý',
+    other_account: 'Đăng nhập tài khoản khác',
+    err_name: 'Vui lòng nhập tên',
+    err_pin: 'Vui lòng nhập PIN 4 chữ số',
+    err_pin_wrong: 'PIN không đúng',
+    err_no_account: 'Không tìm thấy tài khoản',
+    confirm_reset: 'Đăng nhập tài khoản khác?\n(Thông tin đã lưu sẽ bị xóa)',
+    san_suffix: ''
+  }
+};
+
+let currentLang = 'ja';
+
+function detectLang(){
+  /* 1. localStorage 優先 */
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved && I18N[saved]) return saved;
+  } catch(e){}
+  /* 2. ブラウザ言語 */
+  const browser = (navigator.language || 'ja').slice(0, 2).toLowerCase();
+  if (I18N[browser]) return browser;
+  return 'ja';
+}
+
+function setLang(lang){
+  if (!I18N[lang]) lang = 'ja';
+  currentLang = lang;
+  try { localStorage.setItem(LANG_KEY, lang); } catch(e){}
+  applyI18n();
+}
+
+function applyI18n(){
+  const t = I18N[currentLang];
+  document.documentElement.lang = currentLang;
+
+  /* 言語ボタンのアクティブ表示 */
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === currentLang);
+  });
+
+  /* テキストノード置換 */
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+  /* HTML置換 */
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (t[key]) el.innerHTML = t[key];
+  });
+  /* placeholder 置換 */
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (t[key]) el.placeholder = t[key];
+  });
+
+  /* クイックログイン画面の名前後ろ */
+  const account = getSavedAccount();
+  if (account){
+    document.getElementById('qName').textContent = account.name + t.san_suffix;
+  }
+}
 
 /* ============== URL パラメータから店舗 ID 取得 ============== */
 function getURLParams(){
@@ -274,15 +434,16 @@ function updateNewPinDots(){
 function loginNew(){
   const name = document.getElementById('newName').value.trim();
   const err = document.getElementById('newErr');
+  const t = I18N[currentLang];
   err.classList.remove('show');
 
   if (!name){
-    err.textContent = 'お名前を入力してください';
+    err.textContent = t.err_name;
     err.classList.add('show');
     return;
   }
   if (newPin.length !== 4){
-    err.textContent = '4 桁の PIN を入力してください';
+    err.textContent = t.err_pin;
     err.classList.add('show');
     return;
   }
@@ -324,15 +485,16 @@ function updateQuickPinDots(){
 }
 function loginQuick(){
   const err = document.getElementById('quickErr');
+  const t = I18N[currentLang];
   err.classList.remove('show');
   const account = getSavedAccount();
   if (!account){
-    err.textContent = 'ログイン情報が見つかりません';
+    err.textContent = t.err_no_account;
     err.classList.add('show');
     return;
   }
   if (quickPin !== account.pin){
-    err.textContent = 'PIN が違います';
+    err.textContent = t.err_pin_wrong;
     err.classList.add('show');
     quickPin = '';
     updateQuickPinDots();
@@ -345,7 +507,8 @@ function loginQuick(){
 
 /* ============== 別アカウント ============== */
 function resetAccount(){
-  if (!confirm('別のアカウントでログインしますか?\n(現在の保存情報は削除されます)')) return;
+  const t = I18N[currentLang];
+  if (!confirm(t.confirm_reset)) return;
   localStorage.removeItem(STAFF_KEY);
   location.reload();
 }
@@ -359,6 +522,8 @@ function goToShift(){
   location.href = url;
 }
 
+currentLang = detectLang();
+applyI18n();
 init();
 </script>
 </body>
