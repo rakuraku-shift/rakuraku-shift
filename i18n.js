@@ -317,6 +317,23 @@
     'common.min': { ja:'最低', en:'Min', zh:'最低', ko:'최저', vi:'Tối thiểu' },
     'common.max': { ja:'最大', en:'Max', zh:'最大', ko:'최대', vi:'Tối đa' },
 
+    /* ─── 創業メンバー 100 店舗プログラム ─── */
+    'founders.eyebrow': { ja:'FOUNDING 100 MEMBERS  ·  創業メンバー募集',
+                           en:'FOUNDING 100 MEMBERS  ·  Recruiting',
+                           zh:'FOUNDING 100 MEMBERS  ·  招募创始会员',
+                           ko:'FOUNDING 100 MEMBERS  ·  창업 멤버 모집',
+                           vi:'FOUNDING 100 MEMBERS  ·  Tuyển thành viên sáng lập' },
+    'founders.title': { ja:'創業メンバー 100 店舗様、<br>Pro プランを <span class="grad">1 年間 完全無料</span>',
+                         en:'Founding 100 stores get the<br>Pro plan <span class="grad">FREE for 1 year</span>',
+                         zh:'创业初期 100 家店铺，<br>Pro 套餐 <span class="grad">1 年完全免费</span>',
+                         ko:'창업 멤버 100 매장 한정,<br>Pro 플랜 <span class="grad">1 년간 완전 무료</span>',
+                         vi:'100 cửa hàng sáng lập,<br>Pro <span class="grad">miễn phí 1 năm</span>' },
+    'founders.cta_apply': { ja:'今すぐ申し込む (無料)', en:'Apply Now (Free)', zh:'立即申请 (免费)', ko:'지금 신청 (무료)', vi:'Đăng ký ngay (Miễn phí)' },
+    'founders.seats_remaining': { ja:'残り席数', en:'Seats Remaining', zh:'剩余席位', ko:'남은 자리', vi:'Số chỗ còn' },
+    'founders.deadline_until': { ja:'締切まで', en:'Until Deadline', zh:'距截止', ko:'마감까지', vi:'Còn lại' },
+    'founders.days': { ja:'日', en:'Days', zh:'天', ko:'일', vi:'Ngày' },
+    'founders.hours': { ja:'時間', en:'Hours', zh:'小时', ko:'시간', vi:'Giờ' },
+
     /* ─── 締切・リマインド ─── */
     'rem.title': { ja:'⏰ 締切・リマインド管理', en:'⏰ Deadline & Reminders', zh:'⏰ 截止·提醒', ko:'⏰ 마감·리마인드' },
     'rem.deadline': { ja:'提出期限', en:'Submission Deadline', zh:'提交截止', ko:'제출 기한' },
