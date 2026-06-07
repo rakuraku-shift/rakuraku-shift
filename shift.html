@@ -3000,7 +3000,7 @@
   <div class="card" id="sales-card" data-mgr-section="payroll" style="margin-top:12px;">
     <div class="section-hdr" style="margin-bottom:12px;">
       <div class="section-title">💰 売上管理 (月次概算)</div>
-      <span id="sales-month-badge" style="font-size:10px;font-weight:800;color:var(--indigo);background:var(--indigo-l);padding:3px 10px;border-radius:20px;">今月</span>
+      <span id="sales-month-badge" style="font-size:10px;font-weight:800;color:var(--indigo);background:var(--indigo-l);padding:3px 10px;border-radius:20px;" data-i18n="mgr.this_month">今月</span>
     </div>
 
     <div style="font-size:11px;color:var(--slate-500);margin-bottom:12px;line-height:1.6;">
@@ -3012,14 +3012,14 @@
         <div class="sales-field-label">🎯 目標売上</div>
         <div class="sales-field-inner">
           <input class="sales-num-input" id="sales-target-input" type="number" min="0" step="1" placeholder="150" inputmode="numeric" oninput="renderSalesDisplay()">
-          <span class="sales-unit">万円</span>
+          <span class="sales-unit" data-i18n="mgr.man_yen">万円</span>
         </div>
       </div>
       <div>
         <div class="sales-field-label">📈 実績売上</div>
         <div class="sales-field-inner">
           <input class="sales-num-input" id="sales-actual-input" type="number" min="0" step="1" placeholder="—" inputmode="numeric" oninput="renderSalesDisplay()">
-          <span class="sales-unit">万円</span>
+          <span class="sales-unit" data-i18n="mgr.man_yen">万円</span>
         </div>
       </div>
     </div>
@@ -3032,7 +3032,7 @@
   <div class="card" id="payroll-card" data-mgr-section="payroll" style="margin-top:12px;">
     <div class="section-hdr" style="margin-bottom:8px;">
       <div class="section-title">💴 給与計算</div>
-      <span id="payroll-month-badge" style="font-size:10px;font-weight:800;color:var(--indigo);background:var(--indigo-l);padding:3px 10px;border-radius:20px;">今月</span>
+      <span id="payroll-month-badge" style="font-size:10px;font-weight:800;color:var(--indigo);background:var(--indigo-l);padding:3px 10px;border-radius:20px;" data-i18n="mgr.this_month">今月</span>
     </div>
     <div style="font-size:11px;color:var(--slate-500);margin-bottom:12px;line-height:1.5;">
       提出シフトと給与設定から、<strong>深夜割増（22:00〜翌5:00 +25%）</strong>込みの月額を自動計算します。
@@ -3093,14 +3093,14 @@
       </div>
       <div class="tp-minmax">
         <div class="tp-mm-cell">
-          <div class="tp-mm-label">最低</div>
+          <div class="tp-mm-label" data-i18n="common.min">最低</div>
           <button class="tp-mm-btn" onclick="adjustRule('morning','min',-1)">−</button>
           <span class="tp-mm-val" id="tp-val-morning-min">2</span>
           <button class="tp-mm-btn" onclick="adjustRule('morning','min',1)">＋</button>
         </div>
         <span class="tp-mm-sep">〜</span>
         <div class="tp-mm-cell">
-          <div class="tp-mm-label">最大</div>
+          <div class="tp-mm-label" data-i18n="common.max">最大</div>
           <button class="tp-mm-btn" onclick="adjustRule('morning','max',-1)">−</button>
           <span class="tp-mm-val" id="tp-val-morning-max">4</span>
           <button class="tp-mm-btn" onclick="adjustRule('morning','max',1)">＋</button>
@@ -3119,14 +3119,14 @@
       </div>
       <div class="tp-minmax">
         <div class="tp-mm-cell">
-          <div class="tp-mm-label">最低</div>
+          <div class="tp-mm-label" data-i18n="common.min">最低</div>
           <button class="tp-mm-btn" onclick="adjustRule('lunch','min',-1)">−</button>
           <span class="tp-mm-val" id="tp-val-lunch-min">2</span>
           <button class="tp-mm-btn" onclick="adjustRule('lunch','min',1)">＋</button>
         </div>
         <span class="tp-mm-sep">〜</span>
         <div class="tp-mm-cell">
-          <div class="tp-mm-label">最大</div>
+          <div class="tp-mm-label" data-i18n="common.max">最大</div>
           <button class="tp-mm-btn" onclick="adjustRule('lunch','max',-1)">−</button>
           <span class="tp-mm-val" id="tp-val-lunch-max">5</span>
           <button class="tp-mm-btn" onclick="adjustRule('lunch','max',1)">＋</button>
@@ -3145,14 +3145,14 @@
       </div>
       <div class="tp-minmax">
         <div class="tp-mm-cell">
-          <div class="tp-mm-label">最低</div>
+          <div class="tp-mm-label" data-i18n="common.min">最低</div>
           <button class="tp-mm-btn" onclick="adjustRule('evening','min',-1)">−</button>
           <span class="tp-mm-val" id="tp-val-evening-min">3</span>
           <button class="tp-mm-btn" onclick="adjustRule('evening','min',1)">＋</button>
         </div>
         <span class="tp-mm-sep">〜</span>
         <div class="tp-mm-cell">
-          <div class="tp-mm-label">最大</div>
+          <div class="tp-mm-label" data-i18n="common.max">最大</div>
           <button class="tp-mm-btn" onclick="adjustRule('evening','max',-1)">−</button>
           <span class="tp-mm-val" id="tp-val-evening-max">6</span>
           <button class="tp-mm-btn" onclick="adjustRule('evening','max',1)">＋</button>
@@ -3351,19 +3351,19 @@
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
           <div style="background:var(--slate-50);border-radius:8px;padding:10px;text-align:center;">
-            <div style="font-size:9px;color:var(--slate-500);font-weight:800;">勤務日数</div>
+            <div style="font-size:9px;color:var(--slate-500);font-weight:800;" data-i18n="mgr.work_days">勤務日数</div>
             <div style="font-size:18px;font-weight:900;color:var(--indigo);"><span id="pp-days">0</span><span style="font-size:10px;color:var(--slate-500);">日</span></div>
           </div>
           <div style="background:var(--slate-50);border-radius:8px;padding:10px;text-align:center;">
-            <div style="font-size:9px;color:var(--slate-500);font-weight:800;">勤務時間</div>
+            <div style="font-size:9px;color:var(--slate-500);font-weight:800;" data-i18n="mgr.work_hours">勤務時間</div>
             <div style="font-size:18px;font-weight:900;color:var(--indigo);"><span id="pp-hours">0</span><span style="font-size:10px;color:var(--slate-500);">h</span></div>
           </div>
           <div style="background:var(--slate-50);border-radius:8px;padding:10px;text-align:center;">
-            <div style="font-size:9px;color:var(--slate-500);font-weight:800;">時給</div>
+            <div style="font-size:9px;color:var(--slate-500);font-weight:800;" data-i18n="mgr.hourly_wage">時給</div>
             <div style="font-size:18px;font-weight:900;color:var(--slate-900);">¥<span id="pp-wage">0</span></div>
           </div>
           <div style="background:var(--slate-50);border-radius:8px;padding:10px;text-align:center;">
-            <div style="font-size:9px;color:var(--slate-500);font-weight:800;">深夜時間</div>
+            <div style="font-size:9px;color:var(--slate-500);font-weight:800;" data-i18n="mgr.night_hours">深夜時間</div>
             <div style="font-size:18px;font-weight:900;color:#F59E0B;"><span id="pp-night">0</span><span style="font-size:10px;color:var(--slate-500);">h</span></div>
           </div>
         </div>
@@ -3376,7 +3376,7 @@
             <span style="color:var(--slate-500);">深夜割増 (+25%)</span><span style="font-weight:800;color:#F59E0B;">¥<span id="pp-night-pay">0</span></span>
           </div>
           <div style="display:flex;justify-content:space-between;">
-            <span style="color:var(--slate-500);">先月実績</span><span style="font-weight:700;color:var(--slate-700);">¥<span id="pp-lastmonth">0</span></span>
+            <span style="color:var(--slate-500);" data-i18n="mgr.last_month_result">先月実績</span><span style="font-weight:700;color:var(--slate-700);">¥<span id="pp-lastmonth">0</span></span>
           </div>
         </div>
 
@@ -3397,7 +3397,7 @@
       <span id="adj-count-badge" style="font-size:10px;font-weight:800;color:var(--amber);background:var(--amber-l);padding:3px 10px;border-radius:20px;"></span>
     </div>
     <div style="font-size:11px;color:var(--slate-500);margin-bottom:14px;line-height:1.5;">
-      新規募集する前に、既にシフト提出してくれているスタッフに<strong>時間調整をお願いするメール</strong>を送れます。
+      <span data-i18n-html="mgr.adjustment_explain">新規募集する前に、既にシフト提出してくれているスタッフに<strong>時間調整をお願いするメール</strong>を送れます。</span>
     </div>
     <div id="adjustment-content"></div>
   </div>
@@ -3432,8 +3432,8 @@
       <div class="timee-logo">
         <div class="timee-logo-icon">⚡</div>
         <div>
-          <div class="timee-logo-text">外部求人配信</div>
-          <div class="timee-logo-sub">人手不足のシフトを自動で募集</div>
+          <div class="timee-logo-text" data-i18n="mgr.external_recruit">外部求人配信</div>
+          <div class="timee-logo-sub" data-i18n="mgr.external_recruit_sub">人手不足のシフトを自動で募集</div>
         </div>
       </div>
       <div class="timee-header-actions">
@@ -3445,7 +3445,7 @@
     <div class="timee-body">
       <!-- Job summary -->
       <div class="timee-job-summary">
-        <div class="tj-title">求人内容</div>
+        <div class="tj-title" data-i18n="mgr.job_details">求人内容</div>
         <div class="tj-items" id="timee-job-items">
           <!-- filled by JS -->
         </div>
@@ -3586,7 +3586,7 @@
       <div class="timee-logo">
         <div class="timee-logo-icon" style="background:linear-gradient(135deg,#4F46E5,#7C3AED);">👥</div>
         <div>
-          <div class="timee-logo-text">自社スタッフ内部募集</div>
+          <div class="timee-logo-text" data-i18n="mgr.internal_recruit">自社スタッフ内部募集</div>
           <div class="timee-logo-sub">時給アップでシフト確保・外部求人の前に</div>
         </div>
       </div>
@@ -3621,7 +3621,7 @@
       <!-- STEP 3: 返答期限 -->
       <div class="notify-section-label">⏰ 返答期限</div>
       <div class="deadline-chips">
-        <div class="deadline-chip sel" data-val="1" onclick="selectDeadlineChip(this)">明日まで</div>
+        <div class="deadline-chip sel" data-val="1" onclick="selectDeadlineChip(this)" data-i18n="mgr.until_tomorrow">明日まで</div>
         <div class="deadline-chip" data-val="3"     onclick="selectDeadlineChip(this)">3日以内</div>
         <div class="deadline-chip" data-val="7"     onclick="selectDeadlineChip(this)">1週間以内</div>
       </div>
@@ -3633,7 +3633,7 @@
       <!-- STEP 5: メッセージプレビュー -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
         <div class="notify-section-label" style="margin-bottom:0;">✉️ 送信メッセージ（自動生成）</div>
-        <span style="font-size:11px;color:var(--indigo);cursor:pointer;" onclick="toggleMsgEdit()">編集する</span>
+        <span style="font-size:11px;color:var(--indigo);cursor:pointer;" onclick="toggleMsgEdit()" data-i18n="btn.edit">編集する</span>
       </div>
       <div class="preview-msg" id="notify-preview"></div>
       <textarea class="notify-msg-textarea" id="notify-message" placeholder="メッセージを入力..." style="display:none;margin-top:8px;"></textarea>
@@ -3676,7 +3676,7 @@
     </div>
     <div class="lic-error" id="lic-error"></div>
     <button class="lic-btn-primary" onclick="validateLicense()">認証する →</button>
-    <div class="lic-divider"><span>または</span></div>
+    <div class="lic-divider"><span data-i18n="common.or">または</span></div>
     <button class="lic-btn-admin" onclick="licenseAdminLogin()">🔑 管理者としてログイン（PIN）</button>
     <div class="lic-hint">コードが不明な場合は RAKURAKU サポートへお問い合わせください</div>
   </div>
@@ -3691,7 +3691,7 @@
       </svg>
     </div>
     <div class="gate-title">RAKURAKU</div>
-    <div class="gate-sub">シフト管理へのアクセスには<br>PINが必要です</div>
+    <div class="gate-sub" data-i18n-html="mgr.gate_pin_required">シフト管理へのアクセスには<br>PINが必要です</div>
     <!-- 4桁ボックス表示（inputはボックス群の下に隠して配置） -->
     <div style="position:relative; width:100%;">
       <div class="gate-pin-row" id="gate-pin-row" onclick="focusGateInput()">
