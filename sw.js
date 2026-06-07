@@ -95,22 +95,40 @@ self.addEventListener('fetch', function(e) {
   if (e.request.url.indexOf('/api/') !== -1 || e.request.url.indexOf('/socket.io/') !== -1) {
     return;
   }
-  /* navigation リクエストはキャッシュ優先、なければネット */
+
+  var isHTML = e.request.destination === 'document'
+            || (e.request.headers.get('accept') || '').indexOf('text/html') !== -1;
+
+  /* ============== HTML: ネットワーク優先 (古い料金キャッシュを防ぐ) ============== */
+  if (isHTML) {
+    e.respondWith(
+      fetch(e.request).then(function(res) {
+        /* 成功時のみキャッシュ更新 */
+        if (res && res.status === 200) {
+          var clone = res.clone();
+          caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
+        }
+        return res;
+      }).catch(function() {
+        /* オフライン時のみキャッシュから復旧 */
+        return caches.match(e.request).then(function(cached) {
+          return cached || caches.match('/shift.html');
+        });
+      })
+    );
+    return;
+  }
+
+  /* ============== 静的アセット (JS/CSS/画像): キャッシュ優先 ============== */
   e.respondWith(
     caches.match(e.request).then(function(cached) {
       return cached || fetch(e.request).then(function(res) {
-        /* 成功レスポンスだけキャッシュに追加 */
         if (res && res.status === 200 && res.type === 'basic') {
           var clone = res.clone();
           caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
         }
         return res;
       });
-    }).catch(function() {
-      /* オフライン時: HTMLリクエストには /shift.html を返す */
-      if (e.request.destination === 'document') {
-        return caches.match('/shift.html');
-      }
     })
   );
 });

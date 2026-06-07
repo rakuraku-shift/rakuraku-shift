@@ -1290,6 +1290,31 @@
 </div>
 
 <script>
+  /* ============ 強制キャッシュ更新 (旧¥9,800 キャッシュを駆逐) ============ */
+  /* sw.js v20 以降は HTML をネットワーク優先で取得するが、
+     既に v13 以下が登録されているユーザーは古い HTML を見続けるため、
+     1 度だけ自動で再登録 + キャッシュクリア + 再読込を強制する */
+  (function forceUpdate(){
+    try {
+      var FLAG = 'rakuraku_cache_v20_done';
+      if (localStorage.getItem(FLAG)) return;
+      localStorage.setItem(FLAG, '1');
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(regs){
+          regs.forEach(function(r){ r.unregister(); });
+        });
+      }
+      if ('caches' in window) {
+        caches.keys().then(function(keys){
+          return Promise.all(keys.map(function(k){ return caches.delete(k); }));
+        }).then(function(){
+          /* 一度だけ強制リロード */
+          setTimeout(function(){ location.reload(true); }, 200);
+        });
+      }
+    } catch(e){}
+  })();
+
   /* ============ 創業メンバー キャンペーンバナー ============ */
   (function campaignBanner(){
     const DEADLINE = new Date('2026-07-05T14:59:59Z').getTime();
