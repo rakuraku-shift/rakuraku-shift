@@ -59,9 +59,18 @@
   .input::placeholder{color:rgba(255,255,255,.3);}
 
   /* PIN dots */
-  .pin-wrap{display:flex;gap:10px;justify-content:center;margin:4px 0;}
-  .pin-dot{flex:1;max-width:60px;height:64px;background:rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#fff;}
+  .pin-wrap{display:flex;gap:10px;justify-content:center;margin:4px 0;transition:transform .1s;}
+  .pin-wrap.shake{animation:pinShake .4s cubic-bezier(.36,.07,.19,.97);}
+  @keyframes pinShake{
+    10%,90%{transform:translateX(-3px);}
+    20%,80%{transform:translateX(5px);}
+    30%,50%,70%{transform:translateX(-9px);}
+    40%,60%{transform:translateX(9px);}
+  }
+  @media (prefers-reduced-motion: reduce){.pin-wrap.shake{animation:none;background:rgba(239,68,68,.05);}}
+  .pin-dot{flex:1;max-width:60px;height:64px;background:rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#fff;transition:border-color .15s;}
   .pin-dot.filled{border-color:var(--gold);background:rgba(252,211,77,.08);}
+  .pin-dot.error{border-color:#EF4444;background:rgba(239,68,68,.1);}
   .pin-input{position:absolute;left:-9999px;opacity:0;}
 
   /* Numpad */
@@ -426,11 +435,13 @@ function init(){
 function addNewPin(d){
   if (newPin.length >= 4) return;
   newPin += d;
+  if (typeof vibrate === 'function') vibrate(10); else { try { if (navigator.vibrate) navigator.vibrate(10); } catch(e){} }
   updateNewPinDots();
   if (newPin.length === 4) setTimeout(loginNew, 200);
 }
 function delNewPin(){
   newPin = newPin.slice(0, -1);
+  try { if (navigator.vibrate) navigator.vibrate(15); } catch(e){}
   updateNewPinDots();
 }
 function updateNewPinDots(){
@@ -477,18 +488,59 @@ function loginNew(){
 }
 
 /* ============== クイックログイン (再訪) ============== */
+/* PIN 試行回数の管理 (ブルートフォース対策) */
+const PIN_ATTEMPTS_KEY = 'rakuraku_pin_attempts';
+const MAX_PIN_ATTEMPTS = 5;
+const LOCKOUT_MS = 30 * 1000;  /* 5 回失敗で 30 秒ロック */
+function getPinAttempts(){
+  try {
+    const data = JSON.parse(localStorage.getItem(PIN_ATTEMPTS_KEY) || '{}');
+    return { count: data.count || 0, lockedUntil: data.lockedUntil || 0 };
+  } catch(e){ return { count: 0, lockedUntil: 0 }; }
+}
+function recordPinFailure(){
+  const data = getPinAttempts();
+  data.count++;
+  if (data.count >= MAX_PIN_ATTEMPTS){
+    data.lockedUntil = Date.now() + LOCKOUT_MS;
+    data.count = 0;  /* リセット */
+  }
+  try { localStorage.setItem(PIN_ATTEMPTS_KEY, JSON.stringify(data)); } catch(e){}
+}
+function resetPinAttempts(){
+  try { localStorage.removeItem(PIN_ATTEMPTS_KEY); } catch(e){}
+}
+function isLocked(){
+  const data = getPinAttempts();
+  return data.lockedUntil > Date.now();
+}
+function lockSecondsRemaining(){
+  const data = getPinAttempts();
+  return Math.ceil((data.lockedUntil - Date.now()) / 1000);
+}
+
+/* バイブレーション (モバイル触覚フィードバック) */
+function vibrate(pattern){
+  try { if (navigator.vibrate) navigator.vibrate(pattern); } catch(e){}
+}
+
 function addPin(d){
+  if (isLocked()) return;
   if (quickPin.length >= 4) return;
   quickPin += d;
+  vibrate(10);  /* 軽い触感フィードバック */
   updateQuickPinDots();
   if (quickPin.length === 4) setTimeout(loginQuick, 200);
 }
 function delPin(){
+  if (isLocked()) return;
   quickPin = quickPin.slice(0, -1);
+  vibrate(15);
   updateQuickPinDots();
 }
 function updateQuickPinDots(){
   document.querySelectorAll('#quickView .pin-dot').forEach((el, i) => {
+    el.classList.remove('error');
     if (quickPin.length > i){
       el.textContent = '●';
       el.classList.add('filled');
@@ -498,10 +550,30 @@ function updateQuickPinDots(){
     }
   });
 }
+function shakeQuickPin(){
+  const wrap = document.querySelector('#quickView .pin-wrap');
+  if (!wrap) return;
+  wrap.classList.add('shake');
+  setTimeout(() => wrap.classList.remove('shake'), 500);
+  /* PIN dot を赤く点滅 */
+  document.querySelectorAll('#quickView .pin-dot').forEach(el => el.classList.add('error'));
+  setTimeout(() => document.querySelectorAll('#quickView .pin-dot').forEach(el => el.classList.remove('error')), 600);
+}
 function loginQuick(){
   const err = document.getElementById('quickErr');
   const t = I18N[currentLang];
   err.classList.remove('show');
+
+  /* ロック中チェック (ブルートフォース対策) */
+  if (isLocked()){
+    const sec = lockSecondsRemaining();
+    err.textContent = `🔒 試行回数が上限に達しました。${sec} 秒後にお試しください`;
+    err.classList.add('show');
+    quickPin = ''; updateQuickPinDots();
+    vibrate([100, 50, 100]);
+    return;
+  }
+
   const account = getSavedAccount();
   if (!account){
     err.textContent = t.err_no_account;
@@ -509,12 +581,24 @@ function loginQuick(){
     return;
   }
   if (quickPin !== account.pin){
-    err.textContent = t.err_pin_wrong;
+    /* 失敗記録 + UI フィードバック */
+    recordPinFailure();
+    const attempts = getPinAttempts();
+    const remaining = isLocked() ? 0 : (MAX_PIN_ATTEMPTS - attempts.count);
+    err.textContent = remaining > 0
+      ? `${t.err_pin_wrong} (残り ${remaining} 回でロック)`
+      : `🔒 ${MAX_PIN_ATTEMPTS} 回失敗 → 30 秒間ロックしました`;
     err.classList.add('show');
+    shakeQuickPin();
+    vibrate([80, 40, 80]);
     quickPin = '';
     updateQuickPinDots();
     return;
   }
+
+  /* 成功時は試行回数をリセット */
+  resetPinAttempts();
+  vibrate(50);
   account.lastLoginAt = Date.now();
   localStorage.setItem(STAFF_KEY, JSON.stringify(account));
   goToShift();
