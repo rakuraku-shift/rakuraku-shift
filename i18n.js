@@ -27,6 +27,41 @@
     'common.required': { ja:'必須', en:'Required', zh:'必填', ko:'필수' },
     'common.optional': { ja:'任意', en:'Optional', zh:'选填', ko:'선택' },
     'common.success': { ja:'成功', en:'Success', zh:'成功', ko:'성공' },
+    'common.registered': { ja:'登録済み', en:'Registered', zh:'已注册', ko:'등록됨', vi:'Đã đăng ký' },
+    'common.or': { ja:'または', en:'or', zh:'或', ko:'또는', vi:'hoặc' },
+
+    /* ─── ボタン btn.* ─── */
+    'btn.save': { ja:'💾 保存する', en:'💾 Save', zh:'💾 保存', ko:'💾 저장', vi:'💾 Lưu' },
+    'btn.edit': { ja:'編集する', en:'Edit', zh:'编辑', ko:'편집', vi:'Sửa' },
+
+    /* ─── 給与 pw.* ─── */
+    'pw.view_personal': { ja:'💴 このスタッフの個人給与を見る',
+                          en:'💴 View this staff member\'s personal payroll',
+                          zh:'💴 查看此员工的个人薪资',
+                          ko:'💴 이 직원의 개인 급여 보기',
+                          vi:'💴 Xem lương cá nhân nhân viên này' },
+
+    /* ─── 評価 eval.* ─── */
+    'eval.save': { ja:'💾 評価を保存',
+                   en:'💾 Save Evaluation',
+                   zh:'💾 保存评价',
+                   ko:'💾 평가 저장',
+                   vi:'💾 Lưu đánh giá' },
+
+    /* ─── ライセンス lic.* ─── */
+    'lic.authenticate': { ja:'認証する →', en:'Authenticate →', zh:'认证 →', ko:'인증 →', vi:'Xác thực →' },
+    'lic.admin_login': { ja:'🔑 管理者としてログイン（PIN）',
+                         en:'🔑 Login as Admin (PIN)',
+                         zh:'🔑 以管理员身份登录（PIN）',
+                         ko:'🔑 관리자로 로그인 (PIN)',
+                         vi:'🔑 Đăng nhập Admin (PIN)' },
+
+    /* ─── 店長 mgr.* 追加 ─── */
+    'mgr.bulk_send': { ja:'📨 まとめて一括送信する',
+                       en:'📨 Send All at Once',
+                       zh:'📨 一次性发送全部',
+                       ko:'📨 일괄 전송',
+                       vi:'📨 Gửi tất cả cùng lúc' },
 
     /* ─── 曜日 ─── */
     'dow.0': { ja:'日', en:'Sun', zh:'日', ko:'일' },

@@ -3024,7 +3024,7 @@
       </div>
     </div>
 
-    <button class="sales-save-btn" onclick="saveSalesData()">💾 保存する</button>
+    <button class="sales-save-btn" onclick="saveSalesData()" data-i18n="btn.save">💾 保存する</button>
     <div id="sales-display"></div>
   </div>
 
@@ -3231,7 +3231,7 @@
 
     <div style="overflow-x:auto;" id="generated-content"></div>
 
-    <button class="btn-print" onclick="printShift()">🖨️ 印刷する</button>
+    <button class="btn-print" onclick="printShift()" data-i18n="btn.print">🖨️ 印刷する</button>
   </div>
 
   <!-- ════════ シフト調整依頼カード（不足コマに既存スタッフへの時間調整依頼を提案） ════════ -->
@@ -3264,7 +3264,7 @@
         <button class="edit-btn" style="background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;margin:0;" onclick="setHoliday('holiday')" data-i18n="holiday.t_busy">🎌 祝日 (繁忙)</button>
         <button class="edit-btn" style="background:linear-gradient(135deg,#06B6D4,#0891B2);color:#fff;margin:0;" onclick="setHoliday('quiet')" data-i18n="holiday.t_quiet">😴 閑散日</button>
       </div>
-      <label>登録済み</label>
+      <label data-i18n="common.registered">登録済み</label>
       <div id="holiday-list" style="max-height:200px;overflow-y:auto;font-size:12px;padding:8px;background:var(--slate-50);border-radius:8px;"></div>
       <button class="edit-btn cancel" onclick="closeHolidayModal()" data-i18n="common.close">閉じる</button>
     </div>
@@ -3303,7 +3303,7 @@
       <div style="font-size:11px;color:var(--slate-500);text-align:center;margin-bottom:14px;font-weight:600;" data-i18n="eval.position">ポジション別 5段階評価</div>
       <div id="se-positions"></div>
       <button class="edit-btn save" onclick="saveStaffEval()" style="margin-top:14px;" data-i18n="eval.save_btn">💾 評価を保存</button>
-      <button class="edit-btn" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;margin-top:8px;" onclick="openPersonalPayroll()">💴 このスタッフの個人給与を見る</button>
+      <button class="edit-btn" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;margin-top:8px;" onclick="openPersonalPayroll()" data-i18n="pw.view_personal">💴 このスタッフの個人給与を見る</button>
       <button class="edit-btn cancel" onclick="closeStaffEval()" data-i18n="common.close">閉じる</button>
     </div>
   </div>
@@ -3420,7 +3420,7 @@
     <div id="eval-skills-panel"></div>
     <div class="eval-section-label" style="margin-top:14px;">メモ（管理者のみ表示）</div>
     <textarea id="eval-note-area" class="eval-note-area" placeholder="仕事ぶりや改善点など…" rows="3"></textarea>
-    <button class="btn-submit" style="margin-top:16px;width:100%;position:relative;" onclick="saveEval()">💾 評価を保存</button>
+    <button class="btn-submit" style="margin-top:16px;width:100%;position:relative;" onclick="saveEval()" data-i18n="eval.save">💾 評価を保存</button>
   </div>
 </div>
 
@@ -3555,9 +3555,9 @@
 <!-- ═══════════ PRINT PREVIEW OVERLAY ═══════════ -->
 <div id="print-preview">
   <div class="ppo-bar">
-    <button class="ppo-btn-close" onclick="closePrintPreview()">✕ 閉じる</button>
+    <button class="ppo-btn-close" onclick="closePrintPreview()" data-i18n="common.close">✕ 閉じる</button>
     <div class="ppo-bar-title">📄 シフト表プレビュー</div>
-    <button class="ppo-btn-print" onclick="triggerPrint()">🖨️ 印刷する</button>
+    <button class="ppo-btn-print" onclick="triggerPrint()" data-i18n="btn.print">🖨️ 印刷する</button>
   </div>
   <div class="ppo-page">
     <div class="ppo-paper">
@@ -3675,9 +3675,9 @@
         onkeydown="if(event.key==='Enter')validateLicense()">
     </div>
     <div class="lic-error" id="lic-error"></div>
-    <button class="lic-btn-primary" onclick="validateLicense()">認証する →</button>
+    <button class="lic-btn-primary" onclick="validateLicense()" data-i18n="lic.authenticate">認証する →</button>
     <div class="lic-divider"><span data-i18n="common.or">または</span></div>
-    <button class="lic-btn-admin" onclick="licenseAdminLogin()">🔑 管理者としてログイン（PIN）</button>
+    <button class="lic-btn-admin" onclick="licenseAdminLogin()" data-i18n="lic.admin_login">🔑 管理者としてログイン（PIN）</button>
     <div class="lic-hint">コードが不明な場合は RAKURAKU サポートへお問い合わせください</div>
   </div>
 </div>
@@ -6288,7 +6288,7 @@
       <div class="adj-bulk-bar">
         <div class="adj-bulk-title">✉️ メール登録済の候補者: ${totalCands}名</div>
         <div class="adj-bulk-sub">全員に一括で調整依頼メールを送信できます</div>
-        <button class="adj-bulk-btn" onclick="sendBulkAdjustmentMails()">📨 まとめて一括送信する</button>
+        <button class="adj-bulk-btn" onclick="sendBulkAdjustmentMails()" data-i18n="mgr.bulk_send">📨 まとめて一括送信する</button>
       </div>` : '';
 
     /* 各不足コマの詳細 */
