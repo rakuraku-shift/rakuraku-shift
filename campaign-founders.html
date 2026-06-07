@@ -139,6 +139,7 @@
   .app-success{display:none;background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-radius:14px;padding:18px 22px;margin-top:14px;font-weight:900;text-align:center;}
   .app-success.show{display:block;animation:pop .3s;}
   @keyframes pop{from{transform:scale(.92);opacity:0;}to{transform:scale(1);opacity:1;}}
+  @keyframes spin{to{transform:rotate(360deg);}}
 
   /* FAQ */
   .faq-list{max-width:760px;margin:0 auto;}
@@ -544,26 +545,77 @@ setInterval(() => { fetchSeats(); }, 30000);
 setInterval(update, 1000);
 
 // ============ Application form ============
+/* インラインバリデーション */
+function fmtError(fieldId, msg){
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  /* 既存エラーを除去 */
+  const existing = el.parentNode.querySelector('.app-field-err');
+  if (existing) existing.remove();
+  const err = document.createElement('div');
+  err.className = 'app-field-err';
+  err.setAttribute('role','alert');
+  err.style.cssText = 'color:#FCA5A5;font-size:11px;font-weight:700;margin-top:4px;';
+  err.textContent = msg;
+  el.parentNode.appendChild(err);
+  el.style.borderColor = '#EF4444';
+  el.focus();
+}
+function clearAppErrors(){
+  document.querySelectorAll('.app-field-err').forEach(e => e.remove());
+}
+
 async function submitApp(){
+  clearAppErrors();
+
+  /* ----- 必須項目バリデーション ----- */
+  const shop = document.getElementById('shop').value.trim();
+  const owner = document.getElementById('owner').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const tel = document.getElementById('tel').value.trim();
+  if (!shop){ fmtError('shop', '⚠️ 店舗名を入力してください'); return; }
+  if (!owner){ fmtError('owner', '⚠️ 代表者名を入力してください'); return; }
+  if (!email){ fmtError('email', '⚠️ メールアドレスを入力してください'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    fmtError('email', '⚠️ 正しいメールアドレス形式で入力してください'); return;
+  }
+  if (!tel){ fmtError('tel', '⚠️ 電話番号を入力してください'); return; }
+
+  /* ----- 残席確認 (満員時は応募不可) ----- */
+  if (calcRemain() <= 0){
+    alert('🚫 募集を締め切りました (100 / 100 席)');
+    return;
+  }
+
   const data = {
-    shop: document.getElementById('shop').value,
-    owner: document.getElementById('owner').value,
-    email: document.getElementById('email').value,
-    tel: document.getElementById('tel').value,
+    shop, owner, email, tel,
     biz: document.getElementById('biz').value,
     staff: document.getElementById('staff').value,
     stores: document.getElementById('stores').value,
     region: document.getElementById('region').value,
-    pain: document.getElementById('pain').value,
+    pain: document.getElementById('pain').value.trim(),
     ts: new Date().toISOString()
   };
 
-  // バックアップ: localStorage に保存
+  /* ----- バックアップ: localStorage に保存 ----- */
   try {
     const arr = JSON.parse(localStorage.getItem('rakuraku_founders') || '[]');
     arr.push(data);
     localStorage.setItem('rakuraku_founders', JSON.stringify(arr));
   } catch(e){}
+
+  /* ----- ボタン: ローディング状態 (二重送信防止) ----- */
+  const submitBtn = document.querySelector('.submit-btn');
+  let originalBtnText = '';
+  if (submitBtn){
+    originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px;"></span>応募中…';
+  }
+
+  /* ----- 12秒タイムアウト ----- */
+  const ctrl = new AbortController();
+  const timeoutId = setTimeout(() => ctrl.abort(), 12000);
 
   // ① サーバー側 API に POST (もし /api/apply-founders が実装されていれば通知)
   let serverOK = false;
@@ -571,10 +623,12 @@ async function submitApp(){
     const res = await fetch('/api/apply-founders', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      signal: ctrl.signal
     });
+    clearTimeout(timeoutId);
     if (res && res.ok) serverOK = true;
-  } catch(e){ /* API 未実装の場合は mailto: にフォールバック */ }
+  } catch(e){ clearTimeout(timeoutId); /* API 未実装の場合は mailto: にフォールバック */ }
 
   // ② サーバー API が無い場合は mailto: でユーザーのメールアプリを開く
   if (!serverOK) {
@@ -608,16 +662,28 @@ async function submitApp(){
   // 成功メッセージ表示
   const newRemain = calcRemain();
   const seatMsg = `🎉 受付番号 #${TOTAL - newRemain} / 100`;
-  document.getElementById('appSuccess').classList.add('show');
-  document.getElementById('appSuccess').innerHTML = serverOK
+  const successEl = document.getElementById('appSuccess');
+  successEl.classList.add('show');
+  successEl.setAttribute('tabindex', '-1');
+  successEl.innerHTML = serverOK
     ? `✅ 応募ありがとうございます! ${seatMsg}<br>
        <span style="font-size:12px;opacity:.9;font-weight:600;line-height:1.6;display:block;margin-top:6px;">
        📧 24 時間以内に代表から <strong>アクティベートコード</strong> が記載されたメールが届きます<br>
        🔑 コード受信後、<a href="/founder-activate.html" style="color:#FFF;text-decoration:underline;">こちらのページ</a> から 1 タップで Pro 1 年無料が即時開始されます
        </span>`
     : `📧 メールアプリが起動します ${seatMsg}<br><span style="font-size:12px;opacity:.9;font-weight:600;">送信後、24 時間以内にアクティベートコードを返信します</span>`;
-  document.getElementById('appForm').reset();
-  document.getElementById('appSuccess').scrollIntoView({behavior:'smooth', block:'center'});
+  /* サーバー OK 時のみフォームリセット (mailto: 失敗時はデータ保持) */
+  if (serverOK){
+    document.getElementById('appForm').reset();
+  }
+  successEl.scrollIntoView({behavior:'smooth', block:'center'});
+  /* スクリーンリーダー対応 */
+  setTimeout(() => successEl.focus(), 300);
+  /* ボタン復帰 */
+  if (submitBtn){
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText || '🔥 創業メンバーに応募する';
+  }
 }
 </script>
 
