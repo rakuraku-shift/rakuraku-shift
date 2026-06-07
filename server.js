@@ -1129,10 +1129,11 @@ app.post('/api/bank-transfer-request', express.json({ limit: '1mb' }), async (re
             </p>
             <h3 style="margin-top:18px;color:#DC2626;">📋 振込先</h3>
             <table style="border-collapse:collapse;font-size:14px;">
-              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">銀行名</td><td style="padding:6px 10px;">ゆうちょ銀行 (店番 008)</td></tr>
-              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">口座番号</td><td style="padding:6px 10px;">普通 1234567</td></tr>
+              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">銀行名</td><td style="padding:6px 10px;">PayPay銀行 (銀行コード 0033)</td></tr>
+              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">支店</td><td style="padding:6px 10px;">支店番号 007</td></tr>
+              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">口座番号</td><td style="padding:6px 10px;font-family:monospace;letter-spacing:.05em;">普通 7879479</td></tr>
               <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">口座名義</td><td style="padding:6px 10px;">コイズミ ショウタ</td></tr>
-              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">振込手数料</td><td style="padding:6px 10px;">お客様ご負担</td></tr>
+              <tr><td style="padding:6px 10px;background:#F8FAFC;font-weight:bold;">振込手数料</td><td style="padding:6px 10px;">お客様ご負担 (PayPay銀行間は無料)</td></tr>
             </table>
             <p style="font-size:13px;background:#EFF6FF;padding:14px 18px;border-radius:10px;border-left:4px solid #4F46E5;margin-top:14px;">
               💡 <strong>振込人名義の末尾に申込番号 (${refNumber}) を追記</strong>していただくと、入金確認がスムーズです<br>
