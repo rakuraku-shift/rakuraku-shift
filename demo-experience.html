@@ -311,11 +311,11 @@
 
     <div class="grid-2">
       <div class="field">
-        <label>お名前</label>
-        <input type="text" id="newStaffName" placeholder="例) 田中 太郎" />
+        <label for="newStaffName">お名前</label>
+        <input type="text" id="newStaffName" placeholder="例) 田中 太郎" autocomplete="name" onkeydown="if(event.key==='Enter'){event.preventDefault();addStaff();}" />
       </div>
       <div class="field">
-        <label>ポジション</label>
+        <label for="newStaffRole">ポジション</label>
         <select id="newStaffRole">
           <option value="hall">🍴 ホール</option>
           <option value="kitchen">🍳 キッチン</option>
@@ -323,13 +323,15 @@
         </select>
       </div>
       <div class="field">
-        <label>時給 (円)</label>
-        <input type="number" id="newStaffWage" placeholder="例) 1200" value="1200" min="900" max="5000" />
+        <label for="newStaffWage">時給 (円)</label>
+        <input type="number" id="newStaffWage" placeholder="例) 1200" value="1200" min="900" max="5000" inputmode="numeric" onkeydown="if(event.key==='Enter'){event.preventDefault();addStaff();}" />
       </div>
       <div class="field" style="display:flex;align-items:flex-end;">
         <button class="btn btn-primary" style="width:100%;" onclick="addStaff()">＋ 追加</button>
       </div>
     </div>
+
+    <div id="staffNameErr" role="alert" aria-live="polite" style="display:none;background:#FEE2E2;color:#B91C1C;border-left:3px solid #DC2626;border-radius:6px;padding:10px 14px;font-size:12px;font-weight:700;margin:8px 0;"></div>
 
     <div class="staff-list" id="staffList">
       <!-- Generated -->
@@ -568,11 +570,46 @@ const STEP_LABELS = [
   {n:8, ic:'🎉', t:'完了'},
 ];
 
+/* ============ State persistence (リフレッシュしても進捗保持) ============ */
+const STORAGE_KEY = 'rakuraku_demo_state_v1';
+function saveState(){
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      step: currentStep,
+      state: { shopName: state.shopName, shopType: state.shopType, openTime: state.openTime, closeTime: state.closeTime, staff: state.staff }
+    }));
+  } catch(e) { /* localStorage 無効環境では何もしない */ }
+}
+function loadState(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    if (data.state){
+      Object.assign(state, data.state);
+      if (state.staff && state.staff.length) {
+        /* 入力欄に復元 */
+        const sn = document.getElementById('shopName'); if (sn) sn.value = state.shopName;
+        const st = document.getElementById('shopType'); if (st) st.value = state.shopType;
+        const op = document.getElementById('openTime'); if (op) op.value = state.openTime;
+        const cl = document.getElementById('closeTime'); if (cl) cl.value = state.closeTime;
+      }
+    }
+    if (data.step && data.step > 1) {
+      currentStep = Math.min(data.step, 2);  /* step 3 以降は再生成が必要なので step 2 で止める */
+      return true;
+    }
+  } catch(e) { /* JSON 壊れていたら無視 */ }
+  return false;
+}
+
 function renderStepNav(){
   const nav = document.getElementById('stepNav');
   nav.innerHTML = STEP_LABELS.map(s => {
+    /* 完了済みステップは done、未来のステップでも staff > 0 ならジャンプ可 */
     const cls = s.n === currentStep ? 'active' : s.n < currentStep ? 'done' : '';
-    return `<button class="step-dot ${cls}" onclick="goToStep(${s.n})"><span class="ic">${s.ic}</span><span>${s.t}</span></button>`;
+    /* 先のステップにジャンプする際は要件未達ならガード */
+    return `<button class="step-dot ${cls}" onclick="goToStep(${s.n})" aria-current="${s.n === currentStep ? 'step' : 'false'}"><span class="ic">${s.ic}</span><span>${s.t}</span></button>`;
   }).join('');
 }
 function updateProgress(){
@@ -582,10 +619,19 @@ function updateProgress(){
   document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
   renderStepNav();
   window.scrollTo({top: 0, behavior: 'smooth'});
+  /* ステップ遷移後の自動フォーカス (UX 向上) */
+  setTimeout(() => {
+    if (currentStep === 1){ const el = document.getElementById('shopName'); if (el) el.focus(); }
+    else if (currentStep === 2){ const el = document.getElementById('newStaffName'); if (el) el.focus(); }
+  }, 150);
+  saveState();
 }
 function nextStep(){
   if (currentStep === 1){
-    state.shopName = document.getElementById('shopName').value;
+    /* ステップ 1: 店舗設定の簡易バリデーション */
+    const sn = document.getElementById('shopName').value.trim();
+    if (!sn) { alert('店舗名を入力してください'); document.getElementById('shopName').focus(); return; }
+    state.shopName = sn;
     state.shopType = document.getElementById('shopType').value;
     state.openTime = document.getElementById('openTime').value;
     state.closeTime = document.getElementById('closeTime').value;
@@ -593,7 +639,22 @@ function nextStep(){
   if (currentStep < TOTAL_STEPS){ currentStep++; updateProgress(); }
 }
 function prevStep(){ if (currentStep > 1){ currentStep--; updateProgress(); } }
-function goToStep(n){ if (n <= TOTAL_STEPS){ currentStep = n; updateProgress(); } }
+function goToStep(n){
+  /* 未来のステップにジャンプする際: 要件未達ならガード */
+  if (n > 2 && state.staff.length < 3){
+    alert('まずスタッフを 3 名以上登録してください');
+    currentStep = 2;
+    updateProgress();
+    return;
+  }
+  if (n > 3 && !state.shift){
+    alert('まずシフトを自動作成してください');
+    currentStep = 3;
+    updateProgress();
+    return;
+  }
+  if (n <= TOTAL_STEPS){ currentStep = n; updateProgress(); }
+}
 
 /* ============ Staff management ============ */
 const SAMPLE_NAMES = [
@@ -610,22 +671,49 @@ function addSampleStaff(){
       state.staff.push({...s, id: 's_' + Date.now() + Math.random().toString(36).slice(2,5)});
     }
   });
+  /* エラーメッセージをクリア */
+  const errEl = document.getElementById('staffNameErr');
+  if (errEl) errEl.style.display = 'none';
+  saveState();
   renderStaff();
 }
 function addStaff(){
-  const name = document.getElementById('newStaffName').value.trim();
+  const nameEl = document.getElementById('newStaffName');
+  const name = nameEl.value.trim();
   const role = document.getElementById('newStaffRole').value;
   const wage = parseInt(document.getElementById('newStaffWage').value) || 1200;
+  const errEl = document.getElementById('staffNameErr');
+  /* インラインエラー (alert より UX 良い) */
   if (!name){
-    alert('お名前を入力してください');
+    errEl.textContent = '⚠️ お名前を入力してください';
+    errEl.style.display = 'block';
+    nameEl.focus();
     return;
   }
+  /* 重複チェック (同名追加防止) */
+  if (state.staff.find(s => s.name === name)){
+    errEl.textContent = `⚠️ 「${name}」さんはすでに登録されています`;
+    errEl.style.display = 'block';
+    nameEl.select();
+    return;
+  }
+  /* 時給バリデーション */
+  if (wage < 900){
+    errEl.textContent = '⚠️ 時給は最低賃金 (¥900) 以上で入力してください';
+    errEl.style.display = 'block';
+    document.getElementById('newStaffWage').focus();
+    return;
+  }
+  errEl.style.display = 'none';
   state.staff.push({name, role, wage, id: 's_' + Date.now() + Math.random().toString(36).slice(2,5)});
-  document.getElementById('newStaffName').value = '';
+  nameEl.value = '';
+  nameEl.focus();  /* 連続追加のため次の入力にフォーカス */
+  saveState();
   renderStaff();
 }
 function delStaff(id){
   state.staff = state.staff.filter(s => s.id !== id);
+  saveState();
   renderStaff();
 }
 function renderStaff(){
@@ -821,14 +909,19 @@ function resetDemo(){
   state.staff = [];
   state.shift = null;
   state.payroll = null;
+  state.totalPayroll = 0;
   currentStep = 1;
-  document.getElementById('staffList').innerHTML = '';
-  document.getElementById('staffCount').textContent = '0';
-  document.getElementById('step2Next').disabled = true;
-  document.getElementById('shiftResult').style.display = 'none';
-  document.getElementById('payrollGrid').innerHTML = '';
-  document.getElementById('alertList').innerHTML = '';
-  document.getElementById('nightWarn').style.display = 'none';
+  /* DOM クリア */
+  const staffListEl = document.getElementById('staffList'); if (staffListEl) staffListEl.innerHTML = '';
+  const staffCountEl = document.getElementById('staffCount'); if (staffCountEl) staffCountEl.textContent = '0';
+  const step2NextEl = document.getElementById('step2Next'); if (step2NextEl) step2NextEl.disabled = true;
+  const shiftResultEl = document.getElementById('shiftResult'); if (shiftResultEl) shiftResultEl.style.display = 'none';
+  const payrollGridEl = document.getElementById('payrollGrid'); if (payrollGridEl) payrollGridEl.innerHTML = '';
+  const alertListEl = document.getElementById('alertList'); if (alertListEl) alertListEl.innerHTML = '';
+  const nightWarnEl = document.getElementById('nightWarn'); if (nightWarnEl) nightWarnEl.style.display = 'none';
+  const errEl = document.getElementById('staffNameErr'); if (errEl) errEl.style.display = 'none';
+  /* localStorage クリア (リフレッシュしても完全リセット) */
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
   updateProgress();
 }
 
@@ -848,8 +941,28 @@ nextStep = function(){
 };
 
 /* ============ INIT ============ */
+/* localStorage から状態復元 (リフレッシュ耐性) */
+const restored = loadState();
+if (restored && state.staff.length){
+  /* 復元時は staff list を即描画 */
+  renderStaff();
+}
 renderStepNav();
 updateProgress();
+
+/* 復元したら「再開した」UI フィードバック */
+if (restored && state.staff.length){
+  setTimeout(() => {
+    const resumeBanner = document.createElement('div');
+    resumeBanner.setAttribute('role','status');
+    resumeBanner.setAttribute('aria-live','polite');
+    resumeBanner.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;padding:12px 22px;border-radius:30px;font-size:12px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:opacity .3s;';
+    resumeBanner.textContent = `🔄 前回の続きから再開: スタッフ ${state.staff.length} 名 / Step ${currentStep}`;
+    document.body.appendChild(resumeBanner);
+    requestAnimationFrame(() => resumeBanner.style.opacity = '1');
+    setTimeout(() => { resumeBanner.style.opacity = '0'; setTimeout(() => resumeBanner.remove(), 400); }, 3500);
+  }, 500);
+}
 </script>
 
 <script src="/i18n.js"></script><script>if(window.RakuI18n){var s=document.createElement("div");s.id="rakuraku-lang-switcher";s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";document.body.appendChild(s);RakuI18n.buildSwitcher("rakuraku-lang-switcher");}</script></body>
