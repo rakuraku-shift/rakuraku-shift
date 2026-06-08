@@ -21,65 +21,83 @@ nav.bc a{color:#1F2937;text-decoration:none}
 table.spec{width:100%;border-collapse:collapse;margin:15px 0}
 table.spec th,table.spec td{padding:15px;border:1px solid #ddd;text-align:left;vertical-align:top}
 table.spec th{background:#F3F4F6;color:#1F2937;width:30%;font-weight:bold}
+.legal-notice{background:#FEF3C7;border-left:4px solid #F59E0B;padding:14px 18px;border-radius:0 8px 8px 0;font-size:.95em;color:#92400E;margin-bottom:24px;font-weight:600}
 footer{text-align:center;margin-top:40px;color:#666;font-size:.85em}
 footer a{color:#1F2937;text-decoration:none;margin:0 8px}
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main">本文へスキップ</a>
+<a class="skip-link" href="#main" data-i18n="a11y.skip_to_main">本文へスキップ</a>
 <div class="container" id="main">
-<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; 特定商取引法に基づく表記</nav>
-<h1>特定商取引法に基づく表記</h1>
-<p class="meta">最終更新: 2026 年 5 月 29 日</p>
+<nav class="bc" aria-label="パンくず"><a href="/" data-i18n="bc.home">ホーム</a> &gt; <span data-i18n="ls.bc">特定商取引法に基づく表記</span></nav>
+<h1 data-i18n="ls.h1">特定商取引法に基づく表記</h1>
+<p class="meta" data-i18n="lt.meta">最終更新: 2026 年 5 月 29 日</p>
+<div class="legal-notice" data-i18n="lt.notice" id="ls-notice">⚠ 日本語版が正本です。翻訳版は参考用であり、法的拘束力は日本語版が優先します。</div>
 
 <table class="spec">
-  <tr><th>販売事業者</th><td>小泉 咲太 (屋号: RAKURAKU) ※個人事業主</td></tr>
-  <tr><th>運営統括責任者</th><td>小泉 咲太</td></tr>
-  <tr><th>所在地</th><td>東京都 (請求があれば遅滞なく開示)</td></tr>
-  <tr><th>電話番号</th><td>080-5168-3303 (受付時間: 平日 10:00-18:00)</td></tr>
-  <tr><th>メールアドレス</th><td>support@rakuraku-shift.com</td></tr>
-  <tr><th>販売 URL</th><td>https://rakuraku-shift.com/</td></tr>
-  <tr><th>販売価格</th><td>
+  <tr><th data-i18n="ls.h_seller">販売事業者</th><td data-i18n="ls.v_seller">小泉 咲太 (屋号: RAKURAKU) ※個人事業主</td></tr>
+  <tr><th data-i18n="ls.h_chief">運営統括責任者</th><td data-i18n="ls.v_chief">小泉 咲太</td></tr>
+  <tr><th data-i18n="ls.h_loc">所在地</th><td data-i18n="ls.v_loc">東京都 (請求があれば遅滞なく開示)</td></tr>
+  <tr><th data-i18n="ls.h_tel">電話番号</th><td data-i18n="ls.v_tel">080-5168-3303 (受付時間: 平日 10:00-18:00)</td></tr>
+  <tr><th data-i18n="ls.h_email">メールアドレス</th><td>support@rakuraku-shift.com</td></tr>
+  <tr><th data-i18n="ls.h_url">販売 URL</th><td>https://rakuraku-shift.com/</td></tr>
+  <tr><th data-i18n="ls.h_price">販売価格</th><td data-i18n-html="ls.v_price">
     月額プラン: ¥4,990 (税抜) / 月<br>
     年額プラン: ¥49,900 (税抜) / 年<br>
     30 日 Pro 体験 (クレカ不要)期間あり (期間終了後に自動移行)
   </td></tr>
-  <tr><th>商品代金以外の必要料金</th><td>
+  <tr><th data-i18n="ls.h_extra">商品代金以外の必要料金</th><td data-i18n-html="ls.v_extra">
     インターネット接続料金・通信費等はお客様のご負担となります<br>
     銀行振込の場合の振込手数料はお客様のご負担となります
   </td></tr>
-  <tr><th>支払方法</th><td>
+  <tr><th data-i18n="ls.h_pay">支払方法</th><td data-i18n-html="ls.v_pay">
     クレジットカード決済 (VISA / Mastercard / JCB / AMEX / Diners) — Stripe による処理<br>
     銀行振込 (年額プランのみ)
   </td></tr>
-  <tr><th>支払時期</th><td>
+  <tr><th data-i18n="ls.h_paytime">支払時期</th><td data-i18n-html="ls.v_paytime">
     月額プラン: 申込日を基準日として毎月課金<br>
     年額プラン: 申込時に一括前払い
   </td></tr>
-  <tr><th>サービス提供時期</th><td>お申込み完了後、即時利用可能</td></tr>
-  <tr><th>返品・キャンセル</th><td>
+  <tr><th data-i18n="ls.h_provide">サービス提供時期</th><td data-i18n="ls.v_provide">お申込み完了後、即時利用可能</td></tr>
+  <tr><th data-i18n="ls.h_cancel">返品・キャンセル</th><td data-i18n-html="ls.v_cancel">
     本サービスはデジタルサービスのため、お申込み後の返品はお受けできません<br>
     ただし 30 日 Pro 体験 (クレカ不要)期間中であればいつでもキャンセル可能 (課金されません)<br>
     また、初回課金後 30 日以内であれば全額返金保証 (満足度保証) を適用します
   </td></tr>
-  <tr><th>解約方法</th><td>
+  <tr><th data-i18n="ls.h_termination">解約方法</th><td data-i18n-html="ls.v_termination">
     マイページ「アカウント設定」→「サブスクリプション」→「解約」より、いつでもオンラインで解約可能<br>
     解約後も期間終了日まではご利用いただけます (日割り返金はございません)
   </td></tr>
-  <tr><th>動作環境</th><td>
+  <tr><th data-i18n="ls.h_env">動作環境</th><td data-i18n-html="ls.v_env">
     PC ブラウザ: Chrome / Safari / Edge / Firefox の最新版<br>
     スマートフォン: iOS 15+ / Android 10+ (PWA 対応)
   </td></tr>
-  <tr><th>不良品の場合</th><td>
+  <tr><th data-i18n="ls.h_defect">不良品の場合</th><td data-i18n-html="ls.v_defect">
     サービス利用に重大な不具合が発生した場合は、メールにてお問い合わせください<br>
     調査の上、サービス提供期間の延長または返金対応をいたします
   </td></tr>
 </table>
 
 <footer>
-  <p><a href="/">ホーム</a> | <a href="/legal/terms.html">利用規約</a> | <a href="/legal/privacy.html">プライバシーポリシー</a></p>
-  <p style="margin-top:10px;opacity:.7">© 2026 RAKURAKU (運営: 小泉 咲太)</p>
+  <p><a href="/" data-i18n="ft.f_home">ホーム</a> | <a href="/legal/terms.html" data-i18n="sec.f_terms">利用規約</a> | <a href="/legal/privacy.html" data-i18n="lt.f_privacy">プライバシーポリシー</a></p>
+  <p style="margin-top:10px;opacity:.7" data-i18n="lt.copyright">© 2026 RAKURAKU (運営: 小泉 咲太)</p>
 </footer>
 </div>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+  var hide = function(){
+    var notice = document.getElementById("ls-notice");
+    if (notice) notice.style.display = (RakuI18n.getLang() === "ja") ? "none" : "block";
+  };
+  hide();
+  window.addEventListener("rakuraku-lang-changed", hide);
+}
+</script>
 </body>
 </html>
