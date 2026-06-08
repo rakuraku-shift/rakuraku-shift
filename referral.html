@@ -84,31 +84,31 @@
 <header class="nav">
   <div class="nav-inner">
     <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
-    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;">← トップへ</a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;" data-i18n="rf.back_top">← トップへ</a>
   </div>
 </header>
 
 <div class="container">
 
 <section class="hero">
-  <div class="hero-eyebrow">🤝 紹介プログラム</div>
-  <h1>お知り合いに紹介して<br><span class="grad">お互いに1ヶ月無料</span></h1>
-  <p>バー・飲食店仲間に RAKURAKU を紹介してもらえると、紹介した方も紹介された方も翌月の月額料金が無料になります。</p>
-  <p style="font-size:11px;color:var(--slate-500);margin-top:8px;background:var(--slate-50);padding:6px 14px;border-radius:14px;display:inline-block;font-weight:700;">
+  <div class="hero-eyebrow" data-i18n="rf.eyebrow">🤝 紹介プログラム</div>
+  <h1 data-i18n-html="rf.h1">お知り合いに紹介して<br><span class="grad">お互いに1ヶ月無料</span></h1>
+  <p data-i18n="rf.lead">バー・飲食店仲間に RAKURAKU を紹介してもらえると、紹介した方も紹介された方も翌月の月額料金が無料になります。</p>
+  <p style="font-size:11px;color:var(--slate-500);margin-top:8px;background:var(--slate-50);padding:6px 14px;border-radius:14px;display:inline-block;font-weight:700;" data-i18n-html="rf.cap_policy">
     📌 無料期間の上限ポリシー: <strong>1店舗あたり最大2ヶ月まで</strong> (14日トライアル含む)
   </p>
 </section>
 
 <div class="reward-cards">
   <div class="reward">
-    <h3>🎁 あなたへ</h3>
+    <h3 data-i18n="rf.r1_h3">🎁 あなたへ</h3>
     <div class="amount">¥4,990</div>
-    <div class="sub">翌月の月額が無料</div>
+    <div class="sub" data-i18n="rf.r1_sub">翌月の月額が無料</div>
   </div>
   <div class="reward">
-    <h3>🎁 ご紹介先へ</h3>
+    <h3 data-i18n="rf.r2_h3">🎁 ご紹介先へ</h3>
     <div class="amount">¥4,990</div>
-    <div class="sub">初月の月額が無料</div>
+    <div class="sub" data-i18n="rf.r2_sub">初月の月額が無料</div>
   </div>
 </div>
 
@@ -116,81 +116,81 @@
   <div class="step">
     <div class="step-num">1</div>
     <div class="step-body">
-      <h4>下のフォームから紹介申請</h4>
-      <p>あなたのお店と、紹介したいお店の情報を入力してください。</p>
+      <h4 data-i18n="rf.step1_h4">下のフォームから紹介申請</h4>
+      <p data-i18n="rf.step1_p">あなたのお店と、紹介したいお店の情報を入力してください。</p>
     </div>
   </div>
   <div class="step">
     <div class="step-num">2</div>
     <div class="step-body">
-      <h4>紹介コードがメールで届く</h4>
-      <p>あなたの専用紹介コード（例: <code>RAKU-XXXX-YYYY</code>）が発行されます。</p>
+      <h4 data-i18n="rf.step2_h4">紹介コードがメールで届く</h4>
+      <p data-i18n-html="rf.step2_p">あなたの専用紹介コード（例: <code>RAKU-XXXX-YYYY</code>）が発行されます。</p>
     </div>
   </div>
   <div class="step">
     <div class="step-num">3</div>
     <div class="step-body">
-      <h4>紹介先がコードを入力して契約</h4>
-      <p>紹介先が無料トライアル時にコードを入力 → 契約成立で双方の無料月が確定。</p>
+      <h4 data-i18n="rf.step3_h4">紹介先がコードを入力して契約</h4>
+      <p data-i18n="rf.step3_p">紹介先が無料トライアル時にコードを入力 → 契約成立で双方の無料月が確定。</p>
     </div>
   </div>
 </div>
 
 <div class="form-card" id="form-card">
-  <h2>📝 紹介申請フォーム</h2>
-  <div class="lead">紹介者・被紹介者の両方の情報をご入力ください</div>
+  <h2 data-i18n="rf.form_h2">📝 紹介申請フォーム</h2>
+  <div class="lead" data-i18n="rf.form_lead">紹介者・被紹介者の両方の情報をご入力ください</div>
 
-  <div class="section-sep">あなた（紹介者）の情報</div>
+  <div class="section-sep" data-i18n="rf.sep_referrer">あなた（紹介者）の情報</div>
   <div class="form-row-2">
     <div class="form-field">
-      <label>お店の名前 <span style="color:#EF4444;">*</span></label>
-      <input type="text" id="r-shop" required placeholder="例) BAR RAKURAKU 渋谷" />
+      <label data-i18n-html="rf.lbl_shop">お店の名前 <span style="color:#EF4444;">*</span></label>
+      <input type="text" id="r-shop" required data-i18n-placeholder="rf.ph_r_shop" placeholder="例) BAR RAKURAKU 渋谷" />
     </div>
     <div class="form-field">
-      <label>お名前 <span style="color:#EF4444;">*</span></label>
-      <input type="text" id="r-name" required placeholder="お名前" />
+      <label data-i18n-html="rf.lbl_name">お名前 <span style="color:#EF4444;">*</span></label>
+      <input type="text" id="r-name" required data-i18n-placeholder="rf.ph_name" placeholder="お名前" />
     </div>
   </div>
   <div class="form-row-2">
     <div class="form-field">
-      <label>メール <span style="color:#EF4444;">*</span></label>
+      <label data-i18n-html="rf.lbl_email">メール <span style="color:#EF4444;">*</span></label>
       <input type="email" id="r-email" required />
     </div>
     <div class="form-field">
-      <label>RAKURAKU 契約店舗ID</label>
+      <label data-i18n="rf.lbl_shopid">RAKURAKU 契約店舗ID</label>
       <input type="text" id="r-shopid" placeholder="bar-rakuraku-shibuya" />
     </div>
   </div>
 
-  <div class="section-sep">ご紹介先のお店の情報</div>
+  <div class="section-sep" data-i18n="rf.sep_target">ご紹介先のお店の情報</div>
   <div class="form-row-2">
     <div class="form-field">
-      <label>お店の名前 <span style="color:#EF4444;">*</span></label>
-      <input type="text" id="t-shop" required placeholder="例) SHOT BAR LUNA" />
+      <label data-i18n-html="rf.lbl_shop">お店の名前 <span style="color:#EF4444;">*</span></label>
+      <input type="text" id="t-shop" required data-i18n-placeholder="rf.ph_t_shop" placeholder="例) SHOT BAR LUNA" />
     </div>
     <div class="form-field">
-      <label>担当者名 <span style="color:#EF4444;">*</span></label>
-      <input type="text" id="t-name" required placeholder="担当者名" />
+      <label data-i18n-html="rf.lbl_contact">担当者名 <span style="color:#EF4444;">*</span></label>
+      <input type="text" id="t-name" required data-i18n-placeholder="rf.ph_contact" placeholder="担当者名" />
     </div>
   </div>
   <div class="form-row-2">
     <div class="form-field">
-      <label>連絡先メール</label>
-      <input type="email" id="t-email" placeholder="紹介先のメール" />
+      <label data-i18n="rf.lbl_t_email">連絡先メール</label>
+      <input type="email" id="t-email" data-i18n-placeholder="rf.ph_t_email" placeholder="紹介先のメール" />
     </div>
     <div class="form-field">
-      <label>電話番号</label>
-      <input type="tel" id="t-phone" placeholder="連絡先電話" />
+      <label data-i18n="rf.lbl_phone">電話番号</label>
+      <input type="tel" id="t-phone" data-i18n-placeholder="rf.ph_phone" placeholder="連絡先電話" />
     </div>
   </div>
 
   <div class="form-field" style="margin-top:14px;">
-    <label>備考（任意）</label>
-    <textarea id="r-note" rows="3" placeholder="紹介先の業態や、特に気にされている機能など"></textarea>
+    <label data-i18n="rf.lbl_note">備考（任意）</label>
+    <textarea id="r-note" rows="3" data-i18n-placeholder="rf.ph_note" placeholder="紹介先の業態や、特に気にされている機能など"></textarea>
   </div>
 
-  <button class="btn-submit" onclick="submitReferral()">🤝 紹介を申請する</button>
-  <p class="info-text">
+  <button class="btn-submit" onclick="submitReferral()" data-i18n="rf.btn_submit">🤝 紹介を申請する</button>
+  <p class="info-text" data-i18n-html="rf.info_text">
     ✓ 24時間以内に紹介コードをメールでお送りします<br>
     ✓ 紹介先の契約成立をもって特典が確定します<br>
     ✓ 不正・なりすましは無効となります
@@ -199,23 +199,23 @@
 
 <div class="success-card" id="success-card">
   <div style="font-size:48px;">🎉</div>
-  <h2 style="color:#047857;margin:10px 0 6px;">紹介申請ありがとうございます！</h2>
-  <p style="font-size:13px;color:var(--slate-700);">あなたの紹介コードは</p>
+  <h2 style="color:#047857;margin:10px 0 6px;" data-i18n="rf.sc_h2">紹介申請ありがとうございます！</h2>
+  <p style="font-size:13px;color:var(--slate-700);" data-i18n="rf.sc_p1">あなたの紹介コードは</p>
   <div class="code" id="ref-code">RAKU-XXXX-YYYY</div>
-  <p style="font-size:12px;color:var(--slate-500);">このコードを紹介先にお伝えください。<br>契約成立で双方の月額¥4,990が無料になります。</p>
-  <p style="margin-top:16px;"><a href="/" style="color:var(--indigo);font-weight:800;">← トップへ戻る</a></p>
+  <p style="font-size:12px;color:var(--slate-500);" data-i18n-html="rf.sc_p2">このコードを紹介先にお伝えください。<br>契約成立で双方の月額¥4,990が無料になります。</p>
+  <p style="margin-top:16px;"><a href="/" style="color:var(--indigo);font-weight:800;" data-i18n="rf.sc_back">← トップへ戻る</a></p>
 </div>
 
 <div class="footer">
   <div style="margin-bottom:8px;">
-    <a href="/" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;">トップ</a>·
-    <a href="/case-studies.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;">ヒアリング事例</a>·
-    <a href="/blog.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;">ブログ</a>·
-    <a href="/help.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;">FAQ</a>·
-    <a href="/demo-reservation.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;">デモ予約</a>
+    <a href="/" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;" data-i18n="vs.f_top">トップ</a>·
+    <a href="/case-studies.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;" data-i18n="bl.f_cases">ヒアリング事例</a>·
+    <a href="/blog.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;" data-i18n="com.f_blog">ブログ</a>·
+    <a href="/help.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;" data-i18n="intg.f_faq">FAQ</a>·
+    <a href="/demo-reservation.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;" data-i18n="vs.f_demo">デモ予約</a>
   </div>
-  RAKURAKU / 代表 小泉 咲太 · 📞 080-5168-3303<br>
-  &copy; 2026 RAKURAKU. All rights reserved.
+  <span data-i18n-html="rf.f_footer">RAKURAKU / 代表 小泉 咲太 · 📞 080-5168-3303<br>
+  &copy; 2026 RAKURAKU. All rights reserved.</span>
 </div>
 
 </div>
@@ -272,5 +272,15 @@ async function submitReferral() {
 }
 </script>
 <script src="/help-widget.js" defer></script>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body>
 </html>
