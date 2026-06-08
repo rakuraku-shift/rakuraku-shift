@@ -53,21 +53,21 @@ footer a{color:#9333EA;margin:0 10px}
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main">本文へスキップ</a>
+<a class="skip-link" href="#main" data-i18n="a11y.skip_to_main">本文へスキップ</a>
 <header>
-  <h1>💬 ヒアリング調査 16 件 (★4.8 / 5.0)</h1>
-  <p>ヒアリング協力店舗の率直なご意見</p>
+  <h1 data-i18n="ts.h1">💬 ヒアリング調査 16 件 (★4.8 / 5.0)</h1>
+  <p data-i18n="ts.lead">ヒアリング協力店舗の率直なご意見</p>
 </header>
-<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; ヒアリング調査</nav>
+<nav class="bc" aria-label="パンくず"><a href="/" data-i18n="bc.home">ホーム</a> &gt; <span data-i18n="ts.bc">ヒアリング調査</span></nav>
 
 <div class="filter">
-  <button class="active" onclick="filterCards('all',this)">全業態 (16)</button>
-  <button onclick="filterCards('bar',this)">🍸 バー</button>
-  <button onclick="filterCards('izakaya',this)">🍺 居酒屋</button>
-  <button onclick="filterCards('cafe',this)">☕ カフェ</button>
-  <button onclick="filterCards('snack',this)">🌸 スナック</button>
-  <button onclick="filterCards('lounge',this)">💎 ラウンジ</button>
-  <button onclick="filterCards('karaoke',this)">🎤 カラオケ</button>
+  <button class="active" onclick="filterCards('all',this)" data-i18n="ts.all">全業態 (16)</button>
+  <button onclick="filterCards('bar',this)" data-i18n="cs.tag_bar">🍸 バー</button>
+  <button onclick="filterCards('izakaya',this)" data-i18n="cs.tag_izakaya">🍺 居酒屋</button>
+  <button onclick="filterCards('cafe',this)" data-i18n="cs.tag_cafe">☕ カフェ</button>
+  <button onclick="filterCards('snack',this)" data-i18n="ts.snack">🌸 スナック</button>
+  <button onclick="filterCards('lounge',this)" data-i18n="ts.lounge">💎 ラウンジ</button>
+  <button onclick="filterCards('karaoke',this)" data-i18n="ts.karaoke">🎤 カラオケ</button>
 </div>
 
 <main id="main">
@@ -75,159 +75,159 @@ footer a{color:#9333EA;margin:0 10px}
 
   <div class="card" data-type="bar">
     <div class="stars">★★★★★</div>
-    <span class="type">🍸 バー</span>
-    <p>「深夜営業の手当計算がいつも頭痛の種でしたが、RAKURAKU を入れてから月末徹夜からの解放を期待しています。労基法対応も安心です。」</p>
-    <div class="name">B さん (40 代男性)</div>
-    <div class="role">バーオーナー / 港区 / スタッフ 6 名</div>
-    <div class="metric">月末作業時間: <strong>15h → 3h</strong></div>
+    <span class="type" data-i18n="ts.type1">🍸 バー</span>
+    <p data-i18n="ts.quote1">「深夜営業の手当計算がいつも頭痛の種でしたが、RAKURAKU を入れてから月末徹夜からの解放を期待しています。労基法対応も安心です。」</p>
+    <div class="name" data-i18n="ts.name1">B さん (40 代男性)</div>
+    <div class="role" data-i18n="ts.role1">バーオーナー / 港区 / スタッフ 6 名</div>
+    <div class="metric" data-i18n-html="ts.metric1">月末作業時間: <strong>15h → 3h</strong></div>
   </div>
 
   <div class="card" data-type="bar">
     <div class="stars">★★★★★</div>
-    <span class="type">🍸 バー</span>
-    <p>「キャストのシフト管理が LINE グループだと既読確認できなくて困っていましたが、今は通知が確実に届くのでスムーズです。」</p>
-    <div class="name">A さん (30 代女性)</div>
-    <div class="role">キャストバー経営 / 銀座 / スタッフ 12 名</div>
-    <div class="metric">無断欠勤: <strong>月 4 件 → 0 件</strong></div>
+    <span class="type" data-i18n="ts.type2">🍸 バー</span>
+    <p data-i18n="ts.quote2">「キャストのシフト管理が LINE グループだと既読確認できなくて困っていましたが、今は通知が確実に届くのでスムーズです。」</p>
+    <div class="name" data-i18n="ts.name2">A さん (30 代女性)</div>
+    <div class="role" data-i18n="ts.role2">キャストバー経営 / 銀座 / スタッフ 12 名</div>
+    <div class="metric" data-i18n-html="ts.metric2">無断欠勤: <strong>月 4 件 → 0 件</strong></div>
   </div>
 
   <div class="card" data-type="izakaya">
     <div class="stars">★★★★★</div>
-    <span class="type">🍺 居酒屋</span>
-    <p>「学生バイトが多いので試験期間の希望休が複雑でしたが、RAKURAKU のスマホ申請でストレスフリーになりました。」</p>
-    <div class="name">C さん (45 代男性)</div>
-    <div class="role">居酒屋店長 / 渋谷 / スタッフ 20 名</div>
-    <div class="metric">シフト作成時間: <strong>5h → 1h</strong></div>
+    <span class="type" data-i18n="ts.type3">🍺 居酒屋</span>
+    <p data-i18n="ts.quote3">「学生バイトが多いので試験期間の希望休が複雑でしたが、RAKURAKU のスマホ申請でストレスフリーになりました。」</p>
+    <div class="name" data-i18n="ts.name3">C さん (45 代男性)</div>
+    <div class="role" data-i18n="ts.role3">居酒屋店長 / 渋谷 / スタッフ 20 名</div>
+    <div class="metric" data-i18n-html="ts.metric3">シフト作成時間: <strong>5h → 1h</strong></div>
   </div>
 
   <div class="card" data-type="izakaya">
     <div class="stars">★★★★☆</div>
-    <span class="type">🍺 居酒屋</span>
-    <p>「2 店舗目を出した時、本部ダッシュボードで両店一括管理できるのが本当に便利。スタッフの貸し借りも簡単。」</p>
-    <div class="name">D さん (38 代男性)</div>
-    <div class="role">居酒屋チェーン / 関東 2 店舗</div>
-    <div class="metric">人件費率: <strong>32% → 28%</strong></div>
+    <span class="type" data-i18n="ts.type4">🍺 居酒屋</span>
+    <p data-i18n="ts.quote4">「2 店舗目を出した時、本部ダッシュボードで両店一括管理できるのが本当に便利。スタッフの貸し借りも簡単。」</p>
+    <div class="name" data-i18n="ts.name4">D さん (38 代男性)</div>
+    <div class="role" data-i18n="ts.role4">居酒屋チェーン / 関東 2 店舗</div>
+    <div class="metric" data-i18n-html="ts.metric4">人件費率: <strong>32% → 28%</strong></div>
   </div>
 
   <div class="card" data-type="cafe">
     <div class="stars">★★★★★</div>
-    <span class="type">☕ カフェ</span>
-    <p>「朝 6 時開店のため早朝シフトが大変でしたが、自動売上連動で必要人数が見える化され、無駄な人件費を削減が期待できます。」</p>
-    <div class="name">E さん (35 代女性)</div>
-    <div class="role">カフェオーナー / 表参道 / スタッフ 8 名</div>
-    <div class="metric">早朝人件費: <strong>月 8 万円削減</strong></div>
+    <span class="type" data-i18n="ts.type5">☕ カフェ</span>
+    <p data-i18n="ts.quote5">「朝 6 時開店のため早朝シフトが大変でしたが、自動売上連動で必要人数が見える化され、無駄な人件費を削減が期待できます。」</p>
+    <div class="name" data-i18n="ts.name5">E さん (35 代女性)</div>
+    <div class="role" data-i18n="ts.role5">カフェオーナー / 表参道 / スタッフ 8 名</div>
+    <div class="metric" data-i18n-html="ts.metric5">早朝人件費: <strong>月 8 万円削減</strong></div>
   </div>
 
   <div class="card" data-type="cafe">
     <div class="stars">★★★★★</div>
-    <span class="type">☕ カフェ</span>
-    <p>「留学生スタッフのため英語対応が必要でしたが、多言語機能のおかげで採用の幅が広がりました。」</p>
-    <div class="name">F さん (29 代女性)</div>
-    <div class="role">カフェ店長 / 新宿 / スタッフ 10 名</div>
-    <div class="metric">外国人採用数: <strong>0 → 3 名</strong></div>
+    <span class="type" data-i18n="ts.type6">☕ カフェ</span>
+    <p data-i18n="ts.quote6">「留学生スタッフのため英語対応が必要でしたが、多言語機能のおかげで採用の幅が広がりました。」</p>
+    <div class="name" data-i18n="ts.name6">F さん (29 代女性)</div>
+    <div class="role" data-i18n="ts.role6">カフェ店長 / 新宿 / スタッフ 10 名</div>
+    <div class="metric" data-i18n-html="ts.metric6">外国人採用数: <strong>0 → 3 名</strong></div>
   </div>
 
   <div class="card" data-type="snack">
     <div class="stars">★★★★★</div>
-    <span class="type">🌸 スナック</span>
-    <p>「ママ業の傍ら経営しているのでスマホだけで全部できるのが本当に助かる。LINE 連携も気が利いてる。」</p>
-    <div class="name">G さん (55 代女性)</div>
-    <div class="role">スナックママ / 新橋 / スタッフ 4 名</div>
-    <div class="metric">事務作業時間: <strong>週 6h → 1h</strong></div>
+    <span class="type" data-i18n="ts.type7">🌸 スナック</span>
+    <p data-i18n="ts.quote7">「ママ業の傍ら経営しているのでスマホだけで全部できるのが本当に助かる。LINE 連携も気が利いてる。」</p>
+    <div class="name" data-i18n="ts.name7">G さん (55 代女性)</div>
+    <div class="role" data-i18n="ts.role7">スナックママ / 新橋 / スタッフ 4 名</div>
+    <div class="metric" data-i18n-html="ts.metric7">事務作業時間: <strong>週 6h → 1h</strong></div>
   </div>
 
   <div class="card" data-type="snack">
     <div class="stars">★★★★☆</div>
-    <span class="type">🌸 スナック</span>
-    <p>「以前は紙のシフト表でしたが、お客様待ちの時間にスマホで翌週のシフト作れるのが嬉しい。」</p>
-    <div class="name">H さん (48 代女性)</div>
-    <div class="role">スナックママ / 池袋 / スタッフ 3 名</div>
-    <div class="metric">紙コスト: <strong>月 3,000 円削減</strong></div>
+    <span class="type" data-i18n="ts.type8">🌸 スナック</span>
+    <p data-i18n="ts.quote8">「以前は紙のシフト表でしたが、お客様待ちの時間にスマホで翌週のシフト作れるのが嬉しい。」</p>
+    <div class="name" data-i18n="ts.name8">H さん (48 代女性)</div>
+    <div class="role" data-i18n="ts.role8">スナックママ / 池袋 / スタッフ 3 名</div>
+    <div class="metric" data-i18n-html="ts.metric8">紙コスト: <strong>月 3,000 円削減</strong></div>
   </div>
 
   <div class="card" data-type="lounge">
     <div class="stars">★★★★★</div>
-    <span class="type">💎 ラウンジ</span>
-    <p>「VIP 指名の管理が秀逸。お得意様の好みを記録してキャスト全員で共有できるのが他にない機能。」</p>
-    <div class="name">I さん (42 代男性)</div>
-    <div class="role">会員制ラウンジ / 六本木 / スタッフ 15 名</div>
-    <div class="metric">指名率: <strong>62% → 78%</strong></div>
+    <span class="type" data-i18n="ts.type9">💎 ラウンジ</span>
+    <p data-i18n="ts.quote9">「VIP 指名の管理が秀逸。お得意様の好みを記録してキャスト全員で共有できるのが他にない機能。」</p>
+    <div class="name" data-i18n="ts.name9">I さん (42 代男性)</div>
+    <div class="role" data-i18n="ts.role9">会員制ラウンジ / 六本木 / スタッフ 15 名</div>
+    <div class="metric" data-i18n-html="ts.metric9">指名率: <strong>62% → 78%</strong></div>
   </div>
 
   <div class="card" data-type="lounge">
     <div class="stars">★★★★★</div>
-    <span class="type">💎 ラウンジ</span>
-    <p>「会員制イベントの度に臨時シフトが必要でしたが、テンプレ機能で 3 クリックで完成。」</p>
-    <div class="name">J さん (50 代男性)</div>
-    <div class="role">ラウンジオーナー / 西麻布 / スタッフ 10 名</div>
-    <div class="metric">イベント準備時間: <strong>2h → 15min</strong></div>
+    <span class="type" data-i18n="ts.type10">💎 ラウンジ</span>
+    <p data-i18n="ts.quote10">「会員制イベントの度に臨時シフトが必要でしたが、テンプレ機能で 3 クリックで完成。」</p>
+    <div class="name" data-i18n="ts.name10">J さん (50 代男性)</div>
+    <div class="role" data-i18n="ts.role10">ラウンジオーナー / 西麻布 / スタッフ 10 名</div>
+    <div class="metric" data-i18n-html="ts.metric10">イベント準備時間: <strong>2h → 15min</strong></div>
   </div>
 
   <div class="card" data-type="karaoke">
     <div class="stars">★★★★☆</div>
-    <span class="type">🎤 カラオケ</span>
-    <p>「24 時間営業で 3 シフト制ですが、深夜帯の労基計算が自動なので税理士に怒られなくなった (笑)」</p>
-    <div class="name">K さん (37 代男性)</div>
-    <div class="role">カラオケチェーン店長 / 都内 5 店舗</div>
-    <div class="metric">税理士からの指摘: <strong>月 8 件 → 0 件</strong></div>
+    <span class="type" data-i18n="ts.type11">🎤 カラオケ</span>
+    <p data-i18n="ts.quote11">「24 時間営業で 3 シフト制ですが、深夜帯の労基計算が自動なので税理士に怒られなくなった (笑)」</p>
+    <div class="name" data-i18n="ts.name11">K さん (37 代男性)</div>
+    <div class="role" data-i18n="ts.role11">カラオケチェーン店長 / 都内 5 店舗</div>
+    <div class="metric" data-i18n-html="ts.metric11">税理士からの指摘: <strong>月 8 件 → 0 件</strong></div>
   </div>
 
   <div class="card" data-type="karaoke">
     <div class="stars">★★★★★</div>
-    <span class="type">🎤 カラオケ</span>
-    <p>「学生バイトの試験期間希望が殺到する時期も、システムが整理してくれるので店長の負担激減。」</p>
-    <div class="name">L さん (33 代女性)</div>
-    <div class="role">カラオケ店店長 / 横浜 / スタッフ 25 名</div>
-    <div class="metric">店長残業: <strong>月 40h → 8h</strong></div>
+    <span class="type" data-i18n="ts.type12">🎤 カラオケ</span>
+    <p data-i18n="ts.quote12">「学生バイトの試験期間希望が殺到する時期も、システムが整理してくれるので店長の負担激減。」</p>
+    <div class="name" data-i18n="ts.name12">L さん (33 代女性)</div>
+    <div class="role" data-i18n="ts.role12">カラオケ店店長 / 横浜 / スタッフ 25 名</div>
+    <div class="metric" data-i18n-html="ts.metric12">店長残業: <strong>月 40h → 8h</strong></div>
   </div>
 
   <div class="card" data-type="bar">
     <div class="stars">★★★★★</div>
-    <span class="type">🍸 バー</span>
-    <p>「個人店だから機能が多すぎるのは要らない、と思ってましたが必要な機能だけが揃ってて使いやすい。」</p>
-    <div class="name">M さん (52 代男性)</div>
-    <div class="role">ショットバー / 神田 / スタッフ 2 名</div>
-    <div class="metric">月額: <strong>¥4,990</strong> で全機能利用</div>
+    <span class="type" data-i18n="ts.type13">🍸 バー</span>
+    <p data-i18n="ts.quote13">「個人店だから機能が多すぎるのは要らない、と思ってましたが必要な機能だけが揃ってて使いやすい。」</p>
+    <div class="name" data-i18n="ts.name13">M さん (52 代男性)</div>
+    <div class="role" data-i18n="ts.role13">ショットバー / 神田 / スタッフ 2 名</div>
+    <div class="metric" data-i18n-html="ts.metric13">月額: <strong>¥4,990</strong> で全機能利用</div>
   </div>
 
   <div class="card" data-type="izakaya">
     <div class="stars">★★★★★</div>
-    <span class="type">🍺 居酒屋</span>
-    <p>「無料トライアルで試して即決。元々 Airシフト 使ってたけど飲食特化の使いやすさが圧倒的。」</p>
-    <div class="name">N さん (44 代男性)</div>
-    <div class="role">居酒屋オーナー / 上野 / スタッフ 12 名</div>
-    <div class="metric">乗り換え判断: <strong>30 日間で即決</strong></div>
+    <span class="type" data-i18n="ts.type14">🍺 居酒屋</span>
+    <p data-i18n="ts.quote14">「無料トライアルで試して即決。元々 Airシフト 使ってたけど飲食特化の使いやすさが圧倒的。」</p>
+    <div class="name" data-i18n="ts.name14">N さん (44 代男性)</div>
+    <div class="role" data-i18n="ts.role14">居酒屋オーナー / 上野 / スタッフ 12 名</div>
+    <div class="metric" data-i18n-html="ts.metric14">乗り換え判断: <strong>30 日間で即決</strong></div>
   </div>
 
   <div class="card" data-type="snack">
     <div class="stars">★★★★★</div>
-    <span class="type">🌸 スナック</span>
-    <p>「年配のママでも 5 分でセットアップできました。サポートも電話で丁寧に教えてくれて感謝。」</p>
-    <div class="name">O さん (62 代女性)</div>
-    <div class="role">老舗スナック / 銀座 / スタッフ 2 名</div>
-    <div class="metric">導入時間: <strong>5 分</strong></div>
+    <span class="type" data-i18n="ts.type15">🌸 スナック</span>
+    <p data-i18n="ts.quote15">「年配のママでも 5 分でセットアップできました。サポートも電話で丁寧に教えてくれて感謝。」</p>
+    <div class="name" data-i18n="ts.name15">O さん (62 代女性)</div>
+    <div class="role" data-i18n="ts.role15">老舗スナック / 銀座 / スタッフ 2 名</div>
+    <div class="metric" data-i18n-html="ts.metric15">導入時間: <strong>5 分</strong></div>
   </div>
 
   <div class="card" data-type="lounge">
     <div class="stars">★★★★★</div>
-    <span class="type">💎 ラウンジ</span>
-    <p>「キャストの希望勤務日と当日の来店予約状況のマッチングがスムーズで、空きキャスト 0 を実現。」</p>
-    <div class="name">P さん (40 代男性)</div>
-    <div class="role">ラウンジ統括 / 渋谷 / スタッフ 18 名</div>
-    <div class="metric">キャスト稼働率: <strong>71% → 88%</strong></div>
+    <span class="type" data-i18n="ts.type16">💎 ラウンジ</span>
+    <p data-i18n="ts.quote16">「キャストの希望勤務日と当日の来店予約状況のマッチングがスムーズで、空きキャスト 0 を実現。」</p>
+    <div class="name" data-i18n="ts.name16">P さん (40 代男性)</div>
+    <div class="role" data-i18n="ts.role16">ラウンジ統括 / 渋谷 / スタッフ 18 名</div>
+    <div class="metric" data-i18n-html="ts.metric16">キャスト稼働率: <strong>71% → 88%</strong></div>
   </div>
 
 </div>
 
 <div class="cta-box">
-  <h2 style="color:#fff;margin-bottom:10px">あなたも RAKURAKU 仲間に</h2>
-  <p>16 名のオーナーが選んだシフト管理を、30 日 Pro 体験で試せます</p>
-  <a href="/signup">無料で試す</a>
+  <h2 style="color:#fff;margin-bottom:10px" data-i18n="ts.cta_h2">あなたも RAKURAKU 仲間に</h2>
+  <p data-i18n="ts.cta_p">16 名のオーナーが選んだシフト管理を、30 日 Pro 体験で試せます</p>
+  <a href="/signup" data-i18n="ts.cta_try">無料で試す</a>
 </div>
 </main>
 
 <footer>
-  <p><a href="/">ホーム</a> | <a href="/case-studies.html">事例詳細</a> | <a href="/blog.html">ブログ</a> | <a href="/about.html">サービス紹介</a></p>
+  <p><a href="/" data-i18n="dr.f_top">ホーム</a> | <a href="/case-studies.html" data-i18n="ts.f_cases">事例詳細</a> | <a href="/blog.html" data-i18n="footer.blog">ブログ</a> | <a href="/about.html" data-i18n="dr.f_about">サービス紹介</a></p>
   <p style="margin-top:15px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
 </footer>
 
@@ -241,5 +241,15 @@ function filterCards(type,btn){
 }
 </script>
 <script src="/help-widget.js" defer></script>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body>
 </html>
