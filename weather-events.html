@@ -159,12 +159,12 @@
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main">本文へスキップ</a>
+<a class="skip-link" href="#main" data-i18n="a11y.skip_to_main">本文へスキップ</a>
 
 <header class="nav">
   <div class="nav-inner">
     <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
-    <a href="/shift.html" class="nav-back">← シフト管理に戻る</a>
+    <a href="/shift.html" class="nav-back" data-i18n="mb.nav_back">← シフト管理に戻る</a>
   </div>
 </header>
 
@@ -173,28 +173,28 @@
 <div class="container">
   <section class="hero">
     <div class="hero-eyebrow">🌦️ × 🎪  CONTEXT-AWARE SHIFTS</div>
-    <h1>天気と街のイベントを見て、<br><span class="grad">シフトを賢く組む</span></h1>
-    <p>雨の日は静かな店内、花火大会の夜は満席。<br>気象 API と地域イベント情報を自動取得し、AI が客数予測 → シフト最適化案を提案します。</p>
+    <h1 data-i18n-html="we.h1">天気と街のイベントを見て、<br><span class="grad">シフトを賢く組む</span></h1>
+    <p data-i18n-html="we.lead">雨の日は静かな店内、花火大会の夜は満席。<br>気象 API と地域イベント情報を自動取得し、AI が客数予測 → シフト最適化案を提案します。</p>
   </section>
 
   <!-- Store selector -->
   <div class="store-bar">
-    <span class="store-label">📍 店舗:</span>
+    <span class="store-label" data-i18n="we.store">📍 店舗:</span>
     <select class="store-select" id="storeSelect">
-      <option value="minato">BAR RAKURAKU 港区店</option>
-      <option value="shibuya">RAKURAKU 渋谷店</option>
-      <option value="ginza">RAKURAKU 銀座店</option>
-      <option value="shinjuku">RAKURAKU 新宿店</option>
+      <option value="minato" data-i18n="we.store_minato">BAR RAKURAKU 港区店</option>
+      <option value="shibuya" data-i18n="we.store_shibuya">RAKURAKU 渋谷店</option>
+      <option value="ginza" data-i18n="we.store_ginza">RAKURAKU 銀座店</option>
+      <option value="shinjuku" data-i18n="we.store_shinjuku">RAKURAKU 新宿店</option>
     </select>
-    <span class="updated" id="lastUpdate">最終更新: —</span>
+    <span class="updated" id="lastUpdate" data-i18n="we.last_update">最終更新: —</span>
   </div>
 
   <!-- AI Insight Banner -->
   <div class="ai-banner">
     <div class="ai-ic">🤖</div>
     <div class="ai-body">
-      <h3>AI 客数予測 — 今週のハイライト</h3>
-      <p>
+      <h3 data-i18n="we.ai_h3">AI 客数予測 — 今週のハイライト</h3>
+      <p data-i18n-html="we.ai_body">
         <strong>金曜 (6/12) は花火大会の影響で来店数 +180% 予測。</strong>
         通常 +2 名増のところ <strong>+4 名増</strong>を提案します。
         日曜 (6/14) は終日雨予報のため <strong>-1 名減</strong> でコスト最適化が可能です。
@@ -205,7 +205,7 @@
   <!-- Weather Forecast -->
   <section class="feat">
     <div class="section-head">
-      <h2>🌤️ 7 日間の天気予報 + 客数影響</h2>
+      <h2 data-i18n="we.wx_h2">🌤️ 7 日間の天気予報 + 客数影響</h2>
       <span class="tag">WEATHER ANALYTICS</span>
     </div>
 
@@ -231,7 +231,7 @@
   <!-- Nearby Events -->
   <section class="feat">
     <div class="section-head">
-      <h2>🎪 周辺イベント (港区・渋谷・銀座 半径 3km)</h2>
+      <h2 data-i18n="we.ev_h2">🎪 周辺イベント (港区・渋谷・銀座 半径 3km)</h2>
       <span class="tag">LOCAL EVENTS</span>
     </div>
 
@@ -301,76 +301,76 @@
   <!-- Event Registration Form -->
   <section class="feat">
     <div class="section-head">
-      <h2>📝 自店オリジナルイベントを登録</h2>
+      <h2 data-i18n="we.reg_h2">📝 自店オリジナルイベントを登録</h2>
       <span class="tag">CUSTOM EVENT</span>
     </div>
 
     <div class="reg-card">
-      <h3>独自イベントを登録 → シフト予測に反映</h3>
-      <p class="lead">貸切予約・常連の誕生日会・店内イベントなど、自店だけが知っている予定を登録できます。AI 客数予測と Timee 自動募集ロジックに即時反映されます。</p>
+      <h3 data-i18n="we.reg_h3">独自イベントを登録 → シフト予測に反映</h3>
+      <p class="lead" data-i18n="we.reg_lead">貸切予約・常連の誕生日会・店内イベントなど、自店だけが知っている予定を登録できます。AI 客数予測と Timee 自動募集ロジックに即時反映されます。</p>
 
       <form id="evForm" onsubmit="event.preventDefault();saveEvent();">
         <div class="reg-grid">
           <div class="reg-field">
-            <label for="ev-name">イベント名 <span style="color:#EF4444;">*</span></label>
-            <input type="text" id="ev-name" required placeholder="例) 山田様 貸切誕生日会 / 50名" />
+            <label for="ev-name"><span data-i18n="we.f_name">イベント名</span> <span style="color:#EF4444;">*</span></label>
+            <input type="text" id="ev-name" required placeholder="例) 山田様 貸切誕生日会 / 50名" data-i18n-placeholder="we.f_name_ph" />
           </div>
           <div class="reg-field">
-            <label for="ev-cat">カテゴリ <span style="color:#EF4444;">*</span></label>
+            <label for="ev-cat"><span data-i18n="we.f_cat">カテゴリ</span> <span style="color:#EF4444;">*</span></label>
             <select id="ev-cat" required>
-              <option value="">選択してください</option>
-              <option value="reservation">🎉 貸切・予約</option>
-              <option value="seasonal">🎁 季節催事</option>
-              <option value="promo">📢 自店プロモ</option>
-              <option value="private">🥂 常連イベント</option>
-              <option value="holiday">📅 営業日変更</option>
-              <option value="other">📌 その他</option>
+              <option value="" data-i18n="dr.opt_select">選択してください</option>
+              <option value="reservation" data-i18n="we.cat_resv">🎉 貸切・予約</option>
+              <option value="seasonal" data-i18n="we.cat_seasonal">🎁 季節催事</option>
+              <option value="promo" data-i18n="we.cat_promo">📢 自店プロモ</option>
+              <option value="private" data-i18n="we.cat_private">🥂 常連イベント</option>
+              <option value="holiday" data-i18n="we.cat_holiday">📅 営業日変更</option>
+              <option value="other" data-i18n="we.cat_other">📌 その他</option>
             </select>
           </div>
           <div class="reg-field">
-            <label for="ev-date">日付 <span style="color:#EF4444;">*</span></label>
+            <label for="ev-date"><span data-i18n="we.f_date">日付</span> <span style="color:#EF4444;">*</span></label>
             <input type="date" id="ev-date" required />
           </div>
           <div class="reg-field">
-            <label for="ev-time">時間帯</label>
-            <input type="text" id="ev-time" placeholder="例) 19:00-22:00" />
+            <label for="ev-time" data-i18n="we.f_time">時間帯</label>
+            <input type="text" id="ev-time" placeholder="例) 19:00-22:00" data-i18n-placeholder="we.f_time_ph" />
           </div>
           <div class="reg-field">
-            <label for="ev-impact">客数影響予測 <span style="color:#EF4444;">*</span></label>
+            <label for="ev-impact"><span data-i18n="we.f_impact">客数影響予測</span> <span style="color:#EF4444;">*</span></label>
             <select id="ev-impact" required>
-              <option value="">選択してください</option>
-              <option value="up200">📈 大幅増 (+150% 以上)</option>
-              <option value="up100">📈 大増 (+50〜100%)</option>
-              <option value="up50">📈 増 (+20〜50%)</option>
-              <option value="flat">📊 通常通り</option>
-              <option value="down30">📉 減 (-20〜40%)</option>
-              <option value="closed">🚫 営業休止</option>
+              <option value="" data-i18n="dr.opt_select">選択してください</option>
+              <option value="up200" data-i18n="we.imp_huge">📈 大幅増 (+150% 以上)</option>
+              <option value="up100" data-i18n="we.imp_big">📈 大増 (+50〜100%)</option>
+              <option value="up50" data-i18n="we.imp_up">📈 増 (+20〜50%)</option>
+              <option value="flat" data-i18n="we.imp_flat">📊 通常通り</option>
+              <option value="down30" data-i18n="we.imp_down">📉 減 (-20〜40%)</option>
+              <option value="closed" data-i18n="we.imp_closed">🚫 営業休止</option>
             </select>
           </div>
           <div class="reg-field">
-            <label for="ev-staff">追加スタッフ数の提案</label>
+            <label for="ev-staff" data-i18n="we.f_staff">追加スタッフ数の提案</label>
             <select id="ev-staff">
-              <option value="0">自動 (AI に任せる)</option>
-              <option value="+1">+1 名</option>
-              <option value="+2">+2 名</option>
-              <option value="+3">+3 名</option>
-              <option value="-1">-1 名 (減らす)</option>
-              <option value="-2">-2 名 (減らす)</option>
+              <option value="0" data-i18n="we.staff_auto">自動 (AI に任せる)</option>
+              <option value="+1" data-i18n="we.staff_p1">+1 名</option>
+              <option value="+2" data-i18n="we.staff_p2">+2 名</option>
+              <option value="+3" data-i18n="we.staff_p3">+3 名</option>
+              <option value="-1" data-i18n="we.staff_m1">-1 名 (減らす)</option>
+              <option value="-2" data-i18n="we.staff_m2">-2 名 (減らす)</option>
             </select>
           </div>
           <div class="reg-field full">
-            <label for="ev-notes">メモ (任意)</label>
-            <textarea id="ev-notes" placeholder="例) ベテランスタッフを優先配置 / バーテン2名必須 など"></textarea>
+            <label for="ev-notes" data-i18n="we.f_notes">メモ (任意)</label>
+            <textarea id="ev-notes" placeholder="例) ベテランスタッフを優先配置 / バーテン2名必須 など" data-i18n-placeholder="we.f_notes_ph"></textarea>
           </div>
         </div>
 
         <div class="reg-actions">
-          <button type="submit" class="reg-btn">＋ イベントを登録 (シフトに即反映)</button>
-          <span class="reg-note">⚡ 登録すると Timee 募集ロジックと AI 予測に即連携</span>
+          <button type="submit" class="reg-btn" data-i18n="we.reg_btn">＋ イベントを登録 (シフトに即反映)</button>
+          <span class="reg-note" data-i18n="we.reg_note">⚡ 登録すると Timee 募集ロジックと AI 予測に即連携</span>
         </div>
       </form>
 
-      <div class="reg-success" id="evSuccess">✅ イベントを登録しました。シフト予測に反映済みです。</div>
+      <div class="reg-success" id="evSuccess" data-i18n="we.reg_success">✅ イベントを登録しました。シフト予測に反映済みです。</div>
 
       <div class="saved-list" id="savedList" style="margin-top:24px;"></div>
     </div>
@@ -379,45 +379,45 @@
   <!-- Why this matters -->
   <section class="feat">
     <div class="section-head">
-      <h2>💡 この機能で得られる効果</h2>
+      <h2 data-i18n="we.bi_h2">💡 この機能で得られる効果</h2>
       <span class="tag">BUSINESS IMPACT</span>
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;">
       <div style="background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:14px;padding:20px;">
         <div style="font-size:22px;margin-bottom:8px;">💰</div>
-        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#15803D;">人件費 -8% 削減 (試算)</div>
-        <p style="font-size:12px;color:#166534;line-height:1.7;">雨の日に過剰人員を組まなくなり、月平均 ¥48,000 の削減が期待できます。</p>
+        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#15803D;" data-i18n="we.bi1_title">人件費 -8% 削減 (試算)</div>
+        <p style="font-size:12px;color:#166534;line-height:1.7;" data-i18n="we.bi1_desc">雨の日に過剰人員を組まなくなり、月平均 ¥48,000 の削減が期待できます。</p>
       </div>
       <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:14px;padding:20px;">
         <div style="font-size:22px;margin-bottom:8px;">📈</div>
-        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#1E40AF;">機会損失 -60% (試算)</div>
-        <p style="font-size:12px;color:#1E3A8A;line-height:1.7;">イベント日の人手不足で「お断り」が減り、売上機会を確保できます。</p>
+        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#1E40AF;" data-i18n="we.bi2_title">機会損失 -60% (試算)</div>
+        <p style="font-size:12px;color:#1E3A8A;line-height:1.7;" data-i18n="we.bi2_desc">イベント日の人手不足で「お断り」が減り、売上機会を確保できます。</p>
       </div>
       <div style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:20px;">
         <div style="font-size:22px;margin-bottom:8px;">😌</div>
-        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#92400E;">スタッフ満足度 ↑</div>
-        <p style="font-size:12px;color:#78350F;line-height:1.7;">忙しい日の事前共有でメンタル準備でき、急なヘルプ依頼も激減します。</p>
+        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#92400E;" data-i18n="we.bi3_title">スタッフ満足度 ↑</div>
+        <p style="font-size:12px;color:#78350F;line-height:1.7;" data-i18n="we.bi3_desc">忙しい日の事前共有でメンタル準備でき、急なヘルプ依頼も激減します。</p>
       </div>
       <div style="background:#F3E8FF;border:1.5px solid #E9D5FF;border-radius:14px;padding:20px;">
         <div style="font-size:22px;margin-bottom:8px;">⚡</div>
-        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#7C3AED;">シフト作成時間 -50%</div>
-        <p style="font-size:12px;color:#6B21A8;line-height:1.7;">「来週どうなる?」の判断材料が揃い、シフト確定までの所要時間が半減します。</p>
+        <div style="font-size:14px;font-weight:900;margin-bottom:6px;color:#7C3AED;" data-i18n="we.bi4_title">シフト作成時間 -50%</div>
+        <p style="font-size:12px;color:#6B21A8;line-height:1.7;" data-i18n="we.bi4_desc">「来週どうなる?」の判断材料が揃い、シフト確定までの所要時間が半減します。</p>
       </div>
     </div>
   </section>
 
   <div class="cta-box">
-    <h2>シフト作成を、もっと賢く</h2>
-    <p>天気 × イベント連動の最適化は Pro プランの機能です</p>
-    <a href="/" class="cta-btn">🎁 30 日 Pro 体験で試す</a>
+    <h2 data-i18n="we.cta_h2">シフト作成を、もっと賢く</h2>
+    <p data-i18n="we.cta_p">天気 × イベント連動の最適化は Pro プランの機能です</p>
+    <a href="/" class="cta-btn" data-i18n="mf.cta_btn">🎁 30 日 Pro 体験で試す</a>
   </div>
 
 </div>
 
 <footer class="footer">
-  <p><a href="/">トップ</a> · <a href="/shift.html">シフト管理</a> · <a href="/help.html">FAQ</a> · <a href="/about.html">会社情報</a></p>
-  <p style="margin-top:14px;opacity:.8;">天気データ: 気象庁 + OpenWeather API · イベントデータ: Peatix / 自治体公開情報を統合</p>
+  <p><a href="/" data-i18n="dr.f_top">トップ</a> · <a href="/shift.html" data-i18n="mf.f_shift">シフト管理</a> · <a href="/help.html" data-i18n="nav.faq">FAQ</a> · <a href="/about.html" data-i18n="dr.f_about">会社情報</a></p>
+  <p style="margin-top:14px;opacity:.8;" data-i18n="we.f_source">天気データ: 気象庁 + OpenWeather API · イベントデータ: Peatix / 自治体公開情報を統合</p>
   <p style="margin-top:6px;opacity:.7;">© 2026 RAKURAKU</p>
 </footer>
 
