@@ -268,31 +268,31 @@
 
     <div class="grid-2">
       <div class="field">
-        <label>店舗名 <span style="color:#DC2626;">*</span></label>
-        <input type="text" id="shopName" placeholder="例) BAR FOREST 銀座" value="あなたのお店" />
-        <div class="hint">後で変更できます</div>
+        <label><span data-i18n="dx.shop_name">店舗名</span> <span style="color:#DC2626;">*</span></label>
+        <input type="text" id="shopName" placeholder="例) BAR FOREST 銀座" value="あなたのお店" data-i18n-placeholder="dx.shop_name_ph" />
+        <div class="hint" data-i18n="dx.changeable">後で変更できます</div>
       </div>
       <div class="field">
-        <label>業態 <span style="color:#DC2626;">*</span></label>
+        <label><span data-i18n="dx.biz_type">業態</span> <span style="color:#DC2626;">*</span></label>
         <select id="shopType">
-          <option>バー</option><option>居酒屋</option><option>カフェ</option>
-          <option>ダイニング</option><option>カラオケ</option><option>ラウンジ</option>
+          <option data-i18n="dx.biz_bar">バー</option><option data-i18n="dx.biz_izakaya">居酒屋</option><option data-i18n="dx.biz_cafe">カフェ</option>
+          <option data-i18n="dx.biz_dining">ダイニング</option><option data-i18n="dx.biz_karaoke">カラオケ</option><option data-i18n="dx.biz_lounge">ラウンジ</option>
         </select>
       </div>
       <div class="field">
-        <label>営業開始時間</label>
+        <label data-i18n="dx.open_time">営業開始時間</label>
         <input type="time" id="openTime" value="18:00" />
       </div>
       <div class="field">
-        <label>営業終了時間 (深夜可)</label>
+        <label data-i18n="dx.close_time">営業終了時間 (深夜可)</label>
         <input type="time" id="closeTime" value="02:00" />
-        <div class="hint">22:00 以降は深夜手当 +25% が自動加算されます</div>
+        <div class="hint" data-i18n="dx.night_hint">22:00 以降は深夜手当 +25% が自動加算されます</div>
       </div>
     </div>
 
     <div class="btn-row">
       <span></span>
-      <button class="btn btn-primary" onclick="nextStep()">スタッフ登録へ進む →</button>
+      <button class="btn btn-primary" onclick="nextStep()" data-i18n="dx.next_staff">スタッフ登録へ進む →</button>
     </div>
   </div>
 
@@ -305,29 +305,29 @@
     </div>
 
     <div class="quick-staff">
-      <button class="quick-add" onclick="addSampleStaff()">🎯 サンプル 5 名を一括追加</button>
-      <button class="quick-add" onclick="addStaff()">＋ 1 名ずつ追加</button>
+      <button class="quick-add" onclick="addSampleStaff()" data-i18n="dx.add_5_sample">🎯 サンプル 5 名を一括追加</button>
+      <button class="quick-add" onclick="addStaff()" data-i18n="dx.add_one">＋ 1 名ずつ追加</button>
     </div>
 
     <div class="grid-2">
       <div class="field">
-        <label for="newStaffName">お名前</label>
-        <input type="text" id="newStaffName" placeholder="例) 田中 太郎" autocomplete="name" onkeydown="if(event.key==='Enter'){event.preventDefault();addStaff();}" />
+        <label for="newStaffName" data-i18n="dx.staff_name">お名前</label>
+        <input type="text" id="newStaffName" placeholder="例) 田中 太郎" autocomplete="name" onkeydown="if(event.key==='Enter'){event.preventDefault();addStaff();}" data-i18n-placeholder="dx.staff_name_ph" />
       </div>
       <div class="field">
-        <label for="newStaffRole">ポジション</label>
+        <label for="newStaffRole" data-i18n="dx.position">ポジション</label>
         <select id="newStaffRole">
-          <option value="hall">🍴 ホール</option>
-          <option value="kitchen">🍳 キッチン</option>
-          <option value="cashier">💳 レジ</option>
+          <option value="hall" data-i18n="dx.pos_hall">🍴 ホール</option>
+          <option value="kitchen" data-i18n="dx.pos_kitchen">🍳 キッチン</option>
+          <option value="cashier" data-i18n="dx.pos_cashier">💳 レジ</option>
         </select>
       </div>
       <div class="field">
-        <label for="newStaffWage">時給 (円)</label>
+        <label for="newStaffWage" data-i18n="dx.wage">時給 (円)</label>
         <input type="number" id="newStaffWage" placeholder="例) 1200" value="1200" min="900" max="5000" inputmode="numeric" onkeydown="if(event.key==='Enter'){event.preventDefault();addStaff();}" />
       </div>
       <div class="field" style="display:flex;align-items:flex-end;">
-        <button class="btn btn-primary" style="width:100%;" onclick="addStaff()">＋ 追加</button>
+        <button class="btn btn-primary" style="width:100%;" onclick="addStaff()" data-i18n="dx.add">＋ 追加</button>
       </div>
     </div>
 
@@ -337,13 +337,13 @@
       <!-- Generated -->
     </div>
 
-    <div style="background:var(--slate-50);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--slate-700);margin:14px 0;">
+    <div style="background:var(--slate-50);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--slate-700);margin:14px 0;" data-i18n-html="dx.staff_count_hint">
       💡 <strong>現在登録: <span id="staffCount">0</span> 名</strong> / シフト作成には最低 3 名必要です
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-ghost" onclick="prevStep()">← 戻る</button>
-      <button class="btn btn-primary" onclick="nextStep()" id="step2Next" disabled>シフトを自動作成する →</button>
+      <button class="btn btn-ghost" onclick="prevStep()" data-i18n="dx.back">← 戻る</button>
+      <button class="btn btn-primary" onclick="nextStep()" id="step2Next" disabled data-i18n="dx.gen_shift">シフトを自動作成する →</button>
     </div>
   </div>
 
@@ -356,13 +356,13 @@
     </div>
 
     <div style="text-align:center;margin:20px 0;">
-      <button class="btn btn-primary" style="font-size:15px;padding:16px 40px;" onclick="generateShift()">
+      <button class="btn btn-primary" style="font-size:15px;padding:16px 40px;" onclick="generateShift()" data-i18n="dx.gen_btn">
         ✨ シフトを自動作成
       </button>
     </div>
 
     <div id="shiftResult" style="display:none;">
-      <div class="alert warn">
+      <div class="alert warn" data-i18n-html="dx.gen_success">
         ✅ <strong>1 週間分のシフトを 3 秒で作成しました</strong> (実際は手作業で 5 時間以上かかる作業です)
       </div>
 
@@ -373,8 +373,8 @@
       </div>
 
       <div class="btn-row">
-        <button class="btn btn-ghost" onclick="prevStep()">← 戻る</button>
-        <button class="btn btn-primary" onclick="nextStep()">給与予想を見る →</button>
+        <button class="btn btn-ghost" onclick="prevStep()" data-i18n="dx.back">← 戻る</button>
+        <button class="btn btn-primary" onclick="nextStep()" data-i18n="dx.next_payroll">給与予想を見る →</button>
       </div>
     </div>
   </div>
@@ -391,14 +391,14 @@
       <!-- generated -->
     </div>
 
-    <div class="alert warn" id="nightWarn" style="display:none;">
+    <div class="alert warn" id="nightWarn" style="display:none;" data-i18n-html="dx.night_alert">
       🌙 <strong>深夜時間帯 (22:00〜翌5:00) の労働には自動で +25% 加算</strong>されています。<br>
       手計算だとミスが起きやすい計算を、システムが瞬時に正確に処理します。
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-ghost" onclick="prevStep()">← 戻る</button>
-      <button class="btn btn-primary" onclick="nextStep()">売上 × 人件費分析 →</button>
+      <button class="btn btn-ghost" onclick="prevStep()" data-i18n="dx.back">← 戻る</button>
+      <button class="btn btn-primary" onclick="nextStep()" data-i18n="dx.next_sales">売上 × 人件費分析 →</button>
     </div>
   </div>
 
@@ -411,22 +411,22 @@
     </div>
 
     <div class="field" style="max-width:380px;">
-      <label>月間売上見込み (万円)</label>
+      <label data-i18n="dx.monthly_sales">月間売上見込み (万円)</label>
       <input type="number" id="monthlySales" placeholder="例) 350" value="350" min="50" max="3000" oninput="updateLaborRatio()" />
-      <div class="hint">¥350,0000 = 350 万円</div>
+      <div class="hint" data-i18n="dx.sales_hint">¥350,0000 = 350 万円</div>
     </div>
 
     <div class="result-grid">
-      <div class="result"><div class="v"><span id="totalPayrollVal">—</span><span style="font-size:14px;">万円</span></div><div class="l">月間人件費</div></div>
-      <div class="result"><div class="v"><span id="laborRatio">—</span><span style="font-size:14px;">%</span></div><div class="l">人件費率</div></div>
-      <div class="result"><div class="v" id="laborStatus" style="font-size:18px;">—</div><div class="l">業界水準</div></div>
+      <div class="result"><div class="v"><span id="totalPayrollVal">—</span><span style="font-size:14px;" data-i18n="dx.unit_man">万円</span></div><div class="l" data-i18n="dx.monthly_labor">月間人件費</div></div>
+      <div class="result"><div class="v"><span id="laborRatio">—</span><span style="font-size:14px;">%</span></div><div class="l" data-i18n="dx.labor_ratio">人件費率</div></div>
+      <div class="result"><div class="v" id="laborStatus" style="font-size:18px;">—</div><div class="l" data-i18n="dx.industry_level">業界水準</div></div>
     </div>
 
     <div class="alert warn" id="laborTip" style="display:none;"></div>
 
     <div class="btn-row">
-      <button class="btn btn-ghost" onclick="prevStep()">← 戻る</button>
-      <button class="btn btn-primary" onclick="nextStep()">労基法アラート →</button>
+      <button class="btn btn-ghost" onclick="prevStep()" data-i18n="dx.back">← 戻る</button>
+      <button class="btn btn-primary" onclick="nextStep()" data-i18n="dx.next_alert">労基法アラート →</button>
     </div>
   </div>
 
@@ -443,8 +443,8 @@
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-ghost" onclick="prevStep()">← 戻る</button>
-      <button class="btn btn-primary" onclick="nextStep()">スタッフ画面を見る →</button>
+      <button class="btn btn-ghost" onclick="prevStep()" data-i18n="dx.back">← 戻る</button>
+      <button class="btn btn-primary" onclick="nextStep()" data-i18n="dx.next_staff_view">スタッフ画面を見る →</button>
     </div>
   </div>
 
@@ -489,14 +489,14 @@
       </div>
     </div>
 
-    <div class="alert warn">
+    <div class="alert warn" data-i18n-html="dx.lang_5_alert">
       🌐 <strong>5 言語完全対応</strong> (日本語 / English / 中文 / 한국어 / Tiếng Việt)<br>
       留学生・技能実習生・観光地のスタッフも、母国語のままシフト確認・打刻・給与照会できます。
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-ghost" onclick="prevStep()">← 戻る</button>
-      <button class="btn btn-primary" onclick="nextStep()">まとめを見る →</button>
+      <button class="btn btn-ghost" onclick="prevStep()" data-i18n="dx.back">← 戻る</button>
+      <button class="btn btn-primary" onclick="nextStep()" data-i18n="dx.next_summary">まとめを見る →</button>
     </div>
   </div>
 
@@ -509,13 +509,13 @@
     </div>
 
     <div class="result-grid">
-      <div class="result"><div class="v" id="sumStaff">0</div><div class="l">スタッフ登録</div></div>
-      <div class="result"><div class="v" id="sumShifts">0</div><div class="l">シフト自動作成</div></div>
-      <div class="result"><div class="v"><span id="sumPayroll">0</span><span style="font-size:14px;">万円</span></div><div class="l">給与計算</div></div>
-      <div class="result"><div class="v">5<span style="font-size:14px;">言語</span></div><div class="l">多言語対応</div></div>
+      <div class="result"><div class="v" id="sumStaff">0</div><div class="l" data-i18n="dx.sum_staff">スタッフ登録</div></div>
+      <div class="result"><div class="v" id="sumShifts">0</div><div class="l" data-i18n="dx.sum_shifts">シフト自動作成</div></div>
+      <div class="result"><div class="v"><span id="sumPayroll">0</span><span style="font-size:14px;" data-i18n="dx.unit_man">万円</span></div><div class="l" data-i18n="dx.sum_payroll">給与計算</div></div>
+      <div class="result"><div class="v">5<span style="font-size:14px;" data-i18n="stats.lang_unit">言語</span></div><div class="l" data-i18n="dx.sum_lang">多言語対応</div></div>
     </div>
 
-    <div style="background:var(--green-l);border:1.5px solid var(--green);border-radius:14px;padding:18px 22px;margin:18px 0;font-size:13px;line-height:1.85;color:#15803D;">
+    <div style="background:var(--green-l);border:1.5px solid var(--green);border-radius:14px;padding:18px 22px;margin:18px 0;font-size:13px;line-height:1.85;color:#15803D;" data-i18n-html="dx.touched">
       ✨ <strong>このデモで触れたこと:</strong><br>
       ・スタッフ登録 (役職別 / 時給設定)<br>
       ・1 週間分のシフト自動作成 (AI 最適化)<br>
@@ -526,22 +526,22 @@
     </div>
 
     <div class="final">
-      <h2>🎁 30 日間 Pro 全機能<br>無料でお試し</h2>
-      <p>このデモで体験した全機能を、30 日間ご請求なしでお使いいただけます (クレカ登録 不要)</p>
-      <a href="/pricing.html" class="cta-btn">🚀 30 日 Pro 体験を開始</a>
-      <div style="margin-top:16px;font-size:11px;opacity:.85;">
+      <h2 data-i18n-html="dx.final_title">🎁 30 日間 Pro 全機能<br>無料でお試し</h2>
+      <p data-i18n="dx.final_p">このデモで体験した全機能を、30 日間ご請求なしでお使いいただけます (クレカ登録 不要)</p>
+      <a href="/pricing.html" class="cta-btn" data-i18n="dx.final_cta">🚀 30 日 Pro 体験を開始</a>
+      <div style="margin-top:16px;font-size:11px;opacity:.85;" data-i18n-html="dx.final_note">
         期間後は自動で <a href="/pricing.html" style="color:#fff;text-decoration:underline;">永久 Free プラン</a> に降格 — 勝手な課金は一切ありません
       </div>
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-ghost" onclick="resetDemo()">🔄 最初からやり直す</button>
-      <a href="/shift.html" class="btn btn-primary">本物のシフト管理を試す →</a>
+      <button class="btn btn-ghost" onclick="resetDemo()" data-i18n="dx.reset">🔄 最初からやり直す</button>
+      <a href="/shift.html" class="btn btn-primary" data-i18n="dx.try_real">本物のシフト管理を試す →</a>
     </div>
   </div>
 
   <div class="footer">
-    <a href="/">トップへ戻る</a> · <a href="/help.html">よくあるご質問</a> · <a href="/demo-reservation.html">15 分 Zoom デモ予約</a>
+    <a href="/" data-i18n="dx.back_top">トップへ戻る</a> · <a href="/help.html" data-i18n="dx.footer_faq">よくあるご質問</a> · <a href="/demo-reservation.html" data-i18n="dx.footer_demo">15 分 Zoom デモ予約</a>
   </div>
 
 </main>
