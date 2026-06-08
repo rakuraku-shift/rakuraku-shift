@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>出退勤打刻 — RAKURAKU</title>
+<meta name="description" content="GPS 出退勤打刻 / 休憩時間記録 / 今日の打刻履歴を確認" />
 <meta name="robots" content="noindex,nofollow"/>
 <meta name="description" content="GPSで安全に出退勤を打刻。不正打刻を防止します。" />
 <meta name="theme-color" content="#DC2626">
@@ -138,9 +139,8 @@
 
   <!-- 店舗GPS未設定時の警告 + ワンタップ設定ボタン -->
   <div id="gps-setup-warn" style="display:none;background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border:1.5px solid #F59E0B;border-radius:12px;padding:14px 16px;margin-bottom:14px;font-size:12px;color:#78350F;line-height:1.7;">
-    ⚠️ <strong>店舗位置が未設定です。</strong><br>
-    現在GPS範囲外判定が無効になっています。店長はサポート (koizumishota0323@gmail.com) までご連絡いただければ、店舗の緯度経度を設定いたします。<br>
-    <button onclick="setupShopGpsFromCurrent()" style="margin-top:10px;padding:9px 14px;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border:none;border-radius:8px;font-weight:800;font-size:12px;cursor:pointer;font-family:inherit;">
+    <span data-i18n-html="att.gps_unset">⚠️ <strong>店舗位置が未設定です。</strong><br>現在GPS範囲外判定が無効になっています。店長はサポート (koizumishota0323@gmail.com) までご連絡いただければ、店舗の緯度経度を設定いたします。</span><br>
+    <button onclick="setupShopGpsFromCurrent()" style="margin-top:10px;padding:9px 14px;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border:none;border-radius:8px;font-weight:800;font-size:12px;cursor:pointer;font-family:inherit;" data-i18n="att.gps_setup_btn">
       📍 現在地を店舗位置として登録 (店長のみ)
     </button>
   </div>

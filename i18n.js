@@ -128,6 +128,12 @@
                                 zh:'您离店铺较远。仍然要打卡吗？\n\n※将被标记为异常打卡并通知店长。',
                                 ko:'매장에서 떨어져 있습니다. 그래도 타각하시겠습니까?\n\n※부정 타각으로 기록되어 점장에게 경고됩니다.' },
     'att.recorded': { ja:'を記録しました', en:'recorded', zh:'已记录', ko:'기록되었습니다' },
+    'att.gps_unset': { ja:'⚠️ <strong>店舗位置が未設定です。</strong><br>現在GPS範囲外判定が無効になっています。店長はサポート (koizumishota0323@gmail.com) までご連絡いただければ、店舗の緯度経度を設定いたします。',
+                       en:'⚠️ <strong>Shop GPS location not set.</strong><br>Out-of-range detection is currently disabled. Managers, please contact support (koizumishota0323@gmail.com) and we will configure shop GPS coordinates.',
+                       zh:'⚠️ <strong>店铺位置未设置。</strong><br>当前 GPS 范围外判定已禁用。店长请联系 koizumishota0323@gmail.com 进行设置。',
+                       ko:'⚠️ <strong>매장 위치 미설정.</strong><br>현재 GPS 범위 외 판정이 비활성. 점장님은 koizumishota0323@gmail.com 으로 연락 부탁드립니다.',
+                       vi:'⚠️ <strong>Chưa đặt vị trí cửa hàng.</strong><br>Phát hiện ngoài phạm vi GPS đang tắt. Quản lý vui lòng liên hệ koizumishota0323@gmail.com để chúng tôi cài đặt tọa độ.' },
+    'att.gps_setup_btn': { ja:'📍 現在地を店舗位置として登録 (店長のみ)', en:'📍 Set current location as shop (Manager only)', zh:'📍 将当前位置注册为店铺 (仅店长)', ko:'📍 현재 위치를 매장으로 등록 (점장만)', vi:'📍 Đặt vị trí hiện tại làm cửa hàng (Chỉ QL)' },
 
     /* ─── myshift.html マイシフト ─── */
     'my.title': { ja:'📅 私の確定シフト', en:'📅 My Confirmed Shifts', zh:'📅 我的确认班次', ko:'📅 내 확정 시프트' },
