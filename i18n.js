@@ -627,6 +627,85 @@
                       ko:'日本語·English·中文·한국어·Tiếng Việt 지원. <strong>외국인 아르바이트</strong>도 모국어로 시프트 확인/휴가 신청/GPS 출근 완료. 인바운드 시대 필수.',
                       vi:'Hỗ trợ 日本語·English·中文·한국어·Tiếng Việt. <strong>Nhân viên nước ngoài</strong> cũng dùng tiếng mẹ đẻ để xem ca / xin nghỉ / chấm công GPS. Tính năng thiết yếu thời inbound.' },
 
+    /* ─── トップページ 差別化機能セクション ─── */
+    'unique.tag': { ja:'RAKURAKU だけの強み', en:'Only on RAKURAKU', zh:'RAKURAKU 独有', ko:'RAKURAKU 만의 강점', vi:'Chỉ có ở RAKURAKU' },
+    'unique.title': { ja:'他社にはない <span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">6つの差別化機能</span>',
+                       en:'<span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">6 unique features</span> no competitor has',
+                       zh:'其他公司没有的 <span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">6 个差异化功能</span>',
+                       ko:'타사에 없는 <span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">6가지 차별화 기능</span>',
+                       vi:'<span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">6 tính năng độc đáo</span> không đối thủ nào có' },
+    'unique.sub': { ja:'これがあるから「他のシフトSaaSじゃなくRAKURAKU」を選んでいただいています。', en:'Why customers pick RAKURAKU over any other shift SaaS.', zh:'这就是为什么客户选择 RAKURAKU 而不是其他班次 SaaS。', ko:'그래서 다른 시프트 SaaS 대신 RAKURAKU 를 선택합니다.', vi:'Vì sao khách chọn RAKURAKU thay vì các SaaS khác.' },
+    'unique.tag_original': { ja:'RAKURAKU 独自', en:'RAKURAKU Original', zh:'RAKURAKU 独有', ko:'RAKURAKU 독자', vi:'Chỉ RAKURAKU' },
+    'unique.tag_patent': { ja:'特許級', en:'Patent-class', zh:'专利级', ko:'특허급', vi:'Cấp bằng sáng chế' },
+    'unique.tag_industry_first': { ja:'業界初', en:'Industry First', zh:'业界首创', ko:'업계 최초', vi:'Đầu tiên trong ngành' },
+    'unique.tag_foreign': { ja:'外国人対応', en:'Foreign Staff', zh:'外籍员工', ko:'외국인 대응', vi:'Nhân viên nước ngoài' },
+    'unique.tag_law': { ja:'労基法準拠', en:'Labor Law Compliant', zh:'劳基法合规', ko:'근로법 준수', vi:'Tuân thủ Luật LĐ' },
+    'unique.tag_line': { ja:'LINE 直連携', en:'LINE Direct', zh:'LINE 直接连接', ko:'LINE 직접 연결', vi:'LINE trực tiếp' },
+
+    'unique.u1_title': { ja:'個人給与照会 (パスワード保護)', en:'Personal Payroll View (Password-Protected)', zh:'个人薪资查询 (密码保护)', ko:'개인 급여 조회 (비밀번호 보호)', vi:'Xem lương cá nhân (Bảo vệ mật khẩu)' },
+    'unique.u1_desc': { ja:'スタッフが自分のパスワードで自分の今月給与だけを確認できる。SHA-256ハッシュで安全保管。<strong>「給料いくら?」のLINEが消える</strong>。', en:'Staff check only their own current payroll using their own password. SHA-256 secured. <strong>"How much was my pay?" LINE messages vanish</strong>.', zh:'员工用自己的密码仅查看自己当月薪资。SHA-256 安全保存。<strong>"工资多少?" 的 LINE 消息消失</strong>。', ko:'직원이 자신의 비밀번호로 본인 이번 달 급여만 확인. SHA-256 안전 보관. <strong>"월급 얼마?" LINE 사라짐</strong>.', vi:'Nhân viên dùng mật khẩu cá nhân xem lương tháng. SHA-256 bảo mật. <strong>"Lương bao nhiêu?" hết LINE</strong>.' },
+    'unique.u1_benefit': { ja:'💡 給与トラブル防止・スタッフの安心感UP', en:'💡 Prevents payroll trouble · Boosts staff peace of mind', zh:'💡 防止薪资纠纷 · 提升员工安心感', ko:'💡 급여 분쟁 예방 · 직원 안심감 UP', vi:'💡 Ngăn tranh chấp lương · Tăng yên tâm cho NV' },
+
+    'unique.u2_title': { ja:'GPS不正打刻 リアルタイム検知', en:'GPS Fraud Clock-in Real-time Detection', zh:'GPS 不正打卡实时检测', ko:'GPS 부정 출근 실시간 감지', vi:'Phát hiện GPS gian lận thời gian thực' },
+    'unique.u2_desc': { ja:'店舗の半径200m外で打刻されたら<strong>即座に店長へアラート</strong>。Haversine 距離計算で誤差±5m。月¥8万分の不正打刻を防いだ事例あり。', en:'Clock-in outside 200m radius? <strong>Instant manager alert</strong>. Haversine distance ±5m. Case: prevented ¥80,000/month in fraud.', zh:'店外 200m 打卡? <strong>立即通知店长</strong>。Haversine 距离±5m。案例: 月防止 ¥8 万不正打卡。', ko:'매장 200m 외 출근? <strong>점장에게 즉시 알림</strong>. Haversine 거리±5m. 사례: 월 ¥8 만 사기 방지.', vi:'Chấm công ngoài bán kính 200m? <strong>Cảnh báo quản lý ngay</strong>. Haversine ±5m. Có case ngừa ¥80,000/tháng.' },
+    'unique.u2_benefit': { ja:'💡 人件費の漏れ防止・公平性の担保', en:'💡 Prevents labor cost leakage · Ensures fairness', zh:'💡 防止人力成本漏洞 · 保证公平性', ko:'💡 인건비 누수 방지 · 공정성 보장', vi:'💡 Ngăn rò rỉ chi phí LĐ · Đảm bảo công bằng' },
+
+    'unique.u3_title': { ja:'3段階自動募集 (内部→社内→外部)', en:'3-Tier Auto-Recruit (Existing → In-House → External)', zh:'3 段自动招募 (现有→内部→外部)', ko:'3 단계 자동 모집 (기존→사내→외부)', vi:'Tự tuyển 3 cấp (Hiện tại→Nội bộ→Ngoài)' },
+    'unique.u3_desc': { ja:'不足コマ → ①既存スタッフ調整依頼 → ②社内時給アップ募集 → ③Timee/シェアフル配信。<strong>外部手数料を月¥40,000削減</strong>した事例。', en:'Shortage → ①Existing staff time-adjust → ②In-house bonus recruit → ③Timee/Sharefull dispatch. <strong>Saved ¥40,000/month in external fees</strong>.', zh:'缺岗 → ①现有员工调整 → ②内部加薪招募 → ③Timee/Sharefull 派发。<strong>月省 ¥40,000 外部费用</strong>。', ko:'부족 → ①기존 직원 시간 조정 → ②사내 시급 인상 → ③Timee/Sharefull 발송. <strong>외부 수수료 월 ¥40,000 절감</strong>.', vi:'Thiếu ca → ①Điều chỉnh NV hiện có → ②Tuyển nội bộ thưởng → ③Gửi Timee/Sharefull. <strong>Tiết kiệm ¥40,000/tháng phí ngoài</strong>.' },
+    'unique.u3_benefit': { ja:'💡 Timee手数料 30%→8%へ大幅削減', en:'💡 Timee fees drop from 30% → 8%', zh:'💡 Timee 手续费从 30% 降至 8%', ko:'💡 Timee 수수료 30%→8% 대폭 절감', vi:'💡 Phí Timee từ 30% → 8%' },
+
+    'unique.u4_title': { ja:'5言語完全対応 (日/英/中/韓/越)', en:'Full 5-language support (JA/EN/ZH/KO/VI)', zh:'5 语言完整支持 (日/英/中/韩/越)', ko:'5 개 언어 완전 지원 (일/영/중/한/베)', vi:'Hỗ trợ 5 ngôn ngữ đầy đủ (Nhật/Anh/Trung/Hàn/Việt)' },
+    'unique.u4_desc': { ja:'シフト提出・打刻・通知・給与確認 すべて母国語で。<strong>外国人スタッフの伝達ミスがゼロに</strong>。インバウンド時代の競争力。', en:'Shift submit / clock-in / notify / payroll — all in native language. <strong>Zero miscommunication with foreign staff</strong>. Competitive edge for the inbound era.', zh:'班次提交/打卡/通知/薪资 全部母语。<strong>外籍员工沟通错误为零</strong>。入境时代竞争力。', ko:'시프트 제출 / 출근 / 알림 / 급여 - 모두 모국어. <strong>외국인 직원 전달 실수 제로</strong>. 인바운드 시대 경쟁력.', vi:'Đăng ký ca/Chấm công/Thông báo/Lương - tất cả tiếng mẹ. <strong>Không sai sót giao tiếp với NV nước ngoài</strong>. Cạnh tranh thời inbound.' },
+    'unique.u4_benefit': { ja:'💡 採用面でも有利・優秀な留学生が応募', en:'💡 Recruiting advantage · attracts top international students', zh:'💡 招聘有优势 · 优秀留学生应聘', ko:'💡 채용에도 유리 · 우수 유학생 지원', vi:'💡 Lợi thế tuyển dụng · thu hút du học sinh giỏi' },
+
+    'unique.u5_title': { ja:'労基法 自動チェック (5項目)', en:'Auto Labor Law Check (5 items)', zh:'劳基法自动检查 (5 项)', ko:'근로법 자동 체크 (5 항목)', vi:'Tự kiểm tra Luật LĐ (5 mục)' },
+    'unique.u5_desc': { ja:'シフト生成時に <strong>① 重複シフト ② 連続7日勤務 ③ 6h超休憩義務 ④ 週40h超 ⑤ 18歳未満深夜</strong> を自動検知。違反リスクをゼロに。', en:'Auto-detects during generation: <strong>① duplicates ② 7-day consec ③ 6h+ break duty ④ 40h+ weekly ⑤ under-18 night</strong>. Zero violation risk.', zh:'生成时自动检测: <strong>① 重复班次 ② 连续 7 日 ③ 6h+ 休息义务 ④ 周 40h+ ⑤ 18 岁以下深夜</strong>。零违规风险。', ko:'생성 시 자동 감지: <strong>① 중복 ② 7 일 연속 ③ 6h+ 휴식 의무 ④ 주 40h+ ⑤ 18 세 미만 심야</strong>. 위반 리스크 제로.', vi:'Tự phát hiện khi tạo: <strong>① Trùng ca ② 7 ngày liên tục ③ Nghỉ 6h+ ④ 40h+/tuần ⑤ Dưới 18 ca đêm</strong>. Không rủi ro vi phạm.' },
+    'unique.u5_benefit': { ja:'💡 労基署対応・コンプライアンス安心', en:'💡 Labor inspector ready · Compliance assured', zh:'💡 应对劳动监察 · 合规放心', ko:'💡 노동청 대응 · 컴플라이언스 안심', vi:'💡 Sẵn sàng thanh tra LĐ · Đảm bảo tuân thủ' },
+
+    'unique.u6_title': { ja:'店舗専用QR + LINE 一斉通知', en:'Shop-specific QR + LINE Broadcast', zh:'店铺专用 QR + LINE 群发', ko:'매장 전용 QR + LINE 일괄 알림', vi:'QR riêng cửa hàng + LINE gửi tất cả' },
+    'unique.u6_desc': { ja:'契約と同時に<strong>店舗専用QR + 専用URL</strong>を自動発行。LINE公式アカウント連携で<strong>シフト確定通知・締切リマインドを開封率3倍</strong>。', en:'Auto-issued <strong>shop QR + URL</strong> on contract. LINE Official Account integration → <strong>3× open rate</strong> for shift / deadline reminders.', zh:'签约同时自动发行 <strong>店铺专用 QR + URL</strong>。LINE 官方账号连接 → <strong>班次/截止提醒打开率 3 倍</strong>。', ko:'계약과 동시에 <strong>매장 전용 QR + URL</strong> 자동 발행. LINE 공식 계정 연동 → <strong>오픈율 3 배</strong>.', vi:'Tự cấp <strong>QR + URL riêng</strong> khi ký HĐ. Kết nối LINE Official → <strong>tỷ lệ mở 3 lần</strong>.' },
+    'unique.u6_benefit': { ja:'💡 スタッフから「便利になった」の声', en:'💡 Staff say: "much more convenient"', zh:'💡 员工称 "变方便了"', ko:'💡 직원 "편해졌다" 평가', vi:'💡 NV nói: "Tiện hơn nhiều"' },
+
+    'unique.footnote': { ja:'他のシフト管理SaaSはどれも似ています。<br><strong style="color:var(--slate-900);">RAKURAKUは飲食店関係者へのヒアリングで「現場で本当に困っていること」だけを解決しています。</strong>だから現場で本当に使える。',
+                         en:'Other shift SaaS all look alike.<br><strong style="color:var(--slate-900);">RAKURAKU solves only the things restaurant operators told us actually hurt them.</strong> That\'s why it works on the ground.',
+                         zh:'其他班次 SaaS 都很相似。<br><strong style="color:var(--slate-900);">RAKURAKU 仅解决餐饮业从业者反馈的真实痛点。</strong>所以现场真能用。',
+                         ko:'다른 시프트 SaaS 는 다 비슷합니다.<br><strong style="color:var(--slate-900);">RAKURAKU 는 음식점 관계자에게 직접 들은 진짜 문제만 해결합니다.</strong> 그래서 현장에서 진짜로 쓸 수 있습니다.',
+                         vi:'Các SaaS ca khác đều giống nhau.<br><strong style="color:var(--slate-900);">RAKURAKU chỉ giải quyết những vấn đề thật mà người làm nhà hàng cho biết.</strong> Vì vậy nó hoạt động tốt trong thực tế.' },
+
+    /* HOW IT WORKS */
+    'how.sub': { ja:'難しい設定は不要。アプリのインストールも不要。スマホのブラウザで完結。', en:'No complex setup, no app install — runs in your phone\'s browser.', zh:'无需复杂设置或安装应用 - 在手机浏览器中即可完成。', ko:'복잡한 설정 / 앱 설치 불필요 - 스마트폰 브라우저에서 완료.', vi:'Không cần cài đặt phức tạp hay tải app - chạy ngay trên trình duyệt điện thoại.' },
+    'how.s1': { ja:'店舗URLとQRコードを発行。スタッフに共有するだけ。', en:'Issue store URL & QR. Just share with staff.', zh:'发行店铺 URL 和 QR。只需分享给员工。', ko:'매장 URL 과 QR 발급. 직원에게 공유만.', vi:'Phát URL & QR cửa hàng. Chỉ chia sẻ cho NV.' },
+    'how.s2': { ja:'スタッフがスマホで希望日・時間を提出。', en:'Staff submit preferred dates/times via phone.', zh:'员工用手机提交希望日期/时间。', ko:'직원이 스마트폰으로 희망일/시간 제출.', vi:'NV gửi ngày/giờ mong muốn qua điện thoại.' },
+    'how.s3': { ja:'店長が「ワンタップでシフト作成」をタップ。', en:'Manager taps "Create Shift" once.', zh:'店长点击"一键制作班次"。', ko:'점장이 "원 탭 시프트 작성" 탭.', vi:'Quản lý chạm "Tạo ca 1 lần".' },
+    'how.s4': { ja:'PDF印刷 or 給与計算まで一気通貫。', en:'PDF print or payroll — all seamless.', zh:'PDF 打印或薪资计算一气呵成。', ko:'PDF 인쇄·급여 계산까지 일관 처리.', vi:'In PDF hoặc tính lương — liền mạch.' },
+
+    /* TESTIMONIALS */
+    'testi.title': { ja:'ヒアリング調査の声 <span style="color:#F59E0B;font-size:.7em;">★ 4.8 / 5.0</span>', en:'Hearing Survey Voices <span style="color:#F59E0B;font-size:.7em;">★ 4.8 / 5.0</span>', zh:'调研意见 <span style="color:#F59E0B;font-size:.7em;">★ 4.8 / 5.0</span>', ko:'청취 조사 의견 <span style="color:#F59E0B;font-size:.7em;">★ 4.8 / 5.0</span>', vi:'Phản hồi khảo sát <span style="color:#F59E0B;font-size:.7em;">★ 4.8 / 5.0</span>' },
+    'testi.sub': { ja:'120店舗超の飲食店関係者へのヒアリング調査における総合評価 (プロトタイプ試用後アンケート / 匿名・許諾済み)', en:'Aggregate ratings from 120+ restaurant operator hearings (post-prototype survey, anonymous, consented)', zh:'120+ 家餐饮业者调研综合评分 (原型试用后问卷·匿名·已同意)', ko:'120 매장+ 음식점 관계자 청취 종합 평가 (프로토타입 사용 후 설문·익명·동의 완료)', vi:'Đánh giá tổng hợp từ 120+ buổi khảo sát người làm nhà hàng (sau dùng prototype, ẩn danh, đồng ý)' },
+    'testi.a_name': { ja:'A様', en:'A-san', zh:'A 先生', ko:'A 님', vi:'Anh/Chị A' },
+    'testi.a_meta': { ja:'バー / 東京都内 / スタッフ12名', en:'Bar / Tokyo / 12 staff', zh:'酒吧 / 东京 / 12 名员工', ko:'바 / 도쿄 / 직원 12 명', vi:'Bar / Tokyo / 12 NV' },
+    'testi.a_quote': { ja:'「現状Timeeに毎月60万円ほど払っている。RAKURAKUの社内募集機能を見せてもらったところ90%は社内で埋められそう。月¥50,000以上の削減が期待でき、月額¥4,990の価値は十分にある。」', en:'"Currently pay ~¥600k/month to Timee. RAKURAKU\'s in-house recruit could fill 90% internally. Could save ¥50k+/month — easily worth the ¥4,990/mo."', zh:'"目前每月向 Timee 支付约 60 万日元。RAKURAKU 内部招募功能能填补 90%。月省 ¥50,000+,¥4,990/月 价值十足。"', ko:'"현재 Timee 에 월 60 만원 정도 지불. RAKURAKU 사내 모집으로 90% 사내 충당 가능. 월 ¥50,000+ 절감,¥4,990/월 충분한 가치."', vi:'"Hiện trả Timee ~600k ¥/tháng. Tính năng tuyển nội bộ của RAKURAKU lấp được 90%. Tiết kiệm ¥50k+/tháng — xứng đáng với ¥4,990/tháng."' },
+    'testi.b_name': { ja:'B様', en:'B-san', zh:'B 先生', ko:'B 님', vi:'Anh/Chị B' },
+    'testi.b_meta': { ja:'居酒屋 / 神奈川県 / スタッフ8名', en:'Izakaya / Kanagawa / 8 staff', zh:'居酒屋 / 神奈川 / 8 名员工', ko:'이자카야 / 가나가와 / 직원 8 명', vi:'Izakaya / Kanagawa / 8 NV' },
+    'testi.b_quote': { ja:'「現状シフト作成に90分かかっている。プロトタイプを試したら3分で組めた。毎月の徹夜から解放されそう。労基法アラートも自動で出るのでコンプラ面の安心感が大きい。」', en:'"Shift creation takes 90 min now. Prototype did it in 3 min. Relieved from monthly all-nighters. Auto labor-law alerts give big compliance peace of mind."', zh:'"目前班次制作要 90 分钟。试用原型 3 分钟完成。能从每月通宵中解脱。劳基法警报自动显示,合规放心。"', ko:'"현재 시프트 작성 90 분. 프로토타입은 3 분. 매달 밤샘에서 해방. 근로법 알림 자동, 컴플라이언스 안심."', vi:'"Tạo ca mất 90 phút. Prototype làm 3 phút. Thoát thức đêm hàng tháng. Cảnh báo Luật LĐ tự động — yên tâm tuân thủ."' },
+    'testi.c_name': { ja:'C様', en:'C-san', zh:'C 先生', ko:'C 님', vi:'Anh/Chị C' },
+    'testi.c_meta': { ja:'カフェ / 大阪府 / スタッフ15名', en:'Cafe / Osaka / 15 staff', zh:'咖啡店 / 大阪 / 15 名员工', ko:'카페 / 오사카 / 직원 15 명', vi:'Cafe / Osaka / 15 NV' },
+    'testi.c_quote': { ja:'「外国人スタッフ7名のうち6名が日本語苦手なので、5言語対応が決め手になりそう。シフト提出ミスがゼロになると期待。給与照会の多言語化も助かる。」', en:'"6 of 7 foreign staff struggle with Japanese, so 5-language support is decisive. Expect zero submission errors. Multilingual payroll inquiry also helpful."', zh:'"7 名外籍员工中 6 名日语不好,5 语言支持是决定因素。期望班次提交错误为零。薪资查询多语言化也很有帮助。"', ko:'"외국인 직원 7 명 중 6 명이 일본어 미숙, 5 언어 지원이 결정적. 시프트 제출 실수 제로 기대. 급여 조회 다국어도 도움."', vi:'"6/7 NV nước ngoài kém tiếng Nhật, hỗ trợ 5 ngôn ngữ là yếu tố quyết định. Mong sai sót đăng ký ca về 0. Đa ngôn ngữ xem lương cũng tốt."' },
+    'testi.more_cases': { ja:'📊 もっと事例を見る (12店舗+ 詳細・12名の関係者の声)', en:'📊 See more cases (12+ shops, 12 voices)', zh:'📊 查看更多案例 (12+ 店铺,12 位声音)', ko:'📊 더 많은 사례 보기 (12+ 매장,12 명 의견)', vi:'📊 Xem thêm case (12+ cửa hàng, 12 ý kiến)' },
+
+    /* SAFE / 4 つの理由 */
+    'safe.title': { ja:'安心して試せる <span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">4つの理由</span>', en:'<span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">4 reasons</span> to try with peace of mind', zh:'安心试用的 <span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">4 个理由</span>', ko:'안심하고 체험할 수 있는 <span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">4 가지 이유</span>', vi:'<span style="background:#DC2626;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">4 lý do</span> để thử yên tâm' },
+    'safe.sub': { ja:'「導入したら戻れなくなったら困る」そんな不安をすべて解消します', en:'"What if I can\'t go back after switching?" — we put that worry to rest.', zh:'"导入后无法返回怎么办?" 我们消除所有这类担忧。', ko:'"도입 후 못 돌아갈까 봐 걱정" 그런 불안 모두 해소합니다.', vi:'"Lỡ đổi không quay lại được?" — chúng tôi xóa mọi lo lắng.' },
+    'safe.r1_title': { ja:'30日間 完全無料', en:'30 days completely free', zh:'30 天完全免费', ko:'30 일간 완전 무료', vi:'30 ngày miễn phí hoàn toàn' },
+    'safe.r1_sub': { ja:'全機能を制限なくお試し', en:'All features, no restrictions', zh:'全功能无限制试用', ko:'전 기능 제한 없이 체험', vi:'Toàn tính năng, không giới hạn' },
+    'safe.r2_title': { ja:'解約自由', en:'Cancel anytime', zh:'自由取消', ko:'해지 자유', vi:'Hủy bất cứ lúc nào' },
+    'safe.r2_sub': { ja:'違約金・手数料0円', en:'Zero penalty / fees', zh:'违约金/手续费 0 元', ko:'위약금/수수료 0 원', vi:'Không phí phạt' },
+    'safe.r3_title': { ja:'データ持出可', en:'Data export OK', zh:'可导出数据', ko:'데이터 반출 가능', vi:'Xuất dữ liệu được' },
+    'safe.r3_sub': { ja:'CSV/Excel エクスポート', en:'CSV/Excel export', zh:'CSV/Excel 导出', ko:'CSV/Excel 내보내기', vi:'Xuất CSV/Excel' },
+    'safe.r4_title': { ja:'代表が直接対応', en:'Direct CEO support', zh:'CEO 直接对接', ko:'대표가 직접 대응', vi:'CEO trực tiếp hỗ trợ' },
+    'safe.r4_sub': { ja:'電話・メール対応', en:'Phone & email', zh:'电话/邮件支持', ko:'전화·이메일 지원', vi:'Điện thoại & email' },
+    'safe.cta_note': { ja:'💡 まずは <strong style="color:var(--indigo);">30日間 完全無料</strong> でお試しください。<br>気に入ったらそのまま、合わなければ何もせず離脱でOKです。', en:'💡 Start with <strong style="color:var(--indigo);">30 days free</strong>.<br>Keep going if you like it — or just walk away. No action needed.', zh:'💡 先用 <strong style="color:var(--indigo);">30 天免费</strong> 试用。<br>满意继续,不合适随时离开,无需任何操作。', ko:'💡 먼저 <strong style="color:var(--indigo);">30 일 무료</strong>로 체험해보세요.<br>좋으면 계속, 안 맞으면 아무것도 안 하고 떠나세요.', vi:'💡 Thử <strong style="color:var(--indigo);">30 ngày miễn phí</strong> trước.<br>Thích thì tiếp tục, không hợp thì rời đi — không cần làm gì.' },
+
     /* ─── 料金プラン pricing.html ─── */
     'pricing.badge': { ja:'🎉 永久無料プラン誕生',
                        en:'🎉 Forever-Free Plan Available',
