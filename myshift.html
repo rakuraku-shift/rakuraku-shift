@@ -293,12 +293,12 @@
     if (shift && shift.length) {
       const first = shift[0];
       document.getElementById('today-time').textContent = first.time || (first.start && first.end ? first.start + '-' + first.end : '出勤');
-    } else { document.getElementById('today-time').innerHTML = '<div class="today-empty">本日は出勤予定ではありません</div>'; }
+    } else { document.getElementById('today-time').innerHTML = '<div class="today-empty">' + (window.RakuI18n ? RakuI18n.t('my.today_empty') : '本日は出勤予定ではありません') + '</div>'; }
   }
   function renderUpcoming() {
     const list = document.getElementById('upcoming-list');
     const name = document.getElementById('staff-name').value.trim();
-    if (!name) { list.innerHTML = '<div class="list-empty">名前を入力するとシフトが表示されます</div>'; return; }
+    if (!name) { list.innerHTML = '<div class="list-empty">' + (window.RakuI18n ? RakuI18n.t('my.upcoming_empty_noname') : '名前を入力するとシフトが表示されます') + '</div>'; return; }
     const todayStr = today.toISOString().slice(0,10);
     const upcoming = [];
     Object.keys(_shiftMaster).sort().forEach(dateStr => {
@@ -310,18 +310,18 @@
         upcoming.push({ dateStr, time: first.time || (first.start && first.end ? first.start + '-' + first.end : '出勤'), role: first.role || '', cancelled });
       }
     });
-    if (!upcoming.length) { list.innerHTML = '<div class="list-empty">確定シフトはまだありません</div>'; return; }
+    if (!upcoming.length) { list.innerHTML = '<div class="list-empty">' + (window.RakuI18n ? RakuI18n.t('my.upcoming_empty_noshift') : '確定シフトはまだありません') + '</div>'; return; }
     list.innerHTML = upcoming.slice(0, 14).map(u => {
       const [y,m,d] = u.dateStr.split('-').map(Number);
       const dow = DAY_NAMES[new Date(y, m-1, d).getDay()];
       return '<div class="list-row"><div class="day">' + m + '/' + d + '(' + dow + ')</div>' +
         '<div style="display:flex;align-items:center;gap:8px;">' + (u.role ? '<span class="pos">' + u.role + '</span>' : '') +
-        '<span class="time">' + u.time + '</span>' + (u.cancelled ? '<span class="badge-cancel">休み申請中</span>' : '') + '</div></div>';
+        '<span class="time">' + u.time + '</span>' + (u.cancelled ? '<span class="badge-cancel">' + (window.RakuI18n ? RakuI18n.t('my.status_requesting') : '休み申請中') + '</span>' : '') + '</div></div>';
     }).join('');
   }
   function renderChangeList() {
     const list = document.getElementById('change-list');
-    if (!_changeRequests.length) { list.innerHTML = '<div class="list-empty">変更届の履歴はまだありません</div>'; return; }
+    if (!_changeRequests.length) { list.innerHTML = '<div class="list-empty">' + (window.RakuI18n ? RakuI18n.t('my.change_empty') : '変更届の履歴はまだありません') + '</div>'; return; }
     list.innerHTML = _changeRequests.slice(0, 10).map(r => {
       const [y,m,d] = r.date.split('-').map(Number);
       const dow = DAY_NAMES[new Date(y, m-1, d).getDay()];
