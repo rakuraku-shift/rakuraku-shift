@@ -356,11 +356,11 @@
 <body>
 
 <!-- ════════ CAMPAIGN BANNER (30 日 Pro 無料体験) ════════ -->
-<a href="/pricing.html" id="campaignBanner" style="display:flex;align-items:center;justify-content:center;gap:14px;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:10px 16px;font-size:13px;font-weight:800;text-decoration:none;letter-spacing:.02em;position:sticky;top:0;z-index:101;border-bottom:2px solid #3730A3;flex-wrap:wrap;text-align:center;line-height:1.4;" aria-label="30 日間 Pro プラン全機能を無料で試せる">
-  🎁 <strong style="color:#FCD34D;">30 日 Pro 全機能 無料体験</strong>
-  <span style="background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px;font-weight:900;">クレカ登録 不要</span>
-  <span style="background:rgba(0,0,0,.2);padding:3px 10px;border-radius:12px;font-weight:900;">期間後 → 自動で Free に降格</span>
-  <span style="color:#FCD34D;font-weight:900;">料金プランを見る →</span>
+<a href="/pricing.html" id="campaignBanner" style="display:flex;align-items:center;justify-content:center;gap:14px;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:10px 16px;font-size:13px;font-weight:800;text-decoration:none;letter-spacing:.02em;position:sticky;top:0;z-index:101;border-bottom:2px solid #3730A3;flex-wrap:wrap;text-align:center;line-height:1.4;" data-i18n-aria="banner.aria">
+  🎁 <strong style="color:#FCD34D;" data-i18n="banner.title">30 日 Pro 全機能 無料体験</strong>
+  <span style="background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px;font-weight:900;" data-i18n="banner.no_card">クレカ登録 不要</span>
+  <span style="background:rgba(0,0,0,.2);padding:3px 10px;border-radius:12px;font-weight:900;" data-i18n="banner.auto_downgrade">期間後 → 自動で Free に降格</span>
+  <span style="color:#FCD34D;font-weight:900;" data-i18n="banner.see_pricing">料金プランを見る →</span>
 </a>
 
 <!-- ════════ HEADER ════════ -->
@@ -371,18 +371,20 @@
       <span>RAKURAKU</span>
     </a>
     <nav class="nav-links">
-      <a href="#features">機能</a>
-      <a href="#pricing">料金</a>
-      <a href="#how">使い方</a>
-      <a href="#faq">FAQ</a>
-      <a href="#contact" class="nav-cta">お問い合わせ</a>
+      <a href="#features" data-i18n="nav.features">機能</a>
+      <a href="#pricing" data-i18n="nav.pricing">料金</a>
+      <a href="#how" data-i18n="nav.how">使い方</a>
+      <a href="#faq" data-i18n="nav.faq">FAQ</a>
+      <a href="#contact" class="nav-cta" data-i18n="nav.contact">お問い合わせ</a>
+      <!-- 🌐 言語切替 (フローティングでなく nav 内に控えめに) -->
+      <span id="rakuraku-lang-switcher" style="display:inline-flex;margin-left:8px;"></span>
     </nav>
-    <a href="#contact" class="nav-cta-mobile" style="display:none;">お問合せ</a>
+    <a href="#contact" class="nav-cta-mobile" style="display:none;" data-i18n="nav.contact_short">お問合せ</a>
   </div>
 </header>
 
 <!-- アクセシビリティ: Skip to main content (Tab キーで表示) -->
-<a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+<a href="#main-content" class="skip-link" data-i18n="a11y.skip_to_main">メインコンテンツへスキップ</a>
 
 <!-- アクセシビリティ: JavaScript無効環境向け -->
 <noscript>
@@ -394,8 +396,8 @@
 
 <!-- ニュースバナー (新着) -->
 <div role="banner" style="background:linear-gradient(90deg,#4F46E5,#7C3AED);color:#fff;padding:10px 18px;font-size:12px;text-align:center;font-weight:700;letter-spacing:.02em;">
-  📢 <strong>NEW</strong> · 2026年6月末まで <strong>セットアップ無料 + 初月無料</strong> キャンペーン中 ·
-  <a href="/case-studies.html" style="color:#FCD34D;text-decoration:underline;font-weight:800;">120店舗+ ヒアリング内容を見る →</a>
+  <span data-i18n-html="news.banner">📢 <strong>NEW</strong> · 2026年6月末まで <strong>セットアップ無料 + 初月無料</strong> キャンペーン中 ·</span>
+  <a href="/case-studies.html" style="color:#FCD34D;text-decoration:underline;font-weight:800;" data-i18n="news.see_hearing">120店舗+ ヒアリング内容を見る →</a>
 </div>
 
 <!-- ════════ HERO ════════ -->
@@ -404,22 +406,22 @@
   <div class="container">
     <div class="hero-badge" data-i18n="home.hero_badge">🏆 ヒアリング120店舗+ ・ 🆓 個人店は永久無料 ・ 🎁 30日 Pro 体験</div>
     <div style="text-align:center;margin:14px 0 0;">
-      <a href="/demo-experience.html" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#DC2626,#F59E0B);color:#fff;padding:12px 22px;border-radius:24px;font-size:13px;font-weight:900;text-decoration:none;box-shadow:0 8px 20px rgba(220,38,38,.35);">🎬 30 分で店舗運営を疑似体験 (本格デモ) →</a>
+      <a href="/demo-experience.html" data-i18n="home.try_demo" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#DC2626,#F59E0B);color:#fff;padding:12px 22px;border-radius:24px;font-size:13px;font-weight:900;text-decoration:none;box-shadow:0 8px 20px rgba(220,38,38,.35);">🎬 30 分で店舗運営を疑似体験 (本格デモ) →</a>
     </div>
     <h1>
-      シフト作成、<br>
-      <span class="grad">1タップで完璧に。</span>
+      <span data-i18n="home.hero_h1_1">シフト作成、</span><br>
+      <span class="grad" data-i18n="home.hero_h1_2">1タップで完璧に。</span>
     </h1>
-    <p class="lead">
+    <p class="lead" data-i18n-html="home.hero_lead">
       アルバイトはスマホで希望時間を提出するだけ。<br>
       店長はワンタップでシフト表が完成。<br>
       深夜割増・売上管理・スタッフ評価まで全部入り。
     </p>
     <div class="hero-cta">
-      <a href="#" onclick="event.preventDefault();openSubModal('annual');" class="btn-primary" aria-label="無料で始める (個人店は永久無料・30日 Pro 体験)">🆓 無料で始める (永久 or 30日 Pro 体験)</a>
-      <a href="/shift.html?shop=demo-shop" class="btn-secondary">🎬 デモを今すぐ触る (登録不要)</a>
+      <a href="#" onclick="event.preventDefault();openSubModal('annual');" class="btn-primary" data-i18n="home.cta_start" data-i18n-aria="home.cta_start_aria">🆓 無料で始める (永久 or 30日 Pro 体験)</a>
+      <a href="/shift.html?shop=demo-shop" class="btn-secondary" data-i18n="home.cta_demo">🎬 デモを今すぐ触る (登録不要)</a>
     </div>
-    <p style="margin-top:14px;font-size:11px;color:var(--slate-500);font-weight:600;">
+    <p style="margin-top:14px;font-size:11px;color:var(--slate-500);font-weight:600;" data-i18n-html="home.hero_note">
       💡 <strong>年払いなら2ヶ月分お得 (¥49,900)</strong> + セットアップ無料・優先サポート等の特典5つ
     </p>
 
@@ -427,19 +429,19 @@
     <div style="margin-top:36px;display:flex;justify-content:center;gap:0;flex-wrap:wrap;background:#fff;border:1.5px solid #E2E8F0;border-radius:16px;padding:18px 20px;max-width:680px;margin-left:auto;margin-right:auto;box-shadow:0 4px 16px rgba(0,0,0,.04);">
       <div style="flex:1;min-width:120px;text-align:center;padding:8px 12px;border-right:1px solid #E2E8F0;">
         <div style="font-size:28px;font-weight:900;color:#4F46E5;letter-spacing:-.02em;line-height:1;">120<span style="font-size:18px;color:#7C3AED;">+</span></div>
-        <div style="font-size:10px;font-weight:800;color:#64748B;margin-top:4px;letter-spacing:.04em;">ヒアリング店舗</div>
+        <div style="font-size:10px;font-weight:800;color:#64748B;margin-top:4px;letter-spacing:.04em;" data-i18n="stats.hearing_shops">ヒアリング店舗</div>
       </div>
       <div style="flex:1;min-width:120px;text-align:center;padding:8px 12px;border-right:1px solid #E2E8F0;">
-        <div style="font-size:28px;font-weight:900;color:#10B981;letter-spacing:-.02em;line-height:1;">5<span style="font-size:18px;">言語</span></div>
-        <div style="font-size:10px;font-weight:800;color:#64748B;margin-top:4px;letter-spacing:.04em;">多言語対応</div>
+        <div style="font-size:28px;font-weight:900;color:#10B981;letter-spacing:-.02em;line-height:1;">5<span style="font-size:18px;" data-i18n="stats.lang_unit">言語</span></div>
+        <div style="font-size:10px;font-weight:800;color:#64748B;margin-top:4px;letter-spacing:.04em;" data-i18n="stats.multilang">多言語対応</div>
       </div>
       <div style="flex:1;min-width:120px;text-align:center;padding:8px 12px;border-right:1px solid #E2E8F0;">
         <div style="font-size:28px;font-weight:900;color:#F59E0B;letter-spacing:-.02em;line-height:1;">82<span style="font-size:18px;">%</span></div>
-        <div style="font-size:10px;font-weight:800;color:#64748B;margin-top:4px;letter-spacing:.04em;">時間削減 (試算)</div>
+        <div style="font-size:10px;font-weight:800;color:#64748B;margin-top:4px;letter-spacing:.04em;" data-i18n="stats.time_saved">時間削減 (試算)</div>
       </div>
       <div style="flex:1;min-width:120px;text-align:center;padding:8px 12px;">
         <div style="font-size:28px;font-weight:900;color:#EF4444;letter-spacing:-.02em;line-height:1;">4.8<span style="font-size:14px;color:#F59E0B;">★</span></div>
-        <div style="font-size:10px;font-weight:800;color:#64748B;margin-top:4px;letter-spacing:.04em;">満足度</div>
+        <div style="font-size:10px;font-weight:800;color:#64748B;margin-top:4px;letter-spacing:.04em;" data-i18n="stats.satisfaction">満足度</div>
       </div>
     </div>
 
@@ -447,55 +449,55 @@
     <div style="margin-top:18px;max-width:680px;margin-left:auto;margin-right:auto;background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border:2px dashed #F59E0B;border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
       <span style="font-size:24px;flex-shrink:0;">🎁</span>
       <div style="flex:1;min-width:200px;">
-        <div style="font-size:13px;font-weight:900;color:#92400E;letter-spacing:-.01em;line-height:1.4;">今月導入の店舗様限定: セットアップ無料 + 初月無料</div>
-        <div style="font-size:11px;color:#B45309;font-weight:700;margin-top:2px;">通常 ¥30,000相当のセットアップを 0円 でご提供します</div>
+        <div style="font-size:13px;font-weight:900;color:#92400E;letter-spacing:-.01em;line-height:1.4;" data-i18n="promo.title">今月導入の店舗様限定: セットアップ無料 + 初月無料</div>
+        <div style="font-size:11px;color:#B45309;font-weight:700;margin-top:2px;" data-i18n="promo.sub">通常 ¥30,000相当のセットアップを 0円 でご提供します</div>
       </div>
-      <div style="font-size:10px;color:#92400E;font-weight:800;text-align:right;background:#fff;padding:6px 12px;border-radius:8px;border:1.5px solid #F59E0B;">⏰ 〜2026年6月末まで</div>
+      <div style="font-size:10px;color:#92400E;font-weight:800;text-align:right;background:#fff;padding:6px 12px;border-radius:8px;border:1.5px solid #F59E0B;" data-i18n="promo.deadline">⏰ 〜2026年6月末まで</div>
     </div>
 
     <!-- 🆕 関連リソース導線 (業種別 LP は顧客数拡大後に再表示予定) -->
     <div style="margin-top:24px;max-width:760px;margin-left:auto;margin-right:auto;">
-      <p style="text-align:center;font-size:12px;color:var(--slate-500);font-weight:700;margin-bottom:10px;">▶ 関連リソース:</p>
+      <p style="text-align:center;font-size:12px;color:var(--slate-500);font-weight:700;margin-bottom:10px;" data-i18n="resources.label">▶ 関連リソース:</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
         <a href="/pricing-simulator.html" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;padding:14px;border-radius:12px;text-decoration:none;text-align:center;transition:transform .15s;display:block;" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='';">
           <div style="font-size:24px;">💰</div>
-          <div style="font-size:12px;font-weight:900;margin-top:4px;">節約額シミュレート</div>
-          <div style="font-size:10px;opacity:.85;margin-top:2px;">年いくら節約？</div>
+          <div style="font-size:12px;font-weight:900;margin-top:4px;" data-i18n="resources.sim_title">節約額シミュレート</div>
+          <div style="font-size:10px;opacity:.85;margin-top:2px;" data-i18n="resources.sim_sub">年いくら節約？</div>
         </a>
         <a href="/free-templates.html" style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;padding:14px;border-radius:12px;text-decoration:none;text-align:center;transition:transform .15s;display:block;" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='';">
           <div style="font-size:24px;">🎁</div>
-          <div style="font-size:12px;font-weight:900;margin-top:4px;">無料テンプレート</div>
-          <div style="font-size:10px;opacity:.85;margin-top:2px;">Excelシフト表DL</div>
+          <div style="font-size:12px;font-weight:900;margin-top:4px;" data-i18n="resources.tmpl_title">無料テンプレート</div>
+          <div style="font-size:10px;opacity:.85;margin-top:2px;" data-i18n="resources.tmpl_sub">Excelシフト表DL</div>
         </a>
         <a href="/guide.html" style="background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#fff;padding:14px;border-radius:12px;text-decoration:none;text-align:center;transition:transform .15s;display:block;" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='';">
           <div style="font-size:24px;">📖</div>
-          <div style="font-size:12px;font-weight:900;margin-top:4px;">完全ガイド 2026</div>
-          <div style="font-size:10px;opacity:.85;margin-top:2px;">8章/30+表</div>
+          <div style="font-size:12px;font-weight:900;margin-top:4px;" data-i18n="resources.guide_title">完全ガイド 2026</div>
+          <div style="font-size:10px;opacity:.85;margin-top:2px;" data-i18n="resources.guide_sub">8章/30+表</div>
         </a>
         <a href="/glossary.html" style="background:linear-gradient(135deg,#4338CA,#6366F1);color:#fff;padding:14px;border-radius:12px;text-decoration:none;text-align:center;transition:transform .15s;display:block;" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='';">
           <div style="font-size:24px;">📚</div>
-          <div style="font-size:12px;font-weight:900;margin-top:4px;">用語集 50+</div>
-          <div style="font-size:10px;opacity:.85;margin-top:2px;">労基/SaaS用語</div>
+          <div style="font-size:12px;font-weight:900;margin-top:4px;" data-i18n="resources.gloss_title">用語集 50+</div>
+          <div style="font-size:10px;opacity:.85;margin-top:2px;" data-i18n="resources.gloss_sub">労基/SaaS用語</div>
         </a>
         <a href="/features/" style="background:linear-gradient(135deg,#0F766E,#14B8A6);color:#fff;padding:14px;border-radius:12px;text-decoration:none;text-align:center;transition:transform .15s;display:block;" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='';">
           <div style="font-size:24px;">⚙️</div>
-          <div style="font-size:12px;font-weight:900;margin-top:4px;">機能一覧</div>
-          <div style="font-size:10px;opacity:.85;margin-top:2px;">GPS/労基/多言語</div>
+          <div style="font-size:12px;font-weight:900;margin-top:4px;" data-i18n="resources.feat_title">機能一覧</div>
+          <div style="font-size:10px;opacity:.85;margin-top:2px;" data-i18n="resources.feat_sub">GPS/労基/多言語</div>
         </a>
         <a href="/vs-airshift.html" style="background:linear-gradient(135deg,#374151,#6B7280);color:#fff;padding:14px;border-radius:12px;text-decoration:none;text-align:center;transition:transform .15s;display:block;" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='';">
           <div style="font-size:24px;">🆚</div>
-          <div style="font-size:12px;font-weight:900;margin-top:4px;">競合比較</div>
+          <div style="font-size:12px;font-weight:900;margin-top:4px;" data-i18n="resources.vs_title">競合比較</div>
           <div style="font-size:10px;opacity:.85;margin-top:2px;">Air/Shiftee/freee</div>
         </a>
         <a href="/onboarding.html" style="background:linear-gradient(135deg,#16A34A,#22C55E);color:#fff;padding:14px;border-radius:12px;text-decoration:none;text-align:center;transition:transform .15s;display:block;" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='';">
           <div style="font-size:24px;">🚀</div>
-          <div style="font-size:12px;font-weight:900;margin-top:4px;">5 分で始める</div>
-          <div style="font-size:10px;opacity:.85;margin-top:2px;">3 ステップガイド</div>
+          <div style="font-size:12px;font-weight:900;margin-top:4px;" data-i18n="resources.onb_title">5 分で始める</div>
+          <div style="font-size:10px;opacity:.85;margin-top:2px;" data-i18n="resources.onb_sub">3 ステップガイド</div>
         </a>
         <a href="/enterprise.html" style="background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#fff;padding:14px;border-radius:12px;text-decoration:none;text-align:center;transition:transform .15s;display:block;" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='';">
           <div style="font-size:24px;">🏢</div>
           <div style="font-size:12px;font-weight:900;margin-top:4px;">Enterprise</div>
-          <div style="font-size:10px;opacity:.85;margin-top:2px;">10店舗以上 / SLA</div>
+          <div style="font-size:10px;opacity:.85;margin-top:2px;" data-i18n="resources.ent_sub">10店舗以上 / SLA</div>
         </a>
       </div>
     </div>
@@ -505,24 +507,24 @@
 <!-- ════════ PAIN POINTS ════════ -->
 <section class="pains">
   <div class="container">
-    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;">こんな悩みありませんか？</span>
+    <span class="section-tag" style="display:block;text-align:center;width:fit-content;margin:0 auto 12px;" data-i18n="pain.tag">こんな悩みありませんか？</span>
     <h2 class="section-title" data-i18n="home.pain_title">飲食店の「シフト疲れ」</h2>
     <p class="section-sub" data-i18n="home.pain_sub">手書き・Excel・LINEのやり取りで毎月毎月、店長の貴重な時間を奪っていませんか？</p>
     <div class="pain-grid">
       <div class="pain">
         <div class="pain-icon">😫</div>
-        <div class="pain-title">月末は徹夜でシフト作成</div>
-        <div class="pain-desc">紙とExcelで朝までシフト調整。本業に集中できない。</div>
+        <div class="pain-title" data-i18n="pain.1_title">月末は徹夜でシフト作成</div>
+        <div class="pain-desc" data-i18n="pain.1_desc">紙とExcelで朝までシフト調整。本業に集中できない。</div>
       </div>
       <div class="pain">
         <div class="pain-icon">📵</div>
-        <div class="pain-title">LINEで希望日が大量に届く</div>
-        <div class="pain-desc">スタッフからのLINEに埋もれて、誰がいつ入れるか分からない。</div>
+        <div class="pain-title" data-i18n="pain.2_title">LINEで希望日が大量に届く</div>
+        <div class="pain-desc" data-i18n="pain.2_desc">スタッフからのLINEに埋もれて、誰がいつ入れるか分からない。</div>
       </div>
       <div class="pain">
         <div class="pain-icon">💸</div>
-        <div class="pain-title">深夜割増の計算ミス</div>
-        <div class="pain-desc">22時以降の25%割増を手計算。給与トラブルの原因に。</div>
+        <div class="pain-title" data-i18n="pain.3_title">深夜割増の計算ミス</div>
+        <div class="pain-desc" data-i18n="pain.3_desc">22時以降の25%割増を手計算。給与トラブルの原因に。</div>
       </div>
     </div>
   </div>
@@ -537,28 +539,28 @@
     <div class="feat-grid">
       <div class="feat">
         <div class="feat-icon">📱</div>
-        <div class="feat-title">スマホで希望提出</div>
-        <div class="feat-desc">スタッフはQRコードを読み取って、カレンダーから希望日と時間をタップするだけ。担当ポジションは店側で設定するので、アルバイト側の入力負担はゼロ。</div>
+        <div class="feat-title" data-i18n="feat.1_title">スマホで希望提出</div>
+        <div class="feat-desc" data-i18n="feat.1_desc">スタッフはQRコードを読み取って、カレンダーから希望日と時間をタップするだけ。担当ポジションは店側で設定するので、アルバイト側の入力負担はゼロ。</div>
       </div>
       <div class="feat">
         <div class="feat-icon">✨</div>
-        <div class="feat-title">ワンタップでシフト作成</div>
-        <div class="feat-desc">大きな「シフト作成」ボタン1回で、朝/昼/夜の人員バランス・ポジション配置を考慮したシフト表が即完成。印刷もPDF風に綺麗に出力。</div>
+        <div class="feat-title" data-i18n="feat.2_title">ワンタップでシフト作成</div>
+        <div class="feat-desc" data-i18n="feat.2_desc">大きな「シフト作成」ボタン1回で、朝/昼/夜の人員バランス・ポジション配置を考慮したシフト表が即完成。印刷もPDF風に綺麗に出力。</div>
       </div>
       <div class="feat">
         <div class="feat-icon">💴</div>
-        <div class="feat-title">深夜割増を自動計算</div>
-        <div class="feat-desc">労働基準法第37条準拠で、22:00〜翌5:00の深夜時間に+25%を自動適用。時給・交通費・役職手当を入れるだけで月次給与が自動算出。</div>
+        <div class="feat-title" data-i18n="feat.3_title">深夜割増を自動計算</div>
+        <div class="feat-desc" data-i18n="feat.3_desc">労働基準法第37条準拠で、22:00〜翌5:00の深夜時間に+25%を自動適用。時給・交通費・役職手当を入れるだけで月次給与が自動算出。</div>
       </div>
       <div class="feat">
         <div class="feat-icon">📊</div>
-        <div class="feat-title">売上と人件費率を可視化</div>
-        <div class="feat-desc">月次売上目標と達成率、前年比、人件費率を一画面で。25-35%の目安と色分けで経営判断を即サポート。</div>
+        <div class="feat-title" data-i18n="feat.4_title">売上と人件費率を可視化</div>
+        <div class="feat-desc" data-i18n="feat.4_desc">月次売上目標と達成率、前年比、人件費率を一画面で。25-35%の目安と色分けで経営判断を即サポート。</div>
       </div>
       <div class="feat">
         <div class="feat-icon">⚡</div>
-        <div class="feat-title">人員不足を3段階で自動解決</div>
-        <div class="feat-desc">
+        <div class="feat-title" data-i18n="feat.5_title">人員不足を3段階で自動解決</div>
+        <div class="feat-desc" data-i18n-html="feat.5_desc">
           <strong>① 既存スタッフへ時間調整依頼メール</strong>を一斉送信 →
           <strong>② 自社スタッフに時給インセンティブ付き内部募集</strong> →
           <strong>③ それでも不足なら Timee／シェアフル／バイトル へワンタップ外部求人配信</strong>。<br>
@@ -567,13 +569,13 @@
       </div>
       <div class="feat">
         <div class="feat-icon">⭐</div>
-        <div class="feat-title">スタッフ評価機能</div>
-        <div class="feat-desc">ポジションごとに5段階で評価。誰がホールが得意か、キッチンの揚げ場ができるか一目瞭然。シフト編成の最適化に直結。</div>
+        <div class="feat-title" data-i18n="feat.6_title">スタッフ評価機能</div>
+        <div class="feat-desc" data-i18n="feat.6_desc">ポジションごとに5段階で評価。誰がホールが得意か、キッチンの揚げ場ができるか一目瞭然。シフト編成の最適化に直結。</div>
       </div>
       <div class="feat">
         <div class="feat-icon">🌐</div>
-        <div class="feat-title">多言語対応（4言語）</div>
-        <div class="feat-desc">日本語・English・中文・한국어 に対応。<strong>外国人アルバイト</strong>もスマホで自分の言語で「シフト確認・休み変更届・GPS打刻」が完結。インバウンド時代の必須機能。</div>
+        <div class="feat-title" data-i18n="feat.7_title">多言語対応（5言語)</div>
+        <div class="feat-desc" data-i18n-html="feat.7_desc">日本語・English・中文・한국어・Tiếng Việt に対応。<strong>外国人アルバイト</strong>もスマホで自分の言語で「シフト確認・休み変更届・GPS打刻」が完結。インバウンド時代の必須機能。</div>
       </div>
     </div>
   </div>
