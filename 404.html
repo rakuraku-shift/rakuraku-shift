@@ -42,45 +42,55 @@
 <body>
 <div class="wrap">
   <div class="code">404</div>
-  <h1>お探しのページが見つかりません</h1>
-  <p>申し訳ありません。URLが間違っているか、ページが移動・削除された可能性があります。<br>下のメニューから目的のページに進んでください。</p>
+  <h1 data-i18n="e404.h1">お探しのページが見つかりません</h1>
+  <p data-i18n-html="e404.p">申し訳ありません。URLが間違っているか、ページが移動・削除された可能性があります。<br>下のメニューから目的のページに進んでください。</p>
   <div class="btns">
-    <a href="/" class="btn btn-primary">🏠 トップへ戻る</a>
-    <a href="/help.html" class="btn btn-secondary">❓ ヘルプ・FAQ</a>
+    <a href="/" class="btn btn-primary" data-i18n="e404.btn_home">🏠 トップへ戻る</a>
+    <a href="/help.html" class="btn btn-secondary" data-i18n="e404.btn_help">❓ ヘルプ・FAQ</a>
   </div>
 
   <!-- 検索バー (Google サイト内検索) -->
   <form onsubmit="event.preventDefault();var q=document.getElementById('s404').value.trim();if(q)window.location.href='https://www.google.com/search?q=site%3Arakuraku-shift-production.up.railway.app+'+encodeURIComponent(q);" style="margin-top:24px;display:flex;gap:8px;max-width:420px;margin-left:auto;margin-right:auto;">
-    <input type="search" id="s404" placeholder="🔍 探しているページを検索…" aria-label="サイト内検索" style="flex:1;padding:12px 16px;border:1.5px solid #E2E8F0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;" />
-    <button type="submit" style="padding:12px 20px;background:var(--indigo);color:#fff;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-family:inherit;font-size:13px;">検索</button>
+    <input type="search" id="s404" data-i18n-placeholder="e404.search_ph" placeholder="🔍 探しているページを検索…" aria-label="サイト内検索" data-i18n-aria="e404.search_aria" style="flex:1;padding:12px 16px;border:1.5px solid #E2E8F0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;" />
+    <button type="submit" data-i18n="e404.search_btn" style="padding:12px 20px;background:var(--indigo);color:#fff;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-family:inherit;font-size:13px;">検索</button>
   </form>
 
   <div class="nav-grid">
     <a href="/getting-started.html" class="nav-card">
       <span class="ic">🚀</span>
-      <div class="t">3分で始める</div>
-      <div class="d">使い方ガイド</div>
+      <div class="t" data-i18n="e404.c1_t">3分で始める</div>
+      <div class="d" data-i18n="e404.c1_d">使い方ガイド</div>
     </a>
     <a href="/demo.html" class="nav-card">
       <span class="ic">🎬</span>
-      <div class="t">機能デモ</div>
-      <div class="d">実際に試す</div>
+      <div class="t" data-i18n="e404.c2_t">機能デモ</div>
+      <div class="d" data-i18n="e404.c2_d">実際に試す</div>
     </a>
     <a href="/case-studies.html" class="nav-card">
       <span class="ic">📊</span>
-      <div class="t">ヒアリング事例</div>
-      <div class="d">120店舗+ ヒアリングの声</div>
+      <div class="t" data-i18n="e404.c3_t">ヒアリング事例</div>
+      <div class="d" data-i18n="e404.c3_d">120店舗+ ヒアリングの声</div>
     </a>
     <a href="/demo-reservation.html" class="nav-card">
       <span class="ic">📞</span>
-      <div class="t">無料デモ予約</div>
-      <div class="d">15分Zoom</div>
+      <div class="t" data-i18n="e404.c4_t">無料デモ予約</div>
+      <div class="d" data-i18n="e404.c4_d">15分Zoom</div>
     </a>
   </div>
   <div class="links">
-    <a href="mailto:koizumishota0323@gmail.com">📨 お問い合わせ</a> ・
+    <a href="mailto:koizumishota0323@gmail.com" data-i18n="e404.contact">📨 お問い合わせ</a> ・
     <a href="tel:08051683303">📞 080-5168-3303</a>
   </div>
 </div>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body>
 </html>
