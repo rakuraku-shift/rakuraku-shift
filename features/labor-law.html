@@ -48,65 +48,75 @@ footer a{color:#C62828;margin:0 8px}
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main">本文へスキップ</a>
+<a class="skip-link" href="#main" data-i18n="a11y.skip_to_main">本文へスキップ</a>
 <header>
-  <h1>⚖️ 労基法自動チェック</h1>
-  <p>知らずに違反、はもう終わり</p>
+  <h1 data-i18n="ftlaw.h1">⚖️ 労基法自動チェック</h1>
+  <p data-i18n="ftlaw.lead">知らずに違反、はもう終わり</p>
 </header>
-<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; <a href="/about.html">機能</a> &gt; 労基法対応</nav>
+<nav class="bc" aria-label="パンくず"><a href="/" data-i18n="bc.home">ホーム</a> &gt; <a href="/about.html" data-i18n="ft.bc">機能</a> &gt; <span data-i18n="ftlaw.bc">労基法対応</span></nav>
 
 <main id="main">
 <section class="feature">
-  <h2>⚠️ 「知らなかった」では済まされない</h2>
-  <p>労働基準法違反は、<strong>労働者からの未払い残業代請求</strong>や<strong>労基署からの是正勧告</strong>に繋がります。深夜営業の多いバー・スナック・クラブ業界では特にリスクが高く、しかし管理者が法律を完全に把握するのは現実的ではありません。</p>
-  <div class="warn">
+  <h2 data-i18n="ftlaw.s1_h2">⚠️ 「知らなかった」では済まされない</h2>
+  <p data-i18n-html="ftlaw.s1_p">労働基準法違反は、<strong>労働者からの未払い残業代請求</strong>や<strong>労基署からの是正勧告</strong>に繋がります。深夜営業の多いバー・スナック・クラブ業界では特にリスクが高く、しかし管理者が法律を完全に把握するのは現実的ではありません。</p>
+  <div class="warn" data-i18n="ftlaw.warn">
     📊 厚生労働省の統計では、2025 年の飲食業界における労基法違反摘発件数は前年比 18% 増。深夜手当の未払いが最多の違反理由。
   </div>
 </section>
 
 <section class="feature">
-  <h2>🤖 自動チェック対象 (8 項目)</h2>
+  <h2 data-i18n="ftlaw.s2_h2">🤖 自動チェック対象 (8 項目)</h2>
   <table>
-    <thead><tr><th>チェック項目</th><th>違反基準</th><th>アラート</th></tr></thead>
+    <thead><tr><th data-i18n="ftlaw.col_item">チェック項目</th><th data-i18n="ftlaw.col_rule">違反基準</th><th data-i18n="ftlaw.col_alert">アラート</th></tr></thead>
     <tbody>
-      <tr><td>1 日の労働時間</td><td>8 時間超</td><td>シフト作成時に警告</td></tr>
-      <tr><td>週の労働時間</td><td>40 時間超</td><td>週次サマリー</td></tr>
-      <tr><td>休憩時間 (6h超)</td><td>45分未満</td><td>シフト確定時に警告</td></tr>
-      <tr><td>休憩時間 (8h超)</td><td>60分未満</td><td>シフト確定時に警告</td></tr>
-      <tr><td>深夜時間帯 (22:00-5:00)</td><td>25%割増未計算</td><td>給与計算時に自動付与</td></tr>
-      <tr><td>法定休日</td><td>週1日の休日なし</td><td>週次警告</td></tr>
-      <tr><td>月60h超の時間外</td><td>50%割増未計算</td><td>給与計算時に自動付与</td></tr>
-      <tr><td>連続勤務日数</td><td>7日超</td><td>シフト作成時に警告</td></tr>
+      <tr><td data-i18n="ftlaw.r1c1">1 日の労働時間</td><td data-i18n="ftlaw.r1c2">8 時間超</td><td data-i18n="ftlaw.r1c3">シフト作成時に警告</td></tr>
+      <tr><td data-i18n="ftlaw.r2c1">週の労働時間</td><td data-i18n="ftlaw.r2c2">40 時間超</td><td data-i18n="ftlaw.r2c3">週次サマリー</td></tr>
+      <tr><td data-i18n="ftlaw.r3c1">休憩時間 (6h超)</td><td data-i18n="ftlaw.r3c2">45分未満</td><td data-i18n="ftlaw.r3c3">シフト確定時に警告</td></tr>
+      <tr><td data-i18n="ftlaw.r4c1">休憩時間 (8h超)</td><td data-i18n="ftlaw.r4c2">60分未満</td><td data-i18n="ftlaw.r4c3">シフト確定時に警告</td></tr>
+      <tr><td data-i18n="ftlaw.r5c1">深夜時間帯 (22:00-5:00)</td><td data-i18n="ftlaw.r5c2">25%割増未計算</td><td data-i18n="ftlaw.r5c3">給与計算時に自動付与</td></tr>
+      <tr><td data-i18n="ftlaw.r6c1">法定休日</td><td data-i18n="ftlaw.r6c2">週1日の休日なし</td><td data-i18n="ftlaw.r6c3">週次警告</td></tr>
+      <tr><td data-i18n="ftlaw.r7c1">月60h超の時間外</td><td data-i18n="ftlaw.r7c2">50%割増未計算</td><td data-i18n="ftlaw.r7c3">給与計算時に自動付与</td></tr>
+      <tr><td data-i18n="ftlaw.r8c1">連続勤務日数</td><td data-i18n="ftlaw.r8c2">7日超</td><td data-i18n="ftlaw.r8c3">シフト作成時に警告</td></tr>
     </tbody>
   </table>
 </section>
 
 <section class="feature">
-  <h2>📋 自動生成される労務帳票</h2>
+  <h2 data-i18n="ftlaw.s3_h2">📋 自動生成される労務帳票</h2>
   <ul>
-    <li><strong>労働時間集計表</strong> (月次・個人別)</li>
-    <li><strong>36 協定適用時間レポート</strong></li>
-    <li><strong>有給取得状況一覧</strong></li>
-    <li><strong>深夜・残業手当計算明細</strong></li>
+    <li data-i18n-html="ftlaw.s3_li1"><strong>労働時間集計表</strong> (月次・個人別)</li>
+    <li data-i18n-html="ftlaw.s3_li2"><strong>36 協定適用時間レポート</strong></li>
+    <li data-i18n-html="ftlaw.s3_li3"><strong>有給取得状況一覧</strong></li>
+    <li data-i18n-html="ftlaw.s3_li4"><strong>深夜・残業手当計算明細</strong></li>
   </ul>
 </section>
 
 <section class="feature">
-  <h2>🔄 法改正対応のアップデート</h2>
-  <p>本機能は労働基準法・関連法令の改正に合わせて、アラート閾値を継続的にアップデートします。最新の法令に準拠した状態を維持できるため、安心してご利用いただけます。</p>
+  <h2 data-i18n="ftlaw.s4_h2">🔄 法改正対応のアップデート</h2>
+  <p data-i18n="ftlaw.s4_p">本機能は労働基準法・関連法令の改正に合わせて、アラート閾値を継続的にアップデートします。最新の法令に準拠した状態を維持できるため、安心してご利用いただけます。</p>
 </section>
 
 <div class="cta">
-  <h2 style="color:#fff;margin-bottom:10px">労基法リスクをゼロに</h2>
-  <p>30 日 Pro 体験、</p>
-  <a href="/signup">無料登録</a>
+  <h2 style="color:#fff;margin-bottom:10px" data-i18n="ftlaw.cta_h2">労基法リスクをゼロに</h2>
+  <p data-i18n="ftgps.cta_p">30 日 Pro 体験、</p>
+  <a href="/signup" data-i18n="ftgps.cta_btn">無料登録</a>
 </div>
 </main>
 
 <footer>
-  <p><a href="/">ホーム</a> | <a href="/about.html">サービス</a> | <a href="/features/gps.html">GPS打刻</a> | <a href="/features/multi-language.html">多言語</a></p>
+  <p><a href="/" data-i18n="ft.f_home">ホーム</a> | <a href="/about.html" data-i18n="ft.f_about_svc">サービス</a> | <a href="/features/gps.html" data-i18n="ftlaw.f_gps">GPS打刻</a> | <a href="/features/multi-language.html" data-i18n="ftgps.f_lang">多言語</a></p>
   <p style="margin-top:10px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
 </footer>
 <script src="/help-widget.js" defer></script>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body>
 </html>
