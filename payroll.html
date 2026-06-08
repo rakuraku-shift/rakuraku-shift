@@ -52,25 +52,33 @@
 <body>
 
 <div class="toolbar">
-  <h1>💴 給与明細</h1>
-  <label>店舗ID: <input id="shop-input" placeholder="bar-exchange" /></label>
-  <label>月: <input id="month-input" type="month" /></label>
-  <button onclick="loadAndRender()">🔄 読込</button>
-  <button onclick="window.print()">🖨️ 印刷 / PDF保存</button>
-  <button onclick="exportCSV('freee')" style="background:linear-gradient(135deg,#F97316,#EA580C);">📤 freee CSV</button>
-  <button onclick="exportCSV('mf')" style="background:linear-gradient(135deg,#10B981,#059669);">📤 マネフォ CSV</button>
-  <button onclick="exportCSV('generic')" style="background:#475569;">📤 汎用CSV</button>
-  <span class="hint">余白「なし」+ カラー印刷 推奨</span>
+  <h1 data-i18n="pay.title">💴 給与明細</h1>
+  <label><span data-i18n="pay.shop_id">店舗ID:</span> <input id="shop-input" placeholder="bar-exchange" /></label>
+  <label><span data-i18n="pay.month">月:</span> <input id="month-input" type="month" /></label>
+  <button onclick="loadAndRender()" data-i18n="pay.load">🔄 読込</button>
+  <button onclick="window.print()" data-i18n="pay.print">🖨️ 印刷 / PDF保存</button>
+  <button onclick="exportCSV('freee')" style="background:linear-gradient(135deg,#F97316,#EA580C);" data-i18n="pay.csv_freee">📤 freee CSV</button>
+  <button onclick="exportCSV('mf')" style="background:linear-gradient(135deg,#10B981,#059669);" data-i18n="pay.csv_mf">📤 マネフォ CSV</button>
+  <button onclick="exportCSV('generic')" style="background:#475569;" data-i18n="pay.csv_generic">📤 汎用CSV</button>
+  <span class="hint" data-i18n="pay.hint">余白「なし」+ カラー印刷 推奨</span>
 </div>
 
 <div id="pages-container">
   <div class="page">
-    <div class="empty">📋 店舗ID と 月を入力して「読込」してください</div>
+    <div class="empty" data-i18n="pay.empty">📋 店舗ID と 月を入力して「読込」してください</div>
   </div>
 </div>
 
 <script src="/i18n.js"></script>
 <script>
+  function _t(k) { return window.RakuI18n ? RakuI18n.t(k) : k; }
+  if (window.RakuI18n) {
+    var sw = document.createElement("div");
+    sw.id = "rakuraku-lang-switcher-pay";
+    sw.style.cssText = "position:fixed;top:60px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+    document.body.appendChild(sw);
+    RakuI18n.buildSwitcher("rakuraku-lang-switcher-pay");
+  }
   const params = new URLSearchParams(location.search);
   document.getElementById('shop-input').value = params.get('shop') || '';
   const ymNow = new Date().toISOString().slice(0,7);
@@ -103,7 +111,7 @@
 
     if (!Object.keys(byStaff).length) {
       document.getElementById('pages-container').innerHTML =
-        '<div class="page"><div class="empty">📭 この期間の打刻データがありません</div></div>';
+        '<div class="page"><div class="empty">' + _t('pay.no_data') + '</div></div>';
       return;
     }
 

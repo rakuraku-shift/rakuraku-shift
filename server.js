@@ -2848,9 +2848,8 @@ app.post('/api/notification/line/broadcast', async (req, res) => {
  *   - 個別 push 通知に使えるようになる
  *
  * 署名検証 (HMAC-SHA256 with channelSecret): なりすまし防止
+ * crypto は file の冒頭 (line 8) で既に require 済み — 重複宣言を削除
  */
-
-const crypto = require('crypto');
 
 function _bindingsFile(shopId) {
   return path.join(DATA_DIR, `line-bindings-${_safeShopId(shopId || 'default')}.json`);
