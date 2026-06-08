@@ -189,11 +189,6 @@
       <div class="d">今すぐ対応が必要</div>
     </div>
     <div class="stat">
-      <div class="l">🔥 創業メンバー応募</div>
-      <div class="v" id="statFounders">—</div>
-      <div class="d">累計 / 残席 <span id="statSeats">—</span></div>
-    </div>
-    <div class="stat">
       <div class="l">📨 問い合わせ</div>
       <div class="v" id="statContacts">—</div>
       <div class="d">累計受付</div>
@@ -210,10 +205,9 @@
     </div>
   </div>
 
-  <!-- ====== TABS ====== -->
+  <!-- ====== TABS (創業メンバー制度は廃止 → 30 日 Pro 体験に一本化) ====== -->
   <div class="tabs" role="tablist">
     <button class="tab active" data-cat="all" onclick="setTab('all')">📥 すべて <span class="badge" id="bAll">0</span></button>
-    <button class="tab" data-cat="founders" onclick="setTab('founders')">🔥 創業応募 <span class="badge" id="bFounders">0</span></button>
     <button class="tab" data-cat="contact" onclick="setTab('contact')">📨 問い合わせ <span class="badge" id="bContact">0</span></button>
     <button class="tab" data-cat="sub" onclick="setTab('sub')">💎 Pro 申込 <span class="badge" id="bSub">0</span></button>
     <button class="tab" data-cat="demo" onclick="setTab('demo')">🎬 デモ予約 <span class="badge" id="bDemo">0</span></button>
@@ -360,13 +354,13 @@ function setLastUpdated(){
 
 async function loadAll(){
   setLoading(true);
+  /* 創業メンバー API は廃止 — 30 日 Pro 体験に一本化 */
   const results = await Promise.all([
-    fetchOne('/api/apply-founders'),
     fetchOne('/api/contact-inquiries'),
     fetchOne('/api/subscriptions'),
     fetchOne('/api/demo-bookings'),
   ]);
-  const [foundersRes, contactsRes, subsRes, demosRes] = results;
+  const [contactsRes, subsRes, demosRes] = results;
   setLoading(false);
 
   /* どれかが失敗していたら警告 */
@@ -387,11 +381,10 @@ async function loadAll(){
   }
   if (failedCount > 0){
     /* 一部失敗 = 警告のみ、表示は継続 */
-    console.warn('[owner-inbox] 一部 API 失敗:', results.map((r,i) => r.ok ? null : ['founders','contacts','subs','demos'][i]).filter(Boolean));
+    console.warn('[owner-inbox] 一部 API 失敗:', results.map((r,i) => r.ok ? null : ['contacts','subs','demos'][i]).filter(Boolean));
   }
 
   setLastUpdated();
-  const founders = foundersRes.data;
   const contacts = contactsRes.data;
   const subs = subsRes.data;
   const demos = demosRes.data;
@@ -399,24 +392,7 @@ async function loadAll(){
   const handled = getHandled();
   const items = [];
 
-  /* 創業メンバー応募 */
-  const fApps = (founders && founders.applications) || [];
-  fApps.forEach(a => {
-    items.push({
-      id: 'fnd_' + (a.id || a.ts || a.receivedAt),
-      cat: 'founders',
-      title: `🔥 ${a.shop || '?'} 様`,
-      ts: a.receivedAt || a.ts || Date.now(),
-      name: a.owner || '',
-      email: a.email || '',
-      tel: a.tel || '',
-      meta: [
-        a.biz, a.staff && `${a.staff} 名`, a.stores, a.region
-      ].filter(Boolean).join(' · '),
-      pain: a.pain,
-      raw: a
-    });
-  });
+  /* 創業メンバー応募 は廃止 (30 日 Pro 体験に一本化) */
 
   /* 問い合わせ */
   const cInqs = (contacts && contacts.inquiries) || [];
@@ -480,37 +456,33 @@ async function loadAll(){
   }
   prevCount = items.length;
 
-  /* setup notice */
-  if (founders === null){
-    document.getElementById('setupNotice').style.display = 'block';
+  /* setup notice: contacts / subs / demos いずれも null なら email 設定未完了とみなす */
+  if (contactsRes && contactsRes.data === null && subsRes && subsRes.data === null){
+    const setupEl = document.getElementById('setupNotice');
+    if (setupEl) setupEl.style.display = 'block';
   }
 
-  updateStats(founders, items, handled);
+  updateStats(items, handled);
   render();
 }
 
-function updateStats(founders, items, handled){
+function updateStats(items, handled){
   const newCount = items.filter(i => !handled[i.id]).length;
   document.getElementById('statNew').textContent = newCount;
 
-  const counts = {founders:0, contact:0, sub:0, demo:0};
+  const counts = {contact:0, sub:0, demo:0};
   items.forEach(i => { if (counts[i.cat] !== undefined) counts[i.cat]++; });
 
-  document.getElementById('statFounders').textContent = counts.founders;
-  document.getElementById('statContacts').textContent = counts.contact;
-  document.getElementById('statSubs').textContent = counts.sub;
-
-  const remain = (founders && founders.remaining !== undefined) ? founders.remaining : (100 - counts.founders);
-  document.getElementById('statSeats').textContent = remain;
+  const elContacts = document.getElementById('statContacts'); if (elContacts) elContacts.textContent = counts.contact;
+  const elSubs = document.getElementById('statSubs'); if (elSubs) elSubs.textContent = counts.sub;
 
   const dayAgo = Date.now() - 86400000;
   document.getElementById('statToday').textContent = items.filter(i => i.ts > dayAgo).length;
 
   document.getElementById('bAll').textContent = items.length;
-  document.getElementById('bFounders').textContent = counts.founders;
-  document.getElementById('bContact').textContent = counts.contact;
-  document.getElementById('bSub').textContent = counts.sub;
-  document.getElementById('bDemo').textContent = counts.demo;
+  const bC = document.getElementById('bContact'); if (bC) bC.textContent = counts.contact;
+  const bS = document.getElementById('bSub'); if (bS) bS.textContent = counts.sub;
+  const bD = document.getElementById('bDemo'); if (bD) bD.textContent = counts.demo;
 }
 
 function setTab(cat){
@@ -569,7 +541,7 @@ function render(){
         <div class="row-actions">
           ${i.email ? `<a class="act-btn primary" href="mailto:${i.email}?subject=${encodeURIComponent('Re: RAKURAKU ' + (i.title.replace(/[🔥📨💎🎬]/g,'').trim()))}">📧 返信</a>` : ''}
           ${i.tel ? `<a class="act-btn" href="tel:${i.tel}">📞 電話</a>` : ''}
-          ${i.cat === 'founders' && i.email ? `<button class="act-btn" style="background:linear-gradient(135deg,#DC2626,#F59E0B);color:#fff;border-color:transparent;" onclick="issueFounderLicense('${escapeHtml(i.id)}')">🎁 ライセンス発行</button>` : ''}
+          <!-- 創業メンバー制度は廃止 — ライセンス発行ボタン削除 (30 日 Pro 体験に一本化) -->
           <button class="act-btn handle ${isHandled ? 'done' : ''}" onclick="markHandled('${i.id}')">${isHandled ? '✓ 対応済み' : '対応済みに'}</button>
         </div>
       </div>
@@ -608,46 +580,8 @@ function playBeep(){
   } catch(e){}
 }
 
-/* ============== Founder License Issuing ============== */
-async function issueFounderLicense(itemId){
-  try {
-    /* rawById Map から安全に取得 (XSS 対策で onclick から直接 JSON 渡さない) */
-    const raw = rawById[itemId];
-    if (!raw){
-      alert('対象データが見つかりませんでした。ページを更新してください。');
-      return;
-    }
-    const confirmMsg = `🎁 ${raw.shop || '?'} 様にライセンスを発行しますか?\n\n` +
-                       `・受付番号: 自動採番\n` +
-                       `・有効期間: 1 年間\n` +
-                       `・アクティベートコードがメールで自動送信されます\n\n` +
-                       `送信先: ${raw.email}`;
-    if (!confirm(confirmMsg)) return;
-
-    const res = await fetch('/api/issue-founder-license', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        applicationId: itemId,
-        shop: raw.shop,
-        owner: raw.owner,
-        email: raw.email,
-        durationDays: 365
-      })
-    });
-    if (!res.ok){
-      showToast('❌ 発行に失敗しました');
-      return;
-    }
-    const data = await res.json();
-    showToast(`✅ 発行完了: ${data.code}`);
-    /* マーク済みにする */
-    const h = getHandled();
-    h[itemId] = Date.now();
-    setHandled(h);
-    loadAll();
-  } catch(e){ showToast('❌ エラー: ' + e.message); }
-}
+/* 創業メンバー制度は廃止 — issueFounderLicense() 関数は削除済み
+   (30 日 Pro 体験に一本化したため) */
 
 /* ============== INIT ============== */
 if (!checkAuth()){

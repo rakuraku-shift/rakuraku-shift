@@ -942,7 +942,21 @@ app.get('/api/churn-survey', (req, res) => {
  * 🔥 創業メンバー 100 店舗プログラム 応募 API
  * 応募 → JSON保存 + 代表 (EMAIL_USER) にメール通知
  ════════════════════════════════════════════ */
-app.post('/api/apply-founders', express.json({ limit: '1mb' }), async (req, res) => {
+/* 🚫 創業メンバー制度は廃止 (30 日 Pro 体験に一本化)
+ * POST /api/apply-founders は 410 Gone で応募受付を停止。
+ * 既存の応募データ (founders-applications.json) は破棄せず保持。
+ */
+app.post('/api/apply-founders', express.json({ limit: '64kb' }), (req, res) => {
+  return res.status(410).json({
+    ok: false,
+    error: 'gone',
+    message: '創業メンバー制度は終了しました。30 日 Pro 無料体験をご利用ください。',
+    redirectTo: '/pricing.html'
+  });
+});
+
+/* 旧 POST 実装は廃止 (上記 410 で代替) — 以下は未到達コード扱い */
+app.post('/api/_deprecated_apply-founders_archive', express.json({ limit: '1mb' }), async (req, res) => {
   const data = req.body || {};
   const record = {
     id: 'fnd' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
@@ -1226,7 +1240,18 @@ function genFounderCode(){
   return `RKR-FNDR-${p1}-${p2}`;
 }
 
-app.post('/api/issue-founder-license', express.json({ limit: '1mb' }), async (req, res) => {
+/* 🚫 創業メンバー制度は廃止: ライセンス発行 API は 410 Gone */
+app.post('/api/issue-founder-license', express.json({ limit: '64kb' }), (req, res) => {
+  return res.status(410).json({
+    ok: false,
+    error: 'gone',
+    message: '創業メンバー制度は終了しました。新規ライセンス発行はできません。',
+    redirectTo: '/pricing.html'
+  });
+});
+
+/* 旧 POST 実装は廃止 (上記 410 で代替) */
+app.post('/api/_deprecated_issue-founder-license_archive', express.json({ limit: '1mb' }), async (req, res) => {
   const { applicationId, shop, owner, email, durationDays } = req.body || {};
   if (!shop || !email){
     return res.status(400).json({ error: 'shop and email are required' });
@@ -1332,6 +1357,10 @@ app.post('/api/issue-founder-license', express.json({ limit: '1mb' }), async (re
   res.json({ ok: true, code, refNumber: license.refNumber, expiresAt });
 });
 
+/* ⚠️ 創業メンバー制度は廃止 (30 日 Pro 体験に一本化):
+ * - 既にアクティベート済みの方は引き続き Pro プランをご利用いただけます (互換維持)
+ * - 未アクティベート (status: issued) のコードは新規アクティベート不可 (410 gone)
+ */
 app.post('/api/validate-founder-license', express.json({ limit: '64kb' }), (req, res) => {
   const { code } = req.body || {};
   if (!code) return res.status(400).send('code is required');
@@ -1341,55 +1370,29 @@ app.post('/api/validate-founder-license', express.json({ limit: '64kb' }), (req,
   const license = all.find(l => l.code.toUpperCase() === String(code).toUpperCase());
 
   if (!license) return res.status(404).send('not found');
-  if (license.status === 'activated' && license.activatedAt && Date.now() - license.activatedAt < 60000){
-    // 1 分以内の重複叩きは無視 (タブ切替で 2 回叩かれた場合)
-  } else if (license.status === 'activated'){
-    // 既に activated だが、まだ有効期限内なら成功扱い
-    if (license.expiresAt > Date.now()){
-      return res.json({
-        ok: true,
-        refNumber: license.refNumber,
-        shop: license.shop,
-        expiresAt: license.expiresAt,
-        message: 'already activated'
-      });
-    }
-  }
   if (license.expiresAt < Date.now()) return res.status(410).send('expired');
 
-  /* activate */
-  license.status = 'activated';
-  license.activatedAt = Date.now();
-  writeJSON(file, all);
-
-  console.log(`[founder-license] ✅ activated ${license.code} -> ${license.shop}`);
-
-  /* 代表にアクティベート通知 */
-  if (emailTransporter && process.env.EMAIL_USER) {
-    /* XSS 対策: ユーザー入力 (license.shop) を必ず escape */
-    const safeAdmShop = escHtml(license.shop);
-    const safeAdmRef = escHtml(license.refNumber);
-    const safeAdmCode = escHtml(license.code);
-    emailTransporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER,
-      subject: `✅ [創業メンバー Activate] ${license.shop} 様`,
-      html: `
-        <h2>✅ 創業メンバーがアクティベートしました</h2>
-        <p>店舗: <strong>${safeAdmShop}</strong><br>
-           受付: ${safeAdmRef}<br>
-           コード: ${safeAdmCode}<br>
-           申込から: ${Math.floor((Date.now() - license.issuedAt) / 3600000)} 時間</p>
-      `,
-    }).catch(() => {});
+  /* ✅ 既にアクティベート済み → 互換維持で成功扱い (PWA 復元で叩かれる) */
+  if (license.status === 'activated' && license.expiresAt > Date.now()){
+    return res.json({
+      ok: true,
+      refNumber: license.refNumber,
+      shop: license.shop,
+      expiresAt: license.expiresAt,
+      message: 'already activated'
+    });
   }
 
-  res.json({
-    ok: true,
-    refNumber: license.refNumber,
-    shop: license.shop,
-    expiresAt: license.expiresAt
+  /* 🚫 未アクティベート (status: issued) の新規アクティベートはブロック */
+  return res.status(410).json({
+    ok: false,
+    error: 'program-ended',
+    message: '創業メンバー制度は終了しました。お手数ですが 30 日 Pro 無料体験をご利用ください。',
+    redirectTo: '/pricing.html'
   });
+
+  /* (旧アクティベート時の通知メール送信ロジックは廃止。
+       既存 activated 済みは上で early return しているため到達不可) */
 });
 
 app.get('/api/founder-licenses', (req, res) => {

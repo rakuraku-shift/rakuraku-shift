@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v22 — 新ページ群 (demo-experience / founder-* / staff-* / owner-inbox / bank-transfer) を追加 + 多言語キー更新 */
-var CACHE = 'rakuraku-v22';
+/* RAKURAKU Service Worker v23 — 創業メンバー制度を廃止 (30 日 Pro 体験に一本化) + 関連ページを cache から除外 */
+var CACHE = 'rakuraku-v23';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -66,9 +66,7 @@ var ASSETS = [
   '/roadmap.html',
   '/status.html',
   '/churn-survey.html',
-  '/campaign-founders.html',
-  '/founder-activate.html',
-  '/founder-welcome.html',
+  /* campaign-founders / founder-activate / founder-welcome は廃止 (cache 除外) */
   '/staff-login.html',
   '/staff-invite.html',
   '/bank-transfer.html'

@@ -318,12 +318,7 @@
     <priority>0.90</priority>
     <lastmod>2026-06-05</lastmod>
   </url>
-  <url>
-    <loc>https://rakuraku-shift-production.up.railway.app/campaign-founders.html</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.00</priority>
-    <lastmod>2026-06-05</lastmod>
-  </url>
+  <!-- campaign-founders.html は廃止 (30 日 Pro 体験に一本化) -->
   <url>
     <loc>https://rakuraku-shift-production.up.railway.app/bank-transfer.html</loc>
     <changefreq>monthly</changefreq>

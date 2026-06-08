@@ -40,7 +40,8 @@ Disallow: /RAKURAKU%20%E4%BA%8B%E6%A5%AD%E6%A6%82%E8%A6%81%E3%83%BB%E8%A3%BD%E5%
 # 代表専用受信ボックス (絶対にインデックスさせない)
 Disallow: /owner-inbox.html
 
-# 創業メンバー専用ページ (応募者のみアクセス・noindex 設定済み)
+# 創業メンバー制度は廃止 (30 日 Pro 体験に一本化) — 互換 URL は noindex
+Disallow: /campaign-founders.html
 Disallow: /founder-activate.html
 Disallow: /founder-welcome.html
 
