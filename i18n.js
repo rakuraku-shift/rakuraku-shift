@@ -1385,6 +1385,30 @@
     'ab.btn_demo': { ja:'🎬 デモを予約', en:'🎬 Book a demo', zh:'🎬 预约演示', ko:'🎬 데모 예약', vi:'🎬 Đặt demo' },
     'ab.btn_top': { ja:'🏠 トップへ戻る', en:'🏠 Back to top', zh:'🏠 返回首页', ko:'🏠 홈으로', vi:'🏠 Về trang chủ' },
 
+    /* HELP.HTML FAQ ページ - ヘロー + カテゴリ + 8 グループタイトル */
+    'hp.bc': { ja:'よくあるご質問', en:'FAQs', zh:'常见问题', ko:'자주 묻는 질문', vi:'Câu hỏi thường gặp' },
+    'hp.h1': { ja:'よくあるご質問・サポート', en:'FAQs & Support', zh:'常见问题·支持', ko:'자주 묻는 질문·지원', vi:'FAQ & Hỗ trợ' },
+    'hp.lead': { ja:'導入・操作・料金・トラブルなど、お困りごとはこちら。', en:'Onboarding, usage, pricing, troubleshooting — find help here.', zh:'导入·操作·价格·故障等问题请看这里。', ko:'도입·조작·요금·문제 등 어려움이 있으면 여기로.', vi:'Triển khai, sử dụng, giá, sự cố — tìm trợ giúp ở đây.' },
+    'hp.search': { ja:'🔍 質問を検索（例: 料金, QR, スタッフ）', en:'🔍 Search questions (e.g. pricing, QR, staff)', zh:'🔍 搜索问题 (例: 价格, QR, 员工)', ko:'🔍 질문 검색 (예: 요금, QR, 직원)', vi:'🔍 Tìm câu hỏi (VD: giá, QR, NV)' },
+    'hp.cat_all': { ja:'すべて', en:'All', zh:'全部', ko:'전체', vi:'Tất cả' },
+    'hp.cat_start': { ja:'導入・開始', en:'Onboarding', zh:'导入·开始', ko:'도입·시작', vi:'Triển khai' },
+    'hp.cat_use': { ja:'使い方', en:'Usage', zh:'使用方法', ko:'사용법', vi:'Cách dùng' },
+    'hp.cat_price': { ja:'料金・解約', en:'Pricing·Cancel', zh:'价格·取消', ko:'요금·해지', vi:'Giá·Hủy' },
+    'hp.cat_trouble': { ja:'トラブル', en:'Troubleshooting', zh:'故障', ko:'문제', vi:'Sự cố' },
+    'hp.cat_feature': { ja:'機能', en:'Features', zh:'功能', ko:'기능', vi:'Tính năng' },
+    'hp.cat_secure': { ja:'セキュリティ', en:'Security', zh:'安全', ko:'보안', vi:'Bảo mật' },
+    'hp.cat_staff': { ja:'スタッフ向け', en:'For Staff', zh:'员工用', ko:'직원용', vi:'Cho NV' },
+    'hp.cat_other': { ja:'その他', en:'Other', zh:'其他', ko:'기타', vi:'Khác' },
+    /* 8 グループタイトル */
+    'hp.g1': { ja:'🚀 導入・開始', en:'🚀 Onboarding', zh:'🚀 导入·开始', ko:'🚀 도입·시작', vi:'🚀 Triển khai' },
+    'hp.g2': { ja:'⚙️ 使い方', en:'⚙️ Usage', zh:'⚙️ 使用方法', ko:'⚙️ 사용법', vi:'⚙️ Cách dùng' },
+    'hp.g3': { ja:'💴 料金・解約', en:'💴 Pricing & Cancellation', zh:'💴 价格·取消', ko:'💴 요금·해지', vi:'💴 Giá·Hủy' },
+    'hp.g4': { ja:'🆘 トラブルシューティング', en:'🆘 Troubleshooting', zh:'🆘 故障排除', ko:'🆘 문제 해결', vi:'🆘 Khắc phục sự cố' },
+    'hp.g5': { ja:'✨ 機能・カスタマイズ', en:'✨ Features & Customization', zh:'✨ 功能·定制', ko:'✨ 기능·커스터마이즈', vi:'✨ Tính năng & Tùy chỉnh' },
+    'hp.g6': { ja:'🔒 セキュリティ・プライバシー', en:'🔒 Security & Privacy', zh:'🔒 安全·隐私', ko:'🔒 보안·프라이버시', vi:'🔒 Bảo mật·Riêng tư' },
+    'hp.g7': { ja:'👤 スタッフ向け (アルバイト・社員)', en:'👤 For Staff (Part-time/Full-time)', zh:'👤 员工用 (兼职·正式)', ko:'👤 직원용 (아르바이트·정직원)', vi:'👤 Cho NV (bán/toàn thời gian)' },
+    'hp.g8': { ja:'💬 その他', en:'💬 Other', zh:'💬 其他', ko:'💬 기타', vi:'💬 Khác' },
+
     /* ─── 料金プラン pricing.html ─── */
     'pricing.badge': { ja:'🎉 永久無料プラン誕生',
                        en:'🎉 Forever-Free Plan Available',

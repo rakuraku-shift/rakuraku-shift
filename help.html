@@ -198,35 +198,35 @@
 
 <!-- 視覚的パンくず -->
 <nav aria-label="パンくずリスト" style="font-size:12px;color:#64748B;font-weight:600;padding:14px 0 0;">
-  <a href="/" style="color:#4F46E5;text-decoration:none;">ホーム</a>
+  <a href="/" style="color:#4F46E5;text-decoration:none;" data-i18n="bc.home">ホーム</a>
   <span style="margin:0 8px;color:#CBD5E1;">›</span>
-  <span style="color:#0F172A;font-weight:700;" aria-current="page">よくあるご質問</span>
+  <span style="color:#0F172A;font-weight:700;" aria-current="page" data-i18n="hp.bc">よくあるご質問</span>
 </nav>
 
 <section class="hero">
-  <h1>よくあるご質問・サポート</h1>
-  <p>導入・操作・料金・トラブルなど、お困りごとはこちら。</p>
+  <h1 data-i18n="hp.h1">よくあるご質問・サポート</h1>
+  <p data-i18n="hp.lead">導入・操作・料金・トラブルなど、お困りごとはこちら。</p>
 </section>
 
 <div class="search-box">
-  <input type="text" class="search-input" id="search-input" placeholder="🔍 質問を検索（例: 料金, QR, スタッフ）" oninput="filterFAQ()">
+  <input type="text" class="search-input" id="search-input" placeholder="🔍 質問を検索（例: 料金, QR, スタッフ）" oninput="filterFAQ()" data-i18n-placeholder="hp.search">
 </div>
 
 <div class="category-nav">
-  <div class="cat-btn active" onclick="showCategory('all')"><span class="ic">📋</span>すべて</div>
-  <div class="cat-btn" onclick="showCategory('start')"><span class="ic">🚀</span>導入・開始</div>
-  <div class="cat-btn" onclick="showCategory('use')"><span class="ic">⚙️</span>使い方</div>
-  <div class="cat-btn" onclick="showCategory('price')"><span class="ic">💴</span>料金・解約</div>
-  <div class="cat-btn" onclick="showCategory('trouble')"><span class="ic">🆘</span>トラブル</div>
-  <div class="cat-btn" onclick="showCategory('feature')"><span class="ic">✨</span>機能</div>
-  <div class="cat-btn" onclick="showCategory('secure')"><span class="ic">🔒</span>セキュリティ</div>
-  <div class="cat-btn" onclick="showCategory('staff')"><span class="ic">👤</span>スタッフ向け</div>
-  <div class="cat-btn" onclick="showCategory('other')"><span class="ic">💬</span>その他</div>
+  <div class="cat-btn active" onclick="showCategory('all')"><span class="ic">📋</span><span data-i18n="hp.cat_all">すべて</span></div>
+  <div class="cat-btn" onclick="showCategory('start')"><span class="ic">🚀</span><span data-i18n="hp.cat_start">導入・開始</span></div>
+  <div class="cat-btn" onclick="showCategory('use')"><span class="ic">⚙️</span><span data-i18n="hp.cat_use">使い方</span></div>
+  <div class="cat-btn" onclick="showCategory('price')"><span class="ic">💴</span><span data-i18n="hp.cat_price">料金・解約</span></div>
+  <div class="cat-btn" onclick="showCategory('trouble')"><span class="ic">🆘</span><span data-i18n="hp.cat_trouble">トラブル</span></div>
+  <div class="cat-btn" onclick="showCategory('feature')"><span class="ic">✨</span><span data-i18n="hp.cat_feature">機能</span></div>
+  <div class="cat-btn" onclick="showCategory('secure')"><span class="ic">🔒</span><span data-i18n="hp.cat_secure">セキュリティ</span></div>
+  <div class="cat-btn" onclick="showCategory('staff')"><span class="ic">👤</span><span data-i18n="hp.cat_staff">スタッフ向け</span></div>
+  <div class="cat-btn" onclick="showCategory('other')"><span class="ic">💬</span><span data-i18n="hp.cat_other">その他</span></div>
 </div>
 
 <!-- 導入・開始 -->
 <div class="faq-group" data-cat="start">
-  <div class="faq-group-title">🚀 導入・開始</div>
+  <div class="faq-group-title" data-i18n="hp.g1">🚀 導入・開始</div>
 
   <div class="faq-item">
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">30 日 Pro 体験はどうやって始めればいいですか？</div>
@@ -256,7 +256,7 @@
 
 <!-- 使い方 -->
 <div class="faq-group" data-cat="use">
-  <div class="faq-group-title">⚙️ 使い方</div>
+  <div class="faq-group-title" data-i18n="hp.g2">⚙️ 使い方</div>
 
   <div class="faq-item">
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">QRコードはどこから発行できますか？</div>
@@ -300,7 +300,7 @@
 
 <!-- 料金・解約 -->
 <div class="faq-group" data-cat="price">
-  <div class="faq-group-title">💴 料金・解約</div>
+  <div class="faq-group-title" data-i18n="hp.g3">💴 料金・解約</div>
 
   <div class="faq-item">
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">月額料金はいくらですか？</div>
@@ -330,7 +330,7 @@
 
 <!-- トラブル -->
 <div class="faq-group" data-cat="trouble">
-  <div class="faq-group-title">🆘 トラブルシューティング</div>
+  <div class="faq-group-title" data-i18n="hp.g4">🆘 トラブルシューティング</div>
 
   <div class="faq-item">
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">ライセンスコードのメールが届きません</div>
@@ -403,7 +403,7 @@
 
 <!-- 機能 -->
 <div class="faq-group" data-cat="feature">
-  <div class="faq-group-title">✨ 機能・カスタマイズ</div>
+  <div class="faq-group-title" data-i18n="hp.g5">✨ 機能・カスタマイズ</div>
 
   <div class="faq-item">
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">給与計算の出力データは？</div>
@@ -428,7 +428,7 @@
 
 <!-- セキュリティ -->
 <div class="faq-group" data-cat="secure">
-  <div class="faq-group-title">🔒 セキュリティ・プライバシー</div>
+  <div class="faq-group-title" data-i18n="hp.g6">🔒 セキュリティ・プライバシー</div>
 
   <div class="faq-item">
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">データはどこに保存されていますか？</div>
@@ -453,7 +453,7 @@
 
 <!-- スタッフ向け -->
 <div class="faq-group" data-cat="staff">
-  <div class="faq-group-title">👤 スタッフ向け (アルバイト・社員)</div>
+  <div class="faq-group-title" data-i18n="hp.g7">👤 スタッフ向け (アルバイト・社員)</div>
 
   <div class="faq-item">
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">店舗から教わったURLにアクセスしたら何をすればいい?</div>
@@ -510,7 +510,7 @@
 
 <!-- その他 -->
 <div class="faq-group" data-cat="other">
-  <div class="faq-group-title">💬 その他</div>
+  <div class="faq-group-title" data-i18n="hp.g8">💬 その他</div>
 
   <div class="faq-item">
     <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">業種は飲食店だけですか？</div>
@@ -618,9 +618,19 @@
     <a href="/roadmap.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 6px;">ヒアリング調査の声</a>·
     <a href="/demo-reservation.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 6px;">デモ予約</a>
   </div>
-  RAKURAKU / 代表 小泉 咲太 · &copy; 2026 RAKURAKU. All rights reserved.
+  <span data-i18n="cs.footer_company">RAKURAKU / 代表 小泉 咲太 · 神奈川県横浜市桜木町</span> · &copy; 2026 RAKURAKU. All rights reserved.
 </div>
 
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 <script>
   function showCategory(cat) {
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
