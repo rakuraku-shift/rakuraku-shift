@@ -2837,6 +2837,231 @@ app.post('/api/notification/line/broadcast', async (req, res) => {
   }
 });
 
+/* ════════════════════════════════════════════════════
+ * 🟢 LINE Webhook — 友だち追加 → user_id 自動紐付け + 名前マッチング
+ * ════════════════════════════════════════════════════
+ * 店舗ごとに LINE 公式アカウントを持つ前提:
+ *   - Webhook URL を https://rakuraku-shift-production.up.railway.app/webhook/line?shop=XXX
+ *     のように shop パラメータ付きで LINE Developers に登録してもらう
+ *   - LINE → friend add (follow event) → user_id 取得 → line-bindings-XXX.json に保留
+ *   - スタッフが名前送信 (text message) → message event → 名前で照合 → bind 完了
+ *   - 個別 push 通知に使えるようになる
+ *
+ * 署名検証 (HMAC-SHA256 with channelSecret): なりすまし防止
+ */
+
+const crypto = require('crypto');
+
+function _bindingsFile(shopId) {
+  return path.join(DATA_DIR, `line-bindings-${_safeShopId(shopId || 'default')}.json`);
+}
+function _staffRosterFile(shopId) {
+  return path.join(DATA_DIR, `staff-roster-${_safeShopId(shopId || 'default')}.json`);
+}
+
+/* LINE 個別 reply (event.replyToken) */
+async function _lineReply(channelToken, replyToken, text) {
+  return new Promise((resolve) => {
+    const https = require('https');
+    const body = JSON.stringify({
+      replyToken,
+      messages: [{ type: 'text', text }]
+    });
+    const r = https.request({
+      hostname: 'api.line.me',
+      path: '/v2/bot/message/reply',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(body),
+        'Authorization': 'Bearer ' + channelToken,
+      }
+    }, response => {
+      let buf = '';
+      response.on('data', c => buf += c);
+      response.on('end', () => resolve(response.statusCode === 200));
+    });
+    r.on('error', () => resolve(false));
+    r.write(body);
+    r.end();
+  });
+}
+
+/* LINE Webhook 受信 */
+app.post('/webhook/line', express.raw({ type: 'application/json' }), async (req, res) => {
+  const shopId = req.query.shop || 'default';
+  const safeId = _safeShopId(shopId);
+  const configFile = path.join(DATA_DIR, `line-config-${safeId}.json`);
+  const config = readJSON(configFile, null);
+  if (!config || !config.secret) {
+    console.warn(`[line/webhook] LINE 未接続: shop=${safeId}`);
+    return res.status(200).send('OK');  // LINE は 2xx を期待
+  }
+
+  /* 署名検証 (HMAC-SHA256) */
+  const signature = req.headers['x-line-signature'];
+  const expected = crypto.createHmac('sha256', config.secret)
+    .update(req.body)
+    .digest('base64');
+  if (signature !== expected) {
+    console.warn(`[line/webhook] 署名不一致: shop=${safeId}`);
+    return res.status(401).send('signature mismatch');
+  }
+
+  let payload;
+  try {
+    payload = JSON.parse(req.body.toString('utf8'));
+  } catch(e) {
+    return res.status(400).send('invalid json');
+  }
+
+  const events = payload.events || [];
+  const bindings = readJSON(_bindingsFile(safeId), {});  // { userId: { name, boundAt, status } }
+  const roster = readJSON(_staffRosterFile(safeId), []);  // [{ name, ... }]
+  let mutated = false;
+
+  for (const ev of events) {
+    const userId = (ev.source && ev.source.userId) || null;
+    if (!userId) continue;
+
+    /* ① 友だち追加 (follow event) */
+    if (ev.type === 'follow') {
+      if (!bindings[userId]) {
+        bindings[userId] = { status: 'pending', followedAt: Date.now() };
+        mutated = true;
+      }
+      /* スタッフ案内: 名前送信を促す */
+      if (ev.replyToken && config.token) {
+        await _lineReply(config.token, ev.replyToken,
+          '👋 ようこそ RAKURAKU シフト管理へ!\n\n' +
+          '本人確認のため、店長から登録された\n「お名前 (フルネーム)」を送信してください。\n\n' +
+          '例: 田中 太郎'
+        );
+      }
+      console.log(`[line/webhook] follow shop=${safeId} userId=${userId.slice(0, 8)}…`);
+    }
+
+    /* ② 名前送信 (text message) → roster 照合 → bind 完了 */
+    if (ev.type === 'message' && ev.message && ev.message.type === 'text') {
+      const text = (ev.message.text || '').trim();
+      const matched = roster.find(s => s.name && (s.name === text || s.name.replace(/\s+/g, '') === text.replace(/\s+/g, '')));
+      if (matched) {
+        bindings[userId] = {
+          status: 'bound',
+          name: matched.name,
+          staffId: matched.id || matched.name,
+          boundAt: Date.now()
+        };
+        mutated = true;
+        if (ev.replyToken && config.token) {
+          await _lineReply(config.token, ev.replyToken,
+            `✅ ${matched.name} さん、紐付け完了!\n\n` +
+            'これからシフト確定通知や緊急連絡がこちらに届きます。\n通知音は LINE 設定でご調整ください。'
+          );
+        }
+        console.log(`[line/webhook] bind shop=${safeId} ${matched.name} ← userId=${userId.slice(0, 8)}…`);
+      } else {
+        /* 名前不一致 */
+        if (ev.replyToken && config.token) {
+          await _lineReply(config.token, ev.replyToken,
+            '❌ お名前が見つかりません。\n\n' +
+            '店長に「LINE 連携したい」と伝えて、スタッフ登録に\nあなたのお名前を追加してもらってください。\n\n' +
+            `送信されたお名前: ${text.slice(0, 30)}`
+          );
+        }
+      }
+    }
+
+    /* ③ ブロック (unfollow) → 紐付け解除 */
+    if (ev.type === 'unfollow') {
+      if (bindings[userId]) {
+        bindings[userId].status = 'unfollowed';
+        bindings[userId].unfollowedAt = Date.now();
+        mutated = true;
+        console.log(`[line/webhook] unfollow shop=${safeId} userId=${userId.slice(0, 8)}…`);
+      }
+    }
+  }
+
+  if (mutated) writeJSON(_bindingsFile(safeId), bindings);
+  res.status(200).send('OK');
+});
+
+/* LINE 紐付け済み user 一覧取得 (店長用) */
+app.get('/api/notification/line/bindings', (req, res) => {
+  const safeId = _safeShopId(req.query.shop || 'default');
+  const bindings = readJSON(_bindingsFile(safeId), {});
+  const list = Object.entries(bindings).map(([userId, info]) => ({
+    userId: userId.slice(0, 8) + '…',  // フル userId は返さない (露出防止)
+    ...info
+  }));
+  res.json({
+    total: list.length,
+    bound: list.filter(b => b.status === 'bound').length,
+    pending: list.filter(b => b.status === 'pending').length,
+    bindings: list
+  });
+});
+
+/* スタッフ名簿の登録 (LINE 名前マッチング用) */
+app.post('/api/notification/line/roster', express.json({ limit: '256kb' }), (req, res) => {
+  const { shopId, staff } = req.body || {};
+  if (!Array.isArray(staff)) return res.status(400).json({ error: 'staff array required' });
+  const safeId = _safeShopId(shopId || 'default');
+  const sanitized = staff
+    .map(s => ({ id: s.id || s.name, name: String(s.name || '').trim() }))
+    .filter(s => s.name);
+  writeJSON(_staffRosterFile(safeId), sanitized);
+  console.log(`[line/roster] shop=${safeId} ${sanitized.length} 名 登録`);
+  res.json({ ok: true, count: sanitized.length });
+});
+
+/* 個別 push (紐付け済みスタッフへの個別通知) */
+app.post('/api/notification/line/push', express.json({ limit: '64kb' }), async (req, res) => {
+  const { shopId, staffNames, message } = req.body || {};
+  if (!message) return res.status(400).json({ error: 'message required' });
+  const safeId = _safeShopId(shopId || 'default');
+  const config = readJSON(path.join(DATA_DIR, `line-config-${safeId}.json`), null);
+  if (!config || !config.token) return res.status(400).json({ error: 'LINE未接続' });
+
+  const bindings = readJSON(_bindingsFile(safeId), {});
+  /* 紐付け済み bound only */
+  const targets = Object.entries(bindings)
+    .filter(([_, info]) => info.status === 'bound')
+    .filter(([_, info]) => !staffNames || staffNames.includes(info.name))
+    .map(([userId]) => userId);
+
+  if (!targets.length) return res.json({ ok: true, sent: 0, message: 'no bound users' });
+
+  const https = require('https');
+  let success = 0, failed = 0;
+  for (const userId of targets) {
+    try {
+      const body = JSON.stringify({ to: userId, messages: [{ type: 'text', text: message }] });
+      await new Promise((resolve, reject) => {
+        const r = https.request({
+          hostname: 'api.line.me',
+          path: '/v2/bot/message/push',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(body),
+            'Authorization': 'Bearer ' + config.token,
+          }
+        }, response => {
+          if (response.statusCode === 200) { success++; resolve(); }
+          else { failed++; resolve(); }
+        });
+        r.on('error', () => { failed++; resolve(); });
+        r.write(body);
+        r.end();
+      });
+    } catch(e) { failed++; }
+  }
+  console.log(`[line/push] shop=${safeId} 成功 ${success} / 失敗 ${failed}`);
+  res.json({ ok: true, sent: success, failed });
+});
+
 // ── 本部 集計 API（複数店舗横断 KPI）─────────────────
 app.get('/api/hq/summary', (req, res) => {
   try {
