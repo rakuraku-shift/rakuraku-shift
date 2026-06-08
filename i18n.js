@@ -3127,6 +3127,16 @@
     'e503.btn_status': { ja:'📊 稼働状況', en:'📊 Status', zh:'📊 运行状况', ko:'📊 가동 상황', vi:'📊 Trạng thái' },
     'e503.link_support': { ja:'📨 サポート', en:'📨 Support', zh:'📨 支持', ko:'📨 지원', vi:'📨 Hỗ trợ' },
 
+    /* ─── secondary worker-facing pages (h1 only) ─── */
+    'gs.h1': { ja:'RAKURAKU を <span class="grad">3分で始める</span>', en:'<span class="grad">Start RAKURAKU</span> in 3 minutes', zh:'<span class="grad">3 分钟开始</span> RAKURAKU', ko:'RAKURAKU 를 <span class="grad">3 분에 시작</span>', vi:'<span class="grad">Bắt đầu RAKURAKU</span> trong 3 phút' },
+    'ch.h1': { ja:'📋 更新履歴', en:'📋 Changelog', zh:'📋 更新记录', ko:'📋 업데이트 이력', vi:'📋 Nhật ký cập nhật' },
+    'ch.lead': { ja:'RAKURAKU の進化を全て公開', en:'Full transparency of RAKURAKU\'s evolution', zh:'公开 RAKURAKU 的全部进化', ko:'RAKURAKU 진화 전부 공개', vi:'Toàn bộ tiến hóa của RAKURAKU công khai' },
+    'an.h1': { ja:'📢 お知らせ管理', en:'📢 Announcements', zh:'📢 公告管理', ko:'📢 공지 관리', vi:'📢 Quản lý thông báo' },
+    'rm.h1': { ja:'みなさまの <span class="grad">「こうなったら嬉しい」</span> を形に', en:'Bringing your <span class="grad">"wish-this-were-true"</span> ideas to life', zh:'将各位的 <span class="grad">「希望这样」</span> 实现', ko:'여러분의 <span class="grad">「이러면 좋겠다」</span> 를 형태로', vi:'Biến <span class="grad">"ước gì như vậy"</span> của bạn thành hiện thực' },
+    'st.h1': { ja:'🎯 RAKURAKU 導入成功 Tips 30 選', en:'🎯 30 Tips for RAKURAKU Adoption Success', zh:'🎯 RAKURAKU 导入成功 30 个 Tips', ko:'🎯 RAKURAKU 도입 성공 Tips 30선', vi:'🎯 30 mẹo triển khai RAKURAKU thành công' },
+    'tt.h1': { ja:'🎬 動画チュートリアル', en:'🎬 Video Tutorials', zh:'🎬 视频教程', ko:'🎬 동영상 튜토리얼', vi:'🎬 Hướng dẫn video' },
+    'ar.h1': { ja:'RAKURAKU<br><span class="grad">全資産 一覧</span>', en:'RAKURAKU<br><span class="grad">All Resources</span>', zh:'RAKURAKU<br><span class="grad">全部资源一览</span>', ko:'RAKURAKU<br><span class="grad">전 자산 일람</span>', vi:'RAKURAKU<br><span class="grad">Toàn bộ tài nguyên</span>' },
+
     /* ─── 料金プラン pricing.html ─── */
     'pricing.badge': { ja:'🎉 永久無料プラン誕生',
                        en:'🎉 Forever-Free Plan Available',

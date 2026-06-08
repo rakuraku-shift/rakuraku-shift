@@ -75,7 +75,7 @@ a{color:inherit;text-decoration:none}
 
 <header class="hero">
   <div class="hero-content">
-    <h1>RAKURAKU<br><span class="grad">全資産 一覧</span></h1>
+    <h1 data-i18n-html="ar.h1">RAKURAKU<br><span class="grad">全資産 一覧</span></h1>
     <p>ALL RESOURCES INDEX</p>
     <div class="stats">
       <div class="stat-item">
@@ -449,5 +449,15 @@ a{color:inherit;text-decoration:none}
   <p style="margin-top:8px;font-size:10px">このページは内部用 (noindex)</p>
 </footer>
 
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body>
 </html>

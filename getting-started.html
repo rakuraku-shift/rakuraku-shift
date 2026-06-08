@@ -140,7 +140,7 @@
 
 <section class="hero">
   <div class="hero-eyebrow">⏱ 3分で完了</div>
-  <h1>RAKURAKU を <span class="grad">3分で始める</span></h1>
+  <h1 data-i18n-html="gs.h1">RAKURAKU を <span class="grad">3分で始める</span></h1>
   <p>30日 Pro 体験を開始 → 自動で店舗専用URLが発行 → スタッフにQR配布で運用開始</p>
 </section>
 
@@ -296,5 +296,15 @@
 </div>
 
 <script src="/help-widget.js" defer></script>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body>
 </html>

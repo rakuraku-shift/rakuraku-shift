@@ -43,7 +43,7 @@ footer a{color:#F43F5E;margin:0 10px}
 <body>
 <a class="skip-link" href="#main">本文へスキップ</a>
 <header>
-  <h1>🎯 RAKURAKU 導入成功 Tips 30 選</h1>
+  <h1 data-i18n="st.h1">🎯 RAKURAKU 導入成功 Tips 30 選</h1>
   <p>既存ユーザーが教える実践テクニック集</p>
 </header>
 <nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; 成功 Tips 30 選</nav>
@@ -105,5 +105,15 @@ footer a{color:#F43F5E;margin:0 10px}
   <p style="margin-top:15px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
 </footer>
 <script src="/help-widget.js" defer></script>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body>
 </html>
