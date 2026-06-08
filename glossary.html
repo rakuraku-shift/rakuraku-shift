@@ -69,160 +69,160 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);backgr
 <nav aria-label="サイトナビゲーション" class="nav">
   <div class="nav-inner">
     <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
-    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;text-decoration:none;">← トップへ</a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;text-decoration:none;" data-i18n="gl.back_top">← トップへ</a>
   </div>
 </nav>
 <div class="container">
 <nav aria-label="パンくず" style="font-size:12px;color:#64748B;font-weight:600;margin-bottom:14px;">
-  <a href="/" style="color:#4F46E5;text-decoration:none;">ホーム</a> <span style="margin:0 8px;color:#CBD5E1;">›</span><span style="color:#0F172A;font-weight:700;" aria-current="page">用語集</span>
+  <a href="/" style="color:#4F46E5;text-decoration:none;" data-i18n="bc.home">ホーム</a> <span style="margin:0 8px;color:#CBD5E1;">›</span><span style="color:#0F172A;font-weight:700;" aria-current="page" data-i18n="gl.bc">用語集</span>
 </nav>
 <section class="hero">
-  <div class="hero-eyebrow">📚 50+ 用語を網羅</div>
-  <h1>シフト管理・飲食店経営<br><span class="grad">用語集</span></h1>
-  <p>初心者から経営者まで、シフト管理に出てくる用語を分かりやすく解説</p>
+  <div class="hero-eyebrow" data-i18n="gl.eyebrow">📚 50+ 用語を網羅</div>
+  <h1 data-i18n-html="gl.h1">シフト管理・飲食店経営<br><span class="grad">用語集</span></h1>
+  <p data-i18n="gl.lead">初心者から経営者まで、シフト管理に出てくる用語を分かりやすく解説</p>
 </section>
 
 <div class="search">
-  <input type="search" id="search-input" placeholder="🔍 用語を検索 (例: 深夜割増, FL コスト)" oninput="filterTerms()" aria-label="用語検索" />
+  <input type="search" id="search-input" placeholder="🔍 用語を検索 (例: 深夜割増, FL コスト)" data-i18n-placeholder="gl.search_ph" oninput="filterTerms()" aria-label="用語検索" data-i18n-aria="gl.search_aria" />
 </div>
 
 <div class="tabs">
-  <a href="#law" class="tab">⚖️ 労基法</a>
-  <a href="#shift" class="tab">📅 シフト管理</a>
-  <a href="#cost" class="tab">💴 コスト管理</a>
-  <a href="#hr" class="tab">👥 人材</a>
-  <a href="#tech" class="tab">💻 SaaS用語</a>
+  <a href="#law" class="tab" data-i18n="gl.tab_law">⚖️ 労基法</a>
+  <a href="#shift" class="tab" data-i18n="gl.tab_shift">📅 シフト管理</a>
+  <a href="#cost" class="tab" data-i18n="gl.tab_cost">💴 コスト管理</a>
+  <a href="#hr" class="tab" data-i18n="gl.tab_hr">👥 人材</a>
+  <a href="#tech" class="tab" data-i18n="gl.tab_tech">💻 SaaS用語</a>
 </div>
 
 <!-- 労基法 -->
 <section class="category" id="law">
-  <h2>⚖️ 労基法・労務</h2>
+  <h2 data-i18n="gl.cat_law">⚖️ 労基法・労務</h2>
 
-  <div class="term"><div class="term-name">深夜割増 <span class="badge law">労基法第37条</span></div><div class="term-desc">22:00 〜 翌5:00 の労働時間に対して、通常時給の <strong>+25%</strong> を支払う義務。例: 時給¥1,200 → 深夜帯は ¥1,500。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t1_name">深夜割増 <span class="badge law">労基法第37条</span></div><div class="term-desc" data-i18n-html="gl.t1_desc">22:00 〜 翌5:00 の労働時間に対して、通常時給の <strong>+25%</strong> を支払う義務。例: 時給¥1,200 → 深夜帯は ¥1,500。</div></div>
 
-  <div class="term"><div class="term-name">時間外労働 (残業) <span class="badge law">労基法第32条</span></div><div class="term-desc">1日8時間、週40時間を超える労働。<strong>+25%</strong> の割増賃金が必要。月60時間超の部分は <strong>+50%</strong>。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t2_name">時間外労働 (残業) <span class="badge law">労基法第32条</span></div><div class="term-desc" data-i18n-html="gl.t2_desc">1日8時間、週40時間を超える労働。<strong>+25%</strong> の割増賃金が必要。月60時間超の部分は <strong>+50%</strong>。</div></div>
 
-  <div class="term"><div class="term-name">休憩義務 <span class="badge law">労基法第34条</span></div><div class="term-desc">勤務時間が <strong>6時間超 → 45分以上</strong>、<strong>8時間超 → 60分以上</strong> の休憩を取らせる義務。違反は罰金。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t3_name">休憩義務 <span class="badge law">労基法第34条</span></div><div class="term-desc" data-i18n-html="gl.t3_desc">勤務時間が <strong>6時間超 → 45分以上</strong>、<strong>8時間超 → 60分以上</strong> の休憩を取らせる義務。違反は罰金。</div></div>
 
-  <div class="term"><div class="term-name">法定休日 <span class="badge law">労基法第35条</span></div><div class="term-desc">週1日 (または4週で4日) の休日を与える義務。これを超える連続勤務は違法。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t4_name">法定休日 <span class="badge law">労基法第35条</span></div><div class="term-desc" data-i18n-html="gl.t4_desc">週1日 (または4週で4日) の休日を与える義務。これを超える連続勤務は違法。</div></div>
 
-  <div class="term"><div class="term-name">年少者労働制限 <span class="badge law">労基法第61条</span></div><div class="term-desc">18歳未満は <strong>22:00〜翌5:00 の深夜労働禁止</strong>。違反は罰金または懲役。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t5_name">年少者労働制限 <span class="badge law">労基法第61条</span></div><div class="term-desc" data-i18n-html="gl.t5_desc">18歳未満は <strong>22:00〜翌5:00 の深夜労働禁止</strong>。違反は罰金または懲役。</div></div>
 
-  <div class="term"><div class="term-name">36協定</div><div class="term-desc">時間外労働をさせる場合に必要な労使協定。労基署への届出義務あり。<strong>「サブロク協定」</strong> と読む。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t6_name">36協定</div><div class="term-desc" data-i18n-html="gl.t6_desc">時間外労働をさせる場合に必要な労使協定。労基署への届出義務あり。<strong>「サブロク協定」</strong> と読む。</div></div>
 
-  <div class="term"><div class="term-name">最低賃金</div><div class="term-desc">都道府県別に毎年10月に改定。東京 ¥1,113、大阪 ¥1,064 など。これを下回ると違法。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t7_name">最低賃金</div><div class="term-desc" data-i18n-html="gl.t7_desc">都道府県別に毎年10月に改定。東京 ¥1,113、大阪 ¥1,064 など。これを下回ると違法。</div></div>
 
-  <div class="term"><div class="term-name">所定労働時間</div><div class="term-desc">就業規則で定めた1日の労働時間 (法定上限は8時間)。これを超えると時間外労働。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t8_name">所定労働時間</div><div class="term-desc" data-i18n-html="gl.t8_desc">就業規則で定めた1日の労働時間 (法定上限は8時間)。これを超えると時間外労働。</div></div>
 
-  <div class="term"><div class="term-name">変形労働時間制</div><div class="term-desc">月単位や年単位で労働時間を平均化する制度。繁忙期に長く、閑散期に短く調整可能。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t9_name">変形労働時間制</div><div class="term-desc" data-i18n-html="gl.t9_desc">月単位や年単位で労働時間を平均化する制度。繁忙期に長く、閑散期に短く調整可能。</div></div>
 
-  <div class="term"><div class="term-name">みなし管理職</div><div class="term-desc">「管理監督者」として時間外手当を払わない扱い。但し、定義を満たさないと違法 (店長詐欺と呼ばれる問題)。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t10_name">みなし管理職</div><div class="term-desc" data-i18n-html="gl.t10_desc">「管理監督者」として時間外手当を払わない扱い。但し、定義を満たさないと違法 (店長詐欺と呼ばれる問題)。</div></div>
 
 </section>
 
 <!-- シフト管理 -->
 <section class="category" id="shift">
-  <h2>📅 シフト管理</h2>
+  <h2 data-i18n="gl.cat_shift">📅 シフト管理</h2>
 
-  <div class="term"><div class="term-name">シフト提出 <span class="badge shift">SaaS</span></div><div class="term-desc">スタッフが希望勤務日時を提出すること。RAKURAKU では <strong>スマホで瞬時に提出</strong> 可能。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t11_name">シフト提出 <span class="badge shift">SaaS</span></div><div class="term-desc" data-i18n-html="gl.t11_desc">スタッフが希望勤務日時を提出すること。RAKURAKU では <strong>スマホで瞬時に提出</strong> 可能。</div></div>
 
-  <div class="term"><div class="term-name">シフト確定</div><div class="term-desc">店長が最終的にシフトを承認・公開すること。確定後はスタッフ全員に通知。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t12_name">シフト確定</div><div class="term-desc" data-i18n-html="gl.t12_desc">店長が最終的にシフトを承認・公開すること。確定後はスタッフ全員に通知。</div></div>
 
-  <div class="term"><div class="term-name">急募・代替募集</div><div class="term-desc">急な欠勤発生時に、代わりのスタッフを募集すること。<strong>RAKURAKU は 3 段階自動募集</strong> で 80% 削減。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t13_name">急募・代替募集</div><div class="term-desc" data-i18n-html="gl.t13_desc">急な欠勤発生時に、代わりのスタッフを募集すること。<strong>RAKURAKU は 3 段階自動募集</strong> で 80% 削減。</div></div>
 
-  <div class="term"><div class="term-name">穴埋め</div><div class="term-desc">人手不足のシフトコマを埋める作業。Timee などの外部募集に頼ることが多いが、コスト圧迫の原因。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t14_name">穴埋め</div><div class="term-desc" data-i18n-html="gl.t14_desc">人手不足のシフトコマを埋める作業。Timee などの外部募集に頼ることが多いが、コスト圧迫の原因。</div></div>
 
-  <div class="term"><div class="term-name">スポットワーカー</div><div class="term-desc">単発で働くワーカー。Timee・シェアフル・LINE スポットなどから手配。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t15_name">スポットワーカー</div><div class="term-desc" data-i18n-html="gl.t15_desc">単発で働くワーカー。Timee・シェアフル・LINE スポットなどから手配。</div></div>
 
-  <div class="term"><div class="term-name">レギュラーシフト</div><div class="term-desc">毎週固定のシフト (例: 毎週月水金 18-22 時)。学生バイトに多い。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t16_name">レギュラーシフト</div><div class="term-desc" data-i18n-html="gl.t16_desc">毎週固定のシフト (例: 毎週月水金 18-22 時)。学生バイトに多い。</div></div>
 
-  <div class="term"><div class="term-name">フリーシフト</div><div class="term-desc">毎週変動するシフト。希望提出ベース。主婦パートに多い。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t17_name">フリーシフト</div><div class="term-desc" data-i18n-html="gl.t17_desc">毎週変動するシフト。希望提出ベース。主婦パートに多い。</div></div>
 
-  <div class="term"><div class="term-name">早番・遅番</div><div class="term-desc">店舗の営業時間を分割した勤務枠。早番は開店〜中盤、遅番は中盤〜閉店。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t18_name">早番・遅番</div><div class="term-desc" data-i18n-html="gl.t18_desc">店舗の営業時間を分割した勤務枠。早番は開店〜中盤、遅番は中盤〜閉店。</div></div>
 
-  <div class="term"><div class="term-name">通し勤務</div><div class="term-desc">開店から閉店まで通して勤務すること。長時間勤務になりがちなので休憩管理が重要。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t19_name">通し勤務</div><div class="term-desc" data-i18n-html="gl.t19_desc">開店から閉店まで通して勤務すること。長時間勤務になりがちなので休憩管理が重要。</div></div>
 
-  <div class="term"><div class="term-name">タイムカード</div><div class="term-desc">出退勤を記録するカード/システム。RAKURAKU は <strong>GPS 打刻</strong> で物理カード不要。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t20_name">タイムカード</div><div class="term-desc" data-i18n-html="gl.t20_desc">出退勤を記録するカード/システム。RAKURAKU は <strong>GPS 打刻</strong> で物理カード不要。</div></div>
 
 </section>
 
 <!-- コスト管理 -->
 <section class="category" id="cost">
-  <h2>💴 コスト管理</h2>
+  <h2 data-i18n="gl.cat_cost">💴 コスト管理</h2>
 
-  <div class="term"><div class="term-name">FL コスト <span class="badge cost">経営</span></div><div class="term-desc"><strong>F (Food 原価) + L (Labor 人件費)</strong> の合計。飲食店経営の最重要指標。<strong>60% 以内</strong> が業界目標。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t21_name">FL コスト <span class="badge cost">経営</span></div><div class="term-desc" data-i18n-html="gl.t21_desc"><strong>F (Food 原価) + L (Labor 人件費)</strong> の合計。飲食店経営の最重要指標。<strong>60% 以内</strong> が業界目標。</div></div>
 
-  <div class="term"><div class="term-name">FLR コスト</div><div class="term-desc">FL + R (Rent 家賃)。<strong>70% 以内</strong> が目標。家賃が高い都心では特に重要。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t22_name">FLR コスト</div><div class="term-desc" data-i18n-html="gl.t22_desc">FL + R (Rent 家賃)。<strong>70% 以内</strong> が目標。家賃が高い都心では特に重要。</div></div>
 
-  <div class="term"><div class="term-name">原価率</div><div class="term-desc">売上に対する原材料費の比率。<strong>業界標準 30%</strong>。ドリンクは 20%、フードは 35% など緩急つける。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t23_name">原価率</div><div class="term-desc" data-i18n-html="gl.t23_desc">売上に対する原材料費の比率。<strong>業界標準 30%</strong>。ドリンクは 20%、フードは 35% など緩急つける。</div></div>
 
-  <div class="term"><div class="term-name">人件費率</div><div class="term-desc">売上に対する人件費の比率。<strong>業界標準 30%</strong>。25% を切れば優良店。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t24_name">人件費率</div><div class="term-desc" data-i18n-html="gl.t24_desc">売上に対する人件費の比率。<strong>業界標準 30%</strong>。25% を切れば優良店。</div></div>
 
-  <div class="term"><div class="term-name">人時生産性</div><div class="term-desc">1 人時 (人 × 時間) あたりの売上。例: 時給¥1,200 のスタッフが 1 時間で ¥6,000 売り上げる → 人時生産性 ¥6,000。<strong>¥5,000 以上</strong> が目標。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t25_name">人時生産性</div><div class="term-desc" data-i18n-html="gl.t25_desc">1 人時 (人 × 時間) あたりの売上。例: 時給¥1,200 のスタッフが 1 時間で ¥6,000 売り上げる → 人時生産性 ¥6,000。<strong>¥5,000 以上</strong> が目標。</div></div>
 
-  <div class="term"><div class="term-name">客単価</div><div class="term-desc">1 人あたりの平均購入金額。客単価 × 客数 = 売上。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t26_name">客単価</div><div class="term-desc" data-i18n-html="gl.t26_desc">1 人あたりの平均購入金額。客単価 × 客数 = 売上。</div></div>
 
-  <div class="term"><div class="term-name">回転率</div><div class="term-desc">1 席が 1 日に何回使われるか。回転率 × 席数 × 客単価 = 売上。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t27_name">回転率</div><div class="term-desc" data-i18n-html="gl.t27_desc">1 席が 1 日に何回使われるか。回転率 × 席数 × 客単価 = 売上。</div></div>
 
-  <div class="term"><div class="term-name">ABC 分析</div><div class="term-desc">メニューを売上高で A・B・C に分類。A: 売れ筋、C: 廃止候補。月 1 回の見直しがおすすめ。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t28_name">ABC 分析</div><div class="term-desc" data-i18n-html="gl.t28_desc">メニューを売上高で A・B・C に分類。A: 売れ筋、C: 廃止候補。月 1 回の見直しがおすすめ。</div></div>
 
-  <div class="term"><div class="term-name">ロス率</div><div class="term-desc">廃棄食材の割合。<strong>3% 以内</strong> が目標。これを超えると原価率が上昇。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t29_name">ロス率</div><div class="term-desc" data-i18n-html="gl.t29_desc">廃棄食材の割合。<strong>3% 以内</strong> が目標。これを超えると原価率が上昇。</div></div>
 
-  <div class="term"><div class="term-name">外部募集費</div><div class="term-desc">Timee・シェアフル・バイトル等の手数料。<strong>1 件あたり 30%</strong> の手数料が一般的。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t30_name">外部募集費</div><div class="term-desc" data-i18n-html="gl.t30_desc">Timee・シェアフル・バイトル等の手数料。<strong>1 件あたり 30%</strong> の手数料が一般的。</div></div>
 
 </section>
 
 <!-- 人材 -->
 <section class="category" id="hr">
-  <h2>👥 人材・採用</h2>
+  <h2 data-i18n="gl.cat_hr">👥 人材・採用</h2>
 
-  <div class="term"><div class="term-name">採用コスト</div><div class="term-desc">1 名採用にかかる費用。飲食店業界平均 <strong>¥30,000-¥50,000/名</strong>。離職率を下げて減らす。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t31_name">採用コスト</div><div class="term-desc" data-i18n-html="gl.t31_desc">1 名採用にかかる費用。飲食店業界平均 <strong>¥30,000-¥50,000/名</strong>。離職率を下げて減らす。</div></div>
 
-  <div class="term"><div class="term-name">離職率</div><div class="term-desc">期間内に辞めたスタッフの割合。飲食店業界平均 <strong>年30%</strong>。20% 以下なら優良。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t32_name">離職率</div><div class="term-desc" data-i18n-html="gl.t32_desc">期間内に辞めたスタッフの割合。飲食店業界平均 <strong>年30%</strong>。20% 以下なら優良。</div></div>
 
-  <div class="term"><div class="term-name">定着率</div><div class="term-desc">スタッフが続いている割合。100% - 離職率。<strong>1 年定着率 80% 以上</strong> が目標。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t33_name">定着率</div><div class="term-desc" data-i18n-html="gl.t33_desc">スタッフが続いている割合。100% - 離職率。<strong>1 年定着率 80% 以上</strong> が目標。</div></div>
 
-  <div class="term"><div class="term-name">在留資格</div><div class="term-desc">外国人スタッフが日本で働ける資格。留学生は <strong>週28時間まで</strong> など制限あり。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t34_name">在留資格</div><div class="term-desc" data-i18n-html="gl.t34_desc">外国人スタッフが日本で働ける資格。留学生は <strong>週28時間まで</strong> など制限あり。</div></div>
 
-  <div class="term"><div class="term-name">特定技能</div><div class="term-desc">外国人材の在留資格の1つ。飲食業も対象 (2024年〜)。週40時間まで可。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t35_name">特定技能</div><div class="term-desc" data-i18n-html="gl.t35_desc">外国人材の在留資格の1つ。飲食業も対象 (2024年〜)。週40時間まで可。</div></div>
 
-  <div class="term"><div class="term-name">OJT</div><div class="term-desc"><strong>On-the-Job Training</strong>。実務で教える研修方式。飲食店では一般的。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t36_name">OJT</div><div class="term-desc" data-i18n-html="gl.t36_desc"><strong>On-the-Job Training</strong>。実務で教える研修方式。飲食店では一般的。</div></div>
 
-  <div class="term"><div class="term-name">スタッフ評価</div><div class="term-desc">スタッフのスキル・態度を 5 段階等で評価。RAKURAKU では <strong>ポジション別5項目</strong> で評価可能。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t37_name">スタッフ評価</div><div class="term-desc" data-i18n-html="gl.t37_desc">スタッフのスキル・態度を 5 段階等で評価。RAKURAKU では <strong>ポジション別5項目</strong> で評価可能。</div></div>
 
-  <div class="term"><div class="term-name">トレーニングマニュアル</div><div class="term-desc">新人研修の手順書。動画版・テキスト版があると効率的。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t38_name">トレーニングマニュアル</div><div class="term-desc" data-i18n-html="gl.t38_desc">新人研修の手順書。動画版・テキスト版があると効率的。</div></div>
 
 </section>
 
 <!-- SaaS用語 -->
 <section class="category" id="tech">
-  <h2>💻 SaaS・テクノロジー用語</h2>
+  <h2 data-i18n="gl.cat_tech">💻 SaaS・テクノロジー用語</h2>
 
-  <div class="term"><div class="term-name">SaaS</div><div class="term-desc"><strong>Software as a Service</strong>。インストール不要でブラウザで使えるサービス。月額課金が一般的。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t39_name">SaaS</div><div class="term-desc" data-i18n-html="gl.t39_desc"><strong>Software as a Service</strong>。インストール不要でブラウザで使えるサービス。月額課金が一般的。</div></div>
 
-  <div class="term"><div class="term-name">PWA</div><div class="term-desc"><strong>Progressive Web App</strong>。ブラウザで動くがアプリのように使える Web 技術。RAKURAKU も PWA。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t40_name">PWA</div><div class="term-desc" data-i18n-html="gl.t40_desc"><strong>Progressive Web App</strong>。ブラウザで動くがアプリのように使える Web 技術。RAKURAKU も PWA。</div></div>
 
-  <div class="term"><div class="term-name">GPS 打刻</div><div class="term-desc">スマートフォンの GPS 位置情報で出退勤を記録。店舗外打刻を検知。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t41_name">GPS 打刻</div><div class="term-desc" data-i18n-html="gl.t41_desc">スマートフォンの GPS 位置情報で出退勤を記録。店舗外打刻を検知。</div></div>
 
-  <div class="term"><div class="term-name">Haversine 距離計算</div><div class="term-desc">2 点間の地球上の距離を計算する数式。RAKURAKU は ±5m の精度で打刻位置を検知。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t42_name">Haversine 距離計算</div><div class="term-desc" data-i18n-html="gl.t42_desc">2 点間の地球上の距離を計算する数式。RAKURAKU は ±5m の精度で打刻位置を検知。</div></div>
 
-  <div class="term"><div class="term-name">クラウド</div><div class="term-desc">インターネット上のサーバーでデータを管理する仕組み。店舗 PC が壊れてもデータは安全。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t43_name">クラウド</div><div class="term-desc" data-i18n-html="gl.t43_desc">インターネット上のサーバーでデータを管理する仕組み。店舗 PC が壊れてもデータは安全。</div></div>
 
-  <div class="term"><div class="term-name">QR コード</div><div class="term-desc">2 次元バーコード。スタッフにシフト提出 URL を共有するのに便利。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t44_name">QR コード</div><div class="term-desc" data-i18n-html="gl.t44_desc">2 次元バーコード。スタッフにシフト提出 URL を共有するのに便利。</div></div>
 
-  <div class="term"><div class="term-name">LINE Messaging API</div><div class="term-desc">LINE 公式アカウントを使った業務連携。シフト確定通知などに使う。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t45_name">LINE Messaging API</div><div class="term-desc" data-i18n-html="gl.t45_desc">LINE 公式アカウントを使った業務連携。シフト確定通知などに使う。</div></div>
 
-  <div class="term"><div class="term-name">Stripe</div><div class="term-desc">世界標準のオンライン決済プラットフォーム。RAKURAKU の月額決済も Stripe。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t46_name">Stripe</div><div class="term-desc" data-i18n-html="gl.t46_desc">世界標準のオンライン決済プラットフォーム。RAKURAKU の月額決済も Stripe。</div></div>
 
-  <div class="term"><div class="term-name">CSV エクスポート</div><div class="term-desc">表データを CSV ファイルとして出力すること。freee・マネーフォワード等の会計ソフトに取り込める。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t47_name">CSV エクスポート</div><div class="term-desc" data-i18n-html="gl.t47_desc">表データを CSV ファイルとして出力すること。freee・マネーフォワード等の会計ソフトに取り込める。</div></div>
 
-  <div class="term"><div class="term-name">SHA-256</div><div class="term-desc">パスワードを安全に保管するためのハッシュ関数。RAKURAKU の個人給与照会パスワードに採用。</div></div>
+  <div class="term"><div class="term-name" data-i18n-html="gl.t48_name">SHA-256</div><div class="term-desc" data-i18n-html="gl.t48_desc">パスワードを安全に保管するためのハッシュ関数。RAKURAKU の個人給与照会パスワードに採用。</div></div>
 
 </section>
 
 <div class="footer">
-  <a href="/">トップ</a>·<a href="/blog.html">ブログ</a>·<a href="/help.html">FAQ</a>·<a href="/case-studies.html">事例</a>·<a href="/demo-reservation.html">デモ予約</a><br>
-  RAKURAKU / 代表 小泉 咲太 · &copy; 2026 RAKURAKU. All rights reserved.
+  <a href="/" data-i18n="gl.f_top">トップ</a>·<a href="/blog.html" data-i18n="gl.f_blog">ブログ</a>·<a href="/help.html" data-i18n="gl.f_faq">FAQ</a>·<a href="/case-studies.html" data-i18n="gl.f_cases">事例</a>·<a href="/demo-reservation.html" data-i18n="gl.f_demo">デモ予約</a><br>
+  <span data-i18n="gl.f_copy">RAKURAKU / 代表 小泉 咲太 · &copy; 2026 RAKURAKU. All rights reserved.</span>
 </div>
 </div>
 <script>
@@ -240,4 +240,14 @@ function filterTerms() {
 }
 </script>
 <script src="/help-widget.js" defer></script>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body></html>
