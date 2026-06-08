@@ -170,105 +170,105 @@
 <div class="container">
 
   <section class="hero">
-    <div class="hero-eyebrow">💡 GUT FEELING AS DATA</div>
-    <h1>店長の勘を、<br><span class="grad">1秒で データに変える</span></h1>
-    <p>シフト終わりに「今日どうだった?」を1タップ。<br>溜まったデータから AI が <em>「この2人、相性悪いかも」</em> を提案。<br>店長は<strong>言葉にしなくていい</strong>。タップだけでいい。</p>
+    <div class="hero-eyebrow" data-i18n="mf.eyebrow">💡 GUT FEELING AS DATA</div>
+    <h1 data-i18n-html="mf.h1">店長の勘を、<br><span class="grad">1秒で データに変える</span></h1>
+    <p data-i18n-html="mf.lead">シフト終わりに「今日どうだった?」を1タップ。<br>溜まったデータから AI が <em>「この2人、相性悪いかも」</em> を提案。<br>店長は<strong>言葉にしなくていい</strong>。タップだけでいい。</p>
   </section>
 
   <!-- ===== Role toggle ===== -->
   <div class="role-toggle">
-    <button class="role-tab active" onclick="setRole('manager')" id="rManager">👔 店長の画面</button>
-    <button class="role-tab" onclick="setRole('staff')" id="rStaff">👤 従業員の画面</button>
+    <button class="role-tab active" onclick="setRole('manager')" id="rManager" data-i18n="mf.role_manager">👔 店長の画面</button>
+    <button class="role-tab" onclick="setRole('staff')" id="rStaff" data-i18n="mf.role_staff">👤 従業員の画面</button>
   </div>
 
   <!-- ===== 1-tap mood card (MANAGER) ===== -->
   <section class="tap-card" id="cardManager">
     <div class="tap-head">
       <div class="label">SHIFT END · 1 TAP REVIEW</div>
-      <h2>今日のシフト、どうだった?</h2>
-      <div class="sub">2026/06/05 (木) 22:30 — 1 秒で完了 · 言葉にしなくていい</div>
+      <h2 data-i18n="mf.mgr_q">今日のシフト、どうだった?</h2>
+      <div class="sub" data-i18n="mf.mgr_sub">2026/06/05 (木) 22:30 — 1 秒で完了 · 言葉にしなくていい</div>
     </div>
 
     <div class="moods" role="group" aria-label="本日の振り返り">
-      <button class="mood m5" data-v="5" onclick="pick(this)"><span class="mood-em">😄</span><div class="mood-l">最高</div></button>
-      <button class="mood m4" data-v="4" onclick="pick(this)"><span class="mood-em">😊</span><div class="mood-l">良い</div></button>
-      <button class="mood m3" data-v="3" onclick="pick(this)"><span class="mood-em">😐</span><div class="mood-l">普通</div></button>
-      <button class="mood m2" data-v="2" onclick="pick(this)"><span class="mood-em">😟</span><div class="mood-l">微妙</div></button>
-      <button class="mood m1" data-v="1" onclick="pick(this)"><span class="mood-em">😩</span><div class="mood-l">しんどい</div></button>
+      <button class="mood m5" data-v="5" onclick="pick(this)"><span class="mood-em">😄</span><div class="mood-l" data-i18n="mf.m5_mgr">最高</div></button>
+      <button class="mood m4" data-v="4" onclick="pick(this)"><span class="mood-em">😊</span><div class="mood-l" data-i18n="mf.m4_mgr">良い</div></button>
+      <button class="mood m3" data-v="3" onclick="pick(this)"><span class="mood-em">😐</span><div class="mood-l" data-i18n="mf.m3_normal">普通</div></button>
+      <button class="mood m2" data-v="2" onclick="pick(this)"><span class="mood-em">😟</span><div class="mood-l" data-i18n="mf.m2_mgr">微妙</div></button>
+      <button class="mood m1" data-v="1" onclick="pick(this)"><span class="mood-em">😩</span><div class="mood-l" data-i18n="mf.m1_mgr">しんどい</div></button>
     </div>
 
     <div class="who-was-in" id="whoIn">
-      <div class="lbl">気になった人がいたら 1 タップ (任意)</div>
-      <div class="sub">※ 名前は店長以外には見えません。「なんとなく合わなかった」だけで OK。</div>
+      <div class="lbl" data-i18n="mf.who_label">気になった人がいたら 1 タップ (任意)</div>
+      <div class="sub" data-i18n="mf.who_sub">※ 名前は店長以外には見えません。「なんとなく合わなかった」だけで OK。</div>
       <div class="staff-chips" id="chips">
-        <button class="staff-chip" onclick="toggleChip(this)">スタッフA</button>
-        <button class="staff-chip" onclick="toggleChip(this)">スタッフB</button>
-        <button class="staff-chip" onclick="toggleChip(this)">スタッフC</button>
-        <button class="staff-chip" onclick="toggleChip(this)">スタッフD</button>
-        <button class="staff-chip" onclick="toggleChip(this)">スタッフE</button>
+        <button class="staff-chip" onclick="toggleChip(this)" data-i18n="mf.staff_a">スタッフA</button>
+        <button class="staff-chip" onclick="toggleChip(this)" data-i18n="mf.staff_b">スタッフB</button>
+        <button class="staff-chip" onclick="toggleChip(this)" data-i18n="mf.staff_c">スタッフC</button>
+        <button class="staff-chip" onclick="toggleChip(this)" data-i18n="mf.staff_d">スタッフD</button>
+        <button class="staff-chip" onclick="toggleChip(this)" data-i18n="mf.staff_e">スタッフE</button>
       </div>
       <div style="text-align:center;margin-top:14px;">
-        <button class="s-btn accept" onclick="confirmTap()">💾 これで OK (記録)</button>
+        <button class="s-btn accept" onclick="confirmTap()" data-i18n="mf.confirm_btn">💾 これで OK (記録)</button>
       </div>
     </div>
 
-    <div class="tap-confirm" id="tapConfirm">✅ 記録しました。AI が学習に追加します。</div>
+    <div class="tap-confirm" id="tapConfirm" data-i18n="mf.recorded">✅ 記録しました。AI が学習に追加します。</div>
   </section>
 
   <!-- ===== 1-tap mood card (STAFF) ===== -->
   <section class="tap-card" id="cardStaff" style="display:none;">
     <div class="tap-head">
       <div class="label">CLOCK OUT · 1 TAP REVIEW</div>
-      <h2>お疲れさまでした!<br>今日はどうでしたか?</h2>
-      <div class="sub">退勤打刻 → 1 タップで完了 · あなたの声が店長に届きます</div>
+      <h2 data-i18n-html="mf.staff_q">お疲れさまでした!<br>今日はどうでしたか?</h2>
+      <div class="sub" data-i18n="mf.staff_sub">退勤打刻 → 1 タップで完了 · あなたの声が店長に届きます</div>
     </div>
 
     <div class="moods">
-      <button class="mood m5"><span class="mood-em">😄</span><div class="mood-l">楽しかった</div></button>
-      <button class="mood m4"><span class="mood-em">😊</span><div class="mood-l">良い感じ</div></button>
-      <button class="mood m3"><span class="mood-em">😐</span><div class="mood-l">普通</div></button>
-      <button class="mood m2"><span class="mood-em">😟</span><div class="mood-l">疲れた</div></button>
-      <button class="mood m1"><span class="mood-em">😩</span><div class="mood-l">きつかった</div></button>
+      <button class="mood m5"><span class="mood-em">😄</span><div class="mood-l" data-i18n="mf.m5_staff">楽しかった</div></button>
+      <button class="mood m4"><span class="mood-em">😊</span><div class="mood-l" data-i18n="mf.m4_staff">良い感じ</div></button>
+      <button class="mood m3"><span class="mood-em">😐</span><div class="mood-l" data-i18n="mf.m3_normal">普通</div></button>
+      <button class="mood m2"><span class="mood-em">😟</span><div class="mood-l" data-i18n="mf.m2_staff">疲れた</div></button>
+      <button class="mood m1"><span class="mood-em">😩</span><div class="mood-l" data-i18n="mf.m1_staff">きつかった</div></button>
     </div>
 
     <div style="text-align:center;margin-top:16px;">
-      <p style="font-size:11px;color:#64748B;font-weight:600;">💝 タップだけで完了 · 内容は <strong style="color:#0369A1;">匿名集計</strong>のみ使用<br>(本人特定情報は店長にも見えません)</p>
+      <p style="font-size:11px;color:#64748B;font-weight:600;" data-i18n-html="mf.anon_note">💝 タップだけで完了 · 内容は <strong style="color:#0369A1;">匿名集計</strong>のみ使用<br>(本人特定情報は店長にも見えません)</p>
     </div>
   </section>
 
   <!-- ===== AI Suggestion Demo ===== -->
   <section class="feat">
     <div class="section-head">
-      <h2>🤖 データが溜まると、AI が提案します</h2>
+      <h2 data-i18n="mf.ai_h2">🤖 データが溜まると、AI が提案します</h2>
       <span class="tag">SMART SUGGESTION</span>
     </div>
 
     <div class="suggest">
-      <h3>来週のシフトを組む前に — 1 件、確認してほしいことがあります</h3>
-      <div class="body">
+      <h3 data-i18n="mf.s1_h3">来週のシフトを組む前に — 1 件、確認してほしいことがあります</h3>
+      <div class="body" data-i18n-html="mf.s1_body">
         <strong>スタッフA × スタッフD</strong> の組み合わせは、過去 3 回中 <strong>2 回が 😟 評価</strong>でした。<br>
         来週 (金) の <strong>20:00-23:00</strong> 帯で 2 人を同時配置する予定ですが、避けますか?
       </div>
-      <div class="evidence">
+      <div class="evidence" data-i18n-html="mf.s1_evidence">
         📊 根拠データ: 5月17日 😟 · 5月24日 😟 · 5月31日 😊 / 平均評価 2.3 / 5<br>
         💡 同時間帯の他の組み合わせでは平均 4.1 / 5
       </div>
       <div class="actions">
-        <button class="s-btn accept">✅ 避ける (別シフトに調整)</button>
-        <button class="s-btn skip">⏭ 今回は気にしない</button>
-        <button class="s-btn never">この提案を二度と表示しない</button>
+        <button class="s-btn accept" data-i18n="mf.s1_accept">✅ 避ける (別シフトに調整)</button>
+        <button class="s-btn skip" data-i18n="mf.s1_skip">⏭ 今回は気にしない</button>
+        <button class="s-btn never" data-i18n="mf.s1_never">この提案を二度と表示しない</button>
       </div>
     </div>
 
     <div class="suggest" style="border-color:#10B981;">
-      <h3>良い組み合わせも発見しました</h3>
-      <div class="body">
+      <h3 data-i18n="mf.s2_h3">良い組み合わせも発見しました</h3>
+      <div class="body" data-i18n-html="mf.s2_body">
         <strong>スタッフB × スタッフE</strong> の組み合わせは過去 4 回中 <strong>4 回が 😊 以上</strong>。<br>
         繁忙日 (金土) に積極的に組むのがおすすめです。
       </div>
       <div class="actions">
-        <button class="s-btn accept" style="background:linear-gradient(135deg,#10B981,#059669);">✅ 優先的に組む</button>
-        <button class="s-btn skip">⏭ 普通に組む</button>
+        <button class="s-btn accept" style="background:linear-gradient(135deg,#10B981,#059669);" data-i18n="mf.s2_accept">✅ 優先的に組む</button>
+        <button class="s-btn skip" data-i18n="mf.s2_skip">⏭ 普通に組む</button>
       </div>
     </div>
   </section>
@@ -276,11 +276,11 @@
   <!-- ===== Heatmap ===== -->
   <section class="feat">
     <div class="section-head">
-      <h2>🗺️ 相性ヒートマップ — 過去 90 日の平均評価</h2>
+      <h2 data-i18n="mf.heat_h2">🗺️ 相性ヒートマップ — 過去 90 日の平均評価</h2>
       <span class="tag">PAIR ANALYTICS</span>
     </div>
     <div class="heat-card">
-      <h3>スタッフ × スタッフ 平均評価 (5 段階)</h3>
+      <h3 data-i18n="mf.heat_h3">スタッフ × スタッフ 平均評価 (5 段階)</h3>
       <div class="heat-grid">
         <div class="heat-cell heat-label"></div>
         <div class="heat-cell heat-label">A</div>
@@ -340,14 +340,14 @@
       </div>
 
       <div class="heat-legend">
-        <span>低</span>
+        <span data-i18n="mf.heat_low">低</span>
         <span class="heat-legend-cell heat-1"></span>
         <span class="heat-legend-cell heat-2"></span>
         <span class="heat-legend-cell heat-3"></span>
         <span class="heat-legend-cell heat-4"></span>
         <span class="heat-legend-cell heat-5"></span>
-        <span>高</span>
-        <span style="margin-left:14px;color:#94A3B8;">※ 数値は店長 + 当日スタッフの平均評価</span>
+        <span data-i18n="mf.heat_high">高</span>
+        <span style="margin-left:14px;color:#94A3B8;" data-i18n="mf.heat_note">※ 数値は店長 + 当日スタッフの平均評価</span>
       </div>
     </div>
   </section>
@@ -355,15 +355,15 @@
   <!-- ===== Bilateral comparison ===== -->
   <section class="feat">
     <div class="section-head">
-      <h2>👔 vs 👤 店長と従業員の評価ギャップ</h2>
+      <h2 data-i18n="mf.bi_h2">👔 vs 👤 店長と従業員の評価ギャップ</h2>
       <span class="tag">BILATERAL CHECK</span>
     </div>
     <div class="bilateral">
       <div class="bi-row" style="font-size:11px;font-weight:900;color:#64748B;border-bottom:2px solid #E2E8F0;letter-spacing:.04em;">
-        <div>日付</div>
-        <div>店長の評価</div>
-        <div>スタッフ平均</div>
-        <div style="text-align:center;">差分</div>
+        <div data-i18n="mf.bi_date">日付</div>
+        <div data-i18n="mf.bi_mgr">店長の評価</div>
+        <div data-i18n="mf.bi_staff_avg">スタッフ平均</div>
+        <div style="text-align:center;" data-i18n="mf.bi_diff">差分</div>
       </div>
       <div class="bi-row">
         <div class="bi-date">6/05 (木)</div>
@@ -398,8 +398,8 @@
     </div>
 
     <div style="background:#FEF3C7;border:1.5px solid #FBBF24;border-radius:14px;padding:18px 22px;margin-top:14px;">
-      <h3 style="font-size:13px;font-weight:900;color:#92400E;margin-bottom:6px;">💡 6/3(火) に大きなギャップがあります</h3>
-      <p style="font-size:12px;color:#78350F;line-height:1.8;">
+      <h3 style="font-size:13px;font-weight:900;color:#92400E;margin-bottom:6px;" data-i18n="mf.gap_h3">💡 6/3(火) に大きなギャップがあります</h3>
+      <p style="font-size:12px;color:#78350F;line-height:1.8;" data-i18n-html="mf.gap_body">
         店長は満足 (😊) でしたが、<strong>スタッフは平均 1.5 (😩 きつかった)</strong> でした。<br>
         現場では <strong>キャパオーバー</strong> の兆候があるかもしれません。次回シフトで人員を見直すか、ヒアリングをおすすめします。
       </p>
@@ -407,7 +407,7 @@
   </section>
 
   <!-- ===== Privacy ===== -->
-  <div class="privacy">
+  <div class="privacy" data-i18n-html="mf.privacy">
     <strong>🔒 プライバシーと安心設計</strong><br>
     ・<strong>従業員のタップは匿名集計のみ</strong> — 個人の評価は店長にも見せません<br>
     ・店長がタップした「気になった人」は <strong>店長のみ閲覧可</strong>、当該スタッフには通知されません<br>
@@ -417,16 +417,16 @@
 
   <!-- ===== CTA ===== -->
   <div class="cta-box">
-    <h2>勘を言語化せずに、すくい上げる</h2>
-    <p>1秒のタップが、現場の人間関係を変える</p>
-    <a href="/" class="cta-btn">🎁 30 日 Pro 体験で試す</a>
+    <h2 data-i18n="mf.cta_h2">勘を言語化せずに、すくい上げる</h2>
+    <p data-i18n="mf.cta_p">1秒のタップが、現場の人間関係を変える</p>
+    <a href="/" class="cta-btn" data-i18n="mf.cta_btn">🎁 30 日 Pro 体験で試す</a>
   </div>
 
 </div>
 
 <footer class="footer">
-  <p><a href="/">トップ</a> · <a href="/shift.html">シフト管理</a> · <a href="/shift-edit.html">✏️ シフト編集</a> · <a href="/mbti.html">🧠 MBTI</a> · <a href="/weather-events.html">🌤️ 天気</a></p>
-  <p style="margin-top:14px;opacity:.8;">© 2026 RAKURAKU · 当機能は店長と従業員の心理的安全性を最優先に設計されています</p>
+  <p><a href="/" data-i18n="dr.f_top">トップ</a> · <a href="/shift.html" data-i18n="mf.f_shift">シフト管理</a> · <a href="/shift-edit.html" data-i18n="mf.f_shift_edit">✏️ シフト編集</a> · <a href="/mbti.html" data-i18n="mf.f_mbti">🧠 MBTI</a> · <a href="/weather-events.html" data-i18n="mf.f_weather">🌤️ 天気</a></p>
+  <p style="margin-top:14px;opacity:.8;" data-i18n="mf.f_copyright">© 2026 RAKURAKU · 当機能は店長と従業員の心理的安全性を最優先に設計されています</p>
 </footer>
 
 </main>
