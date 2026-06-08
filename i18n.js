@@ -1415,6 +1415,19 @@
     'hp.g7': { ja:'👤 スタッフ向け (アルバイト・社員)', en:'👤 For Staff (Part-time/Full-time)', zh:'👤 员工用 (兼职·正式)', ko:'👤 직원용 (아르바이트·정직원)', vi:'👤 Cho NV (bán/toàn thời gian)' },
     'hp.g8': { ja:'💬 その他', en:'💬 Other', zh:'💬 其他', ko:'💬 기타', vi:'💬 Khác' },
 
+    /* PAYROLL.HTML スタッフ用 給与明細 */
+    'pay.title': { ja:'💴 給与明細', en:'💴 Pay Stub', zh:'💴 工资单', ko:'💴 급여 명세', vi:'💴 Bảng lương' },
+    'pay.shop_id': { ja:'店舗ID:', en:'Shop ID:', zh:'店铺ID:', ko:'매장 ID:', vi:'Shop ID:' },
+    'pay.month': { ja:'月:', en:'Month:', zh:'月:', ko:'월:', vi:'Tháng:' },
+    'pay.load': { ja:'🔄 読込', en:'🔄 Load', zh:'🔄 加载', ko:'🔄 로드', vi:'🔄 Tải' },
+    'pay.print': { ja:'🖨️ 印刷 / PDF保存', en:'🖨️ Print / Save PDF', zh:'🖨️ 打印 / 保存 PDF', ko:'🖨️ 인쇄 / PDF 저장', vi:'🖨️ In / Lưu PDF' },
+    'pay.csv_freee': { ja:'📤 freee CSV', en:'📤 freee CSV', zh:'📤 freee CSV', ko:'📤 freee CSV', vi:'📤 freee CSV' },
+    'pay.csv_mf': { ja:'📤 マネフォ CSV', en:'📤 MoneyForward CSV', zh:'📤 MoneyForward CSV', ko:'📤 MoneyForward CSV', vi:'📤 MoneyForward CSV' },
+    'pay.csv_generic': { ja:'📤 汎用CSV', en:'📤 Generic CSV', zh:'📤 通用 CSV', ko:'📤 범용 CSV', vi:'📤 CSV chung' },
+    'pay.hint': { ja:'余白「なし」+ カラー印刷 推奨', en:'Recommended: No margin + Color print', zh:'推荐: 无边距 + 彩色打印', ko:'권장: 여백 없음 + 컬러 인쇄', vi:'Khuyến nghị: Không lề + In màu' },
+    'pay.empty': { ja:'📋 店舗ID と 月を入力して「読込」してください', en:'📋 Enter Shop ID and Month then click "Load"', zh:'📋 输入店铺 ID 和月份后点击「加载」', ko:'📋 매장 ID 와 월 입력 후 「로드」 클릭', vi:'📋 Nhập Shop ID & tháng rồi nhấn "Tải"' },
+    'pay.no_data': { ja:'📭 この期間の打刻データがありません', en:'📭 No clock-in data for this period', zh:'📭 此期间无打卡记录', ko:'📭 이 기간 출근 기록 없음', vi:'📭 Không có dữ liệu chấm công cho kỳ này' },
+
     /* ─── 料金プラン pricing.html ─── */
     'pricing.badge': { ja:'🎉 永久無料プラン誕生',
                        en:'🎉 Forever-Free Plan Available',
