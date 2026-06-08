@@ -1129,6 +1129,37 @@
     'dx.footer_faq': { ja:'よくあるご質問', en:'FAQs', zh:'常见问题', ko:'자주 묻는 질문', vi:'Câu hỏi thường gặp' },
     'dx.footer_demo': { ja:'15 分 Zoom デモ予約', en:'15-min Zoom demo booking', zh:'15 分钟 Zoom 演示预约', ko:'15 분 Zoom 데모 예약', vi:'Đặt demo Zoom 15 phút' },
 
+    /* DEMO-RESERVATION.HTML フォーム + パンくず + Footer */
+    'dr.noscript': { ja:'⚠️ デモ予約フォームの送信には JavaScript が必要です。<br>オフでも申込可能: <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】デモ予約希望" style="color:#7C2D12;text-decoration:underline;">koizumishota0323@gmail.com</a>',
+                     en:'⚠️ JavaScript required to submit demo booking form.<br>Without JS, apply by: <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】Demo Booking" style="color:#7C2D12;text-decoration:underline;">koizumishota0323@gmail.com</a>',
+                     zh:'⚠️ 提交演示预约表单需要 JavaScript。<br>不开启时也可申请: <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】演示预约" style="color:#7C2D12;text-decoration:underline;">koizumishota0323@gmail.com</a>',
+                     ko:'⚠️ 데모 예약 폼 전송에는 JavaScript 가 필요합니다.<br>꺼져 있어도 신청 가능: <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】데모 예약" style="color:#7C2D12;text-decoration:underline;">koizumishota0323@gmail.com</a>',
+                     vi:'⚠️ Cần JavaScript để gửi form đặt demo.<br>Tắt JS vẫn đăng ký được: <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】Đặt demo" style="color:#7C2D12;text-decoration:underline;">koizumishota0323@gmail.com</a>' },
+    'dr.to_top': { ja:'← トップへ', en:'← Top', zh:'← 首页', ko:'← 홈', vi:'← Trang chủ' },
+    'dr.bc_demo': { ja:'無料デモ予約', en:'Free Demo Booking', zh:'免费演示预约', ko:'무료 데모 예약', vi:'Đặt demo MP' },
+    /* Form fields */
+    'dr.f_shop': { ja:'店舗名', en:'Shop Name', zh:'店铺名', ko:'매장명', vi:'Tên cửa hàng' },
+    'dr.f_shop_ph': { ja:'例) BAR RAKURAKU 渋谷', en:'e.g. BAR RAKURAKU Shibuya', zh:'例) BAR RAKURAKU 涩谷', ko:'예) BAR RAKURAKU 시부야', vi:'VD) BAR RAKURAKU Shibuya' },
+    'dr.f_name': { ja:'ご担当者名', en:'Contact Name', zh:'联系人姓名', ko:'담당자명', vi:'Tên người liên hệ' },
+    'dr.f_name_ph': { ja:'お名前', en:'Your name', zh:'您的姓名', ko:'성함', vi:'Tên của bạn' },
+    'dr.f_email': { ja:'メールアドレス', en:'Email Address', zh:'电子邮件', ko:'이메일 주소', vi:'Email' },
+    'dr.f_phone': { ja:'電話番号', en:'Phone Number', zh:'电话号码', ko:'전화번호', vi:'Điện thoại' },
+    'dr.f_time1': { ja:'希望日時（第1希望）', en:'Preferred Date/Time (1st choice)', zh:'希望日时 (第 1 选)', ko:'희망 일시 (1 순위)', vi:'Thời gian mong muốn (1st)' },
+    'dr.f_time2': { ja:'希望日時（第2希望）', en:'Preferred Date/Time (2nd choice)', zh:'希望日时 (第 2 选)', ko:'희망 일시 (2 순위)', vi:'Thời gian mong muốn (2nd)' },
+    'dr.f_type': { ja:'店舗の業態・規模', en:'Business Type & Size', zh:'店铺业态·规模', ko:'매장 업태·규모', vi:'Loại hình & quy mô' },
+    'dr.opt_select': { ja:'選択してください', en:'Please select', zh:'请选择', ko:'선택해주세요', vi:'Vui lòng chọn' },
+    'dr.opt_bar_small': { ja:'バー（スタッフ5名以下）', en:'Bar (≤5 staff)', zh:'酒吧 (5 名以下)', ko:'바 (5 명 이하)', vi:'Bar (≤5 NV)' },
+    'dr.opt_bar_med': { ja:'バー（スタッフ6-15名）', en:'Bar (6-15 staff)', zh:'酒吧 (6-15 名)', ko:'바 (6-15 명)', vi:'Bar (6-15 NV)' },
+    'dr.opt_izakaya': { ja:'居酒屋・ダイニング', en:'Izakaya / Dining', zh:'居酒屋·餐厅', ko:'이자카야·다이닝', vi:'Izakaya / Dining' },
+    'dr.opt_restaurant': { ja:'レストラン', en:'Restaurant', zh:'餐厅', ko:'레스토랑', vi:'Nhà hàng' },
+    'dr.opt_cafe': { ja:'カフェ', en:'Cafe', zh:'咖啡店', ko:'카페', vi:'Café' },
+    'dr.opt_other': { ja:'その他', en:'Other', zh:'其他', ko:'기타', vi:'Khác' },
+    'dr.f_note': { ja:'気になっている機能・質問（任意）', en:'Features of interest / questions (optional)', zh:'感兴趣的功能/问题 (可选)', ko:'관심 있는 기능·질문 (선택)', vi:'Tính năng quan tâm / câu hỏi (Tùy chọn)' },
+    'dr.f_note_ph': { ja:'例) Timeeの代替として検討、深夜割増の計算ミスを減らしたい、外国人スタッフ対応が必要…', en:'e.g. Considering Timee alternative, reduce night premium errors, support for foreign staff…', zh:'例) 考虑 Timee 替代,减少深夜津贴计算错误,外籍员工对应…', ko:'예) Timee 대체 검토, 심야 수당 계산 실수 감소, 외국인 직원 지원…', vi:'VD) Tìm thay thế Timee, giảm sai sót phụ cấp đêm, hỗ trợ NV nước ngoài…' },
+    /* Footer */
+    'dr.f_top': { ja:'トップ', en:'Top', zh:'首页', ko:'홈', vi:'Trang chủ' },
+    'dr.f_about': { ja:'会社情報', en:'About', zh:'公司信息', ko:'회사 정보', vi:'Về chúng tôi' },
+
     /* ─── 料金プラン pricing.html ─── */
     'pricing.badge': { ja:'🎉 永久無料プラン誕生',
                        en:'🎉 Forever-Free Plan Available',

@@ -92,7 +92,7 @@
 <body>
 
 <noscript>
-  <div style="background:#FEF3C7;border-bottom:3px solid #F59E0B;padding:14px 18px;font-size:13px;color:#92400E;text-align:center;font-weight:700;">
+  <div style="background:#FEF3C7;border-bottom:3px solid #F59E0B;padding:14px 18px;font-size:13px;color:#92400E;text-align:center;font-weight:700;" data-i18n-html="dr.noscript">
     ⚠️ デモ予約フォームの送信には JavaScript が必要です。<br>
     オフでも申込可能: <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU】デモ予約希望" style="color:#7C2D12;text-decoration:underline;">koizumishota0323@gmail.com</a>
   </div>
@@ -101,7 +101,7 @@
 <header class="nav">
   <div class="nav-inner">
     <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
-    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;">← トップへ</a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;" data-i18n="dr.to_top">← トップへ</a>
   </div>
 </header>
 
@@ -109,9 +109,9 @@
 
 <!-- 視覚的パンくず -->
 <nav aria-label="パンくずリスト" style="font-size:12px;color:#64748B;font-weight:600;padding:14px 0 0;">
-  <a href="/" style="color:#4F46E5;text-decoration:none;">ホーム</a>
+  <a href="/" style="color:#4F46E5;text-decoration:none;" data-i18n="bc.home">ホーム</a>
   <span style="margin:0 8px;color:#CBD5E1;">›</span>
-  <span style="color:#0F172A;font-weight:700;" aria-current="page">無料デモ予約</span>
+  <span style="color:#0F172A;font-weight:700;" aria-current="page" data-i18n="dr.bc_demo">無料デモ予約</span>
 </nav>
 
 <section class="hero">
@@ -128,46 +128,46 @@
 
 <div class="form-card" id="form-card">
   <div class="form-field">
-    <label for="f-shop">店舗名 <span style="color:#EF4444;">*</span></label>
-    <input type="text" id="f-shop" placeholder="例) BAR RAKURAKU 渋谷" required aria-required="true" autocomplete="organization" />
+    <label for="f-shop"><span data-i18n="dr.f_shop">店舗名</span> <span style="color:#EF4444;">*</span></label>
+    <input type="text" id="f-shop" placeholder="例) BAR RAKURAKU 渋谷" required aria-required="true" autocomplete="organization" data-i18n-placeholder="dr.f_shop_ph" />
   </div>
   <div class="form-field">
-    <label for="f-name">ご担当者名 <span style="color:#EF4444;">*</span></label>
-    <input type="text" id="f-name" placeholder="お名前" required aria-required="true" autocomplete="name" />
+    <label for="f-name"><span data-i18n="dr.f_name">ご担当者名</span> <span style="color:#EF4444;">*</span></label>
+    <input type="text" id="f-name" placeholder="お名前" required aria-required="true" autocomplete="name" data-i18n-placeholder="dr.f_name_ph" />
   </div>
   <div class="form-row-2">
     <div class="form-field">
-      <label for="f-email">メールアドレス <span style="color:#EF4444;">*</span></label>
+      <label for="f-email"><span data-i18n="dr.f_email">メールアドレス</span> <span style="color:#EF4444;">*</span></label>
       <input type="email" id="f-email" placeholder="example@example.com" required aria-required="true" autocomplete="email" />
     </div>
     <div class="form-field">
-      <label for="f-phone">電話番号</label>
+      <label for="f-phone" data-i18n="dr.f_phone">電話番号</label>
       <input type="tel" id="f-phone" placeholder="090-0000-0000" autocomplete="tel" />
     </div>
   </div>
   <div class="form-field">
-    <label for="f-time1">希望日時（第1希望） <span style="color:#EF4444;">*</span></label>
+    <label for="f-time1"><span data-i18n="dr.f_time1">希望日時（第1希望）</span> <span style="color:#EF4444;">*</span></label>
     <input type="datetime-local" id="f-time1" required aria-required="true" />
   </div>
   <div class="form-field">
-    <label for="f-time2">希望日時（第2希望）</label>
+    <label for="f-time2" data-i18n="dr.f_time2">希望日時（第2希望）</label>
     <input type="datetime-local" id="f-time2" />
   </div>
   <div class="form-field">
-    <label for="f-type">店舗の業態・規模</label>
+    <label for="f-type" data-i18n="dr.f_type">店舗の業態・規模</label>
     <select id="f-type">
-      <option value="">選択してください</option>
-      <option>バー（スタッフ5名以下）</option>
-      <option>バー（スタッフ6-15名）</option>
-      <option>居酒屋・ダイニング</option>
-      <option>レストラン</option>
-      <option>カフェ</option>
-      <option>その他</option>
+      <option value="" data-i18n="dr.opt_select">選択してください</option>
+      <option data-i18n="dr.opt_bar_small">バー（スタッフ5名以下）</option>
+      <option data-i18n="dr.opt_bar_med">バー（スタッフ6-15名）</option>
+      <option data-i18n="dr.opt_izakaya">居酒屋・ダイニング</option>
+      <option data-i18n="dr.opt_restaurant">レストラン</option>
+      <option data-i18n="dr.opt_cafe">カフェ</option>
+      <option data-i18n="dr.opt_other">その他</option>
     </select>
   </div>
   <div class="form-field">
-    <label for="f-note">気になっている機能・質問（任意）</label>
-    <textarea id="f-note" rows="3" placeholder="例) Timeeの代替として検討、深夜割増の計算ミスを減らしたい、外国人スタッフ対応が必要…"></textarea>
+    <label for="f-note" data-i18n="dr.f_note">気になっている機能・質問（任意）</label>
+    <textarea id="f-note" rows="3" placeholder="例) Timeeの代替として検討、深夜割増の計算ミスを減らしたい、外国人スタッフ対応が必要…" data-i18n-placeholder="dr.f_note_ph"></textarea>
   </div>
   <button class="btn-submit" onclick="submitDemo()" data-i18n="demoresv.submit">📅 デモを予約する</button>
   <p class="info-text" data-i18n-html="demoresv.info">
@@ -181,16 +181,16 @@
   <div class="ic">🎉</div>
   <h2 data-i18n="demoresv.success_title">デモ予約 受付完了</h2>
   <p data-i18n-html="demoresv.success_msg">24時間以内に <strong id="success-email"></strong> 宛に<br>Zoom URL をお送りします。お楽しみに！</p>
-  <p style="margin-top:14px;"><a href="/" style="color:var(--indigo);font-weight:800;">← トップへ戻る</a></p>
+  <p style="margin-top:14px;"><a href="/" style="color:var(--indigo);font-weight:800;" data-i18n="dx.back_top">← トップへ戻る</a></p>
 </div>
 
 <div class="footer">
   <div style="margin-bottom:8px;">
-    <a href="/" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;">トップ</a>·
-    <a href="/case-studies.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;">ヒアリング事例</a>·
-    <a href="/blog.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;">ブログ</a>·
-    <a href="/help.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;">FAQ</a>·
-    <a href="/about.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;">会社情報</a>
+    <a href="/" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;" data-i18n="dr.f_top">トップ</a>·
+    <a href="/case-studies.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;" data-i18n="footer.cases">📊 ヒアリング事例</a>·
+    <a href="/blog.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;" data-i18n="footer.blog">📚 ブログ</a>·
+    <a href="/help.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;" data-i18n="nav.faq">FAQ</a>·
+    <a href="/about.html" style="color:#4F46E5;text-decoration:none;font-weight:700;margin:0 8px;" data-i18n="dr.f_about">会社情報</a>
   </div>
   RAKURAKU / 代表 小泉 咲太 · 📞 080-5168-3303<br>
   &copy; 2026 RAKURAKU. All rights reserved.
