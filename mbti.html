@@ -130,12 +130,12 @@
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main">本文へスキップ</a>
+<a class="skip-link" href="#main" data-i18n="a11y.skip_to_main">本文へスキップ</a>
 
 <header class="nav">
   <div class="nav-inner">
     <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
-    <a href="/shift.html" class="nav-back">← シフト管理に戻る</a>
+    <a href="/shift.html" class="nav-back" data-i18n="mb.nav_back">← シフト管理に戻る</a>
   </div>
 </header>
 
@@ -144,19 +144,19 @@
 
   <section class="hero">
     <div class="hero-eyebrow">🧠 MBTI × SHIFT</div>
-    <h1>従業員の MBTI で、<br><span class="grad">シフトを科学する</span></h1>
-    <p>話題の MBTI を 12 問で診断 (完全無料・1 分)。<br>相性の悪い組み合わせを自動警告して、現場の人間関係トラブルを未然に防ぎます。</p>
+    <h1 data-i18n-html="mb.h1">従業員の MBTI で、<br><span class="grad">シフトを科学する</span></h1>
+    <p data-i18n-html="mb.lead">話題の MBTI を 12 問で診断 (完全無料・1 分)。<br>相性の悪い組み合わせを自動警告して、現場の人間関係トラブルを未然に防ぎます。</p>
   </section>
 
   <!-- ===== TEST ===== -->
   <section class="test-card" id="testCard">
     <div class="progress-bar"><div class="progress-fill" id="pBar"></div></div>
     <div class="q-num" id="qNum">Q 1 / 12</div>
-    <div class="q-text" id="qText">読み込み中…</div>
+    <div class="q-text" id="qText" data-i18n="common.loading">読み込み中…</div>
     <div class="q-opts" id="qOpts"></div>
     <div class="nav-row">
-      <button class="back-btn" id="backBtn" onclick="prev()">← 戻る</button>
-      <div style="font-size:11px;color:#94A3B8;font-weight:700;">12 問 · 約 1 分</div>
+      <button class="back-btn" id="backBtn" onclick="prev()" data-i18n="mb.back">← 戻る</button>
+      <div style="font-size:11px;color:#94A3B8;font-weight:700;" data-i18n="mb.q_hint">12 問 · 約 1 分</div>
     </div>
   </section>
 
@@ -169,38 +169,38 @@
     <div class="traits" id="resTraits"></div>
 
     <div class="save-area">
-      <h3>📝 この結果をスタッフプロフィールに保存</h3>
+      <h3 data-i18n="mb.save_h3">📝 この結果をスタッフプロフィールに保存</h3>
       <form class="save-form" onsubmit="event.preventDefault();saveStaff();">
-        <input type="text" id="staffName" required placeholder="お名前 (例: スタッフ A)" />
-        <button type="submit" class="save-btn">＋ 保存</button>
+        <input type="text" id="staffName" required placeholder="お名前 (例: スタッフ A)" data-i18n-placeholder="mb.save_name_ph" />
+        <button type="submit" class="save-btn" data-i18n="mb.save_btn">＋ 保存</button>
       </form>
     </div>
 
     <div style="text-align:center;margin-top:20px;">
-      <button onclick="restart()" style="background:none;border:none;color:#7C3AED;font-weight:800;cursor:pointer;font-size:13px;">🔄 もう一度診断する</button>
+      <button onclick="restart()" style="background:none;border:none;color:#7C3AED;font-weight:800;cursor:pointer;font-size:13px;" data-i18n="mb.restart">🔄 もう一度診断する</button>
     </div>
   </section>
 
   <!-- ===== ROSTER ===== -->
   <section class="roster-card" id="rosterCard">
     <div class="roster-head">
-      <h2>👥 登録済みスタッフ <span id="rosterCount" style="color:#7C3AED;">(0 名)</span></h2>
+      <h2><span data-i18n="mb.roster">👥 登録済みスタッフ</span> <span id="rosterCount" style="color:#7C3AED;">(0 名)</span></h2>
       <span class="tag">STAFF ROSTER</span>
     </div>
     <div class="staff-grid" id="staffGrid"></div>
-    <p id="emptyMsg" style="text-align:center;color:#94A3B8;font-size:13px;padding:30px 0;">まだ登録がありません。診断結果を保存すると、ここに表示されます。</p>
+    <p id="emptyMsg" style="text-align:center;color:#94A3B8;font-size:13px;padding:30px 0;" data-i18n="mb.empty">まだ登録がありません。診断結果を保存すると、ここに表示されます。</p>
   </section>
 
   <!-- ===== COMPATIBILITY ===== -->
   <section class="compat-card" id="compatCard" style="display:none;">
-    <h2>💑 シフト相性分析 — ペア組み合わせ</h2>
+    <h2 data-i18n="mb.compat_h2">💑 シフト相性分析 — ペア組み合わせ</h2>
     <div id="compatList"></div>
   </section>
 
   <!-- ===== Info ===== -->
   <div class="info-card">
-    <h3>🧪 この MBTI 機能の使い方</h3>
-    <p>
+    <h3 data-i18n="mb.howto_h3">🧪 この MBTI 機能の使い方</h3>
+    <p data-i18n-html="mb.howto_body">
       ① 全スタッフが自分のスマホで <strong>12 問の診断</strong> を受ける (約 1 分)<br>
       ② シフト管理画面のスタッフ情報に MBTI 型が表示される<br>
       ③ シフト作成時、<strong>相性が悪いペア</strong>が同じ時間帯に組まれると AI が警告 ⚠️<br>
@@ -211,16 +211,16 @@
 
   <!-- ===== CTA ===== -->
   <div class="cta-box">
-    <h2>シフトを「相性で」最適化</h2>
-    <p>人間関係トラブルが減ると、離職率も下がります</p>
-    <a href="/" class="cta-btn">🎁 RAKURAKU を試す</a>
+    <h2 data-i18n="mb.cta_h2">シフトを「相性で」最適化</h2>
+    <p data-i18n="mb.cta_p">人間関係トラブルが減ると、離職率も下がります</p>
+    <a href="/" class="cta-btn" data-i18n="mb.cta_btn">🎁 RAKURAKU を試す</a>
   </div>
 
 </div>
 
 <footer class="footer">
-  <p><a href="/">トップ</a> · <a href="/shift.html">シフト管理</a> · <a href="/weather-events.html">🌤️ 天気・イベント</a> · <a href="/help.html">FAQ</a></p>
-  <p style="margin-top:14px;opacity:.8;">© 2026 RAKURAKU · MBTI® は The Myers & Briggs Foundation の登録商標です。本機能は独自の簡易診断で、公式診断とは異なります。</p>
+  <p><a href="/" data-i18n="dr.f_top">トップ</a> · <a href="/shift.html" data-i18n="mf.f_shift">シフト管理</a> · <a href="/weather-events.html" data-i18n="mb.f_weather">🌤️ 天気・イベント</a> · <a href="/help.html" data-i18n="nav.faq">FAQ</a></p>
+  <p style="margin-top:14px;opacity:.8;" data-i18n="mb.f_copyright">© 2026 RAKURAKU · MBTI® は The Myers & Briggs Foundation の登録商標です。本機能は独自の簡易診断で、公式診断とは異なります。</p>
 </footer>
 
 </main>
