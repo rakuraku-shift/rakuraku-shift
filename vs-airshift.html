@@ -32,7 +32,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}}
 a:focus-visible,button:focus-visible{outline:3px solid #4F46E5;outline-offset:2px;border-radius:4px;}
-:root{--indigo:#4F46E5;--purple:#7C3AED;--emerald:#10B981;--amber:#F59E0B;--red:#EF4444;--slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
+:root{--indigo:#4F46E5;--purple:#7C3AED;--indigo-l:#EEF2FF;--emerald:#10B981;--amber:#F59E0B;--red:#EF4444;--slate-900:#0F172A;--slate-700:#334155;--slate-500:#64748B;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--slate-50:#F8FAFC;}
 html{scroll-behavior:smooth;}
 body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:#fff;line-height:1.7;}
 .nav{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-100);z-index:10;padding:0 24px;}
@@ -64,109 +64,120 @@ p{margin-bottom:12px;font-size:14px;line-height:1.85;color:var(--slate-700);}
 .footer{text-align:center;padding:24px;font-size:11px;color:var(--slate-500);margin-top:30px;border-top:1px solid var(--slate-100);}
 .footer a{color:var(--indigo);text-decoration:none;font-weight:700;margin:0 6px;}
 </style></head><body>
+<a class="skip-link" href="#main" data-i18n="a11y.skip_to_main" style="position:absolute;left:-9999px;">本文へスキップ</a>
 <nav aria-label="サイトナビゲーション" class="nav">
   <div class="nav-inner">
     <a href="/" class="logo"><span class="logo-mark">R</span><span>RAKURAKU</span></a>
-    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;text-decoration:none;">← トップへ</a>
+    <a href="/" style="font-size:12px;color:var(--slate-500);font-weight:700;text-decoration:none;" data-i18n="vs.back_top">← トップへ</a>
   </div>
 </nav>
-<div class="container">
+<div class="container" id="main">
 <nav aria-label="パンくず" style="font-size:12px;color:#64748B;font-weight:600;margin-bottom:14px;">
-  <a href="/" style="color:#4F46E5;text-decoration:none;">ホーム</a> <span style="margin:0 8px;color:#CBD5E1;">›</span><span style="color:#0F172A;font-weight:700;" aria-current="page">RAKURAKU vs Airシフト</span>
+  <a href="/" style="color:#4F46E5;text-decoration:none;" data-i18n="bc.home">ホーム</a> <span style="margin:0 8px;color:#CBD5E1;">›</span><span style="color:#0F172A;font-weight:700;" aria-current="page" data-i18n="vsa.bc">RAKURAKU vs Airシフト</span>
 </nav>
 <section class="hero">
-  <h1>RAKURAKU vs <span class="grad">Airシフト</span><br>徹底比較 (2026年版)</h1>
-  <p>飲食店関係者向けに、どちらが自店舗にマッチするかを実体験ベースで比較</p>
+  <h1 data-i18n-html="vsa.h1">RAKURAKU vs <span class="grad">Airシフト</span><br>徹底比較 (2026年版)</h1>
+  <p data-i18n="vsa.lead">飲食店関係者向けに、どちらが自店舗にマッチするかを実体験ベースで比較</p>
 </section>
 
 <div class="tldr">
-  <div class="tldr-title">📌 結論 (3 秒で分かる)</div>
-  <div class="tldr-text">
+  <div class="tldr-title" data-i18n="vs.tldr_title">📌 結論 (3 秒で分かる)</div>
+  <div class="tldr-text" data-i18n-html="vsa.tldr_text">
     <strong>大型チェーン・本部一括管理ニーズ</strong>: Airシフト<br>
     <strong>個人店・小規模・夜営業特化</strong>: <strong style="color:var(--indigo);">RAKURAKU</strong>
   </div>
 </div>
 
-<h2>1. 料金比較 (2026-05-29 Freemium 移行後)</h2>
+<h2 data-i18n="vsa.h2_1">1. 料金比較 (2026-05-29 Freemium 移行後)</h2>
 <table class="compare-table">
-<thead><tr><th>項目</th><th>Airシフト</th><th>RAKURAKU</th></tr></thead>
+<thead><tr><th data-i18n="vs.col_item">項目</th><th data-i18n="vsa.col_a">Airシフト</th><th data-i18n="vs.col_r">RAKURAKU</th></tr></thead>
 <tbody>
-<tr><td><strong>永久無料プラン</strong></td><td class="loser">✕ なし</td><td class="winner">🆓 あり (スタッフ3名・1店舗)</td></tr>
-<tr><td>月額固定 (1店舗)</td><td>¥5,500〜 (税抜)</td><td class="winner">¥4,990 (税込) Pro / ¥0 Free</td></tr>
-<tr><td>年払い割引</td><td>なし</td><td class="winner">あり (¥49,900・2ヶ月分お得)</td></tr>
-<tr><td>初期費用</td><td>¥0</td><td class="winner">¥0</td></tr>
-<tr><td>無料期間</td><td>30日 (クレカ要)</td><td class="winner">30日 Pro 体験 + 永久 Free</td></tr>
-<tr><td>複数店舗 (10店舗)</td><td>¥55,000+/月</td><td class="winner">¥49,900+/月 (3店舗) or Enterprise</td></tr>
-<tr><td>勝手な課金リスク</td><td class="loser">クレカ登録必須</td><td class="winner">自動降格</td></tr>
+<tr><td data-i18n-html="vsa.r1c1"><strong>永久無料プラン</strong></td><td class="loser" data-i18n="vsa.r1c2">✕ なし</td><td class="winner" data-i18n="vsa.r1c3">🆓 あり (スタッフ3名・1店舗)</td></tr>
+<tr><td data-i18n="vsa.r2c1">月額固定 (1店舗)</td><td data-i18n="vsa.r2c2">¥5,500〜 (税抜)</td><td class="winner" data-i18n="vsa.r2c3">¥4,990 (税込) Pro / ¥0 Free</td></tr>
+<tr><td data-i18n="vsa.r3c1">年払い割引</td><td data-i18n="vsa.r3c2">なし</td><td class="winner" data-i18n="vsa.r3c3">あり (¥49,900・2ヶ月分お得)</td></tr>
+<tr><td data-i18n="vsa.r4c1">初期費用</td><td>¥0</td><td class="winner">¥0</td></tr>
+<tr><td data-i18n="vsa.r5c1">無料期間</td><td data-i18n="vsa.r5c2">30日 (クレカ要)</td><td class="winner" data-i18n="vsa.r5c3">30日 Pro 体験 + 永久 Free</td></tr>
+<tr><td data-i18n="vsa.r6c1">複数店舗 (10店舗)</td><td data-i18n="vsa.r6c2">¥55,000+/月</td><td class="winner" data-i18n="vsa.r6c3">¥49,900+/月 (3店舗) or Enterprise</td></tr>
+<tr><td data-i18n="vsa.r7c1">勝手な課金リスク</td><td class="loser" data-i18n="vsa.r7c2">クレカ登録必須</td><td class="winner" data-i18n="vsa.r7c3">自動降格</td></tr>
 </tbody></table>
 
 <div style="background:linear-gradient(135deg,#DCFCE7,#F0FDF4);padding:20px;border-radius:10px;margin:20px 0;border-left:5px solid #22C55E;">
-  <strong style="color:#16A34A;">💡 個人バー・スナックなら永久無料の RAKURAKU が圧勝</strong><br>
-  Airシフトは無料プランがないため、小規模店には月 ¥5,500+ が必須。RAKURAKU なら同じ機能 (シフト作成・LINE通知・GPS打刻・深夜手当) が完全無料で使えます。
+  <strong style="color:#16A34A;" data-i18n="vsa.tip1_title">💡 個人バー・スナックなら永久無料の RAKURAKU が圧勝</strong><br>
+  <span data-i18n="vsa.tip1_body">Airシフトは無料プランがないため、小規模店には月 ¥5,500+ が必須。RAKURAKU なら同じ機能 (シフト作成・LINE通知・GPS打刻・深夜手当) が完全無料で使えます。</span>
 </div>
 
-<h2>2. 機能比較</h2>
+<h2 data-i18n="vsa.h2_2">2. 機能比較</h2>
 <table class="compare-table">
-<thead><tr><th>機能</th><th>Airシフト</th><th>RAKURAKU</th></tr></thead>
+<thead><tr><th data-i18n="vs.col_feat">機能</th><th data-i18n="vsa.col_a">Airシフト</th><th data-i18n="vs.col_r">RAKURAKU</th></tr></thead>
 <tbody>
-<tr><td>シフト自動作成</td><td>○</td><td class="winner">◎ (1タップ生成)</td></tr>
-<tr><td>深夜割増 自動計算 (+25%)</td><td>上位プラン</td><td class="winner">◎ 全プラン標準</td></tr>
-<tr><td>GPS 出退勤打刻</td><td>○</td><td class="winner">◎ Haversine ±5m 検知</td></tr>
-<tr><td>3 段階自動募集</td><td class="loser">✕</td><td class="winner">◎ (社内→時給アップ→Timee)</td></tr>
-<tr><td>多言語 (4 言語)</td><td>英語のみ</td><td class="winner">◎ 日英中韓</td></tr>
-<tr><td>個人給与照会 (PW保護)</td><td class="loser">✕</td><td class="winner">◎ SHA-256</td></tr>
-<tr><td>労基法 5 項目チェック</td><td>3 項目</td><td class="winner">◎ 5 項目自動</td></tr>
-<tr><td>POS連携 (大手)</td><td class="winner">◎ Recruit 系</td><td class="tie">△ CSV 経由</td></tr>
+<tr><td data-i18n="vsa.f1c1">シフト自動作成</td><td>○</td><td class="winner" data-i18n="vsa.f1c3">◎ (1タップ生成)</td></tr>
+<tr><td data-i18n="vsa.f2c1">深夜割増 自動計算 (+25%)</td><td data-i18n="vsa.f2c2">上位プラン</td><td class="winner" data-i18n="vsa.f2c3">◎ 全プラン標準</td></tr>
+<tr><td data-i18n="vsa.f3c1">GPS 出退勤打刻</td><td>○</td><td class="winner" data-i18n="vsa.f3c3">◎ Haversine ±5m 検知</td></tr>
+<tr><td data-i18n="vsa.f4c1">3 段階自動募集</td><td class="loser">✕</td><td class="winner" data-i18n="vsa.f4c3">◎ (社内→時給アップ→Timee)</td></tr>
+<tr><td data-i18n="vsa.f5c1">多言語 (4 言語)</td><td data-i18n="vsa.f5c2">英語のみ</td><td class="winner" data-i18n="vsa.f5c3">◎ 日英中韓</td></tr>
+<tr><td data-i18n="vsa.f6c1">個人給与照会 (PW保護)</td><td class="loser">✕</td><td class="winner">◎ SHA-256</td></tr>
+<tr><td data-i18n="vsa.f7c1">労基法 5 項目チェック</td><td data-i18n="vsa.f7c2">3 項目</td><td class="winner" data-i18n="vsa.f7c3">◎ 5 項目自動</td></tr>
+<tr><td data-i18n="vsa.f8c1">POS連携 (大手)</td><td class="winner" data-i18n="vsa.f8c2">◎ Recruit 系</td><td class="tie" data-i18n="vsa.f8c3">△ CSV 経由</td></tr>
 </tbody></table>
 
-<h2>3. ターゲット層</h2>
+<h2 data-i18n="vsa.h2_3">3. ターゲット層</h2>
 <table class="compare-table">
-<thead><tr><th>店舗特徴</th><th>Airシフト</th><th>RAKURAKU</th></tr></thead>
+<thead><tr><th data-i18n="vsa.col_target">店舗特徴</th><th data-i18n="vsa.col_a">Airシフト</th><th data-i18n="vs.col_r">RAKURAKU</th></tr></thead>
 <tbody>
-<tr><td>大型チェーン (50店舗+)</td><td class="winner">◎ 本部管理</td><td>△</td></tr>
-<tr><td>個人経営 (1-3店舗)</td><td>○</td><td class="winner">◎</td></tr>
-<tr><td>バー・夜営業</td><td>△</td><td class="winner">◎ 専用最適化</td></tr>
-<tr><td>外国人スタッフ多数</td><td>△</td><td class="winner">◎ 4 言語</td></tr>
-<tr><td>Timee 連携重視</td><td class="loser">✕</td><td class="winner">◎ ワンタップ</td></tr>
+<tr><td data-i18n="vsa.t1c1">大型チェーン (50店舗+)</td><td class="winner" data-i18n="vsa.t1c2">◎ 本部管理</td><td>△</td></tr>
+<tr><td data-i18n="vsa.t2c1">個人経営 (1-3店舗)</td><td>○</td><td class="winner">◎</td></tr>
+<tr><td data-i18n="vsa.t3c1">バー・夜営業</td><td>△</td><td class="winner" data-i18n="vsa.t3c3">◎ 専用最適化</td></tr>
+<tr><td data-i18n="vsa.t4c1">外国人スタッフ多数</td><td>△</td><td class="winner" data-i18n="vsa.t4c3">◎ 4 言語</td></tr>
+<tr><td data-i18n="vsa.t5c1">Timee 連携重視</td><td class="loser">✕</td><td class="winner" data-i18n="vsa.t5c3">◎ ワンタップ</td></tr>
 </tbody></table>
 
-<h2>4. サポート体制</h2>
+<h2 data-i18n="vsa.h2_4">4. サポート体制</h2>
 <table class="compare-table">
-<thead><tr><th>項目</th><th>Airシフト</th><th>RAKURAKU</th></tr></thead>
+<thead><tr><th data-i18n="vs.col_item">項目</th><th data-i18n="vsa.col_a">Airシフト</th><th data-i18n="vs.col_r">RAKURAKU</th></tr></thead>
 <tbody>
-<tr><td>問合せ対応</td><td>メール (営業時間内)</td><td class="winner">代表が直接対応 (24h以内)</td></tr>
-<tr><td>電話サポート</td><td>有料</td><td class="winner">無料 (平日10-18時)</td></tr>
-<tr><td>機能要望</td><td>受付のみ</td><td class="winner">投票で優先度決定・ヒアリング調査の声ページ公開</td></tr>
+<tr><td data-i18n="vsa.s1c1">問合せ対応</td><td data-i18n="vsa.s1c2">メール (営業時間内)</td><td class="winner" data-i18n="vsa.s1c3">代表が直接対応 (24h以内)</td></tr>
+<tr><td data-i18n="vsa.s2c1">電話サポート</td><td data-i18n="vsa.s2c2">有料</td><td class="winner" data-i18n="vsa.s2c3">無料 (平日10-18時)</td></tr>
+<tr><td data-i18n="vsa.s3c1">機能要望</td><td data-i18n="vsa.s3c2">受付のみ</td><td class="winner" data-i18n="vsa.s3c3">投票で優先度決定・ヒアリング調査の声ページ公開</td></tr>
 </tbody></table>
 
-<h2>5. こんな人に RAKURAKU がおすすめ</h2>
+<h2 data-i18n="vsa.h2_5">5. こんな人に RAKURAKU がおすすめ</h2>
 <ul style="padding-left:24px;line-height:2;">
-<li>✅ 個人経営〜 5 店舗チェーンまで</li>
-<li>✅ バー・居酒屋・カフェなど飲食店</li>
-<li>✅ Timee 手数料を削減したい</li>
-<li>✅ 深夜営業 (夜の店・カラオケなど)</li>
-<li>✅ 外国人スタッフがいる</li>
-<li>✅ 代表が直接サポートする安心感がほしい</li>
+<li data-i18n="vsa.r_rec1">✅ 個人経営〜 5 店舗チェーンまで</li>
+<li data-i18n="vsa.r_rec2">✅ バー・居酒屋・カフェなど飲食店</li>
+<li data-i18n="vsa.r_rec3">✅ Timee 手数料を削減したい</li>
+<li data-i18n="vsa.r_rec4">✅ 深夜営業 (夜の店・カラオケなど)</li>
+<li data-i18n="vsa.r_rec5">✅ 外国人スタッフがいる</li>
+<li data-i18n="vsa.r_rec6">✅ 代表が直接サポートする安心感がほしい</li>
 </ul>
 
-<h2>6. こんな人に Airシフト がおすすめ</h2>
+<h2 data-i18n="vsa.h2_6">6. こんな人に Airシフト がおすすめ</h2>
 <ul style="padding-left:24px;line-height:2;">
-<li>✅ 50 店舗以上の大型チェーン</li>
-<li>✅ Recruit 系 POS (Air レジ等) と連携重視</li>
-<li>✅ 大手企業の信頼性が必要</li>
+<li data-i18n="vsa.a_rec1">✅ 50 店舗以上の大型チェーン</li>
+<li data-i18n="vsa.a_rec2">✅ Recruit 系 POS (Air レジ等) と連携重視</li>
+<li data-i18n="vsa.a_rec3">✅ 大手企業の信頼性が必要</li>
 </ul>
 
 <div class="cta-card">
-  <h3>🎁 RAKURAKU は 30 日 Pro 体験で試せます</h3>
-  <p>自動課金なし・違約金ゼロ。<br>気に入ったらそのまま、合わなければ何もせず離脱でOK。</p>
-  <a href="/?utm_source=vs_airshift" class="btn">30日間 無料で試す →</a>
+  <h3 data-i18n="vs.cta_h3">🎁 RAKURAKU は 30 日 Pro 体験で試せます</h3>
+  <p data-i18n-html="vs.cta_p">自動課金なし・違約金ゼロ。<br>気に入ったらそのまま、合わなければ何もせず離脱でOK。</p>
+  <a href="/?utm_source=vs_airshift" class="btn" data-i18n="vs.cta_btn">30日間 無料で試す →</a>
 </div>
 
 <div class="footer">
-  <a href="/">トップ</a>·<a href="/vs-shiftee.html">vs Shiftee</a>·<a href="/blog.html#p9">vs Timee</a>·<a href="/pricing-simulator.html">料金試算</a>·<a href="/case-studies.html">事例</a>·<a href="/demo-reservation.html">デモ予約</a><br>
-  RAKURAKU / 代表 小泉 咲太 · &copy; 2026 RAKURAKU. All rights reserved.<br>
-  ※ 本ページは2026年5月時点の公開情報を元に作成。Airシフト は (株) リクルートの商標です。
+  <a href="/" data-i18n="vs.f_top">トップ</a>·<a href="/vs-shiftee.html" data-i18n="vs.f_vs_shiftee">vs Shiftee</a>·<a href="/blog.html#p9" data-i18n="vs.f_vs_timee">vs Timee</a>·<a href="/pricing-simulator.html" data-i18n="vs.f_sim">料金試算</a>·<a href="/case-studies.html" data-i18n="vs.f_cases">事例</a>·<a href="/demo-reservation.html" data-i18n="vs.f_demo">デモ予約</a><br>
+  <span data-i18n="vs.f_copy">RAKURAKU / 代表 小泉 咲太 · © 2026 RAKURAKU. All rights reserved.</span><br>
+  <span data-i18n="vsa.disclaimer">※ 本ページは2026年5月時点の公開情報を元に作成。Airシフト は (株) リクルートの商標です。</span>
 </div>
 </div>
 <script src="/help-widget.js" defer></script>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body></html>
