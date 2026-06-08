@@ -51,45 +51,45 @@ footer a{color:#0F172A;background:#fff;padding:3px 10px;margin:0 8px;border-radi
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main">本文へスキップ</a>
+<a class="skip-link" href="#main" data-i18n="a11y.skip_to_main">本文へスキップ</a>
 <header>
-  <h1>📡 API ドキュメント</h1>
-  <p>REST API v1 — 開発者向けリファレンス</p>
+  <h1 data-i18n="api.h1">📡 API ドキュメント</h1>
+  <p data-i18n="api.lead">REST API v1 — 開発者向けリファレンス</p>
 </header>
-<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; <a href="/integrations.html">連携</a> &gt; API</nav>
+<nav class="bc" aria-label="パンくず"><a href="/" data-i18n="bc.home">ホーム</a> &gt; <a href="/integrations.html" data-i18n="api.bc_intg">連携</a> &gt; <span data-i18n="api.bc">API</span></nav>
 
 <main id="main">
 
 <section class="section">
-  <h2>🚀 はじめに</h2>
-  <p>RAKURAKU API は REST 形式で、JSON を使用します。本番環境とテスト環境の 2 つがあります。</p>
+  <h2 data-i18n="api.s1_h2">🚀 はじめに</h2>
+  <p data-i18n="api.s1_p">RAKURAKU API は REST 形式で、JSON を使用します。本番環境とテスト環境の 2 つがあります。</p>
   <table>
-    <tr><th>環境</th><th>Base URL</th></tr>
-    <tr><td>本番</td><td><code>https://api.rakuraku-shift.com/v1</code></td></tr>
-    <tr><td>テスト (Sandbox)</td><td><code>https://api-sandbox.rakuraku-shift.com/v1</code></td></tr>
+    <tr><th data-i18n="api.col_env">環境</th><th>Base URL</th></tr>
+    <tr><td data-i18n="api.env_prod">本番</td><td><code>https://api.rakuraku-shift.com/v1</code></td></tr>
+    <tr><td data-i18n="api.env_sandbox">テスト (Sandbox)</td><td><code>https://api-sandbox.rakuraku-shift.com/v1</code></td></tr>
   </table>
 </section>
 
 <section class="section">
-  <h2>🔐 認証</h2>
-  <p>API キーを Authorization ヘッダーで送信します。</p>
+  <h2 data-i18n="api.s2_h2">🔐 認証</h2>
+  <p data-i18n="api.s2_p1">API キーを Authorization ヘッダーで送信します。</p>
   <pre>Authorization: Bearer YOUR_API_KEY</pre>
-  <p>API キーは「マイページ → 設定 → API キー」から発行できます。</p>
-  <div class="callout">
+  <p data-i18n="api.s2_p2">API キーは「マイページ → 設定 → API キー」から発行できます。</p>
+  <div class="callout" data-i18n="api.s2_callout">
     ⚠️ API キーは機密情報です。GitHub 等のパブリックリポジトリには絶対にコミットしないでください。
   </div>
 </section>
 
 <section class="section">
-  <h2>📋 シフト</h2>
+  <h2 data-i18n="api.s3_h2">📋 シフト</h2>
   <div class="endpoint">
     <span class="method get">GET</span><code class="path">/shifts</code>
-    <p style="margin-top:8px">シフト一覧を取得</p>
-    <p><strong>クエリパラメータ:</strong></p>
+    <p style="margin-top:8px" data-i18n="api.e1_desc">シフト一覧を取得</p>
+    <p><strong data-i18n="api.query_params">クエリパラメータ:</strong></p>
     <ul style="padding-left:20px;font-size:.9em">
-      <li><code>store_id</code>: 店舗 ID (任意)</li>
-      <li><code>date_from</code>: 開始日 YYYY-MM-DD</li>
-      <li><code>date_to</code>: 終了日 YYYY-MM-DD</li>
+      <li><code>store_id</code>: <span data-i18n="api.e1_p1">店舗 ID (任意)</span></li>
+      <li><code>date_from</code>: <span data-i18n="api.e1_p2">開始日 YYYY-MM-DD</span></li>
+      <li><code>date_to</code>: <span data-i18n="api.e1_p3">終了日 YYYY-MM-DD</span></li>
     </ul>
     <pre>curl -H "Authorization: Bearer $TOKEN" \
   "https://api.rakuraku-shift.com/v1/shifts?date_from=2026-06-01&date_to=2026-06-30"</pre>
@@ -97,7 +97,7 @@ footer a{color:#0F172A;background:#fff;padding:3px 10px;margin:0 8px;border-radi
 
   <div class="endpoint">
     <span class="method post">POST</span><code class="path">/shifts</code>
-    <p style="margin-top:8px">新規シフトを作成</p>
+    <p style="margin-top:8px" data-i18n="api.e2_desc">新規シフトを作成</p>
     <pre>{
   "store_id": "st_xxx",
   "staff_id": "sf_xxx",
@@ -109,24 +109,24 @@ footer a{color:#0F172A;background:#fff;padding:3px 10px;margin:0 8px;border-radi
 
   <div class="endpoint">
     <span class="method put">PUT</span><code class="path">/shifts/:id</code>
-    <p style="margin-top:8px">シフトを更新</p>
+    <p style="margin-top:8px" data-i18n="api.e3_desc">シフトを更新</p>
   </div>
 
   <div class="endpoint">
     <span class="method delete">DELETE</span><code class="path">/shifts/:id</code>
-    <p style="margin-top:8px">シフトを削除</p>
+    <p style="margin-top:8px" data-i18n="api.e4_desc">シフトを削除</p>
   </div>
 </section>
 
 <section class="section">
-  <h2>👥 スタッフ</h2>
+  <h2 data-i18n="api.s4_h2">👥 スタッフ</h2>
   <div class="endpoint">
     <span class="method get">GET</span><code class="path">/staff</code>
-    <p style="margin-top:8px">スタッフ一覧を取得</p>
+    <p style="margin-top:8px" data-i18n="api.e5_desc">スタッフ一覧を取得</p>
   </div>
   <div class="endpoint">
     <span class="method post">POST</span><code class="path">/staff</code>
-    <p style="margin-top:8px">新規スタッフを登録</p>
+    <p style="margin-top:8px" data-i18n="api.e6_desc">新規スタッフを登録</p>
     <pre>{
   "name": "Taro Yamada",
   "email": "yamada@example.com",
@@ -138,10 +138,10 @@ footer a{color:#0F172A;background:#fff;padding:3px 10px;margin:0 8px;border-radi
 </section>
 
 <section class="section">
-  <h2>⏱ 打刻</h2>
+  <h2 data-i18n="api.s5_h2">⏱ 打刻</h2>
   <div class="endpoint">
     <span class="method post">POST</span><code class="path">/timecards/clock-in</code>
-    <p style="margin-top:8px">出勤打刻</p>
+    <p style="margin-top:8px" data-i18n="api.e7_desc">出勤打刻</p>
     <pre>{
   "staff_id": "sf_xxx",
   "store_id": "st_xxx",
@@ -151,62 +151,72 @@ footer a{color:#0F172A;background:#fff;padding:3px 10px;margin:0 8px;border-radi
   </div>
   <div class="endpoint">
     <span class="method post">POST</span><code class="path">/timecards/clock-out</code>
-    <p style="margin-top:8px">退勤打刻</p>
+    <p style="margin-top:8px" data-i18n="api.e8_desc">退勤打刻</p>
   </div>
   <div class="endpoint">
     <span class="method get">GET</span><code class="path">/timecards</code>
-    <p style="margin-top:8px">打刻履歴取得</p>
+    <p style="margin-top:8px" data-i18n="api.e9_desc">打刻履歴取得</p>
   </div>
 </section>
 
 <section class="section">
-  <h2>💰 給与</h2>
+  <h2 data-i18n="api.s6_h2">💰 給与</h2>
   <div class="endpoint">
     <span class="method get">GET</span><code class="path">/payroll/:year/:month</code>
-    <p style="margin-top:8px">月次給与計算結果を取得 (深夜手当・残業手当込)</p>
+    <p style="margin-top:8px" data-i18n="api.e10_desc">月次給与計算結果を取得 (深夜手当・残業手当込)</p>
   </div>
   <div class="endpoint">
     <span class="method get">GET</span><code class="path">/payroll/:year/:month/export.csv</code>
-    <p style="margin-top:8px">freee/弥生形式 CSV ダウンロード</p>
+    <p style="margin-top:8px" data-i18n="api.e11_desc">freee/弥生形式 CSV ダウンロード</p>
   </div>
 </section>
 
 <section class="section">
-  <h2>🪝 Webhook</h2>
-  <p>以下のイベントを Webhook で受け取れます:</p>
+  <h2 data-i18n="api.s7_h2">🪝 Webhook</h2>
+  <p data-i18n="api.s7_p1">以下のイベントを Webhook で受け取れます:</p>
   <ul style="padding-left:20px">
-    <li><code>shift.created</code> — シフト作成</li>
-    <li><code>shift.confirmed</code> — シフト確定</li>
-    <li><code>timecard.clocked_in</code> — 出勤打刻</li>
-    <li><code>timecard.clocked_out</code> — 退勤打刻</li>
-    <li><code>labor_alert</code> — 労基法アラート</li>
+    <li><code>shift.created</code> — <span data-i18n="api.w1">シフト作成</span></li>
+    <li><code>shift.confirmed</code> — <span data-i18n="api.w2">シフト確定</span></li>
+    <li><code>timecard.clocked_in</code> — <span data-i18n="api.w3">出勤打刻</span></li>
+    <li><code>timecard.clocked_out</code> — <span data-i18n="api.w4">退勤打刻</span></li>
+    <li><code>labor_alert</code> — <span data-i18n="api.w5">労基法アラート</span></li>
   </ul>
-  <p style="margin-top:10px">Webhook URL は「マイページ → 設定 → Webhook」から登録できます。署名検証 (HMAC-SHA256) に対応。</p>
+  <p style="margin-top:10px" data-i18n="api.s7_p2">Webhook URL は「マイページ → 設定 → Webhook」から登録できます。署名検証 (HMAC-SHA256) に対応。</p>
 </section>
 
 <section class="section">
-  <h2>📊 レート制限</h2>
+  <h2 data-i18n="api.s8_h2">📊 レート制限</h2>
   <table>
-    <tr><th>プラン</th><th>制限</th></tr>
-    <tr><td>月額プラン</td><td>1,000 req/h</td></tr>
-    <tr><td>年額プラン</td><td>5,000 req/h</td></tr>
-    <tr><td>Enterprise</td><td>無制限 (要問合せ)</td></tr>
+    <tr><th data-i18n="api.col_plan">プラン</th><th data-i18n="api.col_rate">制限</th></tr>
+    <tr><td data-i18n="api.plan_monthly">月額プラン</td><td>1,000 req/h</td></tr>
+    <tr><td data-i18n="api.plan_annual">年額プラン</td><td>5,000 req/h</td></tr>
+    <tr><td>Enterprise</td><td data-i18n="api.rate_enterprise">無制限 (要問合せ)</td></tr>
   </table>
-  <p style="margin-top:10px">制限超過時は <code>429 Too Many Requests</code> を返します。<code>Retry-After</code> ヘッダーをご確認ください。</p>
+  <p style="margin-top:10px" data-i18n-html="api.s8_p">制限超過時は <code>429 Too Many Requests</code> を返します。<code>Retry-After</code> ヘッダーをご確認ください。</p>
 </section>
 
 <section class="section">
-  <h2>📞 サポート</h2>
-  <p>API に関するお問い合わせ: <a href="mailto:api@rakuraku-shift.com">api@rakuraku-shift.com</a></p>
-  <p>開発者コミュニティ Slack: <a href="#">招待リンク</a> (近日公開)</p>
+  <h2 data-i18n="api.s9_h2">📞 サポート</h2>
+  <p data-i18n-html="api.s9_p1">API に関するお問い合わせ: <a href="mailto:api@rakuraku-shift.com">api@rakuraku-shift.com</a></p>
+  <p data-i18n-html="api.s9_p2">開発者コミュニティ Slack: <a href="#">招待リンク</a> (近日公開)</p>
 </section>
 
 </main>
 
 <footer>
-  <p><a href="/">ホーム</a> <a href="/integrations.html">連携サービス</a> <a href="/features/">機能</a> <a href="/security.html">セキュリティ</a></p>
+  <p><a href="/" data-i18n="ft.f_home">ホーム</a> <a href="/integrations.html" data-i18n="api.f_intg">連携サービス</a> <a href="/features/" data-i18n="intg.f_features">機能</a> <a href="/security.html" data-i18n="api.f_security">セキュリティ</a></p>
   <p style="margin-top:15px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
 </footer>
 <script src="/help-widget.js" defer></script>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body>
 </html>

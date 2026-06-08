@@ -48,75 +48,85 @@ footer a{color:#7C3AED;margin:0 10px}
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main">本文へスキップ</a>
+<a class="skip-link" href="#main" data-i18n="a11y.skip_to_main">本文へスキップ</a>
 <header>
-  <h1>🔌 連携サービス</h1>
-  <p>使い慣れたツールと RAKURAKU を繋ぐ</p>
+  <h1 data-i18n="intg.h1">🔌 連携サービス</h1>
+  <p data-i18n="intg.lead">使い慣れたツールと RAKURAKU を繋ぐ</p>
 </header>
-<nav class="bc" aria-label="パンくず"><a href="/">ホーム</a> &gt; 連携サービス</nav>
+<nav class="bc" aria-label="パンくず"><a href="/" data-i18n="bc.home">ホーム</a> &gt; <span data-i18n="intg.bc">連携サービス</span></nav>
 
 <main id="main">
 
 <section class="category">
-  <h2>💰 会計・給与計算</h2>
+  <h2 data-i18n="intg.c1_h2">💰 会計・給与計算</h2>
   <div class="grid">
-    <div class="svc"><span class="icon">📊</span><div class="info"><h3>freee 給与</h3><p>CSV エクスポート対応</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">📒</span><div class="info"><h3>弥生給与</h3><p>CSV エクスポート対応</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">💹</span><div class="info"><h3>マネーフォワード給与</h3><p>CSV / API 対応</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">🧾</span><div class="info"><h3>SmartHR</h3><p>従業員情報同期</p><span class="status beta">ベータ版</span></div></div>
+    <div class="svc"><span class="icon">📊</span><div class="info"><h3>freee 給与</h3><p data-i18n="intg.c1_s1_p">CSV エクスポート対応</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">📒</span><div class="info"><h3 data-i18n="intg.c1_s2_h3">弥生給与</h3><p data-i18n="intg.c1_s2_p">CSV エクスポート対応</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">💹</span><div class="info"><h3 data-i18n="intg.c1_s3_h3">マネーフォワード給与</h3><p data-i18n="intg.c1_s3_p">CSV / API 対応</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🧾</span><div class="info"><h3>SmartHR</h3><p data-i18n="intg.c1_s4_p">従業員情報同期</p><span class="status beta" data-i18n="intg.st_beta">ベータ版</span></div></div>
   </div>
 </section>
 
 <section class="category">
-  <h2>💬 コミュニケーション</h2>
+  <h2 data-i18n="intg.c2_h2">💬 コミュニケーション</h2>
   <div class="grid">
-    <div class="svc"><span class="icon">💚</span><div class="info"><h3>LINE</h3><p>シフト確定通知 / 打刻リマインド</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">💼</span><div class="info"><h3>Slack</h3><p>店舗チームに通知配信</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">📨</span><div class="info"><h3>Chatwork</h3><p>シフトボット連携</p><span class="status beta">ベータ版</span></div></div>
-    <div class="svc"><span class="icon">📲</span><div class="info"><h3>SMS (Twilio)</h3><p>重要通知のフォールバック</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">💚</span><div class="info"><h3>LINE</h3><p data-i18n="intg.c2_s1_p">シフト確定通知 / 打刻リマインド</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">💼</span><div class="info"><h3>Slack</h3><p data-i18n="intg.c2_s2_p">店舗チームに通知配信</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">📨</span><div class="info"><h3>Chatwork</h3><p data-i18n="intg.c2_s3_p">シフトボット連携</p><span class="status beta" data-i18n="intg.st_beta">ベータ版</span></div></div>
+    <div class="svc"><span class="icon">📲</span><div class="info"><h3>SMS (Twilio)</h3><p data-i18n="intg.c2_s4_p">重要通知のフォールバック</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
   </div>
 </section>
 
 <section class="category">
-  <h2>📅 カレンダー</h2>
+  <h2 data-i18n="intg.c3_h2">📅 カレンダー</h2>
   <div class="grid">
-    <div class="svc"><span class="icon">📆</span><div class="info"><h3>Google カレンダー</h3><p>シフト自動同期</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">🍎</span><div class="info"><h3>Apple カレンダー</h3><p>iCal フィード対応</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">🌐</span><div class="info"><h3>Outlook</h3><p>iCal フィード対応</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">📆</span><div class="info"><h3 data-i18n="intg.c3_s1_h3">Google カレンダー</h3><p data-i18n="intg.c3_s1_p">シフト自動同期</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🍎</span><div class="info"><h3 data-i18n="intg.c3_s2_h3">Apple カレンダー</h3><p data-i18n="intg.c3_s2_p">iCal フィード対応</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🌐</span><div class="info"><h3>Outlook</h3><p data-i18n="intg.c3_s3_p">iCal フィード対応</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
   </div>
 </section>
 
 <section class="category">
-  <h2>💳 決済・経理</h2>
+  <h2 data-i18n="intg.c4_h2">💳 決済・経理</h2>
   <div class="grid">
-    <div class="svc"><span class="icon">🟦</span><div class="info"><h3>Stripe</h3><p>サブスクリプション課金</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">🍊</span><div class="info"><h3>Square</h3><p>POS 売上連携</p><span class="status beta">ベータ版</span></div></div>
-    <div class="svc"><span class="icon">🟧</span><div class="info"><h3>AirREGI</h3><p>レジ売上自動取込</p><span class="status planned">予定</span></div></div>
+    <div class="svc"><span class="icon">🟦</span><div class="info"><h3>Stripe</h3><p data-i18n="intg.c4_s1_p">サブスクリプション課金</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🍊</span><div class="info"><h3>Square</h3><p data-i18n="intg.c4_s2_p">POS 売上連携</p><span class="status beta" data-i18n="intg.st_beta">ベータ版</span></div></div>
+    <div class="svc"><span class="icon">🟧</span><div class="info"><h3>AirREGI</h3><p data-i18n="intg.c4_s3_p">レジ売上自動取込</p><span class="status planned" data-i18n="intg.st_planned">予定</span></div></div>
   </div>
 </section>
 
 <section class="category">
-  <h2>🌐 その他</h2>
+  <h2 data-i18n="intg.c5_h2">🌐 その他</h2>
   <div class="grid">
-    <div class="svc"><span class="icon">🤖</span><div class="info"><h3>Zapier</h3><p>2000+ アプリ連携</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">📥</span><div class="info"><h3>Google スプレッドシート</h3><p>シフト表自動出力</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">🔗</span><div class="info"><h3>Make (Integromat)</h3><p>カスタム自動化</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">📡</span><div class="info"><h3>Webhook</h3><p>カスタム連携 (REST)</p><span class="status ready">利用可能</span></div></div>
-    <div class="svc"><span class="icon">🔑</span><div class="info"><h3>API (REST + GraphQL)</h3><p>自社システム統合</p><span class="status ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🤖</span><div class="info"><h3>Zapier</h3><p data-i18n="intg.c5_s1_p">2000+ アプリ連携</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">📥</span><div class="info"><h3 data-i18n="intg.c5_s2_h3">Google スプレッドシート</h3><p data-i18n="intg.c5_s2_p">シフト表自動出力</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🔗</span><div class="info"><h3>Make (Integromat)</h3><p data-i18n="intg.c5_s3_p">カスタム自動化</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">📡</span><div class="info"><h3>Webhook</h3><p data-i18n="intg.c5_s4_p">カスタム連携 (REST)</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
+    <div class="svc"><span class="icon">🔑</span><div class="info"><h3>API (REST + GraphQL)</h3><p data-i18n="intg.c5_s5_p">自社システム統合</p><span class="status ready" data-i18n="intg.st_ready">利用可能</span></div></div>
   </div>
 </section>
 
 <div style="background:linear-gradient(135deg,#7C3AED,#A855F7);color:#fff;padding:30px;border-radius:12px;text-align:center;margin-top:30px">
-  <h2 style="color:#fff;margin-bottom:10px">必要な連携が見つからない?</h2>
-  <p style="margin:15px 0">REST API・Webhook でカスタム連携を作れます</p>
-  <a href="/api-docs.html" style="display:inline-block;background:#fff;color:#7C3AED;padding:12px 30px;border-radius:8px;text-decoration:none;font-weight:bold">API ドキュメント →</a>
+  <h2 style="color:#fff;margin-bottom:10px" data-i18n="intg.cta_h2">必要な連携が見つからない?</h2>
+  <p style="margin:15px 0" data-i18n="intg.cta_p">REST API・Webhook でカスタム連携を作れます</p>
+  <a href="/api-docs.html" style="display:inline-block;background:#fff;color:#7C3AED;padding:12px 30px;border-radius:8px;text-decoration:none;font-weight:bold" data-i18n="intg.cta_btn">API ドキュメント →</a>
 </div>
 </main>
 
 <footer>
-  <p><a href="/">ホーム</a> | <a href="/api-docs.html">API</a> | <a href="/features/">機能一覧</a> | <a href="/help.html">FAQ</a></p>
+  <p><a href="/" data-i18n="ft.f_home">ホーム</a> | <a href="/api-docs.html" data-i18n="intg.f_api">API</a> | <a href="/features/" data-i18n="intg.f_features">機能一覧</a> | <a href="/help.html" data-i18n="intg.f_faq">FAQ</a></p>
   <p style="margin-top:15px;opacity:.7;font-size:.9em">© 2026 RAKURAKU</p>
 </footer>
 <script src="/help-widget.js" defer></script>
+<script src="/i18n.js"></script>
+<script>
+if(window.RakuI18n){
+  var s=document.createElement("div");
+  s.id="rakuraku-lang-switcher";
+  s.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.7);border-radius:8px;padding:3px;";
+  document.body.appendChild(s);
+  RakuI18n.buildSwitcher("rakuraku-lang-switcher");
+}
+</script>
 </body>
 </html>
