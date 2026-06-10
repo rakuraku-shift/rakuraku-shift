@@ -1543,6 +1543,58 @@ app.get('/health', (req, res) => {
   });
 });
 
+// ── /signup (拡張子なし) → signup.html へルート (旧リンク互換) ─────
+//   既存のメール・SNS・外部記事にある `/signup` 参照を維持するため
+app.get('/signup', (req, res) => {
+  const qs = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+  res.redirect(302, '/signup.html' + qs);
+});
+
+// ── /api/signup — フォーム送信受け口 (Free/Trial: 即承認 / Pro: Stripe Checkout 生成) ─
+app.post('/api/signup', async (req, res) => {
+  try {
+    const { email, password, shopname, plan } = req.body || {};
+    if (!email || !password || !shopname) {
+      return res.status(400).json({ error: 'email/password/shopname は必須です' });
+    }
+    if (!['free','trial','pro'].includes(plan)) {
+      return res.status(400).json({ error: 'plan は free / trial / pro のいずれか' });
+    }
+
+    /* Pro: Stripe Checkout URL を返す (クレカ正直開示の核心) */
+    if (plan === 'pro') {
+      if (!stripe) {
+        // Stripe 未設定 → bank-transfer.html へ誘導
+        return res.json({ next: '/bank-transfer.html?email=' + encodeURIComponent(email) + '&shopname=' + encodeURIComponent(shopname) });
+      }
+      const session = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        payment_method_types: ['card'],
+        customer_email: email,
+        line_items: [{
+          price_data: {
+            currency: 'jpy',
+            recurring: { interval: 'month' },
+            product_data: { name: 'RAKURAKU Pro プラン (¥4,990/月)' },
+            unit_amount: 4990,
+          },
+          quantity: 1,
+        }],
+        success_url: (process.env.BASE_URL || '') + '/onboarding.html?plan=pro&email=' + encodeURIComponent(email),
+        cancel_url: (process.env.BASE_URL || '') + '/signup.html?plan=pro',
+        metadata: { shopname, plan: 'pro' },
+      });
+      return res.json({ checkoutUrl: session.url });
+    }
+
+    /* Free / Trial: クレカ不要 — オンボーディングへ */
+    res.json({ next: '/onboarding.html', plan, email });
+  } catch (e) {
+    console.error('[api/signup]', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 /* ════════════════════════════════════════════
  * テスト用: 店舗自動追加 を Stripe なしで確認できるエンドポイント
  * 使い方: POST /api/admin/test-auto-add { shopName, email, ownerName }
