@@ -290,6 +290,47 @@ function _nextMonthKey() {
   return y + '-' + String(m).padStart(2, '0');
 }
 
+/* ════════════════════════════════════════════
+ * 管理者通知 — 新規登録 / 課金開始 / 問い合わせ等を代表へメール
+ * 全ての通知は ADMIN_NOTIFY_EMAIL (デフォルト koizumishota0323@gmail.com) に届く
+ * ════════════════════════════════════════════ */
+const ADMIN_NOTIFY_EMAIL = process.env.ADMIN_NOTIFY_EMAIL || 'koizumishota0323@gmail.com';
+async function notifyAdmin(subject, htmlBody, opts = {}) {
+  if (!emailTransporter) {
+    console.warn('[notifyAdmin] EMAIL_USER 未設定 — 管理者通知スキップ:', subject);
+    return false;
+  }
+  try {
+    const wrapped = `
+      <div style="font-family:'Helvetica Neue',sans-serif;max-width:640px;margin:0 auto;padding:20px;color:#1E293B;line-height:1.7;">
+        <div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:16px 20px;border-radius:10px 10px 0 0;">
+          <div style="font-size:11px;opacity:.85;letter-spacing:.06em;font-weight:700;">📨 RAKURAKU 管理者通知</div>
+          <div style="font-size:16px;font-weight:900;margin-top:4px;">${escHtml(subject)}</div>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E8F0;border-top:none;padding:24px;border-radius:0 0 10px 10px;">
+          ${htmlBody}
+          <hr style="margin:24px 0;border:none;border-top:1px solid #E2E8F0;">
+          <div style="font-size:11px;color:#94A3B8;">
+            送信時刻: ${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })} (JST)<br>
+            送信元: ${process.env.BASE_URL || 'http://localhost'}<br>
+            ${opts.source ? '操作元: ' + escHtml(opts.source) + '<br>' : ''}
+          </div>
+        </div>
+      </div>`;
+    await emailTransporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: ADMIN_NOTIFY_EMAIL,
+      subject: `[RAKURAKU 通知] ${subject}`,
+      html: wrapped,
+    });
+    console.log(`[notifyAdmin] 送信完了 → ${ADMIN_NOTIFY_EMAIL}: ${subject}`);
+    return true;
+  } catch (e) {
+    console.error('[notifyAdmin] 送信失敗:', e.message);
+    return false;
+  }
+}
+
 async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
   if (!emailTransporter) {
     console.warn('[email] EMAIL_USER 未設定 — ライセンスコードメール送信スキップ');
@@ -487,6 +528,29 @@ async function handleSubscriptionStarted(session) {
   });
 
   console.log(`[stripe] サブスク開始 — ${shopName || '?'} (${email}) → shopId: ${shopId} — code: ${licenseCode}`);
+
+  /* 🔔 管理者通知 — Pro プラン課金が実際に開始された */
+  notifyAdmin(
+    `💼 Pro プラン課金開始 — ${shopName || '(店舗名未入力)'}`,
+    `
+      <p style="font-size:14px;margin:0 0 14px;"><strong>Stripe 決済が完了し、Pro プランが開始されました</strong></p>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;">
+        <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;width:30%;font-weight:700;">店舗名</td><td style="padding:8px;border:1px solid #E2E8F0;">${escHtml(shopName || '(未入力)')}</td></tr>
+        <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;font-weight:700;">代表者</td><td style="padding:8px;border:1px solid #E2E8F0;">${escHtml(ownerName || '(未入力)')}</td></tr>
+        <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;font-weight:700;">メール</td><td style="padding:8px;border:1px solid #E2E8F0;"><a href="mailto:${escHtml(email)}">${escHtml(email)}</a></td></tr>
+        <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;font-weight:700;">電話</td><td style="padding:8px;border:1px solid #E2E8F0;">${escHtml(phone || '(未入力)')}</td></tr>
+        <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;font-weight:700;">店舗ID</td><td style="padding:8px;border:1px solid #E2E8F0;font-family:monospace;">${escHtml(shopId)}</td></tr>
+        <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;font-weight:700;">月額</td><td style="padding:8px;border:1px solid #E2E8F0;">¥4,990 (税抜)</td></tr>
+        <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;font-weight:700;">Stripe Subscription</td><td style="padding:8px;border:1px solid #E2E8F0;font-family:monospace;font-size:11px;">${escHtml(session.subscription || '')}</td></tr>
+        <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;font-weight:700;">Stripe Customer</td><td style="padding:8px;border:1px solid #E2E8F0;font-family:monospace;font-size:11px;">${escHtml(session.customer || '')}</td></tr>
+      </table>
+      <div style="background:#DCFCE7;border-left:4px solid #22C55E;padding:12px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#065F46;margin:14px 0;">
+        ✅ 既にお客様にはライセンスコード + 6 桁ログインコードのメールを送信済み。<br>
+        🆔 noru-admin の店舗リストにも自動追加済 (autoAdded: true)。
+      </div>
+    `,
+    { source: 'stripe webhook: checkout.session.completed' }
+  ).catch(e => console.warn('[notifyAdmin] stripe subscription notification failed:', e.message));
 
   if (email) {
     try { await sendLicenseEmail(email, shopName, licenseCode, shopId); }
@@ -838,13 +902,37 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
     updateSubscriptionStatus(subObj.id, 'cancelled');
     console.log(`[stripe] サブスク解約 — ${subObj.id}`);
 
+    /* 🔔 管理者通知 — Pro プラン解約 */
+    notifyAdmin(
+      `❌ Pro プラン解約 — Subscription ${subObj.id}`,
+      `<p style="font-size:14px;">サブスクリプションが解約されました。</p>
+       <p style="font-size:12px;color:#64748B;">Subscription ID: <code>${escHtml(subObj.id)}</code></p>
+       <p style="font-size:12px;color:#64748B;">Customer ID: <code>${escHtml(subObj.customer || '')}</code></p>
+       <p style="font-size:13px;margin-top:14px;">📋 解約理由アンケートを既にお客様へ送信済です。</p>`,
+      { source: 'stripe webhook: customer.subscription.deleted' }
+    ).catch(e => console.warn('[notifyAdmin] cancellation notification failed:', e.message));
+
     /* 解約理由アンケート URL を送信 */
     try { sendChurnSurveyEmail(subObj); }
     catch(e) { console.warn('[churn-survey] email failed:', e.message); }
   }
 
   if (event.type === 'invoice.payment_failed') {
-    console.log(`[stripe] 支払い失敗 — subscription: ${event.data.object.subscription}`);
+    const inv = event.data.object;
+    console.log(`[stripe] 支払い失敗 — subscription: ${inv.subscription}`);
+
+    /* 🔔 管理者通知 — 月次決済失敗 (要対応!) */
+    notifyAdmin(
+      `⚠️ Pro プラン支払い失敗 — ${inv.customer_email || inv.customer}`,
+      `<p style="font-size:14px;">月次決済が失敗しました。<strong>お客様への督促連絡が必要かもしれません</strong>。</p>
+       <table style="width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;">
+         <tr><td style="padding:8px;background:#FEE2E2;border:1px solid #FECACA;font-weight:700;">お客様メール</td><td style="padding:8px;border:1px solid #FECACA;">${escHtml(inv.customer_email || '(不明)')}</td></tr>
+         <tr><td style="padding:8px;background:#FEE2E2;border:1px solid #FECACA;font-weight:700;">金額</td><td style="padding:8px;border:1px solid #FECACA;">¥${inv.amount_due || 0}</td></tr>
+         <tr><td style="padding:8px;background:#FEE2E2;border:1px solid #FECACA;font-weight:700;">失敗理由</td><td style="padding:8px;border:1px solid #FECACA;">${escHtml(inv.last_payment_error?.message || '(Stripe ログ参照)')}</td></tr>
+         <tr><td style="padding:8px;background:#FEE2E2;border:1px solid #FECACA;font-weight:700;">Subscription</td><td style="padding:8px;border:1px solid #FECACA;font-family:monospace;font-size:11px;">${escHtml(inv.subscription || '')}</td></tr>
+       </table>`,
+      { source: 'stripe webhook: invoice.payment_failed' }
+    ).catch(e => console.warn('[notifyAdmin] payment failure notification failed:', e.message));
   }
 
   res.json({ received: true });
@@ -1561,6 +1649,31 @@ app.post('/api/signup', async (req, res) => {
       return res.status(400).json({ error: 'plan は free / trial / pro のいずれか' });
     }
 
+    /* 🔔 管理者通知 (どのプランでも即時送信 — Pro の場合は Stripe Checkout 進行前) */
+    const planLabel = ({ free: '🆓 Free (永久無料)', trial: '🎁 30日 Pro 体験', pro: '💼 Pro (¥4,990/月)' })[plan] || plan;
+    const isPro = plan === 'pro';
+    notifyAdmin(
+      `新規登録申込 — ${planLabel} (${shopname})`,
+      `
+        <p style="font-size:14px;margin:0 0 14px;"><strong>新規登録の申込がありました</strong>${isPro ? ' (Pro プラン — クレカ登録ページへ遷移中)' : ''}</p>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;">
+          <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;width:30%;font-weight:700;">プラン</td><td style="padding:8px;border:1px solid #E2E8F0;">${escHtml(planLabel)}</td></tr>
+          <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;font-weight:700;">店舗名</td><td style="padding:8px;border:1px solid #E2E8F0;">${escHtml(shopname)}</td></tr>
+          <tr><td style="padding:8px;background:#F8FAFC;border:1px solid #E2E8F0;font-weight:700;">メール</td><td style="padding:8px;border:1px solid #E2E8F0;"><a href="mailto:${escHtml(email)}">${escHtml(email)}</a></td></tr>
+        </table>
+        ${isPro ? `
+        <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:12px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#78350F;margin:14px 0;">
+          ⚠️ <strong>このメールは Stripe 決済前の段階</strong> です。実際に課金されたら別途「Pro プラン課金開始」通知が届きます。
+        </div>
+        ` : `
+        <div style="background:#DCFCE7;border-left:4px solid #22C55E;padding:12px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#065F46;margin:14px 0;">
+          ✅ クレジットカード登録なしで即時登録完了。onboarding.html へ進みました。
+        </div>
+        `}
+      `,
+      { source: '/api/signup' }
+    ).catch(e => console.warn('[notifyAdmin] signup notification failed:', e.message));
+
     /* Pro: Stripe Checkout URL を返す (クレカ正直開示の核心) */
     if (plan === 'pro') {
       if (!stripe) {
@@ -1582,7 +1695,8 @@ app.post('/api/signup', async (req, res) => {
         }],
         success_url: (process.env.BASE_URL || '') + '/onboarding.html?plan=pro&email=' + encodeURIComponent(email),
         cancel_url: (process.env.BASE_URL || '') + '/signup.html?plan=pro',
-        metadata: { shopname, plan: 'pro' },
+        /* 🐛 修正: shopName (camelCase) と shopname 両方入れる → webhook 側のキー不一致を吸収 */
+        metadata: { shopname, shopName: shopname, plan: 'pro' },
       });
       return res.json({ checkoutUrl: session.url });
     }
