@@ -267,6 +267,42 @@
       background:var(--indigo); flex-shrink:0;
     }
     .ds-day.selected .ds-pip { background:rgba(255,255,255,.8); }
+    /* 既に「この日程を追加」済みの日 (他ブロックで使用中) */
+    .ds-day.used {
+      background:#ECFDF5; border-color:#6EE7B7;
+      cursor:default; pointer-events:none;
+    }
+    .ds-day.used .ds-num, .ds-day.used .ds-dow { color:#059669 !important; }
+    .ds-day.used::after {
+      content:'✓'; position:absolute; top:3px; right:5px;
+      font-size:10px; font-weight:900; color:#10B981;
+    }
+
+    /* ── 提出ブロック（複数日程をまとめて提出） ── */
+    .btn-add-block {
+      width:100%; padding:14px; margin-top:4px;
+      border:1.5px dashed var(--indigo); border-radius:12px;
+      background:var(--indigo-l); color:var(--indigo);
+      font-size:14px; font-weight:900; font-family:inherit; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:6px;
+      -webkit-tap-highlight-color:transparent; transition:transform .1s;
+    }
+    .btn-add-block:active { transform:scale(.98); }
+    .blocks-list { display:flex; flex-direction:column; gap:8px; }
+    .block-item {
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:12px 14px; border:1.5px solid #C7D2FE; border-radius:12px;
+      background:linear-gradient(135deg,#EEF2FF,#F5F3FF);
+    }
+    .block-item-body { display:flex; flex-direction:column; gap:3px; min-width:0; }
+    .block-item-time { font-size:13px; font-weight:900; color:#3730A3; }
+    .block-item-dates { font-size:12px; font-weight:600; color:var(--slate-500); word-break:break-word; }
+    .block-item-rm {
+      flex-shrink:0; width:28px; height:28px; border:none; border-radius:50%;
+      background:#fff; color:var(--slate-400); font-size:16px; line-height:1;
+      cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:inherit;
+    }
+    .block-item-rm:hover { color:var(--red); }
 
     /* 旧 calendar-grid は不使用 */
     .calendar-grid { display:none; }
@@ -2406,26 +2442,10 @@
     <svg viewBox="0 0 24 24"><path d="M9 12h6M9 8h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M9 16l2 2 4-4"/></svg>
     <span data-i18n="tab.staff">シフト提出</span>
   </button>
-  <button class="tab-btn" onclick="switchTab('survey')" id="tab-survey">
-    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-    <span data-i18n="tab.survey">アンケート</span>
-  </button>
   <button class="tab-btn" onclick="switchTab('manager')" id="tab-manager">
     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7M17.5 14v7"/></svg>
     <span data-i18n="tab.manager">シフト管理</span>
   </button>
-  <a class="tab-btn" href="/weather-events.html" id="tab-weather" style="text-decoration:none;background:linear-gradient(135deg,#E0F2FE,#EDE9FE);color:#0369A1;border:1.5px solid #BAE6FD;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19a4.5 4.5 0 1 0 0-9h-1.8A7 7 0 1 0 4 15"/></svg>
-    <span>🌤️ 天気・イベント</span>
-  </a>
-  <a class="tab-btn" href="/shift-edit.html" id="tab-edit" style="text-decoration:none;background:linear-gradient(135deg,#EEF2FF,#F5F3FF);color:#3730A3;border:1.5px solid #C7D2FE;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-    <span>✏️ シフト編集</span>
-  </a>
-  <a class="tab-btn" href="/mbti.html" id="tab-mbti" style="text-decoration:none;background:linear-gradient(135deg,#F3E8FF,#FCE7F3);color:#6B21A8;border:1.5px solid #E9D5FF;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9.5a3 3 0 1 1 4.5 2.6c-.5.3-.9.5-1.2 1-.3.4-.3 1-.3 1.4M12 17h.01"/></svg>
-    <span>🧠 MBTI 診断</span>
-  </a>
   <a class="tab-btn" href="/mood-feedback.html" id="tab-mood" style="text-decoration:none;background:linear-gradient(135deg,#FEF3C7,#FCE7F3);color:#B45309;border:1.5px solid #FDE68A;">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
     <span>😊 1秒振り返り</span>
@@ -2554,38 +2574,38 @@
     </div>
 
     <div class="ts-grid" id="time-slots">
-      <button type="button" class="time-chip ts-card" data-slot="morning" onclick="toggleTime(this)">
-        <span class="ts-emoji">🌅</span>
-        <div class="ts-info"><div class="ts-name" data-i18n="time.morning">朝</div><div class="ts-time">9:00〜13:00</div></div>
-      </button>
-      <button type="button" class="time-chip ts-card" data-slot="lunch" onclick="toggleTime(this)">
-        <span class="ts-emoji">☀️</span>
-        <div class="ts-info"><div class="ts-name" data-i18n="time.lunch">昼</div><div class="ts-time">11:00〜15:00</div></div>
-      </button>
-      <button type="button" class="time-chip ts-card" data-slot="afternoon" onclick="toggleTime(this)">
-        <span class="ts-emoji">🌤</span>
-        <div class="ts-info"><div class="ts-name" data-i18n="time.afternoon">夕方</div><div class="ts-time">15:00〜19:00</div></div>
-      </button>
-      <button type="button" class="time-chip ts-card" data-slot="evening" onclick="toggleTime(this)">
-        <span class="ts-emoji">🌙</span>
-        <div class="ts-info"><div class="ts-name" data-i18n="time.evening">夜</div><div class="ts-time">18:00〜22:00</div></div>
-      </button>
       <button type="button" class="time-chip ts-card ts-card--full" data-slot="full" onclick="toggleTime(this)">
         <span class="ts-emoji">🕐</span>
         <div class="ts-info"><div class="ts-name" data-i18n="time.full">フルタイム</div><div class="ts-time" data-i18n="time.full_sub">終日対応可</div></div>
       </button>
     </div>
 
-    <div class="custom-time-wrap">
+    <div class="custom-time-wrap" id="custom-time-wrap">
       <div class="sf-inner-label" data-i18n="sf.custom_time">カスタム時間を指定</div>
       <div class="time-picker-row">
-        <input type="time" id="ct-start" />
+        <input type="time" id="ct-start" oninput="onCustomTimeInput()" />
         <span class="time-picker-sep">〜</span>
-        <input type="time" id="ct-end" />
-        <button class="btn-add" onclick="addCustomTime()">＋ 追加</button>
+        <input type="time" id="ct-end" oninput="onCustomTimeInput()" />
       </div>
-      <div class="time-chips" id="custom-time-list" style="margin-top:8px;"></div>
     </div>
+
+    <!-- ＋ この日程を追加（日付×時間帯のブロック化） -->
+    <button type="button" class="btn-add-block" onclick="addBlock()" style="margin-top:18px;">
+      ＋ <span data-i18n="sf.add_block">この日程を追加</span>
+    </button>
+    <div class="sf-hint" style="text-align:center;margin-top:8px;" data-i18n="sf.add_block_hint">別の時間帯で出したい日があれば、続けて追加できます</div>
+  </div>
+
+  <!-- ─── 追加した日程（複数ブロックをまとめて提出） ─── -->
+  <div class="sf-section" id="blocks-section" style="display:none;">
+    <div class="sf-step-hd">
+      <div style="flex:1;">
+        <div class="sf-step-title">📋 <span data-i18n="sf.blocks_title">追加した日程</span></div>
+        <div class="sf-step-sub" data-i18n="sf.blocks_sub">この内容でまとめて提出します</div>
+      </div>
+      <span class="sf-count-badge" id="blocks-badge"></span>
+    </div>
+    <div class="blocks-list" id="blocks-list"></div>
   </div>
 
   <!-- ─── 04 確認・提出 ─── -->
@@ -2772,9 +2792,6 @@
     <button class="mgr-tab" onclick="switchMgrTab('deadline')" data-tab="deadline" role="tab" aria-selected="false">
       <span class="mgr-tab-ic">⏰</span><span data-i18n="mgr.tab_deadline">締切・リマインド</span>
     </button>
-    <button class="mgr-tab" onclick="switchMgrTab('survey')" data-tab="survey" role="tab" aria-selected="false">
-      <span class="mgr-tab-ic">📊</span><span data-i18n="mgr.tab_survey">アンケート</span>
-    </button>
     <button class="mgr-tab" onclick="switchMgrTab('all')" data-tab="all" role="tab" aria-selected="false" style="color:var(--slate-400);">
       <span class="mgr-tab-ic">📋</span><span data-i18n="mgr.tab_all">全表示</span>
     </button>
@@ -2808,8 +2825,27 @@
     </div>
   </div>
 
+  <!-- 😊 今日の振り返り（1タップ）— 店長の1日振り返りをシフト管理画面内に統合 -->
+  <div id="mgr-mood-card" data-mgr-section="dashboard shifts" style="background:linear-gradient(135deg,#FFF7ED,#FEF2F2);border:1.5px solid #FED7AA;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 4px 16px rgba(0,0,0,.04);">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+      <div style="font-size:13px;font-weight:900;color:#0F172A;display:flex;align-items:center;gap:6px;">
+        <span aria-hidden="true">😊</span><span data-i18n="mf.mgr_q">今日のシフト、どうだった?</span>
+      </div>
+      <a href="/mood-feedback.html" target="_blank" rel="noopener" style="font-size:11px;font-weight:800;color:#EA580C;text-decoration:none;-webkit-tap-highlight-color:transparent;" data-i18n="mgr.mood_detail">詳しく見る →</a>
+    </div>
+    <div style="font-size:11px;font-weight:600;color:#9A3412;margin-bottom:12px;" data-i18n="mgr.mood_sub">1 タップで完了 · 言葉にしなくていい</div>
+    <div role="group" aria-label="本日の振り返り" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+      <button type="button" data-mood="5" onclick="mgrMood(this,5)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😄</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m5_mgr">最高</span></button>
+      <button type="button" data-mood="4" onclick="mgrMood(this,4)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😊</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m4_mgr">良い</span></button>
+      <button type="button" data-mood="3" onclick="mgrMood(this,3)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😐</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m3_normal">普通</span></button>
+      <button type="button" data-mood="2" onclick="mgrMood(this,2)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😟</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m2_mgr">微妙</span></button>
+      <button type="button" data-mood="1" onclick="mgrMood(this,1)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😩</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m1_mgr">しんどい</span></button>
+    </div>
+    <div id="mgr-mood-confirm" style="display:none;text-align:center;margin-top:12px;font-size:12px;font-weight:800;color:#047857;" data-i18n="mgr.mood_recorded">✅ 記録しました</div>
+  </div>
+
   <!-- ─── Month Navigation ─── (常時表示) -->
-  <div class="month-nav-row" data-mgr-section="dashboard shifts staff payroll deadline survey">
+  <div class="month-nav-row" data-mgr-section="dashboard shifts staff payroll deadline">
     <button class="month-nav-btn" onclick="changeViewMonth(-1)" data-i18n="mgr.prev_month">‹ 前月</button>
     <div class="month-nav-center">
       <div class="month-nav-label" id="month-nav-label">2026年5月</div>
@@ -3100,17 +3136,6 @@
     💡 <strong>スタッフ評価</strong>は、生成されたシフト上のスタッフ名をタップして入力できます（ポジション別5段階）
   </div>
 
-  <!-- Survey results (read-only) -->
-  <div class="card" id="survey-results-card" data-mgr-section="survey" style="margin-top:12px;">
-    <div class="section-hdr">
-      <div class="section-title">⭐ アンケート結果</div>
-      <span class="srv-readonly-badge">🔒 読み取り専用</span>
-    </div>
-    <div id="survey-results-content">
-      <div class="reg-empty">読み込み中…</div>
-    </div>
-  </div>
-
   <!-- Shift rules (朝/昼/夜 下限〜上限) -->
   <div class="card" id="rule-section" data-mgr-section="shifts">
     <div class="section-title" style="margin-bottom:4px;">⚙️ シフトルール</div>
@@ -3215,6 +3240,22 @@
       📋 シフト表のサンプルを見る
     </button>
   </div>
+
+  <!-- ✏️ シフト編集（手動調整）入口 — シフト管理内に統合 -->
+  <a href="/shift-edit.html" target="_blank" rel="noopener" id="mgr-shift-edit-link" data-mgr-section="shifts"
+     style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+            padding:16px;margin-bottom:14px;border-radius:14px;text-decoration:none;
+            background:linear-gradient(135deg,#EEF2FF,#F5F3FF);border:1.5px solid #C7D2FE;
+            box-shadow:0 4px 14px rgba(79,70,229,.10);-webkit-tap-highlight-color:transparent;">
+    <span style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:22px;">✏️</span>
+      <span style="display:flex;flex-direction:column;">
+        <span style="font-size:14px;font-weight:900;color:#3730A3;" data-i18n="mgr.shift_edit_title">シフトを手動で編集</span>
+        <span style="font-size:11px;font-weight:600;color:#6366F1;" data-i18n="mgr.shift_edit_sub">自動生成の結果を直接調整できます</span>
+      </span>
+    </span>
+    <span style="font-size:18px;color:#4F46E5;">→</span>
+  </a>
 
   <!-- Sticky print bar -->
   <div id="print-bar">
@@ -3797,8 +3838,11 @@
 
   let currentYear, currentMonth;
   let selectedDates = new Set();
-  let selectedTimes = new Set();
-  let customTimes   = [];
+  let selectedTimes = new Set();   // ※旧プリセット枠用（廃止。互換のため宣言は維持）
+  let customTimes   = [];           // ※旧マルチカスタム用（廃止。互換のため宣言は維持）
+  /* 複数の「日付グループ×時間帯」を1回でまとめて提出するためのブロック配列
+     例: [{dates:['2026-06-01',..4日], time:'06:00〜10:00'}, {dates:[..9日], time:'04:00〜10:00'}] */
+  let shiftBlocks   = [];
 
   // Timee modal state
   let timeeJobs = [];         // unassigned slots to post
@@ -4632,13 +4676,14 @@
     }
     /* 該当タブの動的レンダリングを再実行 */
     if (tab === 'staff' && typeof renderStaffEval === 'function') { try { renderStaffEval(); } catch(e) {} }
-    if (tab === 'survey' && typeof loadSurveyResults === 'function') { try { loadSurveyResults(); } catch(e) {} }
     if (tab === 'payroll' && typeof renderPayrollCard === 'function') { try { renderPayrollCard(); } catch(e) {} }
   }
   /* 初回ロード時に保存された選択を復元 (デフォルト: dashboard) */
   document.addEventListener('DOMContentLoaded', function() {
     let savedTab = 'dashboard';
     try { savedTab = localStorage.getItem('rakuraku-mgr-tab') || 'dashboard'; } catch(e) {}
+    /* 廃止済みタブ(survey 等)が保存されていたら dashboard に戻す */
+    if (['dashboard','shifts','staff','payroll','deadline','all'].indexOf(savedTab) === -1) savedTab = 'dashboard';
     document.body.setAttribute('data-mgr-active', savedTab);
     document.querySelectorAll('.mgr-tab').forEach(btn => {
       const active = btn.dataset.tab === savedTab;
@@ -4655,11 +4700,12 @@
     }
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('screen-' + tab).classList.add('active');
-    document.getElementById('tab-' + tab).classList.add('active');
+    const _scr = document.getElementById('screen-' + tab);
+    if (_scr) _scr.classList.add('active');
+    const _tb = document.getElementById('tab-' + tab);
+    if (_tb) _tb.classList.add('active');
     if (tab === 'manager') { renderManagerView(); renderReminderCard(); }
     if (tab === 'staff')   { renderDeadlineBanner(); hideSuggestions(); }
-    if (tab === 'survey')  { initSurveyScreen(); }
   }
 
   /* ── Calendar / Date Strip ── */
@@ -4698,6 +4744,8 @@
     const DOW_LABELS  = ['日','月','火','水','木','金','土'];
     let todayEl = null;
     let firstSelectableEl = null;
+    /* 既に「この日程を追加」済みの日（他ブロックで使用中）はロック表示 */
+    const usedDates = new Set(shiftBlocks.flatMap(b => b.dates));
 
     for (let d = 1; d <= daysInMonth; d++) {
       const date    = new Date(currentYear, currentMonth, d);
@@ -4706,6 +4754,7 @@
       const isPast  = date < today;
       const isToday = date.getTime() === today.getTime();
       const isSel   = selectedDates.has(dateStr);
+      const isUsed  = usedDates.has(dateStr);
 
       const el = document.createElement('div');
       let cls = 'ds-day';
@@ -4714,6 +4763,7 @@
       if (isPast)    cls += ' past';
       if (isToday)   cls += ' today';
       if (isSel)     cls += ' selected';
+      if (isUsed)    cls += ' used';
       el.className = cls;
 
       /* 曜日ラベル */
@@ -4736,7 +4786,7 @@
         el.appendChild(pip);
       }
 
-      if (!isPast) {
+      if (!isPast && !isUsed) {
         el.addEventListener('click', () => {
           selectedDates.has(dateStr) ? selectedDates.delete(dateStr) : selectedDates.add(dateStr);
           renderDateStrip();
@@ -5060,71 +5110,143 @@
   }
   function removeDate(ds) { selectedDates.delete(ds); renderCalendar(); renderSelectedList(); }
 
-  /* ── Time chips ── */
+  /* ════════════════════════════════════════════════════════════
+     時間帯（フルタイム / カスタム）＋ 日程ブロック化
+     ─ 旧プリセット4枠は廃止。フルタイム or カスタム時間の2択。
+     ─ 「日付 × 時間帯」を1ブロックとして shiftBlocks に積み、
+       別の時間帯の日もまとめて1回で提出できる。
+     ════════════════════════════════════════════════════════════ */
+
+  /* フルタイム chip のトグル（カスタム入力と排他） */
   function toggleTime(el) {
-    const s = el.dataset.slot;
-    selectedTimes.has(s) ? selectedTimes.delete(s) : selectedTimes.add(s);
+    const willSelect = !el.classList.contains('selected');
     el.classList.toggle('selected');
-    updateTimeCountBadge(); // updateChecklist() は内部で呼ばれる
-  }
-
-  /* ── Custom time (time picker 版) ── */
-  function addCustomTime() {
-    const startEl = document.getElementById('ct-start');
-    const endEl   = document.getElementById('ct-end');
-    const start   = startEl.value;   // "HH:MM" or ""
-    const end     = endEl.value;
-
-    if (!start && !end) {
-      showToast('⚠️ 開始または終了時間を入力してください');
-      return;
-    }
-
-    const val = start && end ? `${start}〜${end}`
-              : start        ? `${start}〜`
-              :                `〜${end}`;
-
-    if (customTimes.includes(val)) { showToast('⚠️ すでに追加されています'); return; }
-    customTimes.push(val);
-    startEl.value = '';
-    endEl.value   = '';
-    renderCustomTimes();
-    updateTimeCountBadge();
-    showToast(`✅ ${val} を追加しました`);
-  }
-
-  function removeCustomTime(i) {
-    customTimes.splice(i, 1);
-    renderCustomTimes();
-    updateTimeCountBadge();
-  }
-
-  function renderCustomTimes() {
-    document.getElementById('custom-time-list').innerHTML = customTimes.map((t, i) => `
-      <div class="time-chip selected" style="display:flex;align-items:center;gap:6px;">
-        ${t}
-        <span onclick="removeCustomTime(${i})"
-              style="cursor:pointer;opacity:.6;font-size:13px;line-height:1;">×</span>
-      </div>`).join('');
-  }
-
-  function updateTimeCountBadge() {
-    const total = selectedTimes.size + customTimes.length;
-    const badge = document.getElementById('time-count-badge');
-    if (badge) {
-      badge.textContent = total > 0 ? total + '件選択中' : '';
-      badge.classList.toggle('zero',    total === 0);
-      badge.classList.toggle('visible', total > 0);
+    if (willSelect) {
+      // フルタイム選択時はカスタム時間をクリア（排他）
+      const s = document.getElementById('ct-start');
+      const e = document.getElementById('ct-end');
+      if (s) s.value = '';
+      if (e) e.value = '';
     }
     updateChecklist();
   }
 
+  /* カスタム時間入力時はフルタイムを解除（排他） */
+  function onCustomTimeInput() {
+    const s = document.getElementById('ct-start');
+    const e = document.getElementById('ct-end');
+    if ((s && s.value) || (e && e.value)) {
+      const full = document.querySelector('.time-chip[data-slot="full"]');
+      if (full) full.classList.remove('selected');
+    }
+    updateChecklist();
+  }
+
+  /* 現在選択中の時間帯を文字列で返す（未選択なら ''） */
+  function getCurrentBlockTime() {
+    const full = document.querySelector('.time-chip[data-slot="full"]');
+    if (full && full.classList.contains('selected')) return 'フルタイム';
+    const s = (document.getElementById('ct-start') || {}).value || '';
+    const e = (document.getElementById('ct-end')   || {}).value || '';
+    if (s && e) return `${s}〜${e}`;
+    if (s)      return `${s}〜`;
+    if (e)      return `〜${e}`;
+    return '';
+  }
+
+  /* 現在の時間帯選択をリセット */
+  function _resetCurrentTimeSelection() {
+    const full = document.querySelector('.time-chip[data-slot="full"]');
+    if (full) full.classList.remove('selected');
+    const s = document.getElementById('ct-start');
+    const e = document.getElementById('ct-end');
+    if (s) s.value = '';
+    if (e) e.value = '';
+  }
+
+  /* 「この日程を追加」: 選択中の日付＋時間帯を1ブロックとして積む */
+  function addBlock() {
+    if (selectedDates.size === 0) {
+      showToast('⚠️ カレンダーから日付を選んでください');
+      return;
+    }
+    const time = getCurrentBlockTime();
+    if (!time) {
+      showToast('⚠️ フルタイムを選ぶか、時間を入力してください');
+      return;
+    }
+    const dates = Array.from(selectedDates).sort();
+    shiftBlocks.push({ dates: dates, time: time });
+    selectedDates.clear();
+    _resetCurrentTimeSelection();
+    renderBlocks();
+    renderCalendar();      // 追加済みの日を used 表示に
+    renderSelectedList();
+    updateChecklist();
+    showToast(`✅ ${dates.length}日分を追加しました（別の時間帯も続けて追加できます）`);
+  }
+
+  /* ブロック削除（日付が再び選択可能になる） */
+  function removeBlock(i) {
+    shiftBlocks.splice(i, 1);
+    renderBlocks();
+    renderCalendar();
+    renderSelectedList();
+    updateChecklist();
+  }
+
+  /* 追加済みブロック一覧の描画 */
+  function renderBlocks() {
+    const section = document.getElementById('blocks-section');
+    const listEl  = document.getElementById('blocks-list');
+    const badge   = document.getElementById('blocks-badge');
+    if (!listEl) return;
+
+    if (shiftBlocks.length === 0) {
+      if (section) section.style.display = 'none';
+      if (badge)   badge.textContent = '';
+      listEl.innerHTML = '';
+      return;
+    }
+    if (section) section.style.display = 'block';
+    if (badge)   badge.textContent = shiftBlocks.length + '件';
+
+    listEl.innerHTML = shiftBlocks.map((b, i) => {
+      const datesLabel = b.dates.slice().sort().map(d => {
+        const [y,m,day] = d.split('-').map(Number);
+        const dow = new Date(y, m-1, day).getDay();
+        return `${m}/${day}(${DAY_NAMES[dow]})`;
+      }).join('・');
+      const timeLabel = (b.time === 'フルタイム') ? '🕐 フルタイム' : '⏰ ' + b.time;
+      return `<div class="block-item">
+        <div class="block-item-body">
+          <div class="block-item-time">${timeLabel}</div>
+          <div class="block-item-dates">${b.dates.length}日：${datesLabel}</div>
+        </div>
+        <span class="block-item-rm" onclick="removeBlock(${i})" role="button" aria-label="削除">×</span>
+      </div>`;
+    }).join('');
+  }
+
   function updateChecklist() {
-    var name  = (document.getElementById('staff-name') || {value:''}).value.trim();
-    var times = selectedTimes.size + customTimes.length;
+    var name = (document.getElementById('staff-name') || {value:''}).value.trim();
+    var hasBlocks     = shiftBlocks.length > 0;
+    var hasCurrentSel = selectedDates.size > 0;
+    var curTime       = getCurrentBlockTime();
+
     var okName  = !!name;
-    var okDates = selectedDates.size > 0;
-    var okTimes = times > 0;
+    var okDates = hasBlocks || hasCurrentSel;
+    // 時間帯: 追加済みブロックがある or 現在選択中の日付に時間帯を選んでいる
+    var okTimes = hasBlocks || (hasCurrentSel && !!curTime);
+
+    // 現在の時間帯選択を小バッジに反映（短いステータス表示）
+    var tb = document.getElementById('time-count-badge');
+    if (tb) {
+      var tbLabel = !curTime ? '' : (curTime === 'フルタイム' ? 'フルタイム' : '時間指定');
+      tb.textContent = tbLabel;
+      tb.classList.toggle('zero',    !tbLabel);
+      tb.classList.toggle('visible', !!tbLabel);
+    }
 
     function setChk(iconId, rowId, ok) {
       var icon = document.getElementById(iconId);
@@ -5457,10 +5579,18 @@
   }
 
   /* ── Submit shift ── */
+  /* ブロック配列 → dateTimes マップ（先頭優先・日付重複なし前提） */
+  function _buildDateTimes(blocks) {
+    var dt = {};
+    blocks.forEach(function(b) {
+      b.dates.forEach(function(d) { if (!dt[d]) dt[d] = b.time; });
+    });
+    return dt;
+  }
+
   function submitShift() {
     try {
       var nameEl  = document.getElementById('staff-name');
-      var roleEl  = document.getElementById('staff-role');
       var emailEl = document.getElementById('staff-email');
       var name = nameEl ? nameEl.value.trim() : '';
       /* スタッフ側はロールを選ばない。レジストリで既に登録済みなら反映、未登録なら 'unassigned' */
@@ -5470,30 +5600,41 @@
         if (name && known[name] && known[name].role) role = known[name].role;
       } catch(e) {}
 
-      // ── バリデーション ──
+      // ── バリデーション: 名前 ──
       if (!name) {
         showFormError('⚠️ 名前を入力してください');
         if (nameEl) nameEl.focus();
         return;
       }
-      if (selectedDates.size === 0) {
+
+      // ── 提出対象ブロックを組み立て ──
+      // 追加済みブロック ＋ 未追加の選択中（あれば自動でブロック化）
+      var blocks = shiftBlocks.slice();
+      if (selectedDates.size > 0) {
+        var curTime = getCurrentBlockTime();
+        if (!curTime) {
+          showFormError('⚠️ 選択中の日付の時間帯（フルタイム か 時間指定）を選んでください');
+          return;
+        }
+        blocks.push({ dates: Array.from(selectedDates).sort(), time: curTime });
+      }
+
+      if (blocks.length === 0) {
         showFormError('⚠️ 希望日をカレンダーから選んでください');
         return;
       }
 
-      // ピッカーに値が残っていたら自動追加
-      var ctStartEl = document.getElementById('ct-start');
-      var ctEndEl   = document.getElementById('ct-end');
-      var ctStart   = ctStartEl ? ctStartEl.value : '';
-      var ctEnd     = ctEndEl   ? ctEndEl.value   : '';
-      if (ctStart || ctEnd) {
-        try { addCustomTime(); } catch(e2) {}
-      }
+      // ── dateTimes マップ ＋ 後方互換フィールドを導出 ──
+      var dateTimes = _buildDateTimes(blocks);
+      var allDates  = Object.keys(dateTimes).sort();
+      var anyFull   = blocks.some(function(b) { return b.time === 'フルタイム'; });
+      var legacyTimes = anyFull ? ['full'] : [];
+      var legacyCustom = [];
+      blocks.forEach(function(b) {
+        if (b.time !== 'フルタイム' && legacyCustom.indexOf(b.time) === -1) legacyCustom.push(b.time);
+      });
 
-      // 時間帯未選択の場合は「時間応相談」として扱う
-      var selTimes    = Array.from(selectedTimes);
-      var selCustom   = customTimes.slice();
-      var email       = emailEl ? emailEl.value.trim() : '';
+      var email = emailEl ? emailEl.value.trim() : '';
 
       // ── 保存 ──
       var subs = loadState();
@@ -5504,9 +5645,10 @@
       var entry = {
         name:        name,
         role:        role,
-        dates:       Array.from(selectedDates).sort(),
-        times:       selTimes,
-        customTimes: selCustom,
+        dates:       allDates,
+        times:       legacyTimes,
+        customTimes: legacyCustom,
+        dateTimes:   dateTimes,   // 🆕 日付ごとの時間帯（複数グループ対応）
         email:       email,
         submittedAt: new Date().toISOString()
       };
@@ -5516,23 +5658,18 @@
       // ── メールアドレスを記憶（次回の自動入力に使用） ──
       registerWorker(name, email, role);
 
-      // ── 成功 ──
+      // ── 成功・リセット ──
       showToast('✅ シフトを提出しました！');
+      shiftBlocks = [];
       selectedDates.clear();
-      selectedTimes.clear();
-      customTimes = [];
-      document.querySelectorAll('.time-chip[data-slot]').forEach(function(c) {
-        c.classList.remove('selected');
-      });
-      if (ctStartEl) ctStartEl.value = '';
-      if (ctEndEl)   ctEndEl.value   = '';
-      if (nameEl)    nameEl.value    = '';
-      if (emailEl)   emailEl.value   = '';
+      _resetCurrentTimeSelection();
+      if (nameEl)  nameEl.value  = '';
+      if (emailEl) emailEl.value = '';
       hideAutofillBadge();
-      renderCustomTimes();
+      renderBlocks();
       renderCalendar();
       renderSelectedList();
-      updateTimeCountBadge();
+      updateChecklist();
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch(err) {
@@ -5573,10 +5710,13 @@
     const itemsHtml = visibleSubs.map(s => {
       const avCls = `sub-avatar av-${s.role}`;
       const pillCls = `role-pill pill-${s.role}`;
-      const presetStr = (s.times||[]).map(t => TIME_LABELS[t]||t).join(' / ');
-      const customStr = (s.customTimes||[]).join(' / ');
-      const timesStr  = [presetStr, customStr].filter(Boolean).join(' / ') || '時間未定';
-      const datesStr  = s.dates.map(d => { const[,m,day]=d.split('-').map(Number); return `${m}/${day}`; }).join(' · ');
+      // 🆕 時間帯ごとに日付をグループ化して表示（複数グループ対応）
+      const groups = getDateTimeGroups(s);
+      const metaHtml = groups.map(g => {
+        const tLabel = (g.time === 'フルタイム') ? '🕐 フルタイム' : '⏰ ' + g.time;
+        const dLabel = g.dates.map(d => { const[,m,day]=d.split('-').map(Number); return `${m}/${day}`; }).join(' · ');
+        return `<span>${tLabel}</span><br><span>📅 ${dLabel}</span>`;
+      }).join('<br>');
       const contactBadges = s.email
         ? `<span class="sub-contact-badge">📧 メール登録済</span>` : '';
       const isMgr = (typeof _isManagerRole === 'function') && _isManagerRole(s.name);
@@ -5588,10 +5728,7 @@
             <span class="sub-name">${mgrBadge}${s.name}</span>
             <span class="${pillCls}">${ROLE_LABELS[s.role]}</span>
           </div>
-          <div class="sub-meta">
-            <span>⏰ ${timesStr}</span><br>
-            <span>📅 ${datesStr}</span>
-          </div>
+          <div class="sub-meta">${metaHtml}</div>
           ${contactBadges ? `<div class="sub-contact">${contactBadges}</div>` : ''}
         </div>
       </div>`;
@@ -5600,8 +5737,6 @@
 
     // 登録メール一覧を更新
     loadRegistrySection();
-    // アンケート結果（読み取り専用）
-    loadSurveyResults();
     renderStaffEval();
     // 売上カード更新
     initSalesCard();
@@ -5619,6 +5754,47 @@
     document.getElementById('warn-banner').classList.remove('visible');
     renderManagerView();
     showToast('🗑 リセットしました');
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     dateTimes 互換ヘルパ
+     ─ 新モデル: sub.dateTimes = { '2026-06-01':'フルタイム', '2026-06-05':'16:00〜22:00', ... }
+     ─ 旧モデル: sub.times(['full'])/sub.customTimes(['HH:MM〜HH:MM']) は全日付共通
+     ─ どちらでも動くよう、参照側はこのヘルパ経由で時間帯を取得する。
+     ════════════════════════════════════════════════════════════ */
+
+  /* 指定日の時間帯を「表示用文字列の配列」で返す（フルタイム/未定は []） */
+  function getTimeForDate(sub, date) {
+    if (sub && sub.dateTimes && sub.dateTimes[date]) {
+      var t = sub.dateTimes[date];
+      if (t === 'フルタイム' || t === 'full') return [];
+      return [t];
+    }
+    // 旧モデル: 全日付共通
+    var presets = (sub.times || []).map(function(t){ return TIME_LABELS[t] || t; })
+                                   .filter(function(t){ return t !== 'フルタイム'; });
+    var customs = (sub.customTimes || []);
+    var merged = [];
+    presets.concat(customs).forEach(function(x){ if (merged.indexOf(x) === -1) merged.push(x); });
+    return merged;
+  }
+
+  /* 提出を「時間帯ごとの日付グループ」に整理して返す（一覧表示用） */
+  function getDateTimeGroups(sub) {
+    if (sub && sub.dateTimes && Object.keys(sub.dateTimes).length) {
+      var groups = {}, order = [];
+      (sub.dates || Object.keys(sub.dateTimes)).slice().sort().forEach(function(d){
+        var t = sub.dateTimes[d] || 'フルタイム';
+        if (!groups[t]) { groups[t] = []; order.push(t); }
+        groups[t].push(d);
+      });
+      return order.map(function(t){ return { time: t, dates: groups[t] }; });
+    }
+    // 旧モデル: 全日付を1グループに
+    var presetStr = (sub.times || []).map(function(t){ return TIME_LABELS[t] || t; }).join(' / ');
+    var customStr = (sub.customTimes || []).join(' / ');
+    var timesStr  = [presetStr, customStr].filter(Boolean).join(' / ') || '時間未定';
+    return [{ time: timesStr, dates: (sub.dates || []).slice().sort() }];
   }
 
   /* ── Generate Shift ── */
@@ -5648,11 +5824,8 @@
           return;
         }
 
-        const presets = (sub.times||[])
-          .map(t => TIME_LABELS[t] || t)
-          .filter(t => t !== 'フルタイム');
-        const customs = (sub.customTimes||[]);
-        const allTimes = [...new Set([...presets, ...customs])];
+        // 🆕 その日の時間帯を取得（dateTimes 優先・旧モデルにもフォールバック）
+        const allTimes = getTimeForDate(sub, date);
 
         const displayStr = allTimes.length
           ? allTimes.map(shortTime).join(' ')
@@ -5712,7 +5885,8 @@
           e.stopPropagation();
           var name = this.getAttribute('data-staff') || '';
           var time = this.getAttribute('data-time') || '';
-          if (name && time) openEditTime(name, time, this);
+          var date = this.getAttribute('data-date') || '';
+          if (name && time) openEditTime(name, time, this, date);
         });
       });
 
@@ -6159,15 +6333,22 @@
   const PERIOD_ICONS  = { morning:'☀️', lunch:'🌤', evening:'🌙' };
   const DOW_NAMES     = ['日','月','火','水','木','金','土'];
 
-  /* スタッフの時間範囲を解析 → { start, end } */
-  function _parseStaffTime(sub) {
-    const customs = (sub.customTimes || []);
-    const presets = (sub.times || []).map(t => TIME_LABELS[t] || t).filter(t => t !== 'フルタイム');
-    const all = customs.length ? customs : presets;
-    if (!all.length) return null;
-    const m = (all[0] || '').match(/^(\d{1,2}):\d{2}〜(\d{1,2}):\d{2}/);
+  /* スタッフの時間範囲を解析 → { start, end } （date 指定時は dateTimes 優先） */
+  function _parseStaffTime(sub, date) {
+    let src = null;
+    if (date && sub.dateTimes && sub.dateTimes[date] && sub.dateTimes[date] !== 'フルタイム') {
+      src = sub.dateTimes[date];
+    }
+    if (!src) {
+      const customs = (sub.customTimes || []);
+      const presets = (sub.times || []).map(t => TIME_LABELS[t] || t).filter(t => t !== 'フルタイム');
+      const all = customs.length ? customs : presets;
+      if (!all.length) return null;
+      src = all[0];
+    }
+    const m = (src || '').match(/^(\d{1,2}):\d{2}〜(\d{1,2}):\d{2}/);
     if (!m) return null;
-    return { start: parseInt(m[1]), end: parseInt(m[2]), orig: all[0] };
+    return { start: parseInt(m[1]), end: parseInt(m[2]), orig: src };
   }
 
   /* 不足コマ + 調整可能候補者を抽出 */
@@ -6194,7 +6375,7 @@
         /* 候補①: 同日提出だが別時間帯のスタッフ → 時間延長/前倒し */
         subs.forEach(sub => {
           if (!sub.dates.includes(date)) return;
-          const t = _parseStaffTime(sub);
+          const t = _parseStaffTime(sub, date);
           if (!t) return;
           /* 既にこの時間帯で働いていればスキップ */
           if (t.start < pEnd && t.end > pStart) return;
@@ -6227,7 +6408,7 @@
         /* 候補②: 別日に提出はあるが当日休みのスタッフ → 出勤依頼 */
         subs.forEach(sub => {
           if (sub.dates.includes(date)) return; // 既に同日でカバー
-          const t = _parseStaffTime(sub);
+          const t = _parseStaffTime(sub, date);
           if (!t) return;
           /* 提出時間帯がこの時間帯をカバーしていれば候補 */
           if (t.start < pEnd && t.end > pStart) {
@@ -6537,9 +6718,24 @@
   }
 
   /* ════════ 時間編集モーダル ════════ */
+  /* dateTimes を真とし、後方互換フィールド(dates/times/customTimes)を再構築 */
+  function _resyncLegacyFromDateTimes(sub) {
+    if (!sub || !sub.dateTimes) return;
+    var dates = Object.keys(sub.dateTimes).sort();
+    sub.dates = dates;
+    var anyFull = dates.some(function(d){ return sub.dateTimes[d] === 'フルタイム'; });
+    sub.times = anyFull ? ['full'] : [];
+    var custom = [];
+    dates.forEach(function(d){
+      var t = sub.dateTimes[d];
+      if (t !== 'フルタイム' && custom.indexOf(t) === -1) custom.push(t);
+    });
+    sub.customTimes = custom;
+  }
+
   let _editTimeCtx = null;
-  function openEditTime(name, timeText, barEl) {
-    _editTimeCtx = { name, timeText, barEl };
+  function openEditTime(name, timeText, barEl, date) {
+    _editTimeCtx = { name, timeText, barEl, date: date || '' };
     document.getElementById('edit-time-staff-info').textContent = `${name} — 現在: ${timeText}`;
     /* timeText "9〜13" や "9:30〜18:00" をパース */
     const m = /(\d{1,2})(?::(\d{2}))?\s*[〜\-~]\s*(\d{1,2})(?::(\d{2}))?/.exec(timeText);
@@ -6563,13 +6759,23 @@
     const subs = loadState();
     const idx = subs.findIndex(s => s.name === _editTimeCtx.name);
     if (idx >= 0) {
-      subs[idx].customTimes = subs[idx].customTimes || [];
-      const oldTime = _editTimeCtx.timeText.replace(/[〜~]/, '-').replace(/\s/g,'');
-      const newTime = start + '-' + end;
-      subs[idx].customTimes = subs[idx].customTimes.filter(t => t.replace(/\s/g,'') !== oldTime);
-      subs[idx].customTimes.push(newTime);
-      saveState(subs);
-      _appendAuditLog('time_edit', { staff: _editTimeCtx.name, before: oldTime, after: newTime });
+      // 🆕 新モデル(dateTimes)かつ対象日が分かる → その日だけ更新
+      if (_editTimeCtx.date && subs[idx].dateTimes && subs[idx].dateTimes[_editTimeCtx.date] != null) {
+        const newTime = start + '〜' + end;
+        subs[idx].dateTimes[_editTimeCtx.date] = newTime;
+        _resyncLegacyFromDateTimes(subs[idx]);
+        saveState(subs);
+        _appendAuditLog('time_edit', { staff: _editTimeCtx.name, date: _editTimeCtx.date, after: newTime });
+      } else {
+        // 旧モデル: 全日付共通の customTimes を置換
+        subs[idx].customTimes = subs[idx].customTimes || [];
+        const oldTime = _editTimeCtx.timeText.replace(/[〜~]/, '-').replace(/\s/g,'');
+        const legacyNew = start + '-' + end;
+        subs[idx].customTimes = subs[idx].customTimes.filter(t => t.replace(/\s/g,'') !== oldTime);
+        subs[idx].customTimes.push(legacyNew);
+        saveState(subs);
+        _appendAuditLog('time_edit', { staff: _editTimeCtx.name, before: oldTime, after: legacyNew });
+      }
       showToast('✅ シフト時間を更新しました');
       closeEditTime();
       if (typeof generateShift === 'function') setTimeout(generateShift, 200);
@@ -6597,8 +6803,14 @@
     const subs = loadState();
     const idx = subs.findIndex(s => s.name === name);
     if (idx >= 0) {
-      const oldTime = time.replace(/[〜~]/, '-').replace(/\s/g,'');
-      subs[idx].customTimes = (subs[idx].customTimes || []).filter(t => t.replace(/\s/g,'') !== oldTime);
+      // 🆕 新モデル: その日だけ削除（dates からも外れる）
+      if (_editTimeCtx && _editTimeCtx.date && subs[idx].dateTimes && subs[idx].dateTimes[_editTimeCtx.date] != null) {
+        delete subs[idx].dateTimes[_editTimeCtx.date];
+        _resyncLegacyFromDateTimes(subs[idx]);
+      } else {
+        const oldTime = time.replace(/[〜~]/, '-').replace(/\s/g,'');
+        subs[idx].customTimes = (subs[idx].customTimes || []).filter(t => t.replace(/\s/g,'') !== oldTime);
+      }
       saveState(subs);
     }
     closeEditTime();
@@ -6705,8 +6917,14 @@
     const subs = loadState();
     const idx = subs.findIndex(s => s.name === _editTimeCtx.name);
     if (idx >= 0) {
-      const oldTime = _editTimeCtx.timeText.replace(/[〜~]/, '-').replace(/\s/g,'');
-      subs[idx].customTimes = (subs[idx].customTimes || []).filter(t => t.replace(/\s/g,'') !== oldTime);
+      // 🆕 新モデル: その日だけ削除
+      if (_editTimeCtx.date && subs[idx].dateTimes && subs[idx].dateTimes[_editTimeCtx.date] != null) {
+        delete subs[idx].dateTimes[_editTimeCtx.date];
+        _resyncLegacyFromDateTimes(subs[idx]);
+      } else {
+        const oldTime = _editTimeCtx.timeText.replace(/[〜~]/, '-').replace(/\s/g,'');
+        subs[idx].customTimes = (subs[idx].customTimes || []).filter(t => t.replace(/\s/g,'') !== oldTime);
+      }
       saveState(subs);
       showToast('🗑 シフトを削除しました');
       closeEditTime();
@@ -7018,17 +7236,24 @@
         const my = subs.find(s => s.name === name);
         if (my) {
           /* 提出データから今月のシフト時間を計算 */
-          const customTimes = my.customTimes || [];
+          const _hoursOf = (t) => {
+            const m = /(\d{1,2}):?(\d{0,2})\s*[~\-〜]\s*(\d{1,2}):?(\d{0,2})/.exec(t);
+            if (!m) return 0;
+            const s = +m[1] * 60 + (+m[2] || 0);
+            let e = +m[3] * 60 + (+m[4] || 0);
+            if (e <= s) e += 24 * 60;
+            return e - s;
+          };
           let est = 0;
-          customTimes.forEach(t => {
-            const m = /(\d{1,2}):?(\d{0,2})\s*[~-〜]\s*(\d{1,2}):?(\d{0,2})/.exec(t);
-            if (m) {
-              const s = +m[1] * 60 + (+m[2] || 0);
-              let e = +m[3] * 60 + (+m[4] || 0);
-              if (e <= s) e += 24 * 60;
-              est += (e - s);
-            }
-          });
+          if (my.dateTimes && Object.keys(my.dateTimes).length) {
+            /* 🆕 新モデル: 日付ごとに合算（フルタイムは8h想定） */
+            Object.keys(my.dateTimes).forEach(d => {
+              const tv = my.dateTimes[d];
+              est += (tv === 'フルタイム') ? 8 * 60 : _hoursOf(tv);
+            });
+          } else {
+            (my.customTimes || []).forEach(t => { est += _hoursOf(t); });
+          }
           _ppRenderPayrollNumbers(name, wage, est, 0, my.dates ? my.dates.length : 0);
         } else {
           _ppRenderPayrollNumbers(name, wage, 0, 0, 0);
@@ -7582,6 +7807,49 @@ ${slotLines}
     setTimeout(() => el.classList.remove('show'), 2600);
   }
 
+  /* ──────────────────────────────────────────
+     店長の1日振り返り（1タップ）
+     mood-feedback.html の confirmTap() と同じ
+     localStorage 'rakuraku_mood' 配列に追記する
+  ────────────────────────────────────────── */
+  function mgrMood(btn, value) {
+    try {
+      var arr = JSON.parse(localStorage.getItem('rakuraku_mood') || '[]');
+      if (!Array.isArray(arr)) arr = [];
+      arr.push({ ts: Date.now(), value: Number(value), flagged: [] });
+      localStorage.setItem('rakuraku_mood', JSON.stringify(arr));
+    } catch (e) {}
+    var card = document.getElementById('mgr-mood-card');
+    function resetBtns() {
+      if (!card) return;
+      card.querySelectorAll('button[data-mood]').forEach(function (b) {
+        b.style.borderColor = '#FED7AA';
+        b.style.background = '#fff';
+        b.style.transform = '';
+      });
+    }
+    resetBtns();
+    if (btn) {
+      btn.style.borderColor = '#EA580C';
+      btn.style.background = '#FFEDD5';
+      btn.style.transform = 'scale(1.06)';
+    }
+    var c = document.getElementById('mgr-mood-confirm');
+    if (c) {
+      c.style.display = 'block';
+      clearTimeout(window._mgrMoodTimer);
+      window._mgrMoodTimer = setTimeout(function () {
+        c.style.display = 'none';
+        resetBtns();
+      }, 3000);
+    }
+    if (typeof showToast === 'function') {
+      var rec = (window.RakuI18n && typeof window.RakuI18n.t === 'function')
+        ? window.RakuI18n.t('mgr.mood_recorded') : '✅ 記録しました';
+      showToast(rec);
+    }
+  }
+
   /* ══════════════════════════════════════════
      締切・リマインド機能
   ══════════════════════════════════════════ */
@@ -8113,16 +8381,10 @@ RAKURAKUのシフト担当です。
     var known = loadKnownWorkers();
     /* スタッフごとに集約 */
     var bag = {};
-    subs.forEach(function(sub) {
-      var w = known[sub.name];
-      if (!w) return;
-      var times = (sub.customTimes || []);
-      if (!times.length) return;
-      var t = _parseShiftHours(times[0]);
-      if (!t) return;
-      if (!bag[sub.name]) {
-        bag[sub.name] = {
-          name: sub.name,
+    function _ensureBag(name, w) {
+      if (!bag[name]) {
+        bag[name] = {
+          name: name,
           hourlyWage: w.hourlyWage || 0,
           commute:    w.commute    || 0,
           allowance:  w.allowance  || 0,
@@ -8130,7 +8392,33 @@ RAKURAKUのシフト担当です。
           days: 0, normalHours: 0, nightHours: 0
         };
       }
-      var ent = bag[sub.name];
+      return bag[name];
+    }
+    subs.forEach(function(sub) {
+      var w = known[sub.name];
+      if (!w) return;
+
+      // 🆕 新モデル: 日付ごとの時間で集計（フルタイムは時給対象外＝従来通り custom のみ）
+      if (sub.dateTimes && Object.keys(sub.dateTimes).length) {
+        Object.keys(sub.dateTimes).forEach(function(_date) {
+          var tv = sub.dateTimes[_date];
+          if (tv === 'フルタイム') return;
+          var th = _parseShiftHours(tv);
+          if (!th) return;
+          var e2 = _ensureBag(sub.name, w);
+          e2.days += 1;
+          e2.normalHours += th.normal;
+          e2.nightHours  += th.night;
+        });
+        return;
+      }
+
+      // 旧モデル: 先頭 customTime を全日付へ適用
+      var times = (sub.customTimes || []);
+      if (!times.length) return;
+      var t = _parseShiftHours(times[0]);
+      if (!t) return;
+      var ent = _ensureBag(sub.name, w);
       sub.dates.forEach(function(_date) {
         ent.days += 1;
         ent.normalHours += t.normal;
@@ -8424,6 +8712,8 @@ RAKURAKUのシフト担当です。
       var subs = JSON.parse(storageGet(_sk('shift_submissions')) || '[]');
       var changed = false;
       subs = subs.map(function(s) {
+        // 🆕 新モデル(dateTimes)は複数時間帯が正規なので対象外
+        if (s.dateTimes && Object.keys(s.dateTimes).length) return s;
         if (s.customTimes && s.customTimes.length > 1) {
           s.customTimes = [s.customTimes[0]];
           changed = true;

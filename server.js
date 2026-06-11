@@ -433,8 +433,8 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
 
         <hr style="border:none;border-top:1px solid #E2E8F0;margin:24px 0;" />
         <p style="font-size:12px;color:#94A3B8;line-height:1.7;">
-          ※ 14日後に月額¥4,990（税込）の自動課金が開始されます。<br>
-          ※ 解約はいつでも可能、翌月以降のご請求は発生しません。<br>
+          ※ 最初の30日間は無料（¥0）。その後6ヶ月間は月額¥500、7ヶ月目以降は通常価格 月額¥4,990（税込）の自動課金となります。<br>
+          ※ 解約はいつでも可能。解約後は翌月以降のご請求は発生しません。<br>
           ※ ご不明な点はこのメールに返信、または 📞 080-5168-3303 までお問い合わせください。<br>
           ※ 運営: RAKURAKU（代表 小泉 咲太）
         </p>
@@ -644,11 +644,11 @@ const ONBOARDING_EMAILS = [
   },
   {
     day: 14,
-    subject: '[RAKURAKU] トライアル終了が近づいています — 今後について',
+    subject: '[RAKURAKU] トライアル折り返し — 効果は出ていますか?',
     html: ({ shopName, ownerName }) => `
       <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
-        <h2 style="color:#4F46E5;">${ownerName || '店長'}様、14日間ありがとうございました</h2>
-        <p>無料トライアル期間が間もなく終了します。${shopName || 'お店'} で RAKURAKU を使ってみて、いかがでしたでしょうか?</p>
+        <h2 style="color:#4F46E5;">${ownerName || '店長'}様、30日トライアルの折り返しです</h2>
+        <p>${shopName || 'お店'} で RAKURAKU を使い始めて2週間。効果は出ていますでしょうか?</p>
 
         <h3>💡 トライアル中の効果を振り返り</h3>
         <p>下記URLから、これまでの利用状況をご確認いただけます:</p>
@@ -657,11 +657,8 @@ const ONBOARDING_EMAILS = [
           <li>📑 <a href="https://rakuraku-shift-production.up.railway.app/monthly-report.html" style="color:#4F46E5;">月次レポート</a> — 売上・人件費率</li>
         </ul>
 
-        <h3>📌 継続いただける場合</h3>
-        <p>特に何もしていただく必要はありません。<br>15日目から <strong>月額 ¥4,990 (税込)</strong> の課金が開始します。</p>
-
-        <h3>解約をご希望の場合</h3>
-        <p>このメールに <strong>「解約希望」</strong> と返信していただくか、<a href="https://rakuraku-shift-production.up.railway.app/help.html" style="color:#4F46E5;">ヘルプ</a> から解約手続きをお願いします。<br>解約理由をお聞かせいただければ、改善の参考にさせていただきます。</p>
+        <h3>📌 トライアル後も、最初の半年は月¥500</h3>
+        <p>31日目以降も自動で続きますが、<strong>最初の6ヶ月は特別価格 月額¥500</strong>。7ヶ月目から通常 月額¥4,990（税込）です。<br>もちろん <strong>解約はいつでも可能</strong> で、解約後の請求は発生しません。</p>
 
         <p style="background:#DCFCE7;padding:14px;border-radius:8px;margin-top:18px;">
           💴 <strong>年払いプラン (¥49,900・2ヶ月分お得)</strong> もご用意しています。<br>
@@ -672,12 +669,30 @@ const ONBOARDING_EMAILS = [
     `,
   },
   {
+    day: 28,
+    subject: '[RAKURAKU] あと2日でトライアル終了 — 月¥500スタートのお知らせ',
+    html: ({ shopName, ownerName }) => `
+      <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
+        <h2 style="color:#4F46E5;">${ownerName || '店長'}様、30日間ありがとうございました</h2>
+        <p>無料トライアル期間が間もなく終了します（あと2日）。${shopName || 'お店'} での RAKURAKU、いかがでしたか?</p>
+
+        <h3>📌 継続いただける場合（おすすめ）</h3>
+        <p>特に何もしていただく必要はありません。<br>31日目から <strong>最初の6ヶ月は月額¥500</strong>、7ヶ月目以降は通常 <strong>月額¥4,990（税込）</strong> の課金となります。</p>
+
+        <h3>解約をご希望の場合</h3>
+        <p>このメールに <strong>「解約希望」</strong> と返信していただくか、<a href="https://rakuraku-shift-production.up.railway.app/help.html" style="color:#4F46E5;">ヘルプ</a> から解約手続きをお願いします。トライアル中の解約は一切費用がかかりません。</p>
+
+        <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 咲太 / koizumishota0323@gmail.com</p>
+      </div>
+    `,
+  },
+  {
     day: 30,
     subject: '[RAKURAKU] 1ヶ月経過! 次のステップ + 紹介プログラム',
     html: ({ shopName, ownerName }) => `
       <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
         <h2 style="color:#4F46E5;">${ownerName || '店長'}様、ご利用1ヶ月おめでとうございます 🎉</h2>
-        <p>${shopName || 'お店'} で RAKURAKU をご利用いただき、1ヶ月が経ちました。継続いただき本当にありがとうございます。</p>
+        <p>${shopName || 'お店'} で RAKURAKU をご利用いただき、1ヶ月が経ちました。本日から <strong>特別価格 月額¥500（最初の6ヶ月）</strong> での継続がスタートしました。引き続きよろしくお願いいたします。</p>
 
         <h3>🚀 次のステップ: まだ使っていない機能を試してみませんか?</h3>
         <ol>
@@ -695,7 +710,7 @@ const ONBOARDING_EMAILS = [
         紹介コード発行は1分で完了。<a href="https://rakuraku-shift-production.up.railway.app/referral.html" style="color:#4F46E5;">紹介プログラムページ</a> へ。</p>
 
         <h3>📞 困った時はいつでも</h3>
-        <p>このメールにそのまま返信、または <a href="tel:08051683303" style="color:#4F46E5;">📞 080-5168-3303</a> へお電話ください。<br>代表が直接対応します。</p>
+        <p>このメールにそのまま返信、または <a href="tel:08051683303" style="color:#4F46E5;">📞 080-5168-3303</a> へお電話ください。<br>担当者が迅速に対応します。</p>
 
         <p style="color:#64748B;font-size:12px;margin-top:24px;">— 代表 小泉 咲太</p>
       </div>
@@ -1680,7 +1695,12 @@ app.post('/api/signup', async (req, res) => {
         // Stripe 未設定 → bank-transfer.html へ誘導
         return res.json({ next: '/bank-transfer.html?email=' + encodeURIComponent(email) + '&shopname=' + encodeURIComponent(shopname) });
       }
-      const session = await stripe.checkout.sessions.create({
+      /* 🎁 イントロ・ファネル: 30日¥0 → 6ヶ月¥500 → 通常¥4,990/月
+         - trial_period_days:30 で最初の30日は無料
+         - STRIPE_COUPON_INTRO (¥4,490 OFF / repeating 6ヶ月) で その後6ヶ月は月¥500
+         - 7ヶ月目から通常 ¥4,990/月。クーポン未設定なら通常トライアルのみ */
+      const introCoupon = process.env.STRIPE_COUPON_INTRO || '';
+      const sessionParams = {
         mode: 'subscription',
         payment_method_types: ['card'],
         customer_email: email,
@@ -1688,16 +1708,27 @@ app.post('/api/signup', async (req, res) => {
           price_data: {
             currency: 'jpy',
             recurring: { interval: 'month' },
-            product_data: { name: 'RAKURAKU Pro プラン (¥4,990/月)' },
+            product_data: { name: 'RAKURAKU Pro プラン (30日¥0 → 6ヶ月¥500 → ¥4,990/月)' },
             unit_amount: 4990,
           },
           quantity: 1,
         }],
+        subscription_data: {
+          trial_period_days: 30,
+          metadata: { shopname, shopName: shopname, plan: 'pro' },
+        },
+        locale: 'ja',
         success_url: (process.env.BASE_URL || '') + '/onboarding.html?plan=pro&email=' + encodeURIComponent(email),
         cancel_url: (process.env.BASE_URL || '') + '/signup.html?plan=pro',
         /* 🐛 修正: shopName (camelCase) と shopname 両方入れる → webhook 側のキー不一致を吸収 */
         metadata: { shopname, shopName: shopname, plan: 'pro' },
-      });
+      };
+      if (introCoupon) {
+        sessionParams.discounts = [{ coupon: introCoupon }];
+      } else {
+        sessionParams.allow_promotion_codes = true;
+      }
+      const session = await stripe.checkout.sessions.create(sessionParams);
       return res.json({ checkoutUrl: session.url });
     }
 
@@ -2478,22 +2509,31 @@ app.post('/api/subscribe/create', async (req, res) => {
   const metadata = { shopName, ownerName: ownerName || '', phone: phone || '', plan };
 
   try {
-    const session = await stripe.checkout.sessions.create({
+    /* 🎁 イントロ・ファネル: 30日¥0 → 6ヶ月¥500 → 通常¥4,990/月 (月額プランのみ)
+       年額プランは割引対象外 (一括請求のため) */
+    const introCoupon = process.env.STRIPE_COUPON_INTRO || '';
+    const applyIntro = introCoupon && plan !== 'annual';
+    const sessionParams = {
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
       customer_email: email,
       subscription_data: {
-        trial_period_days: 14,
+        trial_period_days: 30,
         metadata,
       },
       metadata,
       success_url: `${baseUrl}/subscribe-success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url:  `${baseUrl}/?subscribe_cancelled=1`,
       locale: 'ja',
-      allow_promotion_codes: true,
       billing_address_collection: 'auto',
-    });
+    };
+    if (applyIntro) {
+      sessionParams.discounts = [{ coupon: introCoupon }];
+    } else {
+      sessionParams.allow_promotion_codes = true;
+    }
+    const session = await stripe.checkout.sessions.create(sessionParams);
 
     res.json({ url: session.url, sessionId: session.id });
   } catch (e) {

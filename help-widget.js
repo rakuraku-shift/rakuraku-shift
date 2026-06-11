@@ -129,7 +129,7 @@
         </div>
         <div class="rhw-section">
           <div class="rhw-section-t">📞 直接お問い合わせ</div>
-          <a href="mailto:koizumishota0323@gmail.com" class="rhw-link"><span class="ic">📧</span><div><div>メールで質問</div><div class="desc">代表が24h以内に返信</div></div></a>
+          <a href="mailto:koizumishota0323@gmail.com" class="rhw-link"><span class="ic">📧</span><div><div>メールで質問</div><div class="desc">担当者が24時間以内に返信</div></div></a>
           <a href="tel:08051683303" class="rhw-link"><span class="ic">📞</span><div><div>080-5168-3303</div><div class="desc">平日 10-19時</div></div></a>
           <a href="/demo-reservation.html" class="rhw-cta">🎁 無料デモを予約</a>
         </div>
