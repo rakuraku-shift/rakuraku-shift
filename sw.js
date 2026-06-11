@@ -38,7 +38,6 @@ var ASSETS = [
   '/search.html',
   '/community.html',
   '/onboarding.html',
-  '/enterprise.html',
   '/partner-program.html',
   '/tutorials.html',
   '/mobile-app.html',

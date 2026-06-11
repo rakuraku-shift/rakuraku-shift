@@ -332,14 +332,20 @@ const I18N = {
 let currentLang = 'ja';
 
 function detectLang(){
-  /* 1. localStorage 優先 */
+  /* 1. localStorage 優先 (ユーザーが明示的に選んだ言語) */
   try {
     const saved = localStorage.getItem(LANG_KEY);
     if (saved && I18N[saved]) return saved;
   } catch(e){}
-  /* 2. ブラウザ言語 */
+  /* 2. ブラウザ言語。日本国内向けプロダクトのため、英語など以外のロケールは
+        日本語を既定にする (i18n.js の detectLang と挙動を統一)。
+        外国人スタッフは画面上部の言語ボタンでワンタップ切替でき、
+        選んだ言語は localStorage に保存されて次回以降は最優先される。
+        ※以前は I18N[browser] が存在すれば返していたため、英語端末の
+          日本人スタッフが英語のログイン画面になる不具合があった。 */
   const browser = (navigator.language || 'ja').slice(0, 2).toLowerCase();
-  if (I18N[browser]) return browser;
+  if (browser === 'zh') return 'zh';
+  if (browser === 'ko') return 'ko';
   return 'ja';
 }
 

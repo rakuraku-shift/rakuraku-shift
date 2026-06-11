@@ -48,7 +48,7 @@ h1{font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1.25;margin-
 @media(max-width:640px){h1{font-size:22px}}
 
 /* プランタブ */
-.plan-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px;background:#fff;padding:6px;border-radius:14px;border:1.5px solid var(--slate-100);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.plan-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px;background:#fff;padding:6px;border-radius:14px;border:1.5px solid var(--slate-100);box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .plan-tab{display:block;text-align:center;padding:12px 6px;border-radius:10px;cursor:pointer;background:transparent;border:none;font-family:inherit;font-weight:800;font-size:13px;color:var(--slate-700);transition:all .15s;text-decoration:none}
 .plan-tab:hover{background:var(--slate-50)}
 .plan-tab.active.free{background:var(--green-l);color:var(--green-d)}
@@ -152,10 +152,6 @@ footer a{color:#FCA5A5;margin:0 8px;text-decoration:none}
     <span data-i18n="sg.tab_pro">💼 Pro</span>
     <span class="price" data-i18n="sg.tab_pro_price">¥4,990/月</span>
   </a>
-  <a href="?plan=enterprise" class="plan-tab enterprise" data-plan="enterprise" role="tab">
-    <span data-i18n="sg.tab_ent">🏢 Enterprise</span>
-    <span class="price" data-i18n="sg.tab_ent_price">個別見積</span>
-  </a>
 </div>
 
 <!-- ───── Free プラン ───── -->
@@ -206,21 +202,6 @@ footer a{color:#FCA5A5;margin:0 8px;text-decoration:none}
   </div>
 </section>
 
-<!-- ───── Enterprise プラン ───── -->
-<section class="plan-card enterprise" id="card-enterprise" style="display:none">
-  <h2 data-i18n="sg.ent_h2">🏢 Enterprise</h2>
-  <div class="plan-sub" data-i18n="sg.ent_sub">10 店舗以上の大規模チェーン向け。SLA 99.99% / SSO / 専任 CS</div>
-  <div class="plan-price" data-i18n="sg.ent_price">個別見積</div>
-
-  <div class="enterprise-detail" data-i18n-html="sg.ent_detail">
-    Enterprise プランはオンラインフォームではなく、まずは個別のヒアリング (約 30 分) からスタートします。<br>
-    料金は店舗数・スタッフ数・必要な機能 (SSO・専用サーバー・カスタム API) によって個別見積です。請求書払い・銀行振込にも対応します。
-  </div>
-
-  <a href="mailto:koizumishota0323@gmail.com?subject=【RAKURAKU Enterprise】お問い合わせ" class="enterprise-cta" data-i18n="sg.ent_btn">📧 Enterprise 営業に問い合わせる</a>
-  <p class="alt" data-i18n-html="sg.ent_alt">または <a href="/demo-reservation.html">15 分のオンラインデモ</a> を予約</p>
-</section>
-
 <!-- ───── 登録フォーム (Free / Trial / Pro 共通) ───── -->
 <form class="form" id="signup-form" onsubmit="return submitSignup(event)" style="display:none" novalidate>
   <input type="hidden" id="plan-input" name="plan" value="trial">
@@ -260,7 +241,7 @@ footer a{color:#FCA5A5;margin:0 8px;text-decoration:none}
 
 <script>
 /* ───── プラン切替ロジック ───── */
-const VALID_PLANS = ['free', 'trial', 'pro', 'enterprise'];
+const VALID_PLANS = ['free', 'trial', 'pro'];
 function getPlan(){
   const params = new URLSearchParams(location.search);
   const p = (params.get('plan') || '').toLowerCase();
@@ -275,7 +256,7 @@ function applyPlan(plan){
   });
 
   /* プランカードの表示切替 */
-  ['free','trial','pro','enterprise'].forEach(p => {
+  ['free','trial','pro'].forEach(p => {
     const el = document.getElementById('card-' + p);
     if (el) el.style.display = (p === plan) ? 'block' : 'none';
   });
@@ -284,22 +265,18 @@ function applyPlan(plan){
   const ph = document.getElementById('plan-input');
   if (ph) ph.value = plan;
 
-  /* ボタン色・テキスト切替 + Enterprise はフォーム非表示 */
+  /* ボタン色・テキスト切替 */
   const form = document.getElementById('signup-form');
   const btn = document.getElementById('submit-btn');
-  if (plan === 'enterprise') {
-    form.style.display = 'none';
-  } else {
-    form.style.display = 'block';
-    btn.classList.remove('free','trial','pro');
-    btn.classList.add(plan);
-    const txt = {
-      free:   (window.RakuI18n ? RakuI18n.t('sg.btn_free')  : '✅ 無料アカウントを作成する →'),
-      trial:  (window.RakuI18n ? RakuI18n.t('sg.btn_trial') : '🎁 30 日 Pro 体験を開始する →'),
-      pro:    (window.RakuI18n ? RakuI18n.t('sg.btn_pro')   : '💳 クレカ登録に進む (¥4,990/月) →'),
-    };
-    btn.textContent = txt[plan] || txt.trial;
-  }
+  form.style.display = 'block';
+  btn.classList.remove('free','trial','pro');
+  btn.classList.add(plan);
+  const txt = {
+    free:   (window.RakuI18n ? RakuI18n.t('sg.btn_free')  : '✅ 無料アカウントを作成する →'),
+    trial:  (window.RakuI18n ? RakuI18n.t('sg.btn_trial') : '🎁 30 日 Pro 体験を開始する →'),
+    pro:    (window.RakuI18n ? RakuI18n.t('sg.btn_pro')   : '💳 クレカ登録に進む (¥4,990/月) →'),
+  };
+  btn.textContent = txt[plan] || txt.trial;
 
   /* URL hash 更新 */
   if (history.replaceState) {
@@ -309,7 +286,6 @@ function applyPlan(plan){
     free:   'Free アカウント新規登録',
     trial:  '30日 Pro 体験 新規登録',
     pro:    'Pro プラン新規登録 (¥4,990/月)',
-    enterprise: 'Enterprise お問い合わせ',
   }[plan] || '新規登録') + ' | RAKURAKU';
 }
 
@@ -323,8 +299,7 @@ document.querySelectorAll('.plan-tab').forEach(tab => {
 
 /* 言語変更時にボタンテキストを更新 */
 window.addEventListener('rakuraku-lang-changed', function(){
-  const plan = getPlan();
-  applyPlan(plan === 'enterprise' ? 'enterprise' : (document.getElementById('plan-input').value || 'trial'));
+  applyPlan(document.getElementById('plan-input').value || 'trial');
 });
 
 /* 初期表示 */
