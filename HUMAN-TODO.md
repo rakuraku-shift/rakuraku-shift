@@ -222,10 +222,8 @@ BASE_URL=https://rakuraku-shift-production.up.railway.app
 - 30店舗を超えたら Railway PostgreSQL Add-on で移行
 - データ移行スクリプトは要新規作成
 
-### 15. LINE 公式アカウント取得
-- https://www.linebiz.com/jp/entry/
-- Messaging API 有効化 → Token を /notification-settings.html に入力
-- これで店舗ごとに LINE 通知が動く
+### 15. ~~LINE 公式アカウント取得~~ (不要・2026-06-11 廃止)
+- 通知はメール (Resend/SMTP) に一本化したため LINE 公式アカウント取得は不要
 
 ---
 

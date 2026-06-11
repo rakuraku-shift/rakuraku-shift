@@ -189,6 +189,20 @@
 
 </div>
 
+<!-- 退勤後の「今日の振り返り」（1タップ・任意） -->
+<div id="att-review-overlay" role="dialog" aria-modal="true" aria-labelledby="att-review-title"
+     style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(15,23,42,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:20px;max-width:360px;width:100%;padding:24px 20px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center;">
+    <div style="font-size:30px;line-height:1;margin-bottom:8px;" aria-hidden="true">🌙</div>
+    <div id="att-review-title" style="font-size:16px;font-weight:900;color:#0F172A;margin-bottom:4px;" data-i18n="att.review_title">お疲れさまでした! 今日はどうでしたか?</div>
+    <div style="font-size:11px;font-weight:600;color:#64748B;margin-bottom:18px;" data-i18n="att.review_sub">1 タップで完了 · あなたの声が店長に届きます</div>
+    <div role="group" aria-label="今日の振り返り" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+      <button type="button" onclick="submitClockOutReview(5)" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 2px;border:1.5px solid #E2E8F0;border-radius:14px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:26px;line-height:1;" aria-hidden="true">😄</span><span style="font-size:10px;font-weight:800;color:#475569;" data-i18n="mf.m5_staff">楽しかった</span></button>      <button type="button" onclick="submitClockOutReview(3)" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 2px;border:1.5px solid #E2E8F0;border-radius:14px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:26px;line-height:1;" aria-hidden="true">😐</span><span style="font-size:10px;font-weight:800;color:#475569;" data-i18n="mf.m3_normal">普通</span></button>      <button type="button" onclick="submitClockOutReview(1)" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 2px;border:1.5px solid #E2E8F0;border-radius:14px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:26px;line-height:1;" aria-hidden="true">😩</span><span style="font-size:10px;font-weight:800;color:#475569;" data-i18n="mf.m1_staff">きつかった</span></button>
+    </div>
+    <button type="button" onclick="closeClockOutReview()" style="margin-top:16px;background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;" data-i18n="att.review_skip">スキップ</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="/i18n.js"></script>
@@ -415,6 +429,8 @@
       const labels = { in: _t('att.btn_in'), out: _t('att.btn_out'), break_start: _t('att.btn_break_start'), break_end: _t('att.btn_break_end') };
       showToast('✅ ' + labels[type] + ' — ' + _t('att.recorded'), 'success');
       await loadHistory();
+      /* 退勤打刻のあとは「今日の振り返り」を表示（任意・1タップ） */
+      if (type === 'out') { try { showClockOutReview(); } catch (e) {} }
     } catch(e) {
       showToast('⚠ ' + e.message, 'error');
     }
@@ -554,6 +570,37 @@
     el.textContent = msg;
     el.classList.add('show');
     setTimeout(() => el.classList.remove('show'), 2600);
+  }
+
+  /* ── 退勤後の「今日の振り返り」（1タップ・任意）── */
+  function showClockOutReview() {
+    var ov = document.getElementById('att-review-overlay');
+    if (ov) ov.style.display = 'flex';
+  }
+  function closeClockOutReview() {
+    var ov = document.getElementById('att-review-overlay');
+    if (ov) ov.style.display = 'none';
+  }
+  function submitClockOutReview(value) {
+    var nameEl = document.getElementById('staff-name');
+    var nm = nameEl ? nameEl.value.trim() : '';
+    try {
+      var key = 'rakuraku_attendance_mood_' + SHOP_ID;
+      var arr = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!Array.isArray(arr)) arr = [];
+      arr.push({ ts: Date.now(), value: Number(value), name: nm, type: 'clock_out' });
+      localStorage.setItem(key, JSON.stringify(arr));
+    } catch (e) {}
+    /* バックエンド集計用（未実装でも体験を止めない：失敗は無視） */
+    try {
+      fetch('/api/attendance/mood', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shopId: SHOP_ID, name: nm, value: Number(value), ts: Date.now() })
+      }).catch(function () {});
+    } catch (e) {}
+    showToast(_t('att.review_thanks'), 'success');
+    closeClockOutReview();
   }
 
   /* ── 初期化 ── */

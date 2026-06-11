@@ -4,22 +4,22 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <title>スタッフ招待 (店長専用) — RAKURAKU</title>
-<meta name="description" content="スタッフを招待する QR コード・URL を生成。LINE で送って 1 タップで参加できる。" />
+<meta name="description" content="スタッフを招待する QR コード・URL を生成。リンクを送って 1 タップで参加できる。" />
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#DC2626">
 
-<!-- Open Graph (店長が QR/URL を LINE で送った時の表示) -->
+<!-- Open Graph (店長が QR/URL を送った時の表示) -->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="RAKURAKU" />
 <meta property="og:title" content="スタッフ招待 — RAKURAKU" />
-<meta property="og:description" content="店長専用。QR コード/URL を生成して LINE で送るだけ。1 タップでスタッフ参加。" />
+<meta property="og:description" content="店長専用。QR コード/URL を生成して送るだけ。1 タップでスタッフ参加。" />
 <meta property="og:image" content="https://rakuraku-shift-production.up.railway.app/icon-512.png" />
 <meta property="og:locale" content="ja_JP" />
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="スタッフ招待 — RAKURAKU" />
-<meta name="twitter:description" content="QR/URL を LINE で送るだけ。スタッフが 1 タップで参加。" />
+<meta name="twitter:description" content="QR/URL を送るだけ。スタッフが 1 タップで参加。" />
 <meta name="twitter:image" content="https://rakuraku-shift-production.up.railway.app/icon-512.png" />
 
 <link rel="apple-touch-icon" href="/icon-192.png">
@@ -104,7 +104,7 @@
 <main class="container">
   <div class="hero">
     <h1 data-i18n="invite.title">📨 スタッフを招待</h1>
-    <p data-i18n="invite.sub">QR コード or リンクで簡単招待。LINE で送って 1 タップで参加できます</p>
+    <p data-i18n="invite.sub">QR コード or リンクで簡単招待。リンクを送って 1 タップで参加できます</p>
   </div>
 
   <div class="form-card">
@@ -131,16 +131,14 @@
       <div class="lbl">📨 招待 URL</div>
       <div class="url" id="urlText">—</div>
       <div class="actions">
-        <button class="act" onclick="copyURL()">📋 URL コピー</button>
-        <a class="act line" id="lineLink" target="_blank" rel="noopener">🟢 LINE で送る</a>
-        <button class="act" onclick="shareURL()" id="shareBtn" style="display:none;">📲 シェア</button>
+        <button class="act" onclick="copyURL()">📋 URL コピー</button>        <button class="act" onclick="shareURL()" id="shareBtn" style="display:none;">📲 シェア</button>
         <button class="act" onclick="printQR()">🖨 印刷</button>
       </div>
     </div>
 
     <div class="info">
       💡 <strong>使い方</strong><br>
-      ① 上記の URL を LINE / メールで送る<br>
+      ① 上記の URL をメール等で送る<br>
       ② スタッフがタップ → スタッフログイン画面が開く<br>
       ③ 名前 + 4 桁 PIN を入力 → 完了<br>
       ④ 次回からは PIN だけで自動ログイン<br><br>
@@ -216,7 +214,6 @@ function generate(){
     }
   };
   document.getElementById('urlText').textContent = url;
-  document.getElementById('lineLink').href = `https://line.me/R/msg/text/?${encodeURIComponent('【シフト管理 RAKURAKU】参加リンク\n' + name + '\n\n' + url)}`;
 
   /* Web Share API が使えれば「シェア」ボタンを表示 (iOS Safari / Android Chrome) */
   if (navigator.share){

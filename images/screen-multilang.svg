@@ -109,7 +109,7 @@
     </g>
     <g transform="translate(0, 90)">
       <text x="0" y="0" font-size="14" font-weight="700">📲 通知も多言語</text>
-      <text x="0" y="20" font-size="11" fill="#A5F3FC">LINE 通知の文面も切替</text>
+      <text x="0" y="20" font-size="11" fill="#A5F3FC">メール通知の文面も切替</text>
     </g>
     <g transform="translate(0, 140)">
       <text x="0" y="0" font-size="14" font-weight="700">💵 給与明細 多言語</text>

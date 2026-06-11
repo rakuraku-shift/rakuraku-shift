@@ -413,11 +413,11 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
         <div style="background:#fff;border:1.5px solid #E2E8F0;padding:20px;border-radius:12px;text-align:center;margin:12px 0;">
           <img src="${qrUrl}" alt="店舗専用QRコード" style="display:block;margin:0 auto;border-radius:8px;" width="200" height="200" />
           <p style="font-size:12px;color:#64748B;margin-top:10px;">スタッフがこのQRを読み取ると ${shopName || 'お店'}専用のシフト提出画面にアクセスできます</p>
-          <p style="font-size:10px;color:#94A3B8;margin-top:6px;">※ 印刷して店内掲示 or LINE で配布</p>
+          <p style="font-size:10px;color:#94A3B8;margin-top:6px;">※ 印刷して店内掲示 or スタッフへ共有</p>
         </div>
         ` : ''}
 
-        <h3 style="color:#0F172A;margin-top:32px;font-size:16px;">📲 スタッフ向け各種URL (LINE で共有してください)</h3>
+        <h3 style="color:#0F172A;margin-top:32px;font-size:16px;">📲 スタッフ向け各種URL (スタッフに共有してください)</h3>
         <ul style="font-size:13px;line-height:2;padding-left:20px;">
           <li><strong>シフト希望提出</strong>: <a href="${shopUrl}" style="color:#4F46E5;">${shopUrl}</a></li>
           <li><strong>マイシフト確認</strong>: <a href="${myShiftUrl}" style="color:#4F46E5;">${myShiftUrl}</a></li>
@@ -428,12 +428,12 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
         <ol style="font-size:13px;line-height:2;padding-left:20px;">
           <li><a href="${baseUrl}/master-data.html?shop=${encodeURIComponent(shopId || '')}" style="color:#4F46E5;">マスタデータ設定</a> (時給/時間帯)</li>
           <li><a href="${baseUrl}/getting-started.html" style="color:#4F46E5;">3分セットアップガイドを読む</a></li>
-          <li>スタッフに上記QRを LINE で配布</li>
+          <li>スタッフに上記QRを配布</li>
         </ol>
 
         <hr style="border:none;border-top:1px solid #E2E8F0;margin:24px 0;" />
         <p style="font-size:12px;color:#94A3B8;line-height:1.7;">
-          ※ 最初の30日間は無料（¥0）。その後6ヶ月間は月額¥500、7ヶ月目以降は通常価格 月額¥4,990（税込）の自動課金となります。<br>
+          ※ 最初の30日間は無料（¥0）。31日目以降は月額¥4,990（税込）の自動課金となります。<br>
           ※ 解約はいつでも可能。解約後は翌月以降のご請求は発生しません。<br>
           ※ ご不明な点はこのメールに返信、または 📞 080-5168-3303 までお問い合わせください。<br>
           ※ 運営: RAKURAKU（代表 小泉 咲太）
@@ -581,7 +581,7 @@ const ONBOARDING_EMAILS = [
         <ol>
           <li><strong>マスタデータを設定</strong> (5分) — ポジション・標準時給・時間帯テンプレを入力<br>
               → <a href="${base}/master-data.html${sp}" style="color:#4F46E5;">マスタ管理を開く</a></li>
-          <li><strong>スタッフを5名登録</strong> (5分) — QRコードを LINE で共有<br>
+          <li><strong>スタッフを5名登録</strong> (5分) — QRコードをスタッフに共有<br>
               → <a href="${base}/shift.html${sp}" style="color:#4F46E5;">シフト画面で QR 生成</a></li>
           <li><strong>3分セットアップガイドを読む</strong> — 画面ごとの操作手順<br>
               → <a href="${base}/getting-started.html" style="color:#4F46E5;">ガイドを開く</a></li>
@@ -628,7 +628,7 @@ const ONBOARDING_EMAILS = [
           <li><strong>時間バーが色で塗りつぶされて表示</strong> — 視覚的にひと目で分かる</li>
           <li><strong>赤/黄/緑の不足カレンダー</strong> — 「今すぐ動くべき日」が分かる</li>
           <li><strong>シフト調整依頼メール一括送信</strong> — 不足コマに対して既存スタッフへ自動提案</li>
-          <li><strong>📢 全員通知ボタン</strong> — メール + LINE 同時送信でシフト確定を一斉通知</li>
+          <li><strong>📢 全員通知ボタン</strong> — メールでシフト確定を一斉通知</li>
         </ul>
 
         <h3>💴 給与計算もぜひ試してください</h3>
@@ -657,8 +657,8 @@ const ONBOARDING_EMAILS = [
           <li>📑 <a href="https://rakuraku-shift-production.up.railway.app/monthly-report.html" style="color:#4F46E5;">月次レポート</a> — 売上・人件費率</li>
         </ul>
 
-        <h3>📌 トライアル後も、最初の半年は月¥500</h3>
-        <p>31日目以降も自動で続きますが、<strong>最初の6ヶ月は特別価格 月額¥500</strong>。7ヶ月目から通常 月額¥4,990（税込）です。<br>もちろん <strong>解約はいつでも可能</strong> で、解約後の請求は発生しません。</p>
+        <h3>📌 トライアル後は 月額¥4,990</h3>
+        <p>31日目以降も自動で続きます。<strong>月額¥4,990（税込）</strong>です。<br>もちろん <strong>解約はいつでも可能</strong> で、解約後の請求は発生しません。</p>
 
         <p style="background:#DCFCE7;padding:14px;border-radius:8px;margin-top:18px;">
           💴 <strong>年払いプラン (¥49,900・2ヶ月分お得)</strong> もご用意しています。<br>
@@ -670,14 +670,14 @@ const ONBOARDING_EMAILS = [
   },
   {
     day: 28,
-    subject: '[RAKURAKU] あと2日でトライアル終了 — 月¥500スタートのお知らせ',
+    subject: '[RAKURAKU] あと2日でトライアル終了 — 月額¥4,990スタートのお知らせ',
     html: ({ shopName, ownerName }) => `
       <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
         <h2 style="color:#4F46E5;">${ownerName || '店長'}様、30日間ありがとうございました</h2>
         <p>無料トライアル期間が間もなく終了します（あと2日）。${shopName || 'お店'} での RAKURAKU、いかがでしたか?</p>
 
         <h3>📌 継続いただける場合（おすすめ）</h3>
-        <p>特に何もしていただく必要はありません。<br>31日目から <strong>最初の6ヶ月は月額¥500</strong>、7ヶ月目以降は通常 <strong>月額¥4,990（税込）</strong> の課金となります。</p>
+        <p>特に何もしていただく必要はありません。<br>31日目から <strong>月額¥4,990（税込）</strong> の課金となります。</p>
 
         <h3>解約をご希望の場合</h3>
         <p>このメールに <strong>「解約希望」</strong> と返信していただくか、<a href="https://rakuraku-shift-production.up.railway.app/help.html" style="color:#4F46E5;">ヘルプ</a> から解約手続きをお願いします。トライアル中の解約は一切費用がかかりません。</p>
@@ -692,12 +692,10 @@ const ONBOARDING_EMAILS = [
     html: ({ shopName, ownerName }) => `
       <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
         <h2 style="color:#4F46E5;">${ownerName || '店長'}様、ご利用1ヶ月おめでとうございます 🎉</h2>
-        <p>${shopName || 'お店'} で RAKURAKU をご利用いただき、1ヶ月が経ちました。本日から <strong>特別価格 月額¥500（最初の6ヶ月）</strong> での継続がスタートしました。引き続きよろしくお願いいたします。</p>
+        <p>${shopName || 'お店'} で RAKURAKU をご利用いただき、1ヶ月が経ちました。本日から <strong>月額¥4,990</strong> での継続がスタートしました。引き続きよろしくお願いいたします。</p>
 
         <h3>🚀 次のステップ: まだ使っていない機能を試してみませんか?</h3>
         <ol>
-          <li><strong>LINE 公式アカウント連携</strong> → <a href="https://rakuraku-shift-production.up.railway.app/notification-settings.html" style="color:#4F46E5;">通知設定</a><br>
-              シフト確定通知・お知らせを LINE で一斉送信。メールの3倍開封率</li>
           <li><strong>売上データ取込</strong> → <a href="https://rakuraku-shift-production.up.railway.app/sales-import.html" style="color:#4F46E5;">売上取込</a><br>
               毎日の売上を入力 → 人件費率の自動計算</li>
           <li><strong>スタッフ評価機能</strong> → シフト画面のスタッフ名タップ → 5段階評価<br>
@@ -1695,11 +1693,9 @@ app.post('/api/signup', async (req, res) => {
         // Stripe 未設定 → bank-transfer.html へ誘導
         return res.json({ next: '/bank-transfer.html?email=' + encodeURIComponent(email) + '&shopname=' + encodeURIComponent(shopname) });
       }
-      /* 🎁 イントロ・ファネル: 30日¥0 → 6ヶ月¥500 → 通常¥4,990/月
+      /* 💳 シンプル課金: 30日間無料トライアル → 通常 ¥4,990/月
          - trial_period_days:30 で最初の30日は無料
-         - STRIPE_COUPON_INTRO (¥4,490 OFF / repeating 6ヶ月) で その後6ヶ月は月¥500
-         - 7ヶ月目から通常 ¥4,990/月。クーポン未設定なら通常トライアルのみ */
-      const introCoupon = process.env.STRIPE_COUPON_INTRO || '';
+         - 31日目から通常 ¥4,990/月。プロモコード入力は許可 */
       const sessionParams = {
         mode: 'subscription',
         payment_method_types: ['card'],
@@ -1708,7 +1704,7 @@ app.post('/api/signup', async (req, res) => {
           price_data: {
             currency: 'jpy',
             recurring: { interval: 'month' },
-            product_data: { name: 'RAKURAKU Pro プラン (30日¥0 → 6ヶ月¥500 → ¥4,990/月)' },
+            product_data: { name: 'RAKURAKU Pro プラン (30日間無料 → ¥4,990/月)' },
             unit_amount: 4990,
           },
           quantity: 1,
@@ -1723,11 +1719,7 @@ app.post('/api/signup', async (req, res) => {
         /* 🐛 修正: shopName (camelCase) と shopname 両方入れる → webhook 側のキー不一致を吸収 */
         metadata: { shopname, shopName: shopname, plan: 'pro' },
       };
-      if (introCoupon) {
-        sessionParams.discounts = [{ coupon: introCoupon }];
-      } else {
-        sessionParams.allow_promotion_codes = true;
-      }
+      sessionParams.allow_promotion_codes = true;
       const session = await stripe.checkout.sessions.create(sessionParams);
       return res.json({ checkoutUrl: session.url });
     }
@@ -2509,10 +2501,8 @@ app.post('/api/subscribe/create', async (req, res) => {
   const metadata = { shopName, ownerName: ownerName || '', phone: phone || '', plan };
 
   try {
-    /* 🎁 イントロ・ファネル: 30日¥0 → 6ヶ月¥500 → 通常¥4,990/月 (月額プランのみ)
-       年額プランは割引対象外 (一括請求のため) */
-    const introCoupon = process.env.STRIPE_COUPON_INTRO || '';
-    const applyIntro = introCoupon && plan !== 'annual';
+    /* 💳 シンプル課金: 30日間無料トライアル → 通常 ¥4,990/月
+       月額・年額とも 30日トライアル後そのまま課金。プロモコード入力は許可 */
     const sessionParams = {
       mode: 'subscription',
       payment_method_types: ['card'],
@@ -2528,11 +2518,7 @@ app.post('/api/subscribe/create', async (req, res) => {
       locale: 'ja',
       billing_address_collection: 'auto',
     };
-    if (applyIntro) {
-      sessionParams.discounts = [{ coupon: introCoupon }];
-    } else {
-      sessionParams.allow_promotion_codes = true;
-    }
+    sessionParams.allow_promotion_codes = true;
     const session = await stripe.checkout.sessions.create(sessionParams);
 
     res.json({ url: session.url, sessionId: session.id });
@@ -2956,316 +2942,7 @@ app.post('/api/pos/connect', (req, res) => {
   res.json({ ok: true });
 });
 
-// ── LINE 公式アカウント連携 API ────────────────────
-app.post('/api/notification/line/connect', (req, res) => {
-  const { cid, secret, token, shopId } = req.body || {};
-  if (!cid || !secret || !token) return res.status(400).json({ error: 'cid, secret, token 必須' });
-  const safeId = _safeShopId(shopId || 'default');
-  const file = path.join(DATA_DIR, `line-config-${safeId}.json`);
-  try {
-    writeJSON(file, { cid, secret, token, connectedAt: Date.now() });
-    console.log(`[line/connect] ${safeId} / cid=${cid}`);
-    res.json({ ok: true });
-  } catch(e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.post('/api/notification/line/test', async (req, res) => {
-  const { token } = req.body || {};
-  if (!token) return res.status(400).json({ error: 'token 必須' });
-  /* LINE Messaging API への疎通テスト（GET /v2/bot/info） */
-  try {
-    const https = require('https');
-    const opts = {
-      hostname: 'api.line.me',
-      path: '/v2/bot/info',
-      method: 'GET',
-      headers: { 'Authorization': 'Bearer ' + token }
-    };
-    const data = await new Promise((resolve, reject) => {
-      const r = https.request(opts, response => {
-        let body = '';
-        response.on('data', c => body += c);
-        response.on('end', () => {
-          if (response.statusCode === 200) resolve(JSON.parse(body));
-          else reject(new Error('LINE API ' + response.statusCode + ': ' + body));
-        });
-      });
-      r.on('error', reject);
-      r.end();
-    });
-    console.log(`[line/test] OK — ${data.basicId || data.userId || 'unknown'}`);
-    res.json({ ok: true, info: data });
-  } catch(e) {
-    console.warn('[line/test] error:', e.message);
-    res.status(500).json({ ok: false, error: e.message });
-  }
-});
-
-/* シフト確定 → LINE 全員push (将来 webhook トリガで自動化) */
-app.post('/api/notification/line/broadcast', async (req, res) => {
-  const { shopId, message } = req.body || {};
-  if (!message) return res.status(400).json({ error: 'message 必須' });
-  const safeId = _safeShopId(shopId || 'default');
-  const file = path.join(DATA_DIR, `line-config-${safeId}.json`);
-  const config = readJSON(file, null);
-  if (!config || !config.token) return res.status(400).json({ error: 'LINE未接続' });
-  try {
-    const https = require('https');
-    const body = JSON.stringify({ messages: [{ type: 'text', text: message }] });
-    await new Promise((resolve, reject) => {
-      const r = https.request({
-        hostname: 'api.line.me',
-        path: '/v2/bot/message/broadcast',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(body),
-          'Authorization': 'Bearer ' + config.token,
-        }
-      }, response => {
-        let buf = '';
-        response.on('data', c => buf += c);
-        response.on('end', () => {
-          if (response.statusCode === 200) resolve();
-          else reject(new Error('LINE ' + response.statusCode + ': ' + buf));
-        });
-      });
-      r.on('error', reject);
-      r.write(body);
-      r.end();
-    });
-    console.log(`[line/broadcast] ${safeId} — ${message.slice(0, 30)}…`);
-    res.json({ ok: true });
-  } catch(e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-/* ════════════════════════════════════════════════════
- * 🟢 LINE Webhook — 友だち追加 → user_id 自動紐付け + 名前マッチング
- * ════════════════════════════════════════════════════
- * 店舗ごとに LINE 公式アカウントを持つ前提:
- *   - Webhook URL を https://rakuraku-shift-production.up.railway.app/webhook/line?shop=XXX
- *     のように shop パラメータ付きで LINE Developers に登録してもらう
- *   - LINE → friend add (follow event) → user_id 取得 → line-bindings-XXX.json に保留
- *   - スタッフが名前送信 (text message) → message event → 名前で照合 → bind 完了
- *   - 個別 push 通知に使えるようになる
- *
- * 署名検証 (HMAC-SHA256 with channelSecret): なりすまし防止
- * crypto は file の冒頭 (line 8) で既に require 済み — 重複宣言を削除
- */
-
-function _bindingsFile(shopId) {
-  return path.join(DATA_DIR, `line-bindings-${_safeShopId(shopId || 'default')}.json`);
-}
-function _staffRosterFile(shopId) {
-  return path.join(DATA_DIR, `staff-roster-${_safeShopId(shopId || 'default')}.json`);
-}
-
-/* LINE 個別 reply (event.replyToken) */
-async function _lineReply(channelToken, replyToken, text) {
-  return new Promise((resolve) => {
-    const https = require('https');
-    const body = JSON.stringify({
-      replyToken,
-      messages: [{ type: 'text', text }]
-    });
-    const r = https.request({
-      hostname: 'api.line.me',
-      path: '/v2/bot/message/reply',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(body),
-        'Authorization': 'Bearer ' + channelToken,
-      }
-    }, response => {
-      let buf = '';
-      response.on('data', c => buf += c);
-      response.on('end', () => resolve(response.statusCode === 200));
-    });
-    r.on('error', () => resolve(false));
-    r.write(body);
-    r.end();
-  });
-}
-
-/* LINE Webhook 受信 */
-app.post('/webhook/line', express.raw({ type: 'application/json' }), async (req, res) => {
-  const shopId = req.query.shop || 'default';
-  const safeId = _safeShopId(shopId);
-  const configFile = path.join(DATA_DIR, `line-config-${safeId}.json`);
-  const config = readJSON(configFile, null);
-  if (!config || !config.secret) {
-    console.warn(`[line/webhook] LINE 未接続: shop=${safeId}`);
-    return res.status(200).send('OK');  // LINE は 2xx を期待
-  }
-
-  /* 署名検証 (HMAC-SHA256) */
-  const signature = req.headers['x-line-signature'];
-  const expected = crypto.createHmac('sha256', config.secret)
-    .update(req.body)
-    .digest('base64');
-  if (signature !== expected) {
-    console.warn(`[line/webhook] 署名不一致: shop=${safeId}`);
-    return res.status(401).send('signature mismatch');
-  }
-
-  let payload;
-  try {
-    payload = JSON.parse(req.body.toString('utf8'));
-  } catch(e) {
-    return res.status(400).send('invalid json');
-  }
-
-  const events = payload.events || [];
-  const bindings = readJSON(_bindingsFile(safeId), {});  // { userId: { name, boundAt, status } }
-  const roster = readJSON(_staffRosterFile(safeId), []);  // [{ name, ... }]
-  let mutated = false;
-
-  for (const ev of events) {
-    const userId = (ev.source && ev.source.userId) || null;
-    if (!userId) continue;
-
-    /* ① 友だち追加 (follow event) */
-    if (ev.type === 'follow') {
-      if (!bindings[userId]) {
-        bindings[userId] = { status: 'pending', followedAt: Date.now() };
-        mutated = true;
-      }
-      /* スタッフ案内: 名前送信を促す */
-      if (ev.replyToken && config.token) {
-        await _lineReply(config.token, ev.replyToken,
-          '👋 ようこそ RAKURAKU シフト管理へ!\n\n' +
-          '本人確認のため、店長から登録された\n「お名前 (フルネーム)」を送信してください。\n\n' +
-          '例: 田中 太郎'
-        );
-      }
-      console.log(`[line/webhook] follow shop=${safeId} userId=${userId.slice(0, 8)}…`);
-    }
-
-    /* ② 名前送信 (text message) → roster 照合 → bind 完了 */
-    if (ev.type === 'message' && ev.message && ev.message.type === 'text') {
-      const text = (ev.message.text || '').trim();
-      const matched = roster.find(s => s.name && (s.name === text || s.name.replace(/\s+/g, '') === text.replace(/\s+/g, '')));
-      if (matched) {
-        bindings[userId] = {
-          status: 'bound',
-          name: matched.name,
-          staffId: matched.id || matched.name,
-          boundAt: Date.now()
-        };
-        mutated = true;
-        if (ev.replyToken && config.token) {
-          await _lineReply(config.token, ev.replyToken,
-            `✅ ${matched.name} さん、紐付け完了!\n\n` +
-            'これからシフト確定通知や緊急連絡がこちらに届きます。\n通知音は LINE 設定でご調整ください。'
-          );
-        }
-        console.log(`[line/webhook] bind shop=${safeId} ${matched.name} ← userId=${userId.slice(0, 8)}…`);
-      } else {
-        /* 名前不一致 */
-        if (ev.replyToken && config.token) {
-          await _lineReply(config.token, ev.replyToken,
-            '❌ お名前が見つかりません。\n\n' +
-            '店長に「LINE 連携したい」と伝えて、スタッフ登録に\nあなたのお名前を追加してもらってください。\n\n' +
-            `送信されたお名前: ${text.slice(0, 30)}`
-          );
-        }
-      }
-    }
-
-    /* ③ ブロック (unfollow) → 紐付け解除 */
-    if (ev.type === 'unfollow') {
-      if (bindings[userId]) {
-        bindings[userId].status = 'unfollowed';
-        bindings[userId].unfollowedAt = Date.now();
-        mutated = true;
-        console.log(`[line/webhook] unfollow shop=${safeId} userId=${userId.slice(0, 8)}…`);
-      }
-    }
-  }
-
-  if (mutated) writeJSON(_bindingsFile(safeId), bindings);
-  res.status(200).send('OK');
-});
-
-/* LINE 紐付け済み user 一覧取得 (店長用) */
-app.get('/api/notification/line/bindings', (req, res) => {
-  const safeId = _safeShopId(req.query.shop || 'default');
-  const bindings = readJSON(_bindingsFile(safeId), {});
-  const list = Object.entries(bindings).map(([userId, info]) => ({
-    userId: userId.slice(0, 8) + '…',  // フル userId は返さない (露出防止)
-    ...info
-  }));
-  res.json({
-    total: list.length,
-    bound: list.filter(b => b.status === 'bound').length,
-    pending: list.filter(b => b.status === 'pending').length,
-    bindings: list
-  });
-});
-
-/* スタッフ名簿の登録 (LINE 名前マッチング用) */
-app.post('/api/notification/line/roster', express.json({ limit: '256kb' }), (req, res) => {
-  const { shopId, staff } = req.body || {};
-  if (!Array.isArray(staff)) return res.status(400).json({ error: 'staff array required' });
-  const safeId = _safeShopId(shopId || 'default');
-  const sanitized = staff
-    .map(s => ({ id: s.id || s.name, name: String(s.name || '').trim() }))
-    .filter(s => s.name);
-  writeJSON(_staffRosterFile(safeId), sanitized);
-  console.log(`[line/roster] shop=${safeId} ${sanitized.length} 名 登録`);
-  res.json({ ok: true, count: sanitized.length });
-});
-
-/* 個別 push (紐付け済みスタッフへの個別通知) */
-app.post('/api/notification/line/push', express.json({ limit: '64kb' }), async (req, res) => {
-  const { shopId, staffNames, message } = req.body || {};
-  if (!message) return res.status(400).json({ error: 'message required' });
-  const safeId = _safeShopId(shopId || 'default');
-  const config = readJSON(path.join(DATA_DIR, `line-config-${safeId}.json`), null);
-  if (!config || !config.token) return res.status(400).json({ error: 'LINE未接続' });
-
-  const bindings = readJSON(_bindingsFile(safeId), {});
-  /* 紐付け済み bound only */
-  const targets = Object.entries(bindings)
-    .filter(([_, info]) => info.status === 'bound')
-    .filter(([_, info]) => !staffNames || staffNames.includes(info.name))
-    .map(([userId]) => userId);
-
-  if (!targets.length) return res.json({ ok: true, sent: 0, message: 'no bound users' });
-
-  const https = require('https');
-  let success = 0, failed = 0;
-  for (const userId of targets) {
-    try {
-      const body = JSON.stringify({ to: userId, messages: [{ type: 'text', text: message }] });
-      await new Promise((resolve, reject) => {
-        const r = https.request({
-          hostname: 'api.line.me',
-          path: '/v2/bot/message/push',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(body),
-            'Authorization': 'Bearer ' + config.token,
-          }
-        }, response => {
-          if (response.statusCode === 200) { success++; resolve(); }
-          else { failed++; resolve(); }
-        });
-        r.on('error', () => { failed++; resolve(); });
-        r.write(body);
-        r.end();
-      });
-    } catch(e) { failed++; }
-  }
-  console.log(`[line/push] shop=${safeId} 成功 ${success} / 失敗 ${failed}`);
-  res.json({ ok: true, sent: success, failed });
-});
+// ── LINE 連携APIは廃止 (2026-06-11) — 通知はメールに一本化 ──
 
 // ── 本部 集計 API（複数店舗横断 KPI）─────────────────
 app.get('/api/hq/summary', (req, res) => {

@@ -76,8 +76,8 @@
 |---|---|---|---|
 | 19 | `/noru-admin.html` | **本社管理** 全店舗・課金状況・QR発行 | 🔒 PIN |
 | 20 | `/hq-dashboard.html` | 本部用 横断KPIダッシュボード | ✅ |
-| 21 | `/announcements.html` | お知らせ管理 (LINE/メール/Push 4ch送信) | ✅ |
-| 22 | `/notification-settings.html` | LINE/メール/SMS/Push 設定 | ✅ |
+| 21 | `/announcements.html` | お知らせ管理 (メール/Push 送信) | ✅ |
+| 22 | `/notification-settings.html` | メール/SMS/Push 設定 | ✅ |
 | 23 | `/sales-import.html` | 売上データ取込 (手動/CSV/Square/スマレジ) | ✅ |
 
 ---
@@ -261,9 +261,6 @@ Stripe Checkout フロー。
 
 ## 11.11 通知
 - `POST /api/send-mail` — 汎用メール送信
-- `POST /api/notification/line/connect` — LINE Token登録
-- `POST /api/notification/line/test` — 疎通テスト
-- `POST /api/notification/line/broadcast` — 全員 broadcast
 - `POST /api/notify/shortage` — 不足通知
 
 ## 11.12 お知らせ
@@ -312,7 +309,7 @@ Stripe Checkout フロー。
 | 3 | **🎯 3段階自動募集** | 内部調整→社内インセンティブ→Timee/シェアフル | 業界初 |
 | 4 | **🌐 4言語完全対応** | 日/英/中/韓 (シフト/打刻/通知すべて) | 外国人対応で圧倒 |
 | 5 | **⚖️ 労基法5項目自動チェック** | 重複/連続7日/休憩義務/週40h/18歳未満深夜 | コンプラ重視 |
-| 6 | **📲 LINE店舗QR自動発行** | 契約完了で専用URL+QRコード自動メール | LINE直結 |
+| 6 | **📲 店舗QR自動発行** | 契約完了で専用URL+QRコード自動メール | メール直送 |
 
 ## 競合比較
 

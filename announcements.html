@@ -143,10 +143,6 @@
       <div class="toggle" id="opt-mail" onclick="this.classList.toggle('on')"></div>
     </div>
     <div class="opt">
-      <span class="l">💬 LINE公式アカウント broadcast</span>
-      <div class="toggle" id="opt-line" onclick="this.classList.toggle('on')"></div>
-    </div>
-    <div class="opt">
       <span class="l">🔔 プッシュ通知 (PWA)</span>
       <div class="toggle" id="opt-push" onclick="this.classList.toggle('on')"></div>
     </div>
@@ -193,7 +189,6 @@ async function publishAnnouncement() {
   const to = document.getElementById('a-to').value;
   const optShow = document.getElementById('opt-show').classList.contains('on');
   const optMail = document.getElementById('opt-mail').classList.contains('on');
-  const optLine = document.getElementById('opt-line').classList.contains('on');
   const optPush = document.getElementById('opt-push').classList.contains('on');
 
   if (!title || !body) { showToast('⚠ タイトルと本文は必須です'); return; }
@@ -248,18 +243,6 @@ async function publishAnnouncement() {
     } catch(e) { console.warn('mail failed:', e); }
   }
 
-  /* LINE broadcast */
-  if (optLine) {
-    try {
-      await fetch('/api/notification/line/broadcast', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: `📢 ${title}\n\n${body}` })
-      });
-      announcement.sentLine = true;
-    } catch(e) { console.warn('line failed:', e); }
-  }
-
   /* PWA Push (ローカル発火) */
   if (optPush && 'Notification' in window && Notification.permission === 'granted') {
     try {
@@ -283,7 +266,7 @@ async function publishAnnouncement() {
   setPriority('normal');
 
   saveAnnouncements(list);
-  showToast(`📢 お知らせを公開しました${optMail ? ' (📧送信)' : ''}${optLine ? ' (💬LINE)' : ''}${optPush ? ' (🔔Push)' : ''}`);
+  showToast(`📢 お知らせを公開しました${optMail ? ' (📧送信)' : ''}${optPush ? ' (🔔Push)' : ''}`);
   renderAnnouncements();
 }
 

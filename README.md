@@ -62,8 +62,8 @@ PORT=3000
 | `hq-dashboard.html` | 本部用KPIダッシュボード |
 | `master-data.html` | ポジション/時給/休憩ルール |
 | `sales-import.html` | 売上データ取込 (手動/CSV/POS) |
-| `announcements.html` | お知らせ一斉送信 (LINE/メール/Push) |
-| `notification-settings.html` | LINE/メール/Push 設定 |
+| `announcements.html` | お知らせ一斉送信 (メール/Push) |
+| `notification-settings.html` | メール/Push 設定 |
 | `data-export.html` | データ JSON エクスポート/インポート |
 
 ### 営業ページ
@@ -91,7 +91,7 @@ PORT=3000
 | `izakaya.html` | 居酒屋業態専用 LP (大型店/チェーン対応・ブラウン+オレンジ) |
 | `cafe.html` | カフェ業態専用 LP (早朝/留学生対応・エメラルドグリーン) |
 | `lounge.html` | 会員制ラウンジ専用 LP (VIP指名管理・紫×金) |
-| `snack.html` | スナック専用 LP (ママ運営/LINE完結・ピンク×ローズ) |
+| `snack.html` | スナック専用 LP (ママ運営/スマホ完結・ピンク×ローズ) |
 | `karaoke.html` | カラオケ専用 LP (24h/チェーン・ブルー×シアン) |
 | `club.html` | ナイトクラブ専用 LP (DJ/バウンサー・パープル×ネオン) |
 | `dining-bar.html` | ダイニングバー専用 LP (多能工対応・シアン×ティール) |
@@ -132,7 +132,7 @@ PORT=3000
 |---|---|
 | `enterprise.html` | 大規模チェーン向け Enterprise プラン (10 店舗以上 / SLA 99.99%) |
 | `partner-program.html` | パートナープログラム (Bronze〜Platinum 4 ティア) |
-| `integrations.html` | 連携サービス 20+ (freee/弥生/LINE/Slack/Stripe/Zapier 他) |
+| `integrations.html` | 連携サービス 20+ (freee/弥生/Slack/Stripe/Zapier 他) |
 | `api-docs.html` | API ドキュメント (REST v1) |
 | `security.html` | セキュリティ・コンプライアンス (GDPR/個人情報保護法) |
 
@@ -195,8 +195,6 @@ PORT=3000
 
 ### 通知
 - `POST /api/send-mail` — 汎用メール送信
-- `POST /api/notification/line/connect` — LINE Token 登録
-- `POST /api/notification/line/broadcast` — 全員 broadcast
 - `POST /api/announcements` — お知らせ投稿
 
 ### ロードマップ
@@ -229,7 +227,7 @@ PORT=3000
 3. **🎯 3段階自動募集** — 内部→社内→Timee/シェアフル
 4. **🌐 4言語対応** — 日/英/中/韓
 5. **⚖️ 労基法自動チェック** — 5項目スキャン
-6. **📲 LINE 一斉通知 + 店舗専用QR自動発行**
+6. **📲 メール一斉通知 + 店舗専用QR自動発行**
 
 ---
 

@@ -13,15 +13,13 @@
 - ✅ マスタデータ管理 (master-data.html — ポジション/時給/時間帯/休憩/ホリデー)
 - ✅ スタッフ別月次サマリ (staff-monthly.html — 勤務時間/給与/評価/カレンダー)
 - ✅ 本部ダッシュボード (hq-dashboard.html — 6KPI/ランキング/アラート/CSV出力)
-- ✅ 通知設定センター (notification-settings.html — メール/LINE/Push/SMS統合)
+- ✅ 通知設定センター (notification-settings.html — メール/Push/SMS統合)
 - ✅ 売上データ取込 (sales-import.html — 手動入力/CSV/POS連携)
 - ✅ お知らせ管理 (announcements.html — 4チャネル一斉送信)
 
-### 💬 LINE 公式アカウント連携
-- ✅ POST /api/notification/line/connect — 設定保存
-- ✅ POST /api/notification/line/test — Messaging API疎通テスト
-- ✅ POST /api/notification/line/broadcast — 全員push送信
-- ✅ シフト確定通知ボタン (メール + LINE 同時送信)
+### 💬 通知 (メール一本化・2026-06-11 LINE連携廃止)
+- ✅ シフト確定通知ボタン (登録メールへ一斉送信)
+- ⛔ LINE 連携API (connect/test/broadcast) は廃止 — 通知はメールに統合
 
 ### 📢 お知らせ機能 (4チャネル送信)
 - ✅ POST /api/announcements — 投稿 (Socket.io リアルタイム配信)
@@ -66,7 +64,7 @@
 
 #### 📚 コンテンツマーケ
 - ✅ blog.html: 6カテゴリ + 7記事 (特集記事 + 6本)
-- ✅ help.html FAQ拡充: 36 → 46項目 (👤スタッフ向け7 + LINE/freee/紹介3)
+- ✅ help.html FAQ拡充: 36 → 46項目 (👤スタッフ向け7 + freee/紹介)
 
 #### 💾 オフライン強化
 - ✅ offline-sync.js: IndexedDB 自動バックアップ + キュー + ネットワークバッジ
@@ -144,7 +142,7 @@
 
 #### S4 🚦 障害監視ページ (status.html)
 - ✅ /health エンドポイント + 全体ステータス可視化
-- ✅ 6サービスの個別ステータス (Web/API/Socket/Stripe/Email/LINE)
+- ✅ 5サービスの個別ステータス (Web/API/Socket/Stripe/Email)
 - ✅ 直近24h稼働率・30日稼働率・平均応答時間
 - ✅ 90日 uptime バー (色分け)
 - ✅ 障害履歴 (直近30日)
@@ -265,7 +263,6 @@
 
 ### 🌐 運用フェーズ (私が作業できない部分)
 - EMAIL_USER 環境変数 + Gmail App Password 設定 — **ユーザー対応**
-- LINE Messaging API チャネル作成・Token取得 — **ユーザー対応**
 - Stripe 本番審査通過 — **Stripe側次第 (3-7日)**
 - POS実契約 (Square等) → Token取得 — **ユーザー対応**
 - 実店舗で14日トライアル → フィードバック — **3週間以上**
@@ -303,7 +300,7 @@
 
 つまり **Tier 1 = 私の作業3-4日**、**Tier 2 = 約3週間**、**Tier 3 = 1.5ヶ月**、**Tier 4 = 3-4ヶ月**。
 
-ただしユーザー対応が必要な部分 (LINE Token / POS契約 / Apple Developer登録) は別途。
+ただしユーザー対応が必要な部分 (POS契約 / Apple Developer登録) は別途。
 
 
 
@@ -435,8 +432,7 @@
 ### 機能拡張
 - 📋 給与明細PDF生成・メール送信
 - 📋 月次レポート自動生成（売上・人件費率・スタッフ評価）
-- 📋 シフト確定通知（メール/LINE）
-- 📋 LINE 連携（公式アカウント経由でリマインド）
+- 📋 シフト確定通知（メール）
 - 📋 マスタデータ管理（ポジション・時給テンプレ）
 - 📋 ホリデー設定（祝日・年末年始）
 - 📋 シフト変更履歴・監査ログ
@@ -529,7 +525,6 @@
 
 ### 残りタスクのうち、実装より「運用テスト」が必要なもの
 - 実店舗での 14日間トライアル → 本番フィードバック
-- LINE公式アカウント 接続 → 友だち1名で実通知テスト
 - メール送信 EMAIL_USER 環境変数設定 + Gmail App Password 設定
 - Stripe 本番審査通過後の課金フロー確認
 - 実 POSへの本番接続 (Square Token / スマレジ API認証)
@@ -558,7 +553,6 @@
 - /api/demo-reservation + /api/referral (マーケ)
 - /api/master-data/:shop (マスタ同期)
 - /api/hq/summary (本部KPI集計)
-- /api/notification/line/{connect,test,broadcast} (LINE)
 - /api/send-mail (汎用メール)
 - /api/announcements (お知らせ)
 - /api/sales/daily/:shop + /api/pos/connect (売上/POS)

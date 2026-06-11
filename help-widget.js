@@ -104,7 +104,7 @@
           <a href="/izakaya.html" class="rhw-link"><span class="ic">🍺</span><div><div>居酒屋専用LP</div><div class="desc">大型店/チェーン</div></div></a>
           <a href="/cafe.html" class="rhw-link"><span class="ic">☕</span><div><div>カフェ専用LP</div><div class="desc">早朝/留学生対応</div></div></a>
           <a href="/lounge.html" class="rhw-link"><span class="ic">💎</span><div><div>ラウンジ専用LP</div><div class="desc">会員制/VIP</div></div></a>
-          <a href="/snack.html" class="rhw-link"><span class="ic">🌸</span><div><div>スナック専用LP</div><div class="desc">ママ運営/LINE完結</div></div></a>
+          <a href="/snack.html" class="rhw-link"><span class="ic">🌸</span><div><div>スナック専用LP</div><div class="desc">ママ運営/スマホ完結</div></div></a>
           <a href="/karaoke.html" class="rhw-link"><span class="ic">🎤</span><div><div>カラオケ専用LP</div><div class="desc">24h/チェーン</div></div></a>
           <a href="/club.html" class="rhw-link"><span class="ic">🪩</span><div><div>クラブ専用LP</div><div class="desc">DJ/バウンサー</div></div></a>
           <a href="/dining-bar.html" class="rhw-link"><span class="ic">🍽</span><div><div>ダイニングバー</div><div class="desc">多能工対応</div></div></a>

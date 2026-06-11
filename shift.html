@@ -2431,7 +2431,7 @@
     </div>
     <span class="atp-name">RAKURAKU</span>
     <div class="atp-divider"></div>
-    <span class="atp-tag">Shift Management</span>
+    <span class="atp-tag" data-i18n="staff.app_tag">シフト管理</span>
   </div>
   <span class="atp-version">β</span>
 </div>
@@ -2446,10 +2446,6 @@
     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7M17.5 14v7"/></svg>
     <span data-i18n="tab.manager">シフト管理</span>
   </button>
-  <a class="tab-btn" href="/mood-feedback.html" id="tab-mood" style="text-decoration:none;background:linear-gradient(135deg,#FEF3C7,#FCE7F3);color:#B45309;border:1.5px solid #FDE68A;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
-    <span>😊 1秒振り返り</span>
-  </a>
 </div>
 
 <!-- ═══════════ STAFF SCREEN ═══════════ -->
@@ -2470,7 +2466,7 @@
         </div>
         RAKURAKU
       </div>
-      <div class="sh-badge">Staff Portal</div>
+      <div class="sh-badge" data-i18n="staff.portal_badge">スタッフ専用</div>
     </div>
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
       <div style="flex:1;">
@@ -2834,12 +2830,8 @@
       <a href="/mood-feedback.html" target="_blank" rel="noopener" style="font-size:11px;font-weight:800;color:#EA580C;text-decoration:none;-webkit-tap-highlight-color:transparent;" data-i18n="mgr.mood_detail">詳しく見る →</a>
     </div>
     <div style="font-size:11px;font-weight:600;color:#9A3412;margin-bottom:12px;" data-i18n="mgr.mood_sub">1 タップで完了 · 言葉にしなくていい</div>
-    <div role="group" aria-label="本日の振り返り" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
-      <button type="button" data-mood="5" onclick="mgrMood(this,5)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😄</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m5_mgr">最高</span></button>
-      <button type="button" data-mood="4" onclick="mgrMood(this,4)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😊</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m4_mgr">良い</span></button>
-      <button type="button" data-mood="3" onclick="mgrMood(this,3)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😐</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m3_normal">普通</span></button>
-      <button type="button" data-mood="2" onclick="mgrMood(this,2)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😟</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m2_mgr">微妙</span></button>
-      <button type="button" data-mood="1" onclick="mgrMood(this,1)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😩</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m1_mgr">しんどい</span></button>
+    <div role="group" aria-label="本日の振り返り" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+      <button type="button" data-mood="5" onclick="mgrMood(this,5)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😄</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m5_mgr">最高</span></button>      <button type="button" data-mood="3" onclick="mgrMood(this,3)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😐</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m3_normal">普通</span></button>      <button type="button" data-mood="1" onclick="mgrMood(this,1)" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border:1.5px solid #FED7AA;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .1s;"><span style="font-size:24px;line-height:1;" aria-hidden="true">😩</span><span style="font-size:10px;font-weight:800;color:#9A3412;" data-i18n="mf.m1_mgr">しんどい</span></button>
     </div>
     <div id="mgr-mood-confirm" style="display:none;text-align:center;margin-top:12px;font-size:12px;font-weight:800;color:#047857;" data-i18n="mgr.mood_recorded">✅ 記録しました</div>
   </div>
@@ -3220,8 +3212,8 @@
     </div>
   </div>
 
-  <!-- 🚀 ワンタップシフト作成（巨大ボタン・スマホ最適化） -->
-  <button onclick="generateShift()"
+  <!-- 🚀 ワンタップシフト作成（巨大ボタン・スマホ最適化）— シフト作成タブのみ表示 -->
+  <button onclick="generateShift()" data-mgr-section="shifts"
     style="width:100%;padding:22px 16px;margin-bottom:12px;border:none;border-radius:16px;
            background:linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);color:#fff;
            font-size:17px;font-weight:900;font-family:inherit;cursor:pointer;
@@ -3235,7 +3227,7 @@
     <span style="font-size:24px;">✨</span>
     <span data-i18n="mgr.one_tap_generate">ワンタップでシフト作成</span>
   </button>
-  <div style="text-align:center;margin-bottom:14px;">
+  <div style="text-align:center;margin-bottom:14px;" data-mgr-section="shifts">
     <button onclick="showSampleShift()" style="background:none;border:none;color:var(--slate-400);font-size:12px;cursor:pointer;text-decoration:underline;font-family:inherit;padding:4px;">
       📋 シフト表のサンプルを見る
     </button>
@@ -3257,8 +3249,8 @@
     <span style="font-size:18px;color:#4F46E5;">→</span>
   </a>
 
-  <!-- Sticky print bar -->
-  <div id="print-bar">
+  <!-- Sticky print bar — シフト確定欄（シフト作成タブのみ） -->
+  <div id="print-bar" data-mgr-section="shifts">
     <div>
       <div class="pb-label">📆 シフトを確定 → スタッフへ公開済</div>
       <div class="pb-sub" id="print-bar-sub">マイシフト画面に反映済 · 印刷・全員通知できます</div>
@@ -3794,7 +3786,7 @@
     <div class="gate-error" id="gate-error"></div>
     <!-- タップエリア（数字キーボードを呼び出す） -->
     <div class="gate-tap-area" onclick="focusGateInput()">
-      <div class="gate-tap-label">TAP TO ENTER</div>
+      <div class="gate-tap-label" data-i18n="staff.tap_to_enter">タップして入力</div>
       <div class="gate-tap-sub">🔢 4桁のPINを入力</div>
     </div>
     <div class="gate-hint">デフォルト PIN: 1234 &nbsp;·&nbsp; 設定から変更可</div>
@@ -4690,6 +4682,15 @@
       btn.classList.toggle('active', active);
       btn.setAttribute('aria-selected', active ? 'true' : 'false');
     });
+    /* 今日の振り返りを既に送信済みなら欄を隠す（翌日再表示） */
+    try {
+      const _d = new Date();
+      const _tk = _d.getFullYear() + '-' + ('0' + (_d.getMonth() + 1)).slice(-2) + '-' + ('0' + _d.getDate()).slice(-2);
+      if (localStorage.getItem('rakuraku_mgr_mood_done') === _tk) {
+        const _mc = document.getElementById('mgr-mood-card');
+        if (_mc) _mc.style.display = 'none';
+      }
+    } catch (e) {}
   });
 
   function switchTab(tab) {
@@ -6231,9 +6232,9 @@
   /* ── Print / Preview ── */
   function printShift() { openPrintPreview(false); }
 
-  /* ── シフト確定 → 全員通知 (メール + LINE 同時送信) ── */
+  /* ── シフト確定 → 全員通知 (メール送信) ── */
   async function broadcastShiftConfirm() {
-    if (!confirm('シフト確定をスタッフ全員に通知しますか？\n\n📧 メール: 登録済アドレスへ送信\n💬 LINE: 公式アカウント友だち全員へ broadcast\n🔔 PWA: プッシュ通知 (有効化スタッフのみ)')) return;
+    if (!confirm('シフト確定をスタッフ全員に通知しますか？\n\n📧 メール: 登録済アドレスへ送信\n🔔 PWA: プッシュ通知 (有効化スタッフのみ)')) return;
 
     const subs = loadState();
     const knownWorkers = loadKnownWorkers();
@@ -6245,7 +6246,7 @@
     const monthLbl = getViewingMonth ? getViewingMonth() : new Date().toISOString().slice(0,7);
     const msg = `📆 ${monthLbl} のシフトが確定しました！\n\nマイシフト画面で確認してください:\n${location.origin}/myshift.html\n\n変更希望は「休み変更届」から提出できます。`;
 
-    let mailOk = false, lineOk = false, errs = [];
+    let mailOk = false, errs = [];
 
     /* メール送信 (既存のフォーマット利用 — server.js の /api/send-mail) */
     if (emails.length > 0) {
@@ -6264,27 +6265,14 @@
       } catch(e) { errs.push('メール: ' + e.message); }
     }
 
-    /* LINE broadcast */
-    try {
-      const res = await fetch('/api/notification/line/broadcast', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ shopId, message: msg }),
-      });
-      const data = await res.json();
-      lineOk = res.ok && data.ok;
-      if (!lineOk && data.error) errs.push('LINE: ' + data.error);
-    } catch(e) { errs.push('LINE: ' + e.message); }
-
     /* 監査ログ */
     if (typeof _appendAuditLog === 'function') {
-      _appendAuditLog('shift_broadcast', { month: monthLbl, mail: mailOk, line: lineOk, count: emails.length });
+      _appendAuditLog('shift_broadcast', { month: monthLbl, mail: mailOk, count: emails.length });
     }
 
     let resultMsg = '✅ 通知完了: ';
     const parts = [];
     if (mailOk) parts.push(`📧 メール ${emails.length}件`);
-    if (lineOk) parts.push('💬 LINE broadcast');
     if (parts.length === 0) {
       showToast('⚠ 通知失敗: ' + (errs[0] || '送信先がありません'));
     } else {
@@ -7812,6 +7800,21 @@ ${slotLines}
      mood-feedback.html の confirmTap() と同じ
      localStorage 'rakuraku_mood' 配列に追記する
   ────────────────────────────────────────── */
+  /* 今日(ローカル日付)のキー — 振り返りは1日1回、翌日リセット */
+  function _moodTodayKey() {
+    var d = new Date();
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  }
+  function _mgrMoodDoneToday() {
+    try { return localStorage.getItem('rakuraku_mgr_mood_done') === _moodTodayKey(); } catch (e) { return false; }
+  }
+  function _hideMgrMoodCard() {
+    var card = document.getElementById('mgr-mood-card');
+    if (!card) return;
+    card.style.transition = 'opacity .35s ease';
+    card.style.opacity = '0';
+    setTimeout(function () { card.style.display = 'none'; }, 360);
+  }
   function mgrMood(btn, value) {
     try {
       var arr = JSON.parse(localStorage.getItem('rakuraku_mood') || '[]');
@@ -7834,15 +7837,14 @@ ${slotLines}
       btn.style.background = '#FFEDD5';
       btn.style.transform = 'scale(1.06)';
     }
+    try { localStorage.setItem('rakuraku_mgr_mood_done', _moodTodayKey()); } catch (e) {}
     var c = document.getElementById('mgr-mood-confirm');
-    if (c) {
-      c.style.display = 'block';
-      clearTimeout(window._mgrMoodTimer);
-      window._mgrMoodTimer = setTimeout(function () {
-        c.style.display = 'none';
-        resetBtns();
-      }, 3000);
-    }
+    if (c) { c.style.display = 'block'; }
+    /* 一度送ったら欄ごと隠す（翌日まで非表示）— 確認表示を見せてからフェードアウト */
+    clearTimeout(window._mgrMoodTimer);
+    window._mgrMoodTimer = setTimeout(function () {
+      _hideMgrMoodCard();
+    }, 1600);
     if (typeof showToast === 'function') {
       var rec = (window.RakuI18n && typeof window.RakuI18n.t === 'function')
         ? window.RakuI18n.t('mgr.mood_recorded') : '✅ 記録しました';

@@ -108,21 +108,6 @@ SMTP_PORT=465</code></pre>
 <a href="/owner-inbox.html" class="btn">📥 受信ボックスを開く</a>
 </section>
 
-<!-- ============ Push 通知 (オプション) ============ -->
-<section>
-<h2>🔔 (上級) スマホへの Push 通知</h2>
-<p>メールだけでなく、スマホに <strong>即時 Push 通知</strong> が欲しい場合は LINE Messaging API を使うのが最も簡単。</p>
-<ol>
-<li><a href="https://developers.line.biz/" target="_blank">LINE Developers</a> でアカウント作成 → Messaging API チャネル作成</li>
-<li>チャネルアクセストークン (長期) を発行 → コピー</li>
-<li>Railway Variables に追加:
-<pre><code>LINE_CHANNEL_TOKEN=xxxxxxxxxx
-LINE_USER_ID=Uxxxxxxxxxxxxxx</code></pre>
-</li>
-<li>(実装は今後対応予定 — 必要な場合お知らせください)</li>
-</ol>
-</section>
-
 <p style="text-align:center;margin-top:30px;color:#64748B;font-size:11px;">© 2026 RAKURAKU · 代表専用設定ガイド</p>
 
 </div>
