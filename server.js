@@ -369,6 +369,12 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId, opts = {}) {
   const [thisY, thisM] = thisMonth.split('-');
   const [nextY, nextM] = nextMonth.split('-');
 
+  /* 体験(trial)向け: 本来の30日体験終了日と、月次コードの都合で実際に使える月末日。
+     コードは月単位判定のため翌月末まで有効 → その差分を「特典」として正直に告知する */
+  const _trialEnd = new Date(Date.now() + 30 * 86400000);
+  const _trialEndStr = `${_trialEnd.getMonth() + 1}月${_trialEnd.getDate()}日`;
+  const _effectiveEndStr = `${parseInt(nextM)}月${new Date(parseInt(nextY), parseInt(nextM), 0).getDate()}日`;
+
   await emailTransporter.sendMail({
     from: process.env.EMAIL_USER,
     to,
@@ -407,6 +413,16 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId, opts = {}) {
             ※ コードはお店ごと / 月ごとに固有です (他店では使えません)<br>
             ※ 翌月になったら新しいコードを使用してください<br>
             ※ コードを忘れた場合: <a href="mailto:koizumishota0323@gmail.com" style="color:#B45309;">代表 (小泉) へ連絡</a>
+          </div>
+        </div>
+        ` : ''}
+
+        ${plan === 'trial' ? `
+        <div style="background:linear-gradient(135deg,#ECFDF5,#F0FDF4);border:2px solid #10B981;padding:16px 18px;margin:24px 0;border-radius:12px;">
+          <div style="font-size:13px;color:#065F46;font-weight:900;margin-bottom:6px;">🎁 体験期間のおしらせ</div>
+          <div style="font-size:13px;color:#065F46;line-height:1.8;">
+            本来の無料体験はご登録から30日間（〜<strong>${_trialEndStr}</strong>）ですが、<br>
+            特典として <strong>${_effectiveEndStr}まで</strong> そのまま全機能を無料でお使いいただけます。
           </div>
         </div>
         ` : ''}
