@@ -3969,6 +3969,7 @@
     'known_workers',
     'noru_surveys',
     'job_template',
+    'noru_mgr_pin',   /* 🆕 店長PIN: 店長が変更したら店舗の全端末へ即同期（店舗アカウントが正） */
   ];
 
   let _syncSocket      = null;
@@ -4134,6 +4135,16 @@
       }
       if (payload.key === 'shift_history' || payload.key === 'shift_master') {
         if (typeof renderManagerView === 'function') { try { renderManagerView(); } catch(e) {} }
+      }
+      /* 🆕 店長PINが他端末で変更された → この端末を即ロック（常時ロック方針: 旧PINでの居座りを防ぐ） */
+      if (payload.key === 'noru_mgr_pin') {
+        _managerAuthedMem = false;
+        try { sessionStorage.removeItem('noru_mgr_auth'); } catch(e) {}
+        var _mgrScr = document.getElementById('screen-manager');
+        if (_mgrScr && _mgrScr.classList.contains('active') && typeof switchTab === 'function') {
+          switchTab('staff');
+          showToast('🔒 PINが変更されました。再度ロックしました');
+        }
       }
     });
 
@@ -4618,14 +4629,15 @@
   ════════════════════════════════════════ */
   var _gatePin            = '';
   var _gateAttempts       = 0;
-  var _managerAuthedMem   = false; // sessionStorage が使えない環境向けフォールバック
+  var _managerAuthedMem   = false; // 店長認証はメモリ内のみで保持（永続化しない＝常時ロック。リロードで必ず再ロック）
 
   function getManagerPin() {
     return storageGet(_sk('noru_mgr_pin')) || '1234';
   }
   function isManagerAuthed() {
-    if (_managerAuthedMem) return true;
-    try { return sessionStorage.getItem('noru_mgr_auth') === '1'; } catch(e) { return false; }
+    /* 🆕 常時ロック: 認証はメモリ内のみ保持し永続化しない。
+       リロード・再オープン・新規タブでは必ず再ロック（毎回PINが必要） */
+    return _managerAuthedMem === true;
   }
 
   function openManagerGate() {
@@ -4661,8 +4673,7 @@
     var pin = inp ? inp.value.replace(/\D/g,'') : _gatePin;
     if (pin.length < 4) return;
     if (pin === getManagerPin()) {
-      _managerAuthedMem = true;
-      try { sessionStorage.setItem('noru_mgr_auth', '1'); } catch(e) {}
+      _managerAuthedMem = true;   /* 🆕 sessionStorage には保存しない（常時ロック: リロードで必ず再ロック） */
       document.getElementById('manager-gate-overlay').style.display = 'none';
       if (inp) inp.value = '';
       _gatePin = '';
@@ -4708,16 +4719,22 @@
     var input = document.getElementById('pin-new-input');
     var pin = (input ? input.value : '').trim();
     if (!/^\d{4}$/.test(pin)) { showToast('⚠️ 4桁の数字で入力してください'); return; }
+    /* storageSet → localStorage 保存 + SYNCED_KEYS 対象なのでサーバへ即POST
+       → socket.io で店舗の全端末に配信され、店舗アカウントのPINが即時に切り替わる。
+       新PINを明示表示して入力ミスによる締め出しを防止（入力欄は伏字のため） */
     storageSet(_sk('noru_mgr_pin'), pin);
     if (input) input.value = '';
-    showToast('✅ PINを変更しました');
+    showToast('✅ PINを「' + pin + '」に変更しました（店舗の全端末に即反映）');
   }
 
   /* ── 店舗用QRコード（折りたたみ式・URLは非表示） ── */
   function getShopUrl() {
     var base = window.location.origin + window.location.pathname;
     var sid  = getShopId();
-    return sid !== 'default' ? base + '?shop=' + encodeURIComponent(sid) : base;
+    /* 🆕 QRはスタッフ専用リンク: ?staff=1 を付与し、読み取った端末ではシフト管理を一切表示しない */
+    return sid !== 'default'
+      ? base + '?shop=' + encodeURIComponent(sid) + '&staff=1'
+      : base + '?staff=1';
   }
   /* renderShopUrl は廃止（URL表示削除のため） — 互換のため空関数だけ残す */
   function renderShopUrl() {}
@@ -4789,10 +4806,17 @@
   });
 
   function switchTab(tab) {
+    // 🆕 スタッフモードではシフト管理へは入れない（タブ非表示 + 念のため二重ガード）
+    if (tab === 'manager' && isStaffMode()) return;
     // マネージャーはPIN認証が必要
     if (tab === 'manager' && !isManagerAuthed()) {
       openManagerGate();
       return;
+    }
+    /* 🆕 常時ロック: シフト管理から離れたら即ロック解除（再入室には毎回PINが必要） */
+    if (tab !== 'manager' && _managerAuthedMem) {
+      _managerAuthedMem = false;
+      try { sessionStorage.removeItem('noru_mgr_auth'); } catch(e) {}
     }
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -7444,9 +7468,9 @@
     /* 店長権限 (PIN) で再設定可 */
     const pin = prompt('🔐 店長の管理PINを入力してください\n(パスワード忘れたスタッフのリセット用)');
     if (!pin) return;
-    const savedPin = (function() {
-      try { return storageGet(_sk('mgr_pin')) || '0000'; } catch(e) { return '0000'; }
-    })();
+    /* 🔧 統一: 店長PINは getManagerPin()（noru_mgr_pin）が正。
+       旧コードは別キー mgr_pin / 既定0000 を見ており、PIN変更後に解除できないバグだった */
+    const savedPin = getManagerPin();
     if (pin !== savedPin) {
       showToast('⚠ 管理PINが違います');
       return;
@@ -8320,6 +8344,24 @@ ${slotLines}
     return 'default';
   }
 
+  /* 🆕 スタッフモード判定: QR(?staff=1)から開いた端末はシフト管理を一切表示しない。
+     永続化しない（URLのみ参照）＝オーナーが自分の端末でスタッフQRを開いても閉じ込めない。
+     管理画面の実セキュリティはPINゲートが担保。これはスタッフに管理入口を見せない層。 */
+  function isStaffMode() {
+    try {
+      return new URLSearchParams(window.location.search).get('staff') === '1';
+    } catch(e) { return false; }
+  }
+  /* 🆕 スタッフモードを適用: シフト管理タブ＆ライセンスゲートの「管理者ログイン」ボタンを隠す */
+  function applyStaffMode() {
+    if (!isStaffMode()) return;
+    var t = document.getElementById('tab-manager');
+    if (t) t.style.display = 'none';
+    try {
+      document.querySelectorAll('.lic-btn-admin').forEach(function(b){ b.style.display = 'none'; });
+    } catch(e) {}
+  }
+
   function clearDeadline() {
     document.getElementById('deadline-input').value = '';
     saveDeadline('');
@@ -8587,6 +8629,8 @@ RAKURAKUのシフト担当です。
   }
 
   function licenseAdminLogin() {
+    // 🆕 スタッフモードでは管理者ログイン不可（ボタン自体も非表示だが念のため）
+    if (isStaffMode()) return;
     // ライセンスゲートを閉じてPINゲートを表示（管理者は常にアクセス可能）
     document.getElementById('license-gate-overlay').style.display = 'none';
     openManagerGate();
@@ -9147,6 +9191,7 @@ RAKURAKUのシフト担当です。
   initDeadline();
   initTimeRuleUI();    // 朝/昼/夜ルール表示初期化
   updateChecklist();
+  applyStaffMode();    // 🆕 スタッフQR(?staff=1)端末はシフト管理タブ＆管理者ログインを隠す
   // ライセンスチェック
   if (!isLicensed()) {
     openLicenseGate();

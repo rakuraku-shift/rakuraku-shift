@@ -355,10 +355,12 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId, opts = {}) {
     : '※ 最初の30日間は無料（¥0）。31日目以降は月額¥4,990（税込）の自動課金となります。<br>\n          ※ 解約はいつでも可能。解約後は翌月以降のご請求は発生しません。';
   const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
   const shopUrl = shopId ? `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/shift.html`;
+  /* 🆕 スタッフ配布用URL: ?staff=1 付き → 読み取った端末ではシフト管理タブ＆管理者ログインを非表示（店長専用URL=shopUrl とは別物） */
+  const staffUrl = shopId ? `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}&staff=1` : `${baseUrl}/shift.html?staff=1`;
   const myShiftUrl = shopId ? `${baseUrl}/myshift.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/myshift.html`;
   const attendanceUrl = shopId ? `${baseUrl}/attendance.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/attendance.html`;
   const qrUrl = shopId
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=2&color=4F46E5&data=${encodeURIComponent(shopUrl)}`
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=2&color=4F46E5&data=${encodeURIComponent(staffUrl)}`
     : '';
 
   /* 🆕 6桁の月次ライセンスコード (シフト管理画面へのログインに必要) */
@@ -452,7 +454,7 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId, opts = {}) {
 
         <h3 style="color:#0F172A;margin-top:32px;font-size:16px;">📲 スタッフ向け各種URL (スタッフに共有してください)</h3>
         <ul style="font-size:13px;line-height:2;padding-left:20px;">
-          <li><strong>シフト希望提出</strong>: <a href="${shopUrl}" style="color:#4F46E5;">${shopUrl}</a></li>
+          <li><strong>シフト希望提出</strong>: <a href="${staffUrl}" style="color:#4F46E5;">${staffUrl}</a></li>
           <li><strong>マイシフト確認</strong>: <a href="${myShiftUrl}" style="color:#4F46E5;">${myShiftUrl}</a></li>
           <li><strong>GPS出退勤打刻</strong>: <a href="${attendanceUrl}" style="color:#4F46E5;">${attendanceUrl}</a></li>
         </ul>
@@ -1971,7 +1973,7 @@ app.post('/api/admin/test-auto-add', (req, res) => {
     shopId,
     licenseCode,
     shopUrl: `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}`,
-    qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=2&color=4F46E5&data=${encodeURIComponent(baseUrl + '/shift.html?shop=' + encodeURIComponent(shopId))}`,
+    qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=2&color=4F46E5&data=${encodeURIComponent(baseUrl + '/shift.html?shop=' + encodeURIComponent(shopId) + '&staff=1')}`,
     message: '✅ テスト用店舗を自動追加しました。noru-admin を開いてご確認ください。',
   });
 });

@@ -1064,7 +1064,7 @@
         '<div style="border-top:1px solid var(--border);padding:12px 16px;background:rgba(255,255,255,.03);">'+
           '<div style="font-size:9px;font-weight:700;color:var(--slate-5);letter-spacing:.08em;margin-bottom:8px;">🔗 スタッフ用URL</div>'+
           '<div style="font-size:10px;color:var(--indigo);font-family:monospace;word-break:break-all;background:rgba(99,102,241,.08);padding:6px 8px;border-radius:6px;line-height:1.6;" id="sc-url-'+sid+'">'+
-            esc(window.location.origin+'/shift.html?shop='+encodeURIComponent(s.shopId))+
+            esc(window.location.origin+'/shift.html?shop='+encodeURIComponent(s.shopId)+'&staff=1')+
           '</div>'+
           '<div style="display:flex;gap:8px;margin-top:8px;">'+
             '<button onclick="copyScUrl(\'sc-url-'+sid+'\')" style="flex:1;padding:6px;border:none;border-radius:6px;background:rgba(99,102,241,.15);color:#a5b4fc;font-size:10px;font-weight:700;cursor:pointer;">📋 URLコピー</button>'+
@@ -1075,7 +1075,7 @@
         '<div class="sc-qr-section">'+
           '<div style="font-size:9px;font-weight:700;color:var(--slate-5);letter-spacing:.08em;margin-bottom:8px;">📱 QRコード（スタッフ配布用）</div>'+
           '<div class="sc-qr-row">'+
-            '<div class="sc-qr-img"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&color=4F46E5&data='+encodeURIComponent(window.location.origin+'/shift.html?shop='+encodeURIComponent(s.shopId))+'" alt="店舗専用QRコード (スマホで読み取り)" /></div>'+
+            '<div class="sc-qr-img"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&color=4F46E5&data='+encodeURIComponent(window.location.origin+'/shift.html?shop='+encodeURIComponent(s.shopId)+'&staff=1')+'" alt="店舗専用QRコード (スマホで読み取り)" /></div>'+
             '<div class="sc-qr-actions">'+
               '<button class="sc-qr-btn sc-qr-btn--download" onclick="downloadShopQR(\''+encodeURIComponent(s.shopId)+'\',\''+esc(s.shopName||s.shopId)+'\')">⬇️ PNG ダウンロード</button>'+
               '<button class="sc-qr-btn sc-qr-btn--print" onclick="printShopQR(\''+encodeURIComponent(s.shopId)+'\',\''+esc(s.shopName||s.shopId)+'\')">🖨️ A4印刷（店内掲示用）</button>'+
@@ -1095,7 +1095,7 @@
 
   /* ─── QRコード ダウンロード/印刷/共有 ─── */
   function _shopQRUrl(shopIdEnc, size){
-    var fullUrl = window.location.origin+'/shift.html?shop='+shopIdEnc;
+    var fullUrl = window.location.origin+'/shift.html?shop='+shopIdEnc+'&staff=1';
     return 'https://api.qrserver.com/v1/create-qr-code/?size='+(size||400)+'x'+(size||400)+'&margin=2&color=4F46E5&data='+encodeURIComponent(fullUrl);
   }
   async function downloadShopQR(shopIdEnc, shopName){
@@ -1113,7 +1113,7 @@
   }
   function printShopQR(shopIdEnc, shopName){
     var qrSrc = _shopQRUrl(shopIdEnc, 600);
-    var shopUrl = window.location.origin+'/shift.html?shop='+shopIdEnc;
+    var shopUrl = window.location.origin+'/shift.html?shop='+shopIdEnc+'&staff=1';
     var w = window.open('', '_blank');
     if (!w) { showToast('⚠ ポップアップがブロックされました'); return; }
     w.document.write(
@@ -1156,7 +1156,7 @@
     w.document.close();
   }
   async function copyShopQRLink(shopIdEnc){
-    var shopUrl = window.location.origin+'/shift.html?shop='+shopIdEnc;
+    var shopUrl = window.location.origin+'/shift.html?shop='+shopIdEnc+'&staff=1';
     var text = 'シフト希望の提出はこちらから 👇\n'+shopUrl+'\n\n（スマホで開いてください）';
     try {
       await navigator.clipboard.writeText(text);

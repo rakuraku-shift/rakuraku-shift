@@ -63,7 +63,7 @@
     <div class="info-desc">期間中にいつでも解約可能です。期間終了時に自動で月額課金が開始されます。解約はマイページからワンタップで行えます。</div>
   </div>
 
-  <a href="/shift.html" class="btn">RAKURAKU を開く →</a>
+  <a href="/shift.html" id="open-rakuraku-btn" class="btn">RAKURAKU を開く →</a>
 
   <p class="note">
     ※ ライセンスコードのメールが届かない場合、迷惑メールフォルダをご確認ください。<br>
@@ -92,6 +92,11 @@
       document.getElementById('shop-display').textContent  = sub.shopName || '―';
       // プラン表示は metadata から推測 — 今回は単純に "スタンダード" 固定でもOK
       document.getElementById('plan-display').textContent = 'スタンダード';
+      // 🆕「RAKURAKU を開く」を店舗バインド付きリンクに → 6桁ライセンスコード入力画面へ着地
+      if (sub.shopId) {
+        const openBtn = document.getElementById('open-rakuraku-btn');
+        if (openBtn) openBtn.href = '/shift.html?shop=' + encodeURIComponent(sub.shopId);
+      }
     } catch(e) { /* silent */ }
   })();
 </script>
