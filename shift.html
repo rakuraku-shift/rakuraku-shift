@@ -333,11 +333,22 @@
     .cal2-cell.today .cal2-num{color:#DB2777;font-weight:900;}
     .cal2-cell.has{border-color:var(--indigo);background:var(--indigo-l);}
     .cal2-cell.has.today{background:#FCE7F0;border-color:#DB2777;}
+    /* 🆕 まとめて入力で選択中（時間未割当）— 塗りつぶしで強調。.has より後に定義して優先 */
+    .cal2-cell.pending{border-color:var(--indigo);background:var(--indigo);}
+    .cal2-cell.pending .cal2-num{color:#fff;}
+    .cal2-cell.pending .cal2-badge{color:#E0E7FF;}
     .cal2-badge{margin-top:3px;font-size:8.5px;font-weight:800;color:#3730A3;line-height:1.1;text-align:center;max-width:96%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .cal2-hol-dot{position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:#EF4444;}
     .cal2-dayinfo{margin-top:13px;padding:11px 13px;background:#F8FAFC;border-radius:11px;font-size:12.5px;font-weight:700;color:var(--slate-500);line-height:1.5;}
     .cal2-dayinfo .hol{color:#EF4444;}
     .cal2-dayinfo .assigned{color:var(--indigo);}
+    /* 🆕 まとめて入力トグル + 一括適用ボタン */
+    .cal2-bulk-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 12px;}
+    .cal2-bulk-toggle{display:inline-flex;align-items:center;gap:6px;border:1.6px solid var(--slate-200);background:var(--white);color:var(--slate-500);font-family:inherit;font-size:12.5px;font-weight:800;padding:7px 13px;border-radius:999px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+    .cal2-bulk-toggle.active{border-color:var(--indigo);background:var(--indigo-l);color:var(--indigo);}
+    .cal2-bulk-hint{flex:1;min-width:160px;font-size:11px;font-weight:600;color:var(--indigo);line-height:1.4;}
+    .cal2-bulk-apply{width:100%;margin-top:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;font-family:inherit;font-size:14px;font-weight:800;padding:13px;cursor:pointer;box-shadow:0 4px 14px rgba(79,70,229,.32);-webkit-tap-highlight-color:transparent;}
+    .cal2-bulk-apply:active{transform:scale(.98);}
     /* ボトムシート */
     .cal2-sheet-ov{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:1000;display:none;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .2s;}
     .cal2-sheet-ov.show{opacity:1;}
@@ -2620,6 +2631,14 @@
       <button type="button" class="cal2-clear" id="cal2-clear" onclick="clearAllDayTimes()" data-i18n="sf.cal_clear">クリア</button>
     </div>
 
+    <!-- 🆕 まとめて入力トグル（同じ時間で複数日を一括設定） -->
+    <div class="cal2-bulk-bar">
+      <button type="button" class="cal2-bulk-toggle" id="cal2-bulk-toggle" onclick="toggleBulkMode()" aria-pressed="false">
+        <span aria-hidden="true">📅</span><span data-i18n="sf.bulk_toggle">まとめて入力</span>
+      </button>
+      <div class="cal2-bulk-hint" id="cal2-bulk-hint" style="display:none;" data-i18n="sf.bulk_hint">同じ時間で出られる日を続けてタップ → 下のボタンで一括設定</div>
+    </div>
+
     <!-- グリッド表示 -->
     <div id="cal2-grid-view">
       <div class="cal2-dow-head" aria-hidden="true">
@@ -2627,6 +2646,8 @@
       </div>
       <div class="cal2-grid" id="cal2-grid"></div>
       <div class="cal2-dayinfo" id="cal2-dayinfo"></div>
+      <!-- 🆕 まとめて入力: 選択した日に一括で時間帯を設定 -->
+      <button type="button" class="cal2-bulk-apply" id="cal2-bulk-apply" style="display:none;" onclick="openBulkTimeSheet()"><span id="cal2-bulk-apply-label">選択した日に時間帯を設定</span> →</button>
     </div>
 
     <!-- リスト表示 -->
@@ -3901,6 +3922,12 @@
      submit/店長表示は shiftBlocks 経由なので syncBlocksFromDayTimes() で同期する */
   let dayTimes   = {};
   let calView    = 'grid';   // 'grid' | 'list'
+
+  /* 🆕 まとめて入力: 同じ時間帯で複数日を一括設定。bulkDates は dayTimes とは独立した
+     「まだ時間を割り当てていない選択中の日」。適用時に dayTimes へ書き込む（legacy の selectedDates とは別物） */
+  let bulkMode   = false;
+  let bulkDates  = new Set();
+  let _sheetBulk = false;
   let _sheetDate = null;     // ボトムシート対象日
   let _focusDate = null;     // 情報バーに表示中の日
 
@@ -4895,6 +4922,7 @@
       if(isPast)    cls += ' past';
       if(isToday)   cls += ' today';
       if(t)         cls += ' has';
+      if(bulkMode && bulkDates.has(dateStr)) cls += ' pending';
       cell.className = cls;
 
       const num = document.createElement('div');
@@ -4914,7 +4942,7 @@
       }
 
       if(!isPast){
-        cell.addEventListener('click', () => openTimeSheet(dateStr));
+        cell.addEventListener('click', () => onCalCellTap(dateStr));
       }
       grid.appendChild(cell);
     }
@@ -5000,19 +5028,22 @@
     if(cs) cs.value = '';
     if(ce) ce.value = '';
     _sheetDate = null;
+    _sheetBulk = false;
   }
   function sheetPick(time){
+    if(_sheetBulk){ applyBulkTime(time); return; }
     if(!_sheetDate) return;
     assignDayTime(_sheetDate, time);
     closeTimeSheet();
   }
   function sheetPickCustom(){
-    if(!_sheetDate) return;
     const cs = document.getElementById('ct-start');
     const ce = document.getElementById('ct-end');
     const s = cs ? cs.value : '';
     const e = ce ? ce.value : '';
     if(!s || !e){ showToast('⚠️ 開始と終了の時間を入力してください'); return; }
+    if(_sheetBulk){ applyBulkTime(s + '〜' + e); return; }
+    if(!_sheetDate) return;
     assignDayTime(_sheetDate, s + '〜' + e);
     closeTimeSheet();
   }
@@ -5025,15 +5056,16 @@
   function assignDayTime(dateStr, time){ dayTimes[dateStr] = time; _afterDayChange(); }
   function removeDayTime(dateStr){ delete dayTimes[dateStr]; _afterDayChange(); }
   function clearAllDayTimes(){
-    if(Object.keys(dayTimes).length === 0) return;
+    if(Object.keys(dayTimes).length === 0 && bulkDates.size === 0) return;
     if(!confirm(_ct('sf.cal_clear_confirm', '入力した希望シフトをすべてクリアしますか？'))) return;
-    dayTimes = {}; _focusDate = null; _afterDayChange();
+    dayTimes = {}; _focusDate = null; bulkDates.clear(); _afterDayChange();
   }
   function _afterDayChange(){
     syncBlocksFromDayTimes();
     renderDateStrip();
     renderSelectedList();
     updateChecklist();
+    updateBulkApply();
   }
   /* dayTimes → shiftBlocks（同じ時間帯の日をグループ化して submit 用に同期） */
   function syncBlocksFromDayTimes(){
@@ -5043,6 +5075,64 @@
       (byTime[t] = byTime[t] || []).push(d);
     });
     shiftBlocks = Object.keys(byTime).map(t => ({ dates: byTime[t], time: t }));
+  }
+
+  /* ════ 🆕 まとめて入力（同じ時間で複数日を一括設定）════ */
+  /* セルタップ: まとめモードなら選択トグル、通常モードなら従来どおり個別シート */
+  function onCalCellTap(dateStr){
+    if(bulkMode){
+      if(bulkDates.has(dateStr)) bulkDates.delete(dateStr);
+      else bulkDates.add(dateStr);
+      renderDateStrip();
+      updateBulkApply();
+    } else {
+      openTimeSheet(dateStr);
+    }
+  }
+  function toggleBulkMode(){
+    bulkMode = !bulkMode;
+    bulkDates.clear();
+    const btn = document.getElementById('cal2-bulk-toggle');
+    if(btn){ btn.classList.toggle('active', bulkMode); btn.setAttribute('aria-pressed', bulkMode ? 'true' : 'false'); }
+    const hint = document.getElementById('cal2-bulk-hint');
+    if(hint) hint.style.display = bulkMode ? 'block' : 'none';
+    if(bulkMode && calView !== 'grid') setCalView('grid');  /* まとめ選択はグリッドのみ */
+    renderDateStrip();
+    updateBulkApply();
+  }
+  function updateBulkApply(){
+    const b = document.getElementById('cal2-bulk-apply');
+    if(!b) return;
+    const n = bulkDates.size;
+    if(bulkMode && n > 0){
+      b.style.display = 'block';
+      const lbl = document.getElementById('cal2-bulk-apply-label');
+      if(lbl) lbl.textContent = _ct('sf.bulk_apply', '選択した{n}日に時間帯を設定').replace('{n}', n);
+    } else {
+      b.style.display = 'none';
+    }
+  }
+  function openBulkTimeSheet(){
+    if(bulkDates.size === 0) return;
+    _sheetBulk = true;
+    _sheetDate = null;
+    const ttl = document.getElementById('cal2-sheet-date');
+    if(ttl) ttl.textContent = _ct('sf.bulk_sheet_title', '選択した{n}日にまとめて設定').replace('{n}', bulkDates.size);
+    document.querySelectorAll('#cal2-opts .cal2-opt').forEach(b => b.classList.remove('sel'));
+    const cs = document.getElementById('ct-start'); if(cs) cs.value = '';
+    const ce = document.getElementById('ct-end');   if(ce) ce.value = '';
+    const rm = document.getElementById('cal2-sheet-remove'); if(rm) rm.style.display = 'none';
+    const ov = document.getElementById('cal2-sheet-ov');
+    if(ov){ ov.style.display = 'flex'; requestAnimationFrame(() => ov.classList.add('show')); }
+  }
+  function applyBulkTime(time){
+    if(bulkDates.size === 0){ closeTimeSheet(); return; }
+    const n = bulkDates.size;
+    bulkDates.forEach(d => { dayTimes[d] = time; });
+    bulkDates.clear();
+    closeTimeSheet();           /* closeTimeSheet 内で _sheetBulk も false に戻る */
+    _afterDayChange();
+    showToast('✅ ' + _ct('sf.bulk_done', '{n}日にまとめて設定しました').replace('{n}', n));
   }
 
   /* 表示切替（グリッド / リスト） */
@@ -5065,6 +5155,7 @@
       if (typeof currentYear === 'number' && document.getElementById('cal2-grid')) {
         renderDateStrip();
         renderSelectedList();
+        updateBulkApply();   /* 🆕 {n} 補間ラベルは data-i18n 非対応のため手動再描画 */
       }
     } catch(e){}
   });

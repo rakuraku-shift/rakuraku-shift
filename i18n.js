@@ -88,6 +88,11 @@
 
     /* ─── シフト提出カレンダー (shift.html) ─── */
     'sf.cal_clear':       { ja:'クリア', en:'Clear', zh:'清除', ko:'지우기', vi:'Xóa' },
+    'sf.bulk_toggle':     { ja:'まとめて入力', en:'Bulk select', zh:'批量输入', ko:'일괄 입력', vi:'Chọn hàng loạt' },
+    'sf.bulk_hint':       { ja:'同じ時間で出られる日を続けてタップ → 下のボタンで一括設定', en:'Tap each day you can work the same hours, then set them all with the button below', zh:'连续点击可上同样时间班的日期 → 用下方按钮一次性设置', ko:'같은 시간에 일할 수 있는 날을 연속으로 탭 → 아래 버튼으로 일괄 설정', vi:'Chạm các ngày làm cùng khung giờ → đặt tất cả bằng nút bên dưới' },
+    'sf.bulk_apply':      { ja:'選択した{n}日に時間帯を設定', en:'Set a time for the {n} selected day(s)', zh:'为已选 {n} 天设置时间段', ko:'선택한 {n}일에 시간대 설정', vi:'Đặt khung giờ cho {n} ngày đã chọn' },
+    'sf.bulk_sheet_title':{ ja:'選択した{n}日にまとめて設定', en:'Set all {n} selected day(s)', zh:'一次性设置已选 {n} 天', ko:'선택한 {n}일 일괄 설정', vi:'Đặt cho {n} ngày đã chọn' },
+    'sf.bulk_done':       { ja:'{n}日にまとめて設定しました', en:'Set {n} day(s) at once', zh:'已一次性设置 {n} 天', ko:'{n}일을 한꺼번에 설정했습니다', vi:'Đã đặt {n} ngày cùng lúc' },
     'sf.cal_toggle_aria': { ja:'表示切替', en:'Toggle view', zh:'切换显示', ko:'표시 전환', vi:'Chuyển chế độ xem' },
     'sf.cal_grid_aria':   { ja:'カレンダー表示', en:'Calendar view', zh:'日历视图', ko:'캘린더 보기', vi:'Xem lịch' },
     'sf.cal_list_aria':   { ja:'リスト表示', en:'List view', zh:'列表视图', ko:'목록 보기', vi:'Xem danh sách' },
