@@ -8984,10 +8984,14 @@ RAKURAKUのシフト担当です。
       /* shop=demo-shop の時だけデモを残す (営業デモ用) */
       if (shopId === 'demo-shop') return;
       var demoNames = ['古関','はるか','おうすけ','じゅな','みなみ','松本ゆうき','いづみ','なつき','おとは','ののか','しゅうへい','あいり'];
+      /* 旧シードの汎用デモ名 (スタッフA〜Z) も駆逐。実在スタッフ名がこの形になることは無い */
+      function isDemoName(n) {
+        return !!n && (demoNames.indexOf(n) >= 0 || /^スタッフ[A-Z]$/.test(n));
+      }
 
       /* ① シフト提出からデモ削除 */
       var existing = JSON.parse(storageGet(_sk('shift_submissions')) || '[]');
-      var filtered = existing.filter(function(e) { return e && e.name && demoNames.indexOf(e.name) < 0; });
+      var filtered = existing.filter(function(e) { return e && e.name && !isDemoName(e.name); });
       if (filtered.length !== existing.length) {
         saveState(filtered);
         console.log('[init] シフト提出からデモ ' + (existing.length - filtered.length) + ' 件を削除');
@@ -8997,8 +9001,8 @@ RAKURAKUのシフト担当です。
       try {
         var known = JSON.parse(storageGet(_sk('known_workers')) || '{}');
         var deleted = 0;
-        demoNames.forEach(function(n) {
-          if (known[n]) { delete known[n]; deleted++; }
+        Object.keys(known).forEach(function(n) {
+          if (isDemoName(n)) { delete known[n]; deleted++; }
         });
         if (deleted > 0) {
           storageSet(_sk('known_workers'), JSON.stringify(known));
@@ -9010,8 +9014,8 @@ RAKURAKUのシフト担当です。
       try {
         var evals = JSON.parse(storageGet(_sk('staff_evals_v2')) || '{}');
         var ed = 0;
-        demoNames.forEach(function(n) {
-          if (evals[n]) { delete evals[n]; ed++; }
+        Object.keys(evals).forEach(function(n) {
+          if (isDemoName(n)) { delete evals[n]; ed++; }
         });
         if (ed > 0) {
           storageSet(_sk('staff_evals_v2'), JSON.stringify(evals));

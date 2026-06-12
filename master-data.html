@@ -380,7 +380,7 @@ function saveMasterData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(masterData));
 
     /* サーバー同期 (ベストエフォート) */
-    const shopId = (new URLSearchParams(location.search).get('shop')) || localStorage.getItem('rakuraku-shop-id') || 'default';
+    const shopId = (new URLSearchParams(location.search).get('shop')) || localStorage.getItem('noru_bound_shop') || (function(){try{var o=JSON.parse(localStorage.getItem('rakuraku_shop')||'{}');return (o&&o.id)||'';}catch(e){return '';}})() || 'default';
     fetch(`/api/master-data/${encodeURIComponent(shopId)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

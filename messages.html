@@ -159,7 +159,7 @@
      設定・状態
   ══════════════════════════════════════════ */
   const params  = new URLSearchParams(location.search);
-  const SHOP_ID = params.get('shop') || 'default';
+  const SHOP_ID = params.get('shop') || localStorage.getItem('noru_bound_shop') || (function(){try{var o=JSON.parse(localStorage.getItem('rakuraku_shop')||'{}');return (o&&o.id)||'';}catch(e){return '';}})() || 'default';
   const NAME_KEY = 'rakuraku_attendance_name_' + SHOP_ID; /* 出退勤画面と同じ名前を共有 */
 
   let me = '';

@@ -175,7 +175,7 @@
       <div class="lbl">シフト希望提出</div>
       <div class="desc">来月の希望日</div>
     </a>
-    <a href="/messages.html" class="feature-card" onclick="event.preventDefault();var s=localStorage.getItem('rakuraku-shop-id')||'';location.href='/messages.html'+(s?('?shop='+encodeURIComponent(s)):'');">
+    <a href="/messages.html" class="feature-card" onclick="event.preventDefault();var s=localStorage.getItem('noru_bound_shop')||(function(){try{var o=JSON.parse(localStorage.getItem('rakuraku_shop')||'{}');return (o&&o.id)||'';}catch(e){return '';}})()||'';location.href='/messages.html'+(s?('?shop='+encodeURIComponent(s)):'');">
       <div class="ic">💬</div>
       <div class="lbl">メッセージ</div>
       <div class="desc">店舗グループ・1:1</div>
@@ -347,7 +347,7 @@ async function renderAnnouncements() {
   const root = document.getElementById('announce-list');
   let list = [];
   try {
-    const shopId = localStorage.getItem('rakuraku-shop-id') || 'default';
+    const shopId = (new URLSearchParams(location.search).get('shop')) || localStorage.getItem('noru_bound_shop') || (function(){try{var o=JSON.parse(localStorage.getItem('rakuraku_shop')||'{}');return (o&&o.id)||'';}catch(e){return '';}})() || 'default';
     const res = await fetch('/api/announcements/' + shopId);
     if (res.ok) list = await res.json();
   } catch(e) {}

@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v24 — i18n.js 更新を配信 (mgr.shift_edit_* / 顔認証 att.face_* / メッセージ msg.* の新キー). i18n.js はキャッシュ優先のため、翻訳キー追加時はこのバージョンを必ず上げること */
-var CACHE = 'rakuraku-v24';
+/* RAKURAKU Service Worker v25 — i18n.js をネットワーク優先に変更。翻訳キー追加時に SW バージョンを上げ忘れても常に最新訳が配信される（「たまに英語になる」問題の根治）。他の静的アセットは従来通りキャッシュ優先 */
+var CACHE = 'rakuraku-v25';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -97,6 +97,20 @@ self.addEventListener('activate', function(e) {
 self.addEventListener('fetch', function(e) {
   /* API リクエストはキャッシュしない（常にネット） */
   if (e.request.url.indexOf('/api/') !== -1 || e.request.url.indexOf('/socket.io/') !== -1) {
+    return;
+  }
+
+  /* i18n.js: ネットワーク優先（翻訳キーが頻繁に増えるため、SWバージョンを上げ忘れても常に最新を配信。オフライン時のみキャッシュから復旧） */
+  if (e.request.url.indexOf('/i18n.js') !== -1) {
+    e.respondWith(
+      fetch(e.request).then(function(res) {
+        if (res && res.status === 200) {
+          var clone = res.clone();
+          caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
+        }
+        return res;
+      }).catch(function() { return caches.match(e.request); })
+    );
     return;
   }
 

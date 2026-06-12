@@ -2855,6 +2855,71 @@ app.get('/api/attendance/month', (req, res) => {
 });
 
 /* ════════════════════════════════════════════
+ * 🧹 勤怠データ清掃 (代表専用・ガード付き)
+ *   誤って共有 'default' バケットに溜まった打刻や、実店舗に紛れたデモ名打刻を掃除する。
+ *   - env ADMIN_CLEANUP_TOKEN 未設定なら無効(403)。token は ?token= か x-admin-token で照合。
+ *   - confirm=1 が無ければドライラン(削除せず対象のみ報告)。
+ *   - shop 省略時は 'default'。names=A,B か demoOnly=1 で対象を限定。
+ *     実店舗バケットの全件削除は禁止(names か demoOnly 必須)。default のみ全件削除可。
+ *   例: /api/admin/clean-attendance?token=XXX            → default を全件ドライラン
+ *       /api/admin/clean-attendance?token=XXX&confirm=1  → default を全件削除
+ *       /api/admin/clean-attendance?token=XXX&shop=foo&demoOnly=1&confirm=1 → 実店舗のデモ名のみ削除
+ * ════════════════════════════════════════════ */
+function _isDemoAttendanceName(n) {
+  if (!n) return false;
+  const DEMO = ['古関','はるか','おうすけ','じゅな','みなみ','松本ゆうき','いづみ','なつき','おとは','ののか','しゅうへい','あいり'];
+  return DEMO.indexOf(n) >= 0 || /^スタッフ[A-Z]$/.test(n);
+}
+app.get('/api/admin/clean-attendance', (req, res) => {
+  const token = process.env.ADMIN_CLEANUP_TOKEN;
+  if (!token) return res.status(403).json({ ok: false, error: 'cleanup disabled (ADMIN_CLEANUP_TOKEN 未設定)' });
+  const given = req.query.token || req.headers['x-admin-token'] || '';
+  if (given !== token) return res.status(403).json({ ok: false, error: 'forbidden' });
+
+  const shop = _safeShopId(req.query.shop) || 'default';
+  const confirm = req.query.confirm === '1';
+  const demoOnly = req.query.demoOnly === '1';
+  const names = String(req.query.names || '').split(',').map(s => s.trim()).filter(Boolean);
+  const wipeAll = !demoOnly && names.length === 0;
+  if (wipeAll && shop !== 'default') {
+    return res.status(400).json({ ok: false, error: '実店舗バケットの全件削除は不可。names= か demoOnly=1 を指定してください' });
+  }
+
+  let files = [];
+  try {
+    files = fs.readdirSync(ATTENDANCE_DIR).filter(f => f.startsWith(shop + '-') && f.endsWith('.json'));
+  } catch(e) { files = []; }
+
+  const report = [];
+  let totalRemoved = 0;
+  files.forEach(f => {
+    const fp = path.join(ATTENDANCE_DIR, f);
+    const arr = readJSON(fp, []);
+    const before = arr.length;
+    const kept = wipeAll ? [] : arr.filter(r => {
+      const nm = r && r.name;
+      const hit = (demoOnly && _isDemoAttendanceName(nm)) || (names.length > 0 && names.indexOf(nm) >= 0);
+      return !hit;
+    });
+    const removed = before - kept.length;
+    if (removed > 0) {
+      report.push({ file: f, before, removed, after: kept.length });
+      totalRemoved += removed;
+      if (confirm) writeJSON(fp, kept);
+    }
+  });
+
+  res.json({
+    ok: true,
+    dryRun: !confirm,
+    shop, demoOnly, wipeAll, names,
+    totalRemoved,
+    files: report,
+    note: confirm ? '削除を実行しました' : 'ドライラン: confirm=1 で実際に削除します',
+  });
+});
+
+/* ════════════════════════════════════════════
  * 💬 店舗内メッセージ API (グループ + 1:1 DM)
  *   送信は HTTP POST、配信は socket.io ('message_new')。クライアントはポーリングも併用。
  * ════════════════════════════════════════════ */

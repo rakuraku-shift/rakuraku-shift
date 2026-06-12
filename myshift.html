@@ -184,7 +184,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const params = new URLSearchParams(location.search);
-  const SHOP_ID = params.get('shop') || 'default';
+  const SHOP_ID = params.get('shop') || localStorage.getItem('noru_bound_shop') || (function(){try{var o=JSON.parse(localStorage.getItem('rakuraku_shop')||'{}');return (o&&o.id)||'';}catch(e){return '';}})() || 'default';
   const DAY_NAMES = ['日','月','火','水','木','金','土'];
   let _shopMeta = null, _viewYear, _viewMonth, _shiftMaster = {}, _changeRequests = [];
   function nameKey() { return 'rakuraku_myshift_name_' + SHOP_ID; }
@@ -338,7 +338,7 @@
     let announcements = [];
     /* server優先、なければlocalStorage */
     try {
-      const shopId = (typeof getShopId === 'function') ? getShopId() : 'default';
+      const shopId = SHOP_ID;
       const res = await fetch('/api/announcements/' + shopId);
       if (res.ok) announcements = await res.json();
     } catch(e) { /* fallback */ }

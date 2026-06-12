@@ -230,7 +230,7 @@
      設定・状態
   ══════════════════════════════════════════ */
   const params = new URLSearchParams(location.search);
-  const SHOP_ID = params.get('shop') || 'default';
+  const SHOP_ID = params.get('shop') || localStorage.getItem('noru_bound_shop') || (function(){try{var o=JSON.parse(localStorage.getItem('rakuraku_shop')||'{}');return (o&&o.id)||'';}catch(e){return '';}})() || 'default';
   const ALLOWED_RADIUS_METERS = 200; // デフォルト 200m（店舗設定で上書き可）
   let _shopMeta = null;
   let _currentPosition = null;
