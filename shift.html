@@ -2578,7 +2578,7 @@
       <input class="sf-input" type="text" id="staff-name"
              placeholder="スタッフ名"
              oninput="onNameInput()" onfocus="onNameInput()"
-             oncompositionstart="imeReadStart()" oncompositionupdate="imeReadUpdate(event)" oncompositionend="imeReadEnd()"
+             oncompositionstart="imeReadStart()" oncompositionupdate="imeReadUpdate(event)" oncompositionend="onNameComposEnd()"
              autocomplete="off" />
       <div class="name-suggestions" id="name-suggestions" style="display:none;"></div>
     </div>
@@ -5247,6 +5247,33 @@
   }
   function imeReadReset(){ _imeSeg = ''; _imeReading = ''; }
   function imeGetReading(){ return _imeReading; }
+
+  /* ── 既存スタッフの読みを IME 入力経由で自動補完（自己学習） ──
+     例: 「こいずみ」と打って漢字「小泉」に変換確定した時点で、
+     読み未保存の既存レコード小泉に reading=こいずみ を付与する。
+     → 提出を待たず、検索でかな入力するだけで以降ひらがな1文字でも候補に出る。
+     既存の漢字のみ登録ぶんを後追いで救済するための仕組み。 */
+  function maybeBackfillReading() {
+    var el = document.getElementById('staff-name');
+    if (!el) return;
+    var name = el.value.trim();
+    var reading = _toHira(imeGetReading() || '');
+    if (!name || !reading) return;
+    if (_isKanaOnly(name)) return;              // 氏名がかな表記なら読み不要
+    if (reading === _toHira(name)) return;      // 読み＝表記なら付与不要
+    var known = loadKnownWorkers();
+    var w = known[name];
+    if (!w) return;                             // 未登録は提出時 registerWorker に任せる
+    if (w.reading && String(w.reading).trim()) return; // 既に読みあり（上書きしない）
+    known[name] = Object.assign({}, w, { reading: reading });
+    saveKnownWorkers(known);                    // SYNCED_KEYS → 他端末へも同期
+    showNameSuggestions(name);                  // その場で候補表示を更新
+  }
+  /* 名前欄の変換確定: 読みを確定 → 既存レコードへ自動補完 */
+  function onNameComposEnd() {
+    imeReadEnd();
+    maybeBackfillReading();
+  }
 
   function showNameSuggestions(query) {
     const list = document.getElementById('name-suggestions');
