@@ -41,7 +41,6 @@ ol li{margin:8px 0}
   <li>Stripe アカウント作成 (本人確認・税情報)</li>
   <li>Product (商品) 作成</li>
   <li>Price ID 発行 (月額 ¥4,990 / 年額 ¥49,900)</li>
-  <li>イントロ割引クーポン作成 (30日¥0 → 6ヶ月¥500 → ¥4,990)</li>
   <li>Webhook 設定 (subscription.created / .updated / .deleted)</li>
   <li>環境変数を Railway に登録</li>
   <li>テスト環境で決済 → 本番モード切替</li>
@@ -77,21 +76,11 @@ ol li{margin:8px 0}
   </ul>
 </div>
 
-<h2>🎟 イントロ割引クーポン作成 (30日¥0 → 6ヶ月¥500)</h2>
-<div class="step">
-  <strong>Dashboard → 商品 → クーポン → クーポンを作成</strong>
-  <ul>
-    <li>タイプ: <code>金額割引</code></li>
-    <li>割引額: <code>4490 JPY</code> (¥4,990 − ¥4,490 = 実質 ¥500 / 月)</li>
-    <li>適用方法: <code>繰り返し (repeating)</code></li>
-    <li>適用期間: <code>6 ヶ月</code></li>
-    <li>クーポン ID: <code>INTRO6MO500</code> → <code>STRIPE_COUPON_INTRO</code></li>
-  </ul>
-</div>
+<h2>💴 料金プラン (シンプル課金)</h2>
 <div class="warning">
-  ⚠️ <strong>料金の流れ</strong>: ① 登録〜30日 = <strong>¥0</strong> (<code>trial_period_days:30</code>) → ② 31日目〜6ヶ月 = <strong>¥500 / 月</strong> (クーポンで ¥4,490 割引) → ③ 7ヶ月目以降 = 通常 <strong>¥4,990 / 月</strong>。<br>
-  クーポンは<strong>月額プランのみ</strong>適用 (年額は対象外)。<code>STRIPE_COUPON_INTRO</code> 未設定時はコード入力欄 (allow_promotion_codes) が表示されるだけで自動割引はかからない。<br>
-  テストモードで <code>4242 4242 4242 4242</code> 登録 → Dashboard の顧客 → サブスクリプションで「トライアル30日 → 次回請求 ¥500 ×6回 → ¥4,990」を必ず確認してから本番化。
+  ⚠️ <strong>料金の流れ</strong>: ① 登録〜30日 = <strong>¥0</strong> (<code>trial_period_days:30</code>) → ② 31日目以降 = 通常 <strong>¥4,990 / 月</strong> (年額は <strong>¥49,900 / 年</strong>)。<br>
+  <strong>イントロ割引クーポンは廃止 (2026-06-11)</strong>。「30日無料トライアル → 通常料金」のシンプルな課金です。<code>STRIPE_COUPON_INTRO</code> は使用しません（環境変数も不要）。<br>
+  テストモードで <code>4242 4242 4242 4242</code> 登録 → Dashboard の顧客 → サブスクリプションで「トライアル30日 → 次回請求 ¥4,990」を必ず確認してから本番化。
 </div>
 
 <h2>3️⃣ Webhook 設定</h2>
@@ -118,7 +107,6 @@ invoice.payment_failed</pre>
     <tr><td><code>STRIPE_PUBLISHABLE_KEY</code></td><td>pk_live_xxx</td><td>本番</td></tr>
     <tr><td><code>STRIPE_PRICE_ID_MONTHLY</code></td><td>price_xxx</td><td>本番</td></tr>
     <tr><td><code>STRIPE_PRICE_ID_ANNUAL</code></td><td>price_xxx</td><td>本番</td></tr>
-    <tr><td><code>STRIPE_COUPON_INTRO</code></td><td>INTRO6MO500</td><td>本番</td></tr>
     <tr><td><code>STRIPE_WEBHOOK_SECRET</code></td><td>whsec_xxx</td><td>本番</td></tr>
     <tr><td><code>STRIPE_TEST_SECRET_KEY</code></td><td>sk_test_xxx</td><td>テスト</td></tr>
   </tbody>
@@ -128,7 +116,6 @@ invoice.payment_failed</pre>
 <pre>railway variables set STRIPE_SECRET_KEY=sk_live_xxx
 railway variables set STRIPE_PRICE_ID_MONTHLY=price_xxx
 railway variables set STRIPE_PRICE_ID_ANNUAL=price_xxx
-railway variables set STRIPE_COUPON_INTRO=INTRO6MO500
 railway variables set STRIPE_WEBHOOK_SECRET=whsec_xxx
 railway up</pre>
 

@@ -137,6 +137,18 @@
     </div>
   </div>
 
+  <!-- 🆕 顔認証 (打刻時に自撮りを記録してなりすまし打刻を防止) -->
+  <div class="gps-card" id="face-card-wrap">
+    <div class="gps-icon loading" id="face-icon" aria-hidden="true">📷</div>
+    <div class="gps-text">
+      <div class="gps-status" id="face-status" data-i18n="att.face_loading">カメラを準備中...</div>
+      <div class="gps-detail" id="face-detail" data-i18n="att.face_loading_sub">打刻時にお顔を撮影して本人確認します</div>
+    </div>
+    <video id="face-video" autoplay playsinline muted aria-hidden="true"
+           style="width:46px;height:46px;border-radius:50%;object-fit:cover;background:#0F172A;flex-shrink:0;display:none;transform:scaleX(-1);"></video>
+    <canvas id="face-canvas" width="240" height="240" style="display:none;"></canvas>
+  </div>
+
   <!-- 店舗GPS未設定時の警告 + ワンタップ設定ボタン -->
   <div id="gps-setup-warn" style="display:none;background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border:1.5px solid #F59E0B;border-radius:12px;padding:14px 16px;margin-bottom:14px;font-size:12px;color:#78350F;line-height:1.7;">
     <span data-i18n-html="att.gps_unset">⚠️ <strong>店舗位置が未設定です。</strong><br>現在GPS範囲外判定が無効になっています。店長はサポート (koizumishota0323@gmail.com) までご連絡いただければ、店舗の緯度経度を設定いたします。</span><br>
@@ -224,6 +236,8 @@
   let _currentPosition = null;
   let _gpsError = null;
   let _todayRecords = [];
+  let _faceStream = null;   /* 顔認証カメラの MediaStream */
+  let _faceReady = false;   /* 撮影可能な状態か */
 
   /* ── お名前を localStorage に保存 ── */
   function loadName() { try { return localStorage.getItem('rakuraku_attendance_name_' + SHOP_ID) || ''; } catch(e) { return ''; } }
@@ -404,6 +418,9 @@
       }
     }
 
+    /* 🆕 顔認証スナップショット — カメラ可なら 1 フレーム撮影。不可でも打刻は継続。 */
+    const faceImage = captureFace();
+
     const payload = {
       shopId: SHOP_ID,
       name,
@@ -413,6 +430,8 @@
       accuracy: _currentPosition?.accuracy || null,
       distanceM: dist,
       outsideAllowed: warnDist,
+      faceImage,
+      faceCaptured: !!faceImage,
       ts: Date.now(),
     };
 
@@ -603,10 +622,85 @@
     closeClockOutReview();
   }
 
+  /* ══════════════════════════════════════════
+     顔認証カメラ — 打刻時に自撮りを記録し、なりすまし打刻を抑止
+     ※ カメラ拒否/非対応でも打刻自体は通す (faceCaptured:false で記録)
+  ══════════════════════════════════════════ */
+  function updateFaceStatus(state) {
+    const icon = document.getElementById('face-icon');
+    const status = document.getElementById('face-status');
+    const detail = document.getElementById('face-detail');
+    const video = document.getElementById('face-video');
+    if (!icon || !status || !detail) return;
+    icon.classList.remove('loading', 'ok', 'error');
+    if (state === 'ready') {
+      icon.classList.add('ok');
+      icon.textContent = '😊';
+      status.textContent = _t('att.face_ready');
+      detail.textContent = _t('att.face_ready_sub');
+      if (video) video.style.display = 'block';
+    } else if (state === 'error') {
+      icon.classList.add('error');
+      icon.textContent = '📷';
+      status.textContent = _t('att.face_error');
+      detail.textContent = _t('att.face_error_sub');
+      if (video) video.style.display = 'none';
+    } else {
+      icon.classList.add('loading');
+      icon.textContent = '📷';
+      status.textContent = _t('att.face_loading');
+      detail.textContent = _t('att.face_loading_sub');
+    }
+  }
+
+  async function startCamera() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      _faceReady = false;
+      updateFaceStatus('error');
+      return;
+    }
+    try {
+      _faceStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 480 } },
+        audio: false,
+      });
+      const video = document.getElementById('face-video');
+      video.srcObject = _faceStream;
+      await video.play().catch(() => {});
+      _faceReady = true;
+      updateFaceStatus('ready');
+    } catch (e) {
+      _faceReady = false;
+      updateFaceStatus('error');
+    }
+  }
+
+  /* 現在のカメラ映像を 1 フレーム切り出して JPEG dataURL を返す。失敗時は null。 */
+  function captureFace() {
+    try {
+      if (!_faceReady || !_faceStream) return null;
+      const video = document.getElementById('face-video');
+      const canvas = document.getElementById('face-canvas');
+      if (!video || !canvas || !video.videoWidth) return null;
+      const size = 240;
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      /* 中央正方形クロップ */
+      const vw = video.videoWidth, vh = video.videoHeight;
+      const side = Math.min(vw, vh);
+      const sx = (vw - side) / 2, sy = (vh - side) / 2;
+      ctx.drawImage(video, sx, sy, side, side, 0, 0, size, size);
+      return canvas.toDataURL('image/jpeg', 0.55);
+    } catch (e) {
+      return null;
+    }
+  }
+
   /* ── 初期化 ── */
   document.getElementById('staff-name').addEventListener('change', loadHistory);
   loadShopMeta();
   startGPS();
+  startCamera();
   loadHistory();
 </script>
 </body>

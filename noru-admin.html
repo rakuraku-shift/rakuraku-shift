@@ -1071,7 +1071,7 @@
             '<button onclick="resetShopPin('+idx+')" style="flex:1;padding:6px;border:1px solid rgba(239,68,68,.3);border-radius:6px;background:rgba(239,68,68,.08);color:#f87171;font-size:10px;font-weight:700;cursor:pointer;">🔑 PIN リセット</button>'+
           '</div>'+
         '</div>'+
-        /* QR コード + ダウンロード / 印刷 / LINE共有 */
+        /* QR コード + ダウンロード / 印刷 / リンク共有 */
         '<div class="sc-qr-section">'+
           '<div style="font-size:9px;font-weight:700;color:var(--slate-5);letter-spacing:.08em;margin-bottom:8px;">📱 QRコード（スタッフ配布用）</div>'+
           '<div class="sc-qr-row">'+
@@ -1079,7 +1079,7 @@
             '<div class="sc-qr-actions">'+
               '<button class="sc-qr-btn sc-qr-btn--download" onclick="downloadShopQR(\''+encodeURIComponent(s.shopId)+'\',\''+esc(s.shopName||s.shopId)+'\')">⬇️ PNG ダウンロード</button>'+
               '<button class="sc-qr-btn sc-qr-btn--print" onclick="printShopQR(\''+encodeURIComponent(s.shopId)+'\',\''+esc(s.shopName||s.shopId)+'\')">🖨️ A4印刷（店内掲示用）</button>'+
-              '<button class="sc-qr-btn sc-qr-btn--copy" onclick="copyShopQRLink(\''+encodeURIComponent(s.shopId)+'\')">📲 LINE で共有</button>'+
+              '<button class="sc-qr-btn sc-qr-btn--copy" onclick="copyShopQRLink(\''+encodeURIComponent(s.shopId)+'\')">📲 リンクをコピー</button>'+
             '</div>'+
           '</div>'+
         '</div>'+
@@ -1160,7 +1160,7 @@
     var text = 'シフト希望の提出はこちらから 👇\n'+shopUrl+'\n\n（スマホで開いてください）';
     try {
       await navigator.clipboard.writeText(text);
-      showToast('📲 LINE/メール用テキストをコピーしました');
+      showToast('📲 共有用テキストをコピーしました');
     } catch(e){ showToast('⚠ コピー失敗: '+e.message); }
   }
 

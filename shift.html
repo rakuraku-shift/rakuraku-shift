@@ -308,6 +308,67 @@
     .calendar-grid { display:none; }
     .cal-day-name,.cal-day { display:none; }
 
+    /* ══ シフトボード風 月カレンダー (cal2) ══ */
+    .cal2-topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;}
+    .cal2-toggle{display:flex;gap:2px;background:var(--slate-100);border-radius:9px;padding:3px;}
+    .cal2-tg-btn{width:34px;height:30px;border:none;border-radius:7px;background:transparent;color:var(--slate-400);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+    .cal2-tg-btn.active{background:var(--white);color:var(--indigo);box-shadow:0 1px 4px rgba(0,0,0,.1);}
+    .cal2-nav{display:flex;align-items:center;gap:12px;}
+    .cal2-clear{border:none;background:transparent;color:var(--slate-400);font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;padding:4px 6px;white-space:nowrap;}
+    .cal2-clear:hover{color:var(--red);}
+    .cal2-dow-head{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:5px;}
+    .cal2-dow-head span{text-align:center;font-size:11px;font-weight:800;color:var(--slate-400);padding:4px 0;}
+    .cal2-dow-head span.sun{color:#EF4444;}
+    .cal2-dow-head span.sat{color:#3B82F6;}
+    .cal2-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+    .cal2-cell{position:relative;aspect-ratio:1/1.08;border-radius:11px;border:1.6px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:7px;cursor:pointer;background:var(--white);transition:transform .1s,border-color .12s,background .12s;-webkit-tap-highlight-color:transparent;user-select:none;}
+    .cal2-cell.empty{background:transparent;border:none;cursor:default;pointer-events:none;}
+    .cal2-cell:not(.past):not(.empty):active{transform:scale(.9);}
+    .cal2-num{font-size:15px;font-weight:700;color:var(--slate-900);line-height:1;}
+    .cal2-cell.sun .cal2-num{color:#EF4444;}
+    .cal2-cell.sat .cal2-num{color:#3B82F6;}
+    .cal2-cell.hol .cal2-num{color:#EF4444;}
+    .cal2-cell.past{opacity:.3;cursor:default;pointer-events:none;}
+    .cal2-cell.today{background:#FCE7F0;}
+    .cal2-cell.today .cal2-num{color:#DB2777;font-weight:900;}
+    .cal2-cell.has{border-color:var(--indigo);background:var(--indigo-l);}
+    .cal2-cell.has.today{background:#FCE7F0;border-color:#DB2777;}
+    .cal2-badge{margin-top:3px;font-size:8.5px;font-weight:800;color:#3730A3;line-height:1.1;text-align:center;max-width:96%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .cal2-hol-dot{position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:#EF4444;}
+    .cal2-dayinfo{margin-top:13px;padding:11px 13px;background:#F8FAFC;border-radius:11px;font-size:12.5px;font-weight:700;color:var(--slate-500);line-height:1.5;}
+    .cal2-dayinfo .hol{color:#EF4444;}
+    .cal2-dayinfo .assigned{color:var(--indigo);}
+    /* ボトムシート */
+    .cal2-sheet-ov{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:1000;display:none;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .2s;}
+    .cal2-sheet-ov.show{opacity:1;}
+    .cal2-sheet{width:100%;max-width:480px;background:var(--white);border-radius:22px 22px 0 0;padding:8px 18px 26px;transform:translateY(100%);transition:transform .26s cubic-bezier(.25,.8,.25,1);max-height:88vh;overflow-y:auto;}
+    .cal2-sheet-ov.show .cal2-sheet{transform:translateY(0);}
+    .cal2-handle{width:42px;height:4px;border-radius:2px;background:var(--slate-200);margin:6px auto 15px;}
+    .cal2-sheet-date{font-size:18px;font-weight:900;color:var(--slate-900);text-align:center;}
+    .cal2-sheet-sub{font-size:12px;font-weight:600;color:var(--slate-400);text-align:center;margin:5px 0 16px;}
+    .cal2-opts{display:flex;flex-direction:column;gap:8px;}
+    .cal2-opt{display:flex;align-items:center;gap:11px;width:100%;padding:13px 15px;border:1.6px solid var(--slate-200);border-radius:13px;background:var(--white);font-size:14px;font-weight:800;color:var(--slate-900);font-family:inherit;cursor:pointer;text-align:left;transition:transform .1s,border-color .12s,background .12s;-webkit-tap-highlight-color:transparent;}
+    .cal2-opt:active{transform:scale(.98);}
+    .cal2-opt.sel{border-color:var(--indigo);background:var(--indigo-l);color:#3730A3;}
+    .cal2-opt .em{font-size:19px;line-height:1;}
+    .cal2-opt .sub{font-size:11px;font-weight:700;color:var(--slate-400);margin-left:auto;}
+    .cal2-opt.sel .sub{color:var(--indigo);}
+    .cal2-sheet-custom{margin-top:15px;padding-top:15px;border-top:1px solid var(--slate-100);}
+    .cal2-custom-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+    .cal2-custom-row input[type=time]{flex:1;min-width:0;padding:11px 8px;border:1.6px solid var(--slate-200);border-radius:11px;font-size:15px;font-family:inherit;color:var(--slate-900);}
+    .cal2-custom-go{flex-shrink:0;padding:11px 16px;border:none;border-radius:11px;background:var(--indigo);color:#fff;font-weight:800;font-family:inherit;cursor:pointer;font-size:13px;}
+    .cal2-sheet-foot{display:flex;gap:8px;margin-top:18px;}
+    .cal2-remove{flex:1;padding:13px;border:1.6px solid #FECACA;border-radius:13px;background:#FEF2F2;color:#DC2626;font-weight:800;font-family:inherit;cursor:pointer;font-size:13px;}
+    .cal2-close{flex:1;padding:13px;border:1.6px solid var(--slate-200);border-radius:13px;background:var(--white);color:var(--slate-500);font-weight:800;font-family:inherit;cursor:pointer;font-size:13px;}
+    /* リスト表示 */
+    .cal2-list{display:flex;flex-direction:column;gap:8px;}
+    .cal2-li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1.6px solid #C7D2FE;border-radius:12px;background:linear-gradient(135deg,#EEF2FF,#F5F3FF);}
+    .cal2-li-d{font-size:14px;font-weight:900;color:#3730A3;}
+    .cal2-li-t{font-size:12px;font-weight:700;color:var(--slate-500);margin-top:2px;}
+    .cal2-li-rm{flex-shrink:0;width:28px;height:28px;border:none;border-radius:50%;background:#fff;color:var(--slate-400);font-size:16px;line-height:1;cursor:pointer;font-family:inherit;}
+    .cal2-li-rm:hover{color:var(--red);}
+    .cal2-list-empty{text-align:center;padding:34px 10px;color:var(--slate-400);font-size:13px;font-weight:600;line-height:1.7;}
+
     /* ── Time chips ── */
     .time-chips { display:flex; gap:7px; flex-wrap:wrap; }
     .time-chip {
@@ -2483,6 +2544,10 @@
       <span data-i18n="staff.go_myshift">📅 マイシフト・休み変更届</span>
       <span style="font-size:16px;">→</span>
     </a>
+    <a href="#" onclick="event.preventDefault();window.location.href='/messages.html?shop='+encodeURIComponent(getShopId());" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding:11px 14px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:10px;color:#fff;font-size:13px;font-weight:800;text-decoration:none;backdrop-filter:blur(6px);">
+      <span data-i18n="staff.go_messages">💬 メッセージ（店舗グループ・1:1）</span>
+      <span style="font-size:16px;">→</span>
+    </a>
   </div>
 
   <!-- ─── 01 基本情報 ─── -->
@@ -2528,7 +2593,7 @@
     </div>
   </div>
 
-  <!-- ─── 02 希望日 ─── -->
+  <!-- ─── 02 希望シフト（月カレンダー / シフトボード風） ─── -->
   <div class="sf-section">
     <div class="sf-step-hd">
       <div class="sf-step-num-wrap">
@@ -2536,79 +2601,74 @@
       </div>
       <div style="flex:1;">
         <div class="sf-step-title" data-i18n="sf.step2_title">希望日を選択</div>
-        <div class="sf-step-sub" data-i18n="sf.step2_sub">出勤可能な日付をタップで選択（複数可）</div>
+        <div class="sf-step-sub" data-i18n="sf.step2_sub">カレンダーの日付をタップして時間帯を選んでください</div>
       </div>
       <span class="sf-count-badge" id="dates-badge"></span>
     </div>
 
-    <div class="calendar-nav-row" style="margin-bottom:10px;">
-      <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
-      <span class="cal-month" id="cal-title"></span>
-      <button class="cal-nav" onclick="changeMonth(1)">›</button>
-    </div>
-    <div class="date-strip-outer" id="date-strip-outer">
-      <div class="date-strip" id="date-strip"></div>
+    <!-- 表示切替 ＋ 月ナビ ＋ クリア -->
+    <div class="cal2-topbar">
+      <div class="cal2-toggle" role="tablist" aria-label="表示切替" data-i18n-aria="sf.cal_toggle_aria">
+        <button type="button" class="cal2-tg-btn active" id="cal2-tg-grid" onclick="setCalView('grid')" aria-label="カレンダー表示" data-i18n-aria="sf.cal_grid_aria">▦</button>
+        <button type="button" class="cal2-tg-btn" id="cal2-tg-list" onclick="setCalView('list')" aria-label="リスト表示" data-i18n-aria="sf.cal_list_aria">☰</button>
+      </div>
+      <div class="cal2-nav">
+        <button class="cal-nav" onclick="changeMonth(-1)" aria-label="前の月" data-i18n-aria="sf.cal_prev_aria">‹</button>
+        <span class="cal-month" id="cal-title"></span>
+        <button class="cal-nav" onclick="changeMonth(1)" aria-label="次の月" data-i18n-aria="sf.cal_next_aria">›</button>
+      </div>
+      <button type="button" class="cal2-clear" id="cal2-clear" onclick="clearAllDayTimes()" data-i18n="sf.cal_clear">クリア</button>
     </div>
 
-    <div id="selected-dates-section" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--slate-100);">
-      <div class="sf-inner-label" data-i18n="sf.selected_dates">選択中の日付</div>
-      <div class="dates-wrap" id="selected-dates-list" style="min-height:auto;"></div>
+    <!-- グリッド表示 -->
+    <div id="cal2-grid-view">
+      <div class="cal2-dow-head" aria-hidden="true">
+        <span class="sun" data-i18n="dow.0">日</span><span data-i18n="dow.1">月</span><span data-i18n="dow.2">火</span><span data-i18n="dow.3">水</span><span data-i18n="dow.4">木</span><span data-i18n="dow.5">金</span><span class="sat" data-i18n="dow.6">土</span>
+      </div>
+      <div class="cal2-grid" id="cal2-grid"></div>
+      <div class="cal2-dayinfo" id="cal2-dayinfo"></div>
+    </div>
+
+    <!-- リスト表示 -->
+    <div id="cal2-list-view" style="display:none;">
+      <div class="cal2-list" id="selected-dates-list"></div>
     </div>
   </div>
 
-  <!-- ─── 03 希望時間帯 ─── -->
-  <div class="sf-section">
-    <div class="sf-step-hd">
-      <div class="sf-step-num-wrap">
-        <span class="sf-step-pill">03</span>
+  <!-- 時間帯選択ボトムシート -->
+  <div class="cal2-sheet-ov" id="cal2-sheet-ov" onclick="if(event.target===this)closeTimeSheet()">
+    <div class="cal2-sheet" role="dialog" aria-modal="true" aria-label="時間帯を選択" data-i18n-aria="sf.sheet_aria">
+      <div class="cal2-handle"></div>
+      <div class="cal2-sheet-date" id="cal2-sheet-date"></div>
+      <div class="cal2-sheet-sub" data-i18n="sf.sheet_sub">出勤できる時間帯を選んでください</div>
+      <div class="cal2-opts" id="cal2-opts">
+        <button type="button" class="cal2-opt" data-time="フルタイム" onclick="sheetPick('フルタイム')"><span class="em">🕐</span><span data-i18n="sf.slot_full">フルタイム</span><span class="sub" data-i18n="sf.slot_full_sub">終日OK</span></button>
+        <button type="button" class="cal2-opt" data-time="09:00〜13:00" onclick="sheetPick('09:00〜13:00')"><span class="em">🌅</span><span data-i18n="sf.slot_morning">朝</span><span class="sub">9:00〜13:00</span></button>
+        <button type="button" class="cal2-opt" data-time="11:00〜15:00" onclick="sheetPick('11:00〜15:00')"><span class="em">☀️</span><span data-i18n="sf.slot_noon">昼</span><span class="sub">11:00〜15:00</span></button>
+        <button type="button" class="cal2-opt" data-time="17:00〜22:00" onclick="sheetPick('17:00〜22:00')"><span class="em">🌆</span><span data-i18n="sf.slot_evening">夕</span><span class="sub">17:00〜22:00</span></button>
+        <button type="button" class="cal2-opt" data-time="18:00〜24:00" onclick="sheetPick('18:00〜24:00')"><span class="em">🌙</span><span data-i18n="sf.slot_night">夜</span><span class="sub">18:00〜24:00</span></button>
       </div>
-      <div style="flex:1;">
-        <div class="sf-step-title" data-i18n="sf.step3_title">希望時間帯</div>
-        <div class="sf-step-sub" data-i18n="sf.step3_sub">出勤可能な時間帯を選択（複数可）</div>
+      <div class="cal2-sheet-custom">
+        <div class="sf-inner-label" data-i18n="sf.cal_custom_label">カスタム時間で指定</div>
+        <div class="cal2-custom-row">
+          <input type="time" id="ct-start" aria-label="開始時刻" />
+          <span style="font-weight:800;color:var(--slate-400);">〜</span>
+          <input type="time" id="ct-end" aria-label="終了時刻" />
+          <button type="button" class="cal2-custom-go" onclick="sheetPickCustom()" data-i18n="sf.cal_decide">決定</button>
+        </div>
       </div>
-      <span class="time-count-badge zero" id="time-count-badge"></span>
-    </div>
-
-    <div class="ts-grid" id="time-slots">
-      <button type="button" class="time-chip ts-card ts-card--full" data-slot="full" onclick="toggleTime(this)">
-        <span class="ts-emoji">🕐</span>
-        <div class="ts-info"><div class="ts-name" data-i18n="time.full">フルタイム</div><div class="ts-time" data-i18n="time.full_sub">終日対応可</div></div>
-      </button>
-    </div>
-
-    <div class="custom-time-wrap" id="custom-time-wrap">
-      <div class="sf-inner-label" data-i18n="sf.custom_time">カスタム時間を指定</div>
-      <div class="time-picker-row">
-        <input type="time" id="ct-start" oninput="onCustomTimeInput()" />
-        <span class="time-picker-sep">〜</span>
-        <input type="time" id="ct-end" oninput="onCustomTimeInput()" />
+      <div class="cal2-sheet-foot">
+        <button type="button" class="cal2-remove" id="cal2-sheet-remove" onclick="sheetRemove()" style="display:none;" data-i18n="sf.cal_remove_day">この日を外す</button>
+        <button type="button" class="cal2-close" onclick="closeTimeSheet()" data-i18n="common.close">閉じる</button>
       </div>
     </div>
-
-    <!-- ＋ この日程を追加（日付×時間帯のブロック化） -->
-    <button type="button" class="btn-add-block" onclick="addBlock()" style="margin-top:18px;">
-      ＋ <span data-i18n="sf.add_block">この日程を追加</span>
-    </button>
-    <div class="sf-hint" style="text-align:center;margin-top:8px;" data-i18n="sf.add_block_hint">別の時間帯で出したい日があれば、続けて追加できます</div>
-  </div>
-
-  <!-- ─── 追加した日程（複数ブロックをまとめて提出） ─── -->
-  <div class="sf-section" id="blocks-section" style="display:none;">
-    <div class="sf-step-hd">
-      <div style="flex:1;">
-        <div class="sf-step-title">📋 <span data-i18n="sf.blocks_title">追加した日程</span></div>
-        <div class="sf-step-sub" data-i18n="sf.blocks_sub">この内容でまとめて提出します</div>
-      </div>
-      <span class="sf-count-badge" id="blocks-badge"></span>
-    </div>
-    <div class="blocks-list" id="blocks-list"></div>
   </div>
 
   <!-- ─── 04 確認・提出 ─── -->
   <div class="sf-section sf-section--last">
     <div class="sf-step-hd">
       <div class="sf-step-num-wrap sf-step-num-wrap--final">
-        <span class="sf-step-pill sf-step-pill--final">04</span>
+        <span class="sf-step-pill sf-step-pill--final">03</span>
       </div>
       <div>
         <div class="sf-step-title" data-i18n="sf.step4_title">確認・提出</div>
@@ -3836,6 +3896,14 @@
      例: [{dates:['2026-06-01',..4日], time:'06:00〜10:00'}, {dates:[..9日], time:'04:00〜10:00'}] */
   let shiftBlocks   = [];
 
+  /* 🆕 シフトボード風カレンダー: 日付→時間帯 マップ（単一の真実）
+     例: { '2026-06-05':'フルタイム', '2026-06-06':'17:00〜22:00' }
+     submit/店長表示は shiftBlocks 経由なので syncBlocksFromDayTimes() で同期する */
+  let dayTimes   = {};
+  let calView    = 'grid';   // 'grid' | 'list'
+  let _sheetDate = null;     // ボトムシート対象日
+  let _focusDate = null;     // 情報バーに表示中の日
+
   // Timee modal state
   let timeeJobs = [];         // unassigned slots to post
   let postedJobs = {};        // key -> true (localStorage)
@@ -4714,7 +4782,10 @@
     const now = new Date();
     currentYear  = now.getFullYear();
     currentMonth = now.getMonth();
+    _focusDate   = null;
+    setCalView('grid');
     renderDateStrip();
+    renderSelectedList();
   }
   function changeMonth(dir) {
     currentMonth += dir;
@@ -4725,106 +4796,279 @@
   /* 旧 renderCalendar エイリアス（他箇所から呼ばれる） */
   function renderCalendar() { renderDateStrip(); }
 
-  /* 再描画時の月変化を判定するため、前回描画した月を記憶 */
-  let _lastRenderedYear = null;
-  let _lastRenderedMonth = null;
+  /* ════════════════════════════════════════
+     シフトボード風 月カレンダー (cal2)
+     ──────────────────────────────────────
+     renderDateStrip() は関数名を互換維持したまま「月グリッド」を描画する。
+     日付タップ → ボトムシートで時間帯選択 → dayTimes[日付]=時間帯。
+     ════════════════════════════════════════ */
 
-  function renderDateStrip() {
-    document.getElementById('cal-title').textContent = `${currentYear}年 ${currentMonth + 1}月`;
-    const strip = document.getElementById('date-strip');
-    const outer = document.getElementById('date-strip-outer');
+  const CAL_PRESET_TIMES = ['フルタイム','09:00〜13:00','11:00〜15:00','17:00〜22:00','18:00〜24:00'];
 
-    /* 同じ月を再描画する場合は スクロール位置を保持 (タップ毎にリセットさせない) */
-    const isSameMonth = (_lastRenderedYear === currentYear && _lastRenderedMonth === currentMonth);
-    const preserveScrollLeft = isSameMonth && outer ? outer.scrollLeft : null;
+  function _pad2(n){ return String(n).padStart(2,'0'); }
+  function _dstr(y,m0,d){ return y + '-' + _pad2(m0+1) + '-' + _pad2(d); }
 
-    strip.innerHTML = '';
+  /* 時間帯を短いバッジ表記へ（フルタイム→"終日" / "17:00〜22:00"→"17-22"） */
+  function _badgeLabel(t){
+    if(!t) return '';
+    if(t === 'フルタイム') return '終日';
+    const m = String(t).match(/^(\d{1,2}):\d{2}〜(\d{1,2}):\d{2}/);
+    if(m) return m[1] + '-' + m[2];
+    return String(t).replace(/:00/g,'').replace('〜','-');
+  }
 
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  /* ── 日本の祝日（固定 + ハッピーマンデー + 春分秋分 + 振替休日） ── */
+  function _nthMonday(y, m0, nth){ /* m0:0-based / nth番目の月曜の日付 */
+    const first = new Date(y, m0, 1).getDay();
+    const offset = (8 - first) % 7;            /* 最初の月曜までの日数 */
+    return 1 + offset + (nth - 1) * 7;
+  }
+  function _shunbun(y){ return Math.floor(20.8431 + 0.242194*(y-1980) - Math.floor((y-1980)/4)); }
+  function _shubun(y){  return Math.floor(23.2488 + 0.242194*(y-1980) - Math.floor((y-1980)/4)); }
+  function _holidayName(y, m1, d){ /* m1:1-based。祝日名 or null（振替は含まない） */
+    const FIXED = {
+      '1-1':'元日','2-11':'建国記念の日','2-23':'天皇誕生日','4-29':'昭和の日',
+      '5-3':'憲法記念日','5-4':'みどりの日','5-5':'こどもの日','8-11':'山の日',
+      '11-3':'文化の日','11-23':'勤労感謝の日'
+    };
+    const f = FIXED[m1 + '-' + d];
+    if(f) return f;
+    if(m1 === 1  && d === _nthMonday(y,0,2)) return '成人の日';
+    if(m1 === 7  && d === _nthMonday(y,6,3)) return '海の日';
+    if(m1 === 9  && d === _nthMonday(y,8,3)) return '敬老の日';
+    if(m1 === 10 && d === _nthMonday(y,9,2)) return 'スポーツの日';
+    if(m1 === 3  && d === _shunbun(y)) return '春分の日';
+    if(m1 === 9  && d === _shubun(y))  return '秋分の日';
+    return null;
+  }
+  /* 祝日 or 振替休日 名（無ければ null） */
+  function getHoliday(y, m1, d){
+    const h = _holidayName(y, m1, d);
+    if(h) return h;
+    /* 振替休日: 当日が月曜で、前日(日曜)が祝日なら振替休日 */
+    const date = new Date(y, m1-1, d);
+    if(date.getDay() === 1){
+      const prev = new Date(y, m1-1, d-1);
+      if(prev.getDay() === 0 && _holidayName(prev.getFullYear(), prev.getMonth()+1, prev.getDate())) return '振替休日';
+    }
+    return null;
+  }
+
+  /* i18n 安全ヘルパー: i18n 未ロード時は日本語フォールバック */
+  function _ct(key, fb){
+    try { return (typeof i18n !== 'undefined' && i18n.t) ? i18n.t(key) : fb; }
+    catch(e){ return fb; }
+  }
+
+  function renderDateStrip(){ /* 月グリッド描画（関数名は互換のため維持） */
+    const titleEl = document.getElementById('cal-title');
+    if(titleEl) titleEl.textContent = `${currentYear}年${currentMonth + 1}月`;
+    const grid = document.getElementById('cal2-grid');
+    if(!grid) return;
+    grid.innerHTML = '';
+
     const today       = new Date(); today.setHours(0,0,0,0);
-    const DOW_LABELS  = ['日','月','火','水','木','金','土'];
-    let todayEl = null;
-    let firstSelectableEl = null;
-    /* 既に「この日程を追加」済みの日（他ブロックで使用中）はロック表示 */
-    const usedDates = new Set(shiftBlocks.flatMap(b => b.dates));
+    const firstDow    = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-    for (let d = 1; d <= daysInMonth; d++) {
+    /* 先頭の空セル（1日の曜日までインデント） */
+    for(let i = 0; i < firstDow; i++){
+      const e = document.createElement('div');
+      e.className = 'cal2-cell empty';
+      grid.appendChild(e);
+    }
+
+    for(let d = 1; d <= daysInMonth; d++){
       const date    = new Date(currentYear, currentMonth, d);
-      const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dateStr = _dstr(currentYear, currentMonth, d);
       const dow     = date.getDay();
       const isPast  = date < today;
       const isToday = date.getTime() === today.getTime();
-      const isSel   = selectedDates.has(dateStr);
-      const isUsed  = usedDates.has(dateStr);
+      const hol     = getHoliday(currentYear, currentMonth + 1, d);
+      const t       = dayTimes[dateStr];
 
-      const el = document.createElement('div');
-      let cls = 'ds-day';
-      if (dow === 0) cls += ' sun';
-      if (dow === 6) cls += ' sat';
-      if (isPast)    cls += ' past';
-      if (isToday)   cls += ' today';
-      if (isSel)     cls += ' selected';
-      if (isUsed)    cls += ' used';
-      el.className = cls;
+      const cell = document.createElement('div');
+      let cls = 'cal2-cell';
+      if(dow === 0) cls += ' sun';
+      if(dow === 6) cls += ' sat';
+      if(hol)       cls += ' hol';
+      if(isPast)    cls += ' past';
+      if(isToday)   cls += ' today';
+      if(t)         cls += ' has';
+      cell.className = cls;
 
-      /* 曜日ラベル */
-      const dowEl = document.createElement('div');
-      dowEl.className = 'ds-dow';
-      dowEl.textContent = DOW_LABELS[dow];
+      const num = document.createElement('div');
+      num.className = 'cal2-num';
+      num.textContent = d;
+      cell.appendChild(num);
 
-      /* 日付数字 */
-      const numEl = document.createElement('div');
-      numEl.className = 'ds-num';
-      numEl.textContent = d;
-
-      el.appendChild(dowEl);
-      el.appendChild(numEl);
-
-      /* 今日ドット */
-      if (isToday) {
-        const pip = document.createElement('div');
-        pip.className = 'ds-pip';
-        el.appendChild(pip);
+      if(t){
+        const b = document.createElement('div');
+        b.className = 'cal2-badge';
+        b.textContent = _badgeLabel(t);
+        cell.appendChild(b);
+      } else if(hol){
+        const hd = document.createElement('div');
+        hd.className = 'cal2-hol-dot';
+        cell.appendChild(hd);
       }
 
-      if (!isPast && !isUsed) {
-        el.addEventListener('click', () => {
-          selectedDates.has(dateStr) ? selectedDates.delete(dateStr) : selectedDates.add(dateStr);
-          renderDateStrip();
-          renderSelectedList();
-          updateChecklist();
-        });
-        if (!firstSelectableEl) firstSelectableEl = el;
+      if(!isPast){
+        cell.addEventListener('click', () => openTimeSheet(dateStr));
       }
-      if (isToday) todayEl = el;
-
-      strip.appendChild(el);
+      grid.appendChild(cell);
     }
 
-    /* スクロール位置: 同じ月の再描画なら保持 / 月変わりなら今日付近にセンタリング */
-    if (preserveScrollLeft !== null) {
-      /* 同じ月の再描画 (日付タップ等) → スクロール位置をそのまま維持 */
-      requestAnimationFrame(() => {
-        if (outer) outer.scrollLeft = preserveScrollLeft;
-      });
-    } else {
-      /* 初回描画 or 月切替 → 今日 or 最初の選択可能日にスクロール */
-      const target = todayEl || firstSelectableEl;
-      if (target) {
-        requestAnimationFrame(() => {
-          if (!outer) return;
-          const outerW = outer.clientWidth;
-          const elLeft = target.offsetLeft;
-          const elW    = target.offsetWidth;
-          outer.scrollLeft = elLeft - outerW / 2 + elW / 2;
-        });
-      }
-    }
-
-    /* 描画後に月を記録 (次回比較用) */
-    _lastRenderedYear = currentYear;
-    _lastRenderedMonth = currentMonth;
+    updateDayInfo(_focusDate);
+    updateDatesBadge();
   }
+
+  /* 上部バッジ（入力済み日数） */
+  function updateDatesBadge(){
+    const badge = document.getElementById('dates-badge');
+    if(!badge) return;
+    const n = Object.keys(dayTimes).length;
+    badge.textContent = n ? n + '日' : '';
+    badge.classList.toggle('visible', n > 0);
+  }
+
+  /* カレンダー下の情報バー（祝日名 / 選択中の日の状態） */
+  function updateDayInfo(dateStr){
+    const bar = document.getElementById('cal2-dayinfo');
+    if(!bar) return;
+    if(!dateStr){
+      /* デフォルト: 今月の祝日一覧 */
+      const hols = [];
+      const dim = new Date(currentYear, currentMonth + 1, 0).getDate();
+      for(let d = 1; d <= dim; d++){
+        const h = getHoliday(currentYear, currentMonth + 1, d);
+        if(h) hols.push((currentMonth + 1) + '/' + d + ' ' + h);
+      }
+      bar.innerHTML = hols.length
+        ? '🎌 <span class="hol">' + hols.join('　・　') + '</span>'
+        : _ct('sf.cal_tap_hint', '日付をタップして時間帯を選んでください');
+      return;
+    }
+    const [y,m,d] = dateStr.split('-').map(Number);
+    const dow = DAY_NAMES[new Date(y, m-1, d).getDay()];
+    const hol = getHoliday(y, m, d);
+    const t   = dayTimes[dateStr];
+    let s = `<b>${y}年${m}月${d}日(${dow})</b>`;
+    if(hol) s += ' <span class="hol">' + hol + '</span>';
+    s += t ? ' <span class="assigned">— ' + t + '</span>'
+           : ' <span style="color:var(--slate-400)">' + _ct('sf.cal_unset', '未設定') + '</span>';
+    bar.innerHTML = s;
+  }
+
+  /* ── ボトムシート ── */
+  function openTimeSheet(dateStr){
+    _sheetDate = dateStr;
+    _focusDate = dateStr;
+    const [y,m,d] = dateStr.split('-').map(Number);
+    const dow = DAY_NAMES[new Date(y, m-1, d).getDay()];
+    const hol = getHoliday(y, m, d);
+    const ttl = document.getElementById('cal2-sheet-date');
+    if(ttl) ttl.innerHTML = `${m}月${d}日(${dow})` + (hol ? ` <span style="color:#EF4444;font-size:13px;">${hol}</span>` : '');
+
+    const cur = dayTimes[dateStr] || '';
+    /* プリセットの選択状態 */
+    document.querySelectorAll('#cal2-opts .cal2-opt').forEach(b => {
+      b.classList.toggle('sel', b.dataset.time === cur);
+    });
+    /* カスタム欄: 現在値がプリセット以外の "HH:MM〜HH:MM" なら反映 */
+    const cs = document.getElementById('ct-start');
+    const ce = document.getElementById('ct-end');
+    const cm = cur.match(/^(\d{2}:\d{2})〜(\d{2}:\d{2})$/);
+    const isPreset = CAL_PRESET_TIMES.indexOf(cur) !== -1;
+    if(cs && ce){
+      if(cm && !isPreset){ cs.value = cm[1]; ce.value = cm[2]; }
+      else { cs.value = ''; ce.value = ''; }
+    }
+    /* 「この日を外す」ボタンは割当済みのみ表示 */
+    const rm = document.getElementById('cal2-sheet-remove');
+    if(rm) rm.style.display = cur ? 'block' : 'none';
+
+    updateDayInfo(dateStr);
+    const ov = document.getElementById('cal2-sheet-ov');
+    if(ov){ ov.style.display = 'flex'; requestAnimationFrame(() => ov.classList.add('show')); }
+  }
+  function closeTimeSheet(){
+    const ov = document.getElementById('cal2-sheet-ov');
+    if(ov){ ov.classList.remove('show'); setTimeout(() => { ov.style.display = 'none'; }, 230); }
+    const cs = document.getElementById('ct-start');
+    const ce = document.getElementById('ct-end');
+    if(cs) cs.value = '';
+    if(ce) ce.value = '';
+    _sheetDate = null;
+  }
+  function sheetPick(time){
+    if(!_sheetDate) return;
+    assignDayTime(_sheetDate, time);
+    closeTimeSheet();
+  }
+  function sheetPickCustom(){
+    if(!_sheetDate) return;
+    const cs = document.getElementById('ct-start');
+    const ce = document.getElementById('ct-end');
+    const s = cs ? cs.value : '';
+    const e = ce ? ce.value : '';
+    if(!s || !e){ showToast('⚠️ 開始と終了の時間を入力してください'); return; }
+    assignDayTime(_sheetDate, s + '〜' + e);
+    closeTimeSheet();
+  }
+  function sheetRemove(){
+    if(!_sheetDate) return;
+    removeDayTime(_sheetDate);
+    closeTimeSheet();
+  }
+
+  function assignDayTime(dateStr, time){ dayTimes[dateStr] = time; _afterDayChange(); }
+  function removeDayTime(dateStr){ delete dayTimes[dateStr]; _afterDayChange(); }
+  function clearAllDayTimes(){
+    if(Object.keys(dayTimes).length === 0) return;
+    if(!confirm(_ct('sf.cal_clear_confirm', '入力した希望シフトをすべてクリアしますか？'))) return;
+    dayTimes = {}; _focusDate = null; _afterDayChange();
+  }
+  function _afterDayChange(){
+    syncBlocksFromDayTimes();
+    renderDateStrip();
+    renderSelectedList();
+    updateChecklist();
+  }
+  /* dayTimes → shiftBlocks（同じ時間帯の日をグループ化して submit 用に同期） */
+  function syncBlocksFromDayTimes(){
+    const byTime = {};
+    Object.keys(dayTimes).sort().forEach(d => {
+      const t = dayTimes[d];
+      (byTime[t] = byTime[t] || []).push(d);
+    });
+    shiftBlocks = Object.keys(byTime).map(t => ({ dates: byTime[t], time: t }));
+  }
+
+  /* 表示切替（グリッド / リスト） */
+  function setCalView(mode){
+    calView = mode;
+    const gv = document.getElementById('cal2-grid-view');
+    const lv = document.getElementById('cal2-list-view');
+    if(gv) gv.style.display = (mode === 'grid') ? 'block' : 'none';
+    if(lv) lv.style.display = (mode === 'list') ? 'block' : 'none';
+    const gb = document.getElementById('cal2-tg-grid');
+    const lb = document.getElementById('cal2-tg-list');
+    if(gb) gb.classList.toggle('active', mode === 'grid');
+    if(lb) lb.classList.toggle('active', mode === 'list');
+    if(mode === 'grid') renderDateStrip(); else renderSelectedList();
+  }
+
+  /* 言語切替時にカレンダー（JS描画部分）を再描画 */
+  window.addEventListener('rakuraku-lang-changed', function(){
+    try {
+      if (typeof currentYear === 'number' && document.getElementById('cal2-grid')) {
+        renderDateStrip();
+        renderSelectedList();
+      }
+    } catch(e){}
+  });
+
   /* ════════════════════════════════════════
      名前サジェスト（オートコンプリート）
   ════════════════════════════════════════ */
@@ -5091,25 +5335,27 @@
   }
 
   function renderSelectedList() {
-    const c       = document.getElementById('selected-dates-list');
-    const section = document.getElementById('selected-dates-section');
-    const badge   = document.getElementById('dates-badge');
-
-    if (selectedDates.size === 0) {
-      if (section) section.style.display = 'none';
-      if (badge)   { badge.textContent = ''; badge.classList.remove('visible'); }
-      c.innerHTML = '';
+    const c = document.getElementById('selected-dates-list');
+    if (!c) return;
+    const dates = Object.keys(dayTimes).sort();
+    if (dates.length === 0) {
+      c.innerHTML = '<div class="cal2-list-empty">' + _ct('sf.cal_list_empty', 'まだ日付が選択されていません。<br>カレンダーから日付をタップしてください。') + '</div>';
       return;
     }
-    if (section) section.style.display = 'block';
-    if (badge)   { badge.textContent = selectedDates.size + '日選択中'; badge.classList.add('visible'); }
-    c.innerHTML = [...selectedDates].sort().map(d => {
+    c.innerHTML = dates.map(d => {
       const [y,m,day] = d.split('-').map(Number);
       const dow = new Date(y,m-1,day).getDay();
-      return `<div class="date-tag">${m}/${day}(${DAY_NAMES[dow]})<span class="rm" onclick="removeDate('${d}')">×</span></div>`;
+      const hol = getHoliday(y, m, day);
+      const col = (dow === 0 || hol) ? '#DB2777' : (dow === 6 ? '#2563EB' : '');
+      const dStyle = col ? ` style="color:${col}"` : '';
+      return `<div class="cal2-li">
+        <span class="cal2-li-d"${dStyle}>${m}/${day}<span style="font-size:.85em">(${DAY_NAMES[dow]})</span></span>
+        <span class="cal2-li-t">${dayTimes[d]}</span>
+        <button type="button" class="cal2-li-rm" onclick="removeDate('${d}')" aria-label="${m}月${day}日を削除">×</button>
+      </div>`;
     }).join('');
   }
-  function removeDate(ds) { selectedDates.delete(ds); renderCalendar(); renderSelectedList(); }
+  function removeDate(ds) { removeDayTime(ds); }
 
   /* ════════════════════════════════════════════════════════════
      時間帯（フルタイム / カスタム）＋ 日程ブロック化
@@ -5662,6 +5908,8 @@
       // ── 成功・リセット ──
       showToast('✅ シフトを提出しました！');
       shiftBlocks = [];
+      dayTimes = {};
+      _focusDate = null;
       selectedDates.clear();
       _resetCurrentTimeSelection();
       if (nameEl)  nameEl.value  = '';

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>メッセージ — RAKURAKU</title>
+<meta name="description" content="店舗内メッセージ（グループ + 1:1）。シフトの連絡・相談をスタッフ全員と。" />
+<meta name="robots" content="noindex,nofollow"/>
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#4F46E5; --purple:#7C3AED; --indigo-l:#EEF2FF;
+    --emerald:#10B981; --emerald-l:#ECFDF5;
+    --amber:#F59E0B; --red:#EF4444; --red-l:#FEF2F2;
+    --slate-900:#0F172A; --slate-700:#334155; --slate-500:#64748B; --slate-300:#CBD5E1; --slate-200:#E2E8F0; --slate-100:#F1F5F9; --slate-50:#F8FAFC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #4F46E5; outline-offset: 2px; border-radius: 4px; }
+  html,body{font-family:'Noto Sans JP','Inter',sans-serif;color:var(--slate-900);background:linear-gradient(180deg,var(--slate-50),#fff);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  .header{background:linear-gradient(135deg,var(--indigo) 0%,var(--purple) 100%);color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
+  .h-left{display:flex;align-items:center;gap:10px;}
+  .h-logo{width:32px;height:32px;background:#fff;color:var(--indigo);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;}
+  .h-title{font-size:16px;font-weight:900;letter-spacing:-.01em;}
+  .h-shop{font-size:11px;color:rgba(255,255,255,.8);font-weight:600;margin-top:1px;}
+  .h-clock{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.04em;}
+
+  .container{max-width:480px;margin:0 auto;padding:18px 16px 24px;}
+
+  .hint{background:var(--indigo-l);border-left:3px solid var(--indigo);padding:10px 14px;border-radius:0 8px 8px 0;font-size:11px;color:var(--indigo);font-weight:700;margin-bottom:14px;line-height:1.6;}
+
+  .card{background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 4px 20px rgba(0,0,0,.04);}
+  .label{font-size:11px;font-weight:800;color:var(--slate-500);letter-spacing:.06em;margin-bottom:8px;}
+  .name-input{width:100%;padding:12px 14px;border:1.5px solid var(--slate-200);border-radius:12px;font-size:16px;font-weight:700;font-family:inherit;outline:none;background:var(--slate-50);text-align:center;}
+  .name-input:focus{border-color:var(--indigo);background:#fff;}
+
+  /* new DM row */
+  .newdm{display:flex;gap:8px;margin-bottom:14px;}
+  .newdm input{flex:1;padding:11px 13px;border:1.5px solid var(--slate-200);border-radius:11px;font-size:14px;font-weight:700;font-family:inherit;outline:none;background:var(--slate-50);}
+  .newdm input:focus{border-color:var(--indigo);background:#fff;}
+  .newdm button{padding:0 16px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;font-weight:800;font-size:13px;font-family:inherit;cursor:pointer;flex-shrink:0;}
+
+  /* thread list */
+  .thread-list{display:flex;flex-direction:column;gap:8px;}
+  .thread{display:flex;align-items:center;gap:12px;padding:13px 14px;background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:transform .1s,border-color .15s;}
+  .thread:active{transform:scale(.985);}
+  .thread.group{background:linear-gradient(135deg,var(--indigo-l),#fff);border-color:#C7D2FE;}
+  .thread-av{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;background:var(--slate-100);color:var(--slate-700);}
+  .thread.group .thread-av{background:var(--indigo);color:#fff;}
+  .thread-main{flex:1;min-width:0;}
+  .thread-name{font-size:14px;font-weight:900;color:var(--slate-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .thread-last{font-size:11px;color:var(--slate-500);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+  .thread-time{font-size:10px;color:var(--slate-300);font-weight:700;flex-shrink:0;align-self:flex-start;margin-top:3px;}
+  .empty{text-align:center;color:var(--slate-500);font-size:12px;padding:24px 0;font-weight:600;}
+
+  /* conversation screen */
+  #convo-screen{display:none;}
+  .convo-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .back-btn{width:38px;height:38px;border-radius:10px;border:1.5px solid var(--slate-200);background:#fff;font-size:18px;cursor:pointer;flex-shrink:0;color:var(--slate-700);font-family:inherit;}
+  .convo-title{font-size:15px;font-weight:900;color:var(--slate-900);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .convo-sub{font-size:10px;font-weight:700;color:var(--slate-500);margin-top:1px;}
+  .msg-scroll{background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:14px;height:calc(100vh - 320px);min-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch;}
+  .bubble-row{display:flex;flex-direction:column;max-width:80%;}
+  .bubble-row.mine{align-self:flex-end;align-items:flex-end;}
+  .bubble-row.theirs{align-self:flex-start;align-items:flex-start;}
+  .bubble-sender{font-size:10px;font-weight:800;color:var(--slate-500);margin:0 4px 2px;}
+  .bubble{padding:9px 13px;border-radius:14px;font-size:14px;font-weight:600;line-height:1.5;word-break:break-word;white-space:pre-wrap;}
+  .mine .bubble{background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border-bottom-right-radius:4px;}
+  .theirs .bubble{background:var(--slate-100);color:var(--slate-900);border-bottom-left-radius:4px;}
+  .bubble-time{font-size:9px;color:var(--slate-300);font-weight:700;margin:2px 5px 0;}
+  .convo-empty{margin:auto;text-align:center;color:var(--slate-500);font-size:12px;font-weight:600;line-height:1.7;}
+
+  .composer{display:flex;gap:8px;margin-top:12px;align-items:flex-end;}
+  .composer textarea{flex:1;padding:11px 14px;border:1.5px solid var(--slate-200);border-radius:14px;font-size:15px;font-family:inherit;font-weight:600;outline:none;background:var(--slate-50);resize:none;max-height:120px;line-height:1.5;}
+  .composer textarea:focus{border-color:var(--indigo);background:#fff;}
+  .send-btn{width:48px;height:48px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;font-size:20px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(79,70,229,.3);}
+  .send-btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#0F172A;color:#fff;padding:12px 22px;border-radius:30px;font-size:13px;font-weight:800;box-shadow:0 8px 30px rgba(0,0,0,.3);opacity:0;transition:opacity .25s,transform .25s;z-index:200;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.success{background:linear-gradient(135deg,var(--emerald),#059669);}
+  .toast.error{background:linear-gradient(135deg,var(--red),#DC2626);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="h-left">
+    <div class="h-logo">R</div>
+    <div>
+      <div class="h-title" data-i18n="msg.title">💬 メッセージ</div>
+      <div class="h-shop" id="shop-name" data-i18n="common.loading">読込中…</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div id="lang-switcher"></div>
+    <div class="h-clock" id="now-clock">--:--</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ───── スレッド一覧画面 ───── -->
+  <div id="thread-screen">
+    <div class="hint" data-i18n="msg.hint">💡 シフトの連絡や相談をここで。店舗グループは全員に、1:1は個別に届きます。</div>
+
+    <div class="card">
+      <div class="label" data-i18n="msg.name_label">👤 あなたのお名前</div>
+      <input type="text" class="name-input" id="me-name" data-i18n-placeholder="msg.name_ph" placeholder="お名前" autocomplete="name" aria-label="あなたのお名前" />
+    </div>
+
+    <div class="label" style="margin-left:4px;" data-i18n="msg.new_dm">新しい1:1トーク</div>
+    <div class="newdm">
+      <input type="text" id="dm-name" list="people-list" data-i18n-placeholder="msg.new_dm_ph" placeholder="相手のお名前" autocomplete="off" aria-label="DMの相手のお名前" />
+      <datalist id="people-list"></datalist>
+      <button type="button" id="dm-start-btn" data-i18n="msg.new_dm_btn">開始</button>
+    </div>
+
+    <div class="thread-list" id="thread-list"></div>
+  </div>
+
+  <!-- ───── 会話画面 ───── -->
+  <div id="convo-screen">
+    <div class="convo-top">
+      <button type="button" class="back-btn" id="back-btn" aria-label="戻る">←</button>
+      <div style="flex:1;min-width:0;">
+        <div class="convo-title" id="convo-title">—</div>
+        <div class="convo-sub" id="convo-sub"></div>
+      </div>
+    </div>
+    <div class="msg-scroll" id="msg-scroll"></div>
+    <div class="composer">
+      <textarea id="composer-input" rows="1" data-i18n-placeholder="msg.input_ph" placeholder="メッセージを入力…" aria-label="メッセージ入力"></textarea>
+      <button type="button" class="send-btn" id="send-btn" aria-label="送信">➤</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/i18n.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  if (window.RakuI18n) RakuI18n.buildSwitcher('lang-switcher');
+  function _t(k){ return window.RakuI18n ? RakuI18n.t(k) : k; }
+</script>
+<script>
+  /* ══════════════════════════════════════════
+     設定・状態
+  ══════════════════════════════════════════ */
+  const params  = new URLSearchParams(location.search);
+  const SHOP_ID = params.get('shop') || 'default';
+  const NAME_KEY = 'rakuraku_attendance_name_' + SHOP_ID; /* 出退勤画面と同じ名前を共有 */
+
+  let me = '';
+  let current = null;          /* {scope:'group'} | {scope:'dm', with:'相手名'} */
+  let lastTs = 0;              /* 現在スレッドで取得済みの最新 ts */
+  let _threads = [];
+  let _pollTimer = null;
+  let socket = null;
+
+  const $ = id => document.getElementById(id);
+
+  /* ── 名前の保存（出退勤画面と共有） ── */
+  function loadName(){ try { return localStorage.getItem(NAME_KEY) || ''; } catch(e){ return ''; } }
+  function saveName(n){ try { localStorage.setItem(NAME_KEY, n); } catch(e){} }
+
+  /* ── 時計 ── */
+  function updateClock(){
+    const d = new Date();
+    $('now-clock').textContent = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  }
+  setInterval(updateClock, 30000); updateClock();
+
+  function fmtTime(ts){
+    const d = new Date(ts);
+    return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  }
+  function fmtThreadTime(ts){
+    if (!ts) return '';
+    const d = new Date(ts), now = new Date();
+    if (d.toDateString() === now.toDateString()) return fmtTime(ts);
+    return (d.getMonth()+1) + '/' + d.getDate();
+  }
+  function escapeFirstChar(name){ return (name || '?').trim().charAt(0).toUpperCase() || '?'; }
+
+  function showToast(msg, type){
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type ? ' ' + type : '');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => { t.className = 'toast'; }, 2600);
+  }
+
+  /* ══════════════════════════════════════════
+     店舗メタ
+  ══════════════════════════════════════════ */
+  async function loadShopMeta(){
+    try {
+      const res = await fetch('/api/shop/' + encodeURIComponent(SHOP_ID) + '/meta');
+      if (!res.ok) { $('shop-name').textContent = SHOP_ID; return; }
+      const meta = await res.json();
+      $('shop-name').textContent = meta.shopName || meta.name || SHOP_ID;
+    } catch(e){ $('shop-name').textContent = SHOP_ID; }
+  }
+
+  /* ══════════════════════════════════════════
+     スレッド一覧
+  ══════════════════════════════════════════ */
+  async function loadThreads(){
+    if (!me) { renderThreads([]); return; }
+    try {
+      const res = await fetch('/api/messages/' + encodeURIComponent(SHOP_ID) + '/threads?me=' + encodeURIComponent(me));
+      if (!res.ok) throw new Error();
+      _threads = await res.json();
+      renderThreads(_threads);
+      updatePeopleList(_threads);
+    } catch(e){
+      renderThreads([]);
+    }
+  }
+
+  function renderThreads(threads){
+    const wrap = $('thread-list');
+    wrap.textContent = '';
+    /* グループは必ず先頭に表示（サーバ未返却でも） */
+    const hasGroup = threads.some(t => t.scope === 'group');
+    if (!hasGroup) threads = [{ id:'group', scope:'group', lastText:'', lastTs:0 }].concat(threads);
+
+    threads.forEach(t => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'thread' + (t.scope === 'group' ? ' group' : '');
+
+      const av = document.createElement('div');
+      av.className = 'thread-av';
+      av.textContent = t.scope === 'group' ? '🏠' : escapeFirstChar(t.with || t.title);
+
+      const main = document.createElement('div');
+      main.className = 'thread-main';
+      const nm = document.createElement('div');
+      nm.className = 'thread-name';
+      nm.textContent = t.scope === 'group' ? _t('msg.group_name') : (t.with || t.title || '—');
+      const last = document.createElement('div');
+      last.className = 'thread-last';
+      if (t.lastText) {
+        const who = t.lastSender ? (t.lastSender === me ? _t('msg.you') : t.lastSender) + ': ' : '';
+        last.textContent = who + t.lastText;
+      } else {
+        last.textContent = t.scope === 'group' ? _t('msg.group_desc') : '';
+      }
+      main.appendChild(nm); main.appendChild(last);
+
+      const tm = document.createElement('div');
+      tm.className = 'thread-time';
+      tm.textContent = fmtThreadTime(t.lastTs);
+
+      btn.appendChild(av); btn.appendChild(main); btn.appendChild(tm);
+      btn.addEventListener('click', () => {
+        if (t.scope === 'group') openThread({ scope:'group' });
+        else openThread({ scope:'dm', with: t.with || t.title });
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  /* DM 相手候補（既存スレッド + グループ発言者）を datalist に */
+  function updatePeopleList(threads){
+    const names = new Set();
+    threads.forEach(t => { if (t.scope === 'dm' && (t.with || t.title)) names.add(t.with || t.title); });
+    (window._groupSenders || []).forEach(n => names.add(n));
+    names.delete(me);
+    const dl = $('people-list');
+    dl.textContent = '';
+    names.forEach(n => { const o = document.createElement('option'); o.value = n; dl.appendChild(o); });
+  }
+
+  /* ══════════════════════════════════════════
+     会話
+  ══════════════════════════════════════════ */
+  function openThread(thread){
+    current = thread;
+    lastTs = 0;
+    $('thread-screen').style.display = 'none';
+    $('convo-screen').style.display = 'block';
+    $('convo-title').textContent = thread.scope === 'group' ? _t('msg.group_name') : thread.with;
+    $('convo-sub').textContent   = thread.scope === 'group' ? _t('msg.group_desc') : _t('msg.dm_sub');
+    $('msg-scroll').innerHTML = '';
+    loadConvo(true);
+    startPolling();
+    setTimeout(() => $('composer-input').focus(), 60);
+  }
+
+  function closeThread(){
+    current = null;
+    stopPolling();
+    $('convo-screen').style.display = 'none';
+    $('thread-screen').style.display = 'block';
+    loadThreads();
+  }
+
+  function convoQuery(sinceTs){
+    let q = '/api/messages/' + encodeURIComponent(SHOP_ID) + '?';
+    if (current.scope === 'dm') {
+      q += 'scope=dm&me=' + encodeURIComponent(me) + '&with=' + encodeURIComponent(current.with);
+    } else {
+      q += 'scope=group';
+    }
+    if (sinceTs) q += '&since=' + sinceTs;
+    return q;
+  }
+
+  async function loadConvo(initial){
+    if (!current || !me) return;
+    try {
+      const res = await fetch(convoQuery(initial ? 0 : lastTs));
+      if (!res.ok) throw new Error();
+      const msgs = await res.json();
+      if (initial) { $('msg-scroll').innerHTML = ''; }
+      if (msgs.length) {
+        msgs.forEach(appendBubble);
+        lastTs = Math.max(lastTs, msgs[msgs.length - 1].ts);
+        scrollToBottom();
+      }
+      if (initial && !msgs.length) renderConvoEmpty();
+    } catch(e){
+      if (initial) renderConvoEmpty();
+    }
+  }
+
+  function renderConvoEmpty(){
+    const s = $('msg-scroll');
+    s.innerHTML = '';
+    const e = document.createElement('div');
+    e.className = 'convo-empty';
+    e.textContent = _t('msg.empty_convo');
+    s.appendChild(e);
+  }
+
+  function appendBubble(m){
+    if (!m || !m.id) return;
+    if (document.getElementById('msg-' + m.id)) return;  /* 重複防止: 楽観追加 + socket + ポーリングが同じ id を二重描画しない */
+    /* 空状態を消す */
+    const empty = $('msg-scroll').querySelector('.convo-empty');
+    if (empty) empty.remove();
+
+    const mine = m.sender === me;
+    const row = document.createElement('div');
+    row.id = 'msg-' + m.id;
+    row.className = 'bubble-row ' + (mine ? 'mine' : 'theirs');
+
+    /* グループでは相手の名前を表示 */
+    if (!mine && current && current.scope === 'group') {
+      const s = document.createElement('div');
+      s.className = 'bubble-sender';
+      s.textContent = m.sender;
+      row.appendChild(s);
+    }
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    b.textContent = m.text;            /* XSS 防止: textContent でユーザー入力を描画 */
+    row.appendChild(b);
+
+    const tm = document.createElement('div');
+    tm.className = 'bubble-time';
+    tm.textContent = fmtTime(m.ts);
+    row.appendChild(tm);
+
+    $('msg-scroll').appendChild(row);
+  }
+
+  function scrollToBottom(){
+    const s = $('msg-scroll');
+    s.scrollTop = s.scrollHeight;
+  }
+
+  /* メッセージが現在開いているスレッドに属するか */
+  function belongsToCurrent(m){
+    if (!current) return false;
+    if (current.scope === 'group') return m.scope === 'group';
+    if (m.scope !== 'dm') return false;
+    return (m.sender === me && m.to === current.with) || (m.sender === current.with && m.to === me);
+  }
+
+  /* ══════════════════════════════════════════
+     送信
+  ══════════════════════════════════════════ */
+  async function sendMessage(){
+    const input = $('composer-input');
+    const text = input.value.trim();
+    if (!text) return;
+    if (!me) { showToast(_t('msg.name_required'), 'error'); return; }
+    if (!current) return;
+
+    const body = { sender: me, text };
+    if (current.scope === 'dm') { body.scope = 'dm'; body.to = current.with; }
+    else { body.scope = 'group'; }
+
+    $('send-btn').disabled = true;
+    try {
+      const res = await fetch('/api/messages/' + encodeURIComponent(SHOP_ID) + '/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      input.value = '';
+      autoGrow();
+      /* 自分の端末には即時反映。socket / ポーリングで再到達しても appendBubble が id で重複排除。 */
+      if (data.message && belongsToCurrent(data.message)) {
+        appendBubble(data.message);
+        lastTs = Math.max(lastTs, data.message.ts);
+        scrollToBottom();
+      }
+    } catch(e){
+      showToast(_t('msg.sent_fail'), 'error');
+    } finally {
+      $('send-btn').disabled = false;
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     ポーリング（socket が落ちても確実に同期）
+  ══════════════════════════════════════════ */
+  function startPolling(){
+    stopPolling();
+    _pollTimer = setInterval(() => { if (current) loadConvo(false); }, 5000);
+  }
+  function stopPolling(){ if (_pollTimer){ clearInterval(_pollTimer); _pollTimer = null; } }
+
+  /* ══════════════════════════════════════════
+     socket.io リアルタイム
+  ══════════════════════════════════════════ */
+  function initSocket(){
+    try {
+      socket = io();
+      socket.on('connect', () => socket.emit('shop_join', { shopId: SHOP_ID }));
+      socket.on('message_new', (m) => {
+        if (!m) return;
+        /* グループ発言者を候補に記録 */
+        if (m.scope === 'group' && m.sender) {
+          window._groupSenders = window._groupSenders || [];
+          if (!window._groupSenders.includes(m.sender)) window._groupSenders.push(m.sender);
+        }
+        if (current && belongsToCurrent(m) && m.ts > lastTs) {
+          appendBubble(m);
+          lastTs = m.ts;
+          scrollToBottom();
+        } else if (!current) {
+          loadThreads(); /* 一覧画面なら最終メッセージを更新 */
+        }
+      });
+    } catch(e){ /* socket 不可でもポーリングで動作 */ }
+  }
+
+  /* ══════════════════════════════════════════
+     入力欄オートグロー
+  ══════════════════════════════════════════ */
+  function autoGrow(){
+    const ta = $('composer-input');
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+  }
+
+  /* ══════════════════════════════════════════
+     初期化・イベント
+  ══════════════════════════════════════════ */
+  me = loadName();
+  $('me-name').value = me;
+  $('me-name').addEventListener('input', e => {
+    me = e.target.value.trim();
+    saveName(me);
+    loadThreads();
+  });
+
+  $('dm-start-btn').addEventListener('click', () => {
+    const target = $('dm-name').value.trim();
+    if (!me) { showToast(_t('msg.name_required'), 'error'); $('me-name').focus(); return; }
+    if (!target) { $('dm-name').focus(); return; }
+    if (target === me) { showToast(_t('msg.self_dm'), 'error'); return; }
+    $('dm-name').value = '';
+    openThread({ scope:'dm', with: target });
+  });
+
+  $('back-btn').addEventListener('click', closeThread);
+  $('send-btn').addEventListener('click', sendMessage);
+  $('composer-input').addEventListener('input', autoGrow);
+  $('composer-input').addEventListener('keydown', e => {
+    /* PC: Enter 送信 / Shift+Enter 改行。モバイルは送信ボタン。 */
+    if (e.key === 'Enter' && !e.shiftKey && !/Mobi|Android/i.test(navigator.userAgent)) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  /* 言語切替に追従して再描画 */
+  window.addEventListener('rakuraku-lang-changed', () => {
+    if (current) {
+      $('convo-title').textContent = current.scope === 'group' ? _t('msg.group_name') : current.with;
+      $('convo-sub').textContent   = current.scope === 'group' ? _t('msg.group_desc') : _t('msg.dm_sub');
+    }
+    renderThreads(_threads);
+  });
+
+  loadShopMeta();
+  loadThreads();
+  initSocket();
+</script>
+</body>
+</html>

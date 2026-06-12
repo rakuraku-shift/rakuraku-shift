@@ -132,12 +132,16 @@ const SUBSCRIPTIONS_FILE = path.join(DATA_DIR, 'subscriptions.json');
 const SHOPS_DIR          = path.join(DATA_DIR, 'shops');
 const ADMIN_FILE         = path.join(DATA_DIR, 'admin.json');
 const ATTENDANCE_DIR     = path.join(DATA_DIR, 'attendance');
+const ATTENDANCE_FACES_DIR = path.join(DATA_DIR, 'attendance-faces'); /* 顔認証スナップショット (非公開) */
 const CHANGE_REQ_DIR     = path.join(DATA_DIR, 'change-requests');
+const MESSAGES_DIR       = path.join(DATA_DIR, 'messages'); /* 店舗内メッセージ (グループ + 1:1) */
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
 if (!fs.existsSync(SHOPS_DIR)) fs.mkdirSync(SHOPS_DIR, { recursive: true });
 if (!fs.existsSync(ATTENDANCE_DIR)) fs.mkdirSync(ATTENDANCE_DIR, { recursive: true });
+if (!fs.existsSync(ATTENDANCE_FACES_DIR)) fs.mkdirSync(ATTENDANCE_FACES_DIR, { recursive: true });
 if (!fs.existsSync(CHANGE_REQ_DIR)) fs.mkdirSync(CHANGE_REQ_DIR, { recursive: true });
+if (!fs.existsSync(MESSAGES_DIR)) fs.mkdirSync(MESSAGES_DIR, { recursive: true });
 
 // ── アンケート ──
 function loadSurveys() { return readJSON(SURVEY_FILE, []); }
@@ -442,6 +446,77 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
     `,
   });
   console.log(`[email] ライセンスコード + 店舗URL を ${to} に送信`);
+}
+
+/* ════════════════════════════════════════════
+ * 月次ログインコード メール — 毎月の課金成功時 (subscription_cycle) に自動送信
+ * 店長へ「今月の6桁ログインコード」+「翌月分(先行発行)」をお届けする
+ * ※ 登録直後/トライアル開始時は sendLicenseEmail で既に案内済みなので、
+ *   ここでは継続課金のサイクルでのみ呼ばれる (webhook 側で billing_reason を判定)
+ ════════════════════════════════════════════ */
+async function sendMonthlyCodeEmail(to, shopName, shopId) {
+  if (!emailTransporter) {
+    console.warn('[email] EMAIL_USER 未設定 — 月次コードメール送信スキップ');
+    return;
+  }
+  if (!to) return;
+  const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+  const shopUrl = shopId ? `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/shift.html`;
+
+  const thisMonth = _currentMonthKey();
+  const nextMonth = _nextMonthKey();
+  const monthlyCodeNow  = shopId ? generateMonthlyLicenseCode(shopId, thisMonth) : '------';
+  const monthlyCodeNext = shopId ? generateMonthlyLicenseCode(shopId, nextMonth) : '------';
+  const [thisY, thisM] = thisMonth.split('-');
+  const [nextY, nextM] = nextMonth.split('-');
+
+  await emailTransporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to,
+    subject: `[RAKURAKU] ${parseInt(thisM)}月の店長ログインコード`,
+    html: `
+      <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
+        <h2 style="color:#4F46E5;margin:0 0 16px;">今月のログインコードをお届けします${shopName ? `（${shopName} 様）` : ''}</h2>
+        <p>いつも RAKURAKU をご利用いただきありがとうございます。<br>
+        ${parseInt(thisY)}年${parseInt(thisM)}月分の月額決済が正常に完了しました。今月の店長ログインコードをお知らせします。</p>
+
+        <!-- 🔐 今月の6桁ログインコード (毎月変わる店長専用パスワード) -->
+        <div style="background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border:3px solid #F59E0B;padding:24px;margin:24px 0;border-radius:14px;">
+          <div style="text-align:center;margin-bottom:14px;">
+            <div style="font-size:24px;margin-bottom:6px;">🔐</div>
+            <div style="font-size:14px;color:#92400E;font-weight:900;">店長専用 ログインコード (毎月変わります)</div>
+          </div>
+          <div style="background:#fff;border-radius:10px;padding:18px;text-align:center;margin-bottom:12px;">
+            <div style="font-size:11px;color:#B45309;font-weight:800;letter-spacing:.04em;margin-bottom:4px;">📅 ${parseInt(thisY)}年${parseInt(thisM)}月分</div>
+            <div style="font-size:36px;font-weight:900;letter-spacing:.3em;color:#78350F;font-family:'Courier New',monospace;">${monthlyCodeNow}</div>
+          </div>
+          <div style="background:#fff;border-radius:10px;padding:14px;text-align:center;opacity:.85;">
+            <div style="font-size:10px;color:#B45309;font-weight:800;letter-spacing:.04em;margin-bottom:3px;">📅 ${parseInt(nextY)}年${parseInt(nextM)}月分 (先行発行)</div>
+            <div style="font-size:24px;font-weight:900;letter-spacing:.25em;color:#78350F;font-family:'Courier New',monospace;">${monthlyCodeNext}</div>
+          </div>
+          <div style="font-size:11px;color:#78350F;margin-top:14px;line-height:1.7;background:rgba(245,158,11,.1);padding:10px;border-radius:8px;">
+            💡 <strong>このコードはシフト管理画面にログインする際に必要です</strong><br>
+            ※ コードはお店ごと / 月ごとに固有です (他店では使えません)<br>
+            ※ 翌月になったら新しいコードを使用してください<br>
+            ※ コードを忘れた場合: <a href="mailto:koizumishota0323@gmail.com" style="color:#B45309;">代表 (小泉) へ連絡</a>
+          </div>
+        </div>
+
+        <p style="text-align:center;margin:24px 0;">
+          <a href="${shopUrl}" style="display:inline-block;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;">📅 シフト管理を開く →</a>
+        </p>
+
+        <hr style="border:none;border-top:1px solid #E2E8F0;margin:24px 0;" />
+        <p style="font-size:12px;color:#94A3B8;line-height:1.7;">
+          ※ このメールは月額決済の完了時に自動送信されています。<br>
+          ※ 解約はいつでも可能です。解約後は翌月以降のご請求は発生しません。<br>
+          ※ ご不明な点はこのメールに返信、または 📞 080-5168-3303 までお問い合わせください。<br>
+          ※ 運営: RAKURAKU（代表 小泉 咲太）
+        </p>
+      </div>
+    `,
+  });
+  console.log(`[email] 月次ログインコード (${thisMonth}) を ${to} に送信`);
 }
 
 /* ════════════════════════════════════════════
@@ -837,6 +912,32 @@ function appendAttendance(shopId, record) {
   return record;
 }
 
+/* ════════════════════════════════════════════
+ * 店舗内メッセージ (グループ + 1:1 DM) — file ベース
+ *   1 店舗 = 1 ファイル data/messages/<safeShopId>.json (フラットな配列)。
+ *   各メッセージ: { id, shopId, thread, scope:'group'|'dm', sender, to, text, ts }。
+ *   グループ: thread='group', to=null。 1:1: thread=_dmThreadId(a,b), to=相手名。
+ * ════════════════════════════════════════════ */
+function messagesFile(shopId) {
+  const safe = _safeShopId(shopId) || 'default';
+  return path.join(MESSAGES_DIR, `${safe}.json`);
+}
+function loadMessages(shopId) { return readJSON(messagesFile(shopId), []); }
+function appendMessage(shopId, msg) {
+  const all = loadMessages(shopId);
+  all.push(msg);
+  /* ファイル肥大化を防ぐため直近 2000 件に制限 */
+  const capped = all.length > 2000 ? all.slice(all.length - 2000) : all;
+  writeJSON(messagesFile(shopId), capped);
+  return msg;
+}
+/* 2 名から決定的な DM スレッド ID を生成 (名前順 → sha1 短縮) */
+function _dmThreadId(a, b) {
+  const pair = [String(a || '').trim().slice(0, 64), String(b || '').trim().slice(0, 64)].sort();
+  const h = crypto.createHash('sha1').update(pair.join('::')).digest('hex').slice(0, 12);
+  return 'dm_' + h;
+}
+
 /* ── 休み変更届データ管理 ── */
 function changeReqFile(shopId) {
   const safe = _safeShopId(shopId) || 'default';
@@ -948,13 +1049,34 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
     ).catch(e => console.warn('[notifyAdmin] payment failure notification failed:', e.message));
   }
 
+  if (event.type === 'invoice.payment_succeeded') {
+    const inv = event.data.object;
+    /* 毎月の定期課金サイクル (subscription_cycle) でのみ「今月のコード」を送信。
+       トライアル開始・初回課金 (subscription_create) 時は登録メールで案内済みなので
+       二重送信を避ける。決済処理を絶対に止めないよう必ず try/catch で包み、
+       常に res 200 を返す。 */
+    if (inv.billing_reason === 'subscription_cycle') {
+      try {
+        const sub = loadSubscriptions().find(s => s.subscriptionId === inv.subscription);
+        if (sub && sub.email) {
+          await sendMonthlyCodeEmail(sub.email, sub.shopName, sub.shopId);
+          console.log(`[stripe] 月次決済成功 — 今月のコードを ${sub.email} に送信 (sub: ${inv.subscription})`);
+        } else {
+          console.warn(`[stripe] 月次決済成功だが購読情報が見つからず — subscription: ${inv.subscription}`);
+        }
+      } catch (e) {
+        console.warn('[monthly-code] email failed:', e.message);
+      }
+    }
+  }
+
   res.json({ received: true });
 });
 
 async function sendChurnSurveyEmail(subObj) {
   if (!emailTransporter) return;
   /* 購読IDからメール+店舗情報を取得 */
-  const subs = readJSON(SUBS_FILE, []);
+  const subs = loadSubscriptions();
   const sub = subs.find(s => s.subscriptionId === subObj.id);
   if (!sub || !sub.email) return;
   const baseUrl = process.env.BASE_URL || 'https://rakuraku-shift-production.up.railway.app';
@@ -1617,6 +1739,30 @@ app.use((req, res, next) => {
     /* レスポンスヘッダー: 検索エンジンに絶対インデックスさせない */
     res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
     res.setHeader('Referrer-Policy', 'no-referrer');
+  }
+  next();
+});
+
+/* ════════════════════════════════════════════
+ * 🔒 機密ファイル / データディレクトリへの直接アクセス遮断 (static より前に置く)
+ *   express.static(__dirname) はプロジェクト直下を丸ごと配信するため、この guard が無いと
+ *   /data/subscriptions.json や /data/attendance/*.json (購読者・スタッフの個人情報)、
+ *   /server.js などが URL 直打ちで取得できてしまう。
+ *   公開して良いのは /data/menu-images/ (店舗メニュー画像) のみ。存在を悟らせないため 404。
+ * ════════════════════════════════════════════ */
+const _BLOCKED_EXACT = new Set([
+  '/server.js', '/package.json', '/package-lock.json',
+  '/.env', '/.env.local', '/.env.production', '/Procfile',
+]);
+app.use((req, res, next) => {
+  let p;
+  try { p = decodeURIComponent(req.path || ''); }
+  catch (e) { return res.status(400).send('Bad request'); }
+  p = path.posix.normalize(p);
+  const blockedData = /^\/data(\/|$)/i.test(p) && !/^\/data\/menu-images\//i.test(p);
+  const blockedDir  = /^\/(node_modules|\.git)(\/|$)/i.test(p);
+  if (blockedData || blockedDir || _BLOCKED_EXACT.has(p)) {
+    return res.status(404).send('Not found');
   }
   next();
 });
@@ -2613,15 +2759,42 @@ app.post('/api/admin/data', (req, res) => {
 
 // ── 出退勤 (GPS打刻) API ────────────────────────────────
 app.post('/api/attendance/clock', (req, res) => {
-  const { shopId, name, type, lat, lng, accuracy, distanceM, outsideAllowed, ts } = req.body || {};
+  const { shopId, name, type, lat, lng, accuracy, distanceM, outsideAllowed, ts, faceImage } = req.body || {};
   if (!shopId || !name || !type) {
     return res.status(400).json({ error: 'shopId, name, type 必須' });
   }
   if (!['in', 'out', 'break_start', 'break_end'].includes(type)) {
     return res.status(400).json({ error: 'type は in/out/break_start/break_end のいずれか' });
   }
+  const recId = 'a' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+
+  /* 🆕 顔認証スナップショット — 打刻時の自撮りを保存 (なりすまし打刻の抑止)。
+     カメラ不可/拒否でも打刻自体は通し faceCaptured:false で記録 (深夜店舗で締め出さない)。
+     画像は /data/attendance-faces/ 配下 (static 遮断済み) に保存し、専用 API でのみ配信。 */
+  let facePhoto = null, faceCaptured = false;
+  if (typeof faceImage === 'string' && faceImage.startsWith('data:image/')) {
+    try {
+      const m = /^data:image\/(jpeg|jpg|png|webp);base64,(.+)$/i.exec(faceImage);
+      if (m) {
+        const buf = Buffer.from(m[2], 'base64');
+        if (buf.length > 0 && buf.length <= 2 * 1024 * 1024) {
+          const ext = m[1].toLowerCase() === 'jpeg' ? 'jpg' : m[1].toLowerCase();
+          const safeShop = _safeShopId(shopId) || 'default';
+          const dir = path.join(ATTENDANCE_FACES_DIR, safeShop);
+          if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+          const fname = `${recId}.${ext}`;
+          fs.writeFileSync(path.join(dir, fname), buf);
+          facePhoto = `/api/attendance/face/${encodeURIComponent(safeShop)}/${fname}`;
+          faceCaptured = true;
+        }
+      }
+    } catch (e) {
+      console.warn('[attendance] 顔写真の保存に失敗:', e.message);
+    }
+  }
+
   const record = {
-    id: 'a' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    id: recId,
     shopId,
     name: String(name).slice(0, 64),
     type,
@@ -2630,6 +2803,8 @@ app.post('/api/attendance/clock', (req, res) => {
     accuracy: typeof accuracy === 'number' ? accuracy : null,
     distanceM: typeof distanceM === 'number' ? distanceM : null,
     outsideAllowed: !!outsideAllowed,
+    faceCaptured,
+    facePhoto,
     ts: typeof ts === 'number' ? ts : Date.now(),
   };
   appendAttendance(shopId, record);
@@ -2640,6 +2815,24 @@ app.post('/api/attendance/clock', (req, res) => {
     console.log(`[attendance] ⚠ 範囲外打刻 — ${shopId} / ${name} / ${type} / ${distanceM}m`);
   }
   res.json({ ok: true, record });
+});
+
+/* 🆕 顔認証スナップショット配信 — 店長が打刻の本人確認に使用。
+   ファイル名は推測困難な record id のため、URL を知る者のみ取得可 (既存 attendance API と同じ前提)。
+   path.basename + ホワイトリスト正規表現 + 保存ルート確認で traversal を防止。 */
+app.get('/api/attendance/face/:shopId/:file', (req, res) => {
+  const safeShop = _safeShopId(req.params.shopId);
+  const file = path.basename(req.params.file || '');
+  if (!safeShop || !/^a[0-9]+_[a-z0-9]+\.(jpg|png|webp)$/i.test(file)) {
+    return res.status(404).send('Not found');
+  }
+  const fp = path.join(ATTENDANCE_FACES_DIR, safeShop, file);
+  if (!fp.startsWith(ATTENDANCE_FACES_DIR + path.sep) || !fs.existsSync(fp)) {
+    return res.status(404).send('Not found');
+  }
+  res.setHeader('Cache-Control', 'private, max-age=86400');
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  res.sendFile(fp);
 });
 
 app.get('/api/attendance/today', (req, res) => {
@@ -2659,6 +2852,104 @@ app.get('/api/attendance/month', (req, res) => {
   if (!shop) return res.status(400).json({ error: 'shop 必須' });
   const ym = month || _monthKeyOf(Date.now());
   res.json(loadAttendance(shop, ym));
+});
+
+/* ════════════════════════════════════════════
+ * 💬 店舗内メッセージ API (グループ + 1:1 DM)
+ *   送信は HTTP POST、配信は socket.io ('message_new')。クライアントはポーリングも併用。
+ * ════════════════════════════════════════════ */
+
+/* 送信 — グループ or 1:1。送信後に同店舗ルームへ配信。 */
+app.post('/api/messages/:shopId/send', (req, res) => {
+  const shopId = req.params.shopId;
+  const { sender, text, scope, to } = req.body || {};
+  if (!shopId || !sender || !text) {
+    return res.status(400).json({ error: 'shopId, sender, text 必須' });
+  }
+  const cleanText = String(text).slice(0, 2000).trim();
+  if (!cleanText) return res.status(400).json({ error: 'text が空です' });
+  const sc = scope === 'dm' ? 'dm' : 'group';
+  if (sc === 'dm' && !to) return res.status(400).json({ error: 'DM は to 必須' });
+
+  const senderName = String(sender).slice(0, 64);
+  const toName = sc === 'dm' ? String(to).slice(0, 64) : null;
+  const msg = {
+    id: 'm' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    shopId,
+    scope: sc,
+    thread: sc === 'dm' ? _dmThreadId(senderName, toName) : 'group',
+    sender: senderName,
+    to: toName,
+    text: cleanText,
+    ts: Date.now(),
+  };
+  appendMessage(shopId, msg);
+  io.to('shop:' + _safeShopId(shopId)).emit('message_new', msg);
+  res.json({ ok: true, message: msg });
+});
+
+/* 取得 — グループ: ?scope=group / 1:1: ?scope=dm&me=A&with=B 。?since=ts で差分取得可。 */
+app.get('/api/messages/:shopId', (req, res) => {
+  const shopId = req.params.shopId;
+  if (!shopId) return res.status(400).json({ error: 'shopId 必須' });
+  const { scope, me, with: withName, since } = req.query;
+  const limit = Math.min(parseInt(req.query.limit) || 200, 500);
+  const all = loadMessages(shopId);
+  let list;
+  if (scope === 'dm') {
+    if (!me || !withName) return res.status(400).json({ error: 'DM は me, with 必須' });
+    const tid = _dmThreadId(me, withName);
+    list = all.filter(m => m.scope === 'dm' && m.thread === tid);
+  } else {
+    list = all.filter(m => m.scope === 'group');
+  }
+  if (since) {
+    const s = parseInt(since);
+    if (!isNaN(s)) list = list.filter(m => m.ts > s);
+  }
+  list.sort((a, b) => a.ts - b.ts);
+  if (list.length > limit) list = list.slice(list.length - limit);
+  res.json(list);
+});
+
+/* スレッド一覧 — グループ + 自分が参加している DM (相手名・最終メッセージ付き)。 */
+app.get('/api/messages/:shopId/threads', (req, res) => {
+  const shopId = req.params.shopId;
+  const me = req.query.me;
+  if (!shopId || !me) return res.status(400).json({ error: 'shopId, me 必須' });
+  const all = loadMessages(shopId);
+
+  const groupMsgs = all.filter(m => m.scope === 'group');
+  const lastGroup = groupMsgs.length ? groupMsgs[groupMsgs.length - 1] : null;
+  const threads = [{
+    id: 'group', scope: 'group', title: null, with: null,
+    lastText: lastGroup ? lastGroup.text : '', lastTs: lastGroup ? lastGroup.ts : 0,
+    lastSender: lastGroup ? lastGroup.sender : '',
+  }];
+
+  /* 自分が関与する DM をスレッド単位で集約 */
+  const dmMap = new Map();
+  for (const m of all) {
+    if (m.scope !== 'dm') continue;
+    if (m.sender !== me && m.to !== me) continue;
+    const other = m.sender === me ? m.to : m.sender;
+    const cur = dmMap.get(m.thread);
+    if (!cur || m.ts > cur.lastTs) {
+      dmMap.set(m.thread, { other, lastText: m.text, lastTs: m.ts, lastSender: m.sender });
+    }
+  }
+  for (const [tid, info] of dmMap.entries()) {
+    threads.push({
+      id: tid, scope: 'dm', title: info.other, with: info.other,
+      lastText: info.lastText, lastTs: info.lastTs, lastSender: info.lastSender,
+    });
+  }
+  threads.sort((a, b) => {
+    if (a.scope === 'group') return -1;
+    if (b.scope === 'group') return 1;
+    return b.lastTs - a.lastTs;
+  });
+  res.json(threads);
 });
 
 // ── デモ予約 API ────────────────────────────────
