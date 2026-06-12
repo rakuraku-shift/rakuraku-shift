@@ -335,11 +335,24 @@ async function notifyAdmin(subject, htmlBody, opts = {}) {
   }
 }
 
-async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
+async function sendLicenseEmail(to, shopName, licenseCode, shopId, opts = {}) {
   if (!emailTransporter) {
     console.warn('[email] EMAIL_USER 未設定 — ライセンスコードメール送信スキップ');
     return;
   }
+  const plan = opts.plan; /* 'pro' | 'trial' | 'free' | undefined(=従来=Pro相当) */
+  /* 導入文: プランごとに正確な料金説明へ出し分け（未指定時は従来文言を維持） */
+  const introLine = plan === 'free'
+    ? '<strong>Free プラン（永続無料）</strong>へのご登録が完了しました。料金は一切発生しません。'
+    : plan === 'pro'
+    ? '<strong>Pro プラン</strong>のご登録が完了しました。最初の 30 日間は無料体験期間です。'
+    : '<strong>30 日 Pro 体験 (クレカ不要)</strong>が開始されました。期間中は一切料金が発生しません。';
+  /* 末尾の課金注記: クレカ不要トライアル/Free に「自動課金」と誤通知しないよう出し分け（未指定時は従来文言を維持） */
+  const billingNote = plan === 'free'
+    ? '※ Free プランは永続無料です。料金は一切発生しません。<br>\n          ※ さらに多機能な Pro プラン（¥4,990/月・30 日無料体験）へはいつでもアップグレードできます。'
+    : plan === 'trial'
+    ? '※ 30 日間の体験終了後は自動的に Free プランへ切り替わります（クレジットカード未登録のため、自動課金は一切発生しません）。<br>\n          ※ 体験中いつでも Pro プランへアップグレードでき、引き続き全機能をご利用いただけます。'
+    : '※ 最初の30日間は無料（¥0）。31日目以降は月額¥4,990（税込）の自動課金となります。<br>\n          ※ 解約はいつでも可能。解約後は翌月以降のご請求は発生しません。';
   const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
   const shopUrl = shopId ? `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/shift.html`;
   const myShiftUrl = shopId ? `${baseUrl}/myshift.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/myshift.html`;
@@ -364,7 +377,7 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
       <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1E293B;line-height:1.7;">
         <h2 style="color:#4F46E5;margin:0 0 16px;">RAKURAKU へようこそ${shopName ? `（${shopName} 様）` : ''}</h2>
         <p>この度はご登録いただき、誠にありがとうございます。</p>
-        <p><strong>30 日 Pro 体験 (クレカ不要)</strong>が開始されました。期間中は一切料金が発生しません。</p>
+        <p>${introLine}</p>
 
         ${shopId ? `
         <div style="background:linear-gradient(135deg,#EEF2FF,#FAF5FF);border:2px solid #4F46E5;padding:20px;margin:24px 0;border-radius:12px;">
@@ -437,8 +450,7 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId) {
 
         <hr style="border:none;border-top:1px solid #E2E8F0;margin:24px 0;" />
         <p style="font-size:12px;color:#94A3B8;line-height:1.7;">
-          ※ 最初の30日間は無料（¥0）。31日目以降は月額¥4,990（税込）の自動課金となります。<br>
-          ※ 解約はいつでも可能。解約後は翌月以降のご請求は発生しません。<br>
+          ${billingNote}<br>
           ※ ご不明な点はこのメールに返信、または 📞 080-5168-3303 までお問い合わせください。<br>
           ※ 運営: RAKURAKU（代表 小泉 咲太）
         </p>
@@ -1870,8 +1882,31 @@ app.post('/api/signup', async (req, res) => {
       return res.json({ checkoutUrl: session.url });
     }
 
-    /* Free / Trial: クレカ不要 — オンボーディングへ */
-    res.json({ next: '/onboarding.html', plan, email });
+    /* Free / Trial: クレカ不要 — サーバー側で店舗を発行し、お客様へ確認(歓迎)メールを送ってからオンボーディングへ。
+       ※ signup.html で「確認メールをお送りします」と明示しているため、ここで必ずお客様宛に送信する。
+         (Pro は Stripe webhook の handleSubscriptionStarted で同等処理を実施) */
+    const pseudoSubId = plan + '_' + Date.now();
+    const licenseCode = generateLicenseCode(email + shopname);
+    const shopId = generateShopId(shopname, email);
+    addShopToAdminList({
+      shopId, shopName: shopname, ownerName: '', email, phone: '',
+      subscriptionId: pseudoSubId, customerId: '',
+      fee: plan === 'free' ? 0 : 4990,
+    });
+    saveSubscription({
+      sessionId: pseudoSubId, customerId: '', subscriptionId: pseudoSubId,
+      shopId, shopName: shopname, ownerName: '', email, phone: '',
+      licenseCode,
+      status: plan === 'free' ? 'free' : 'trialing',
+      createdAt: new Date().toISOString(),
+    });
+    /* お客様へ確認(歓迎)メール — レスポンスはブロックせず非同期送信 (notifyAdmin と同様) */
+    sendLicenseEmail(email, shopname, licenseCode, shopId, { plan })
+      .catch(e => console.error('[api/signup] お客様への確認メール送信失敗:', e.message));
+    try { scheduleOnboardingEmails(email, shopname, '', shopId); }
+    catch (e) { console.warn('[api/signup] onboarding schedule失敗:', e.message); }
+    /* next はクエリ無しで返す (signup.html 側が ?plan=&email= を付与するため二重 ? を避ける)。shopId は別フィールドで返却 */
+    res.json({ next: '/onboarding.html', plan, email, shopId });
   } catch (e) {
     console.error('[api/signup]', e);
     res.status(500).json({ error: e.message });
