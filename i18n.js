@@ -3621,35 +3621,42 @@
 
   function applyTranslations() {
     document.documentElement.lang = currentLang;
-    /* テキストノード置換 */
+    /* テキストノード置換。翻訳が見つからない(=キー文字列が返る)場合は HTML のデフォルト文字を維持し、
+       生キー(例: "demo.modal_title")を絶対に画面表示しない。古い i18n.js がキャッシュされていても安全。 */
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
       const key = el.getAttribute('data-i18n');
-      el.textContent = t(key);
+      const val = t(key);
+      if (val !== key) el.textContent = val;
     });
     /* HTML 置換 (バグ修正: 以前は data-i18n-html が無視されていた) */
     document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
       const key = el.getAttribute('data-i18n-html');
-      el.innerHTML = t(key);
+      const val = t(key);
+      if (val !== key) el.innerHTML = val;
     });
     /* placeholder 置換 */
     document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
       const key = el.getAttribute('data-i18n-placeholder');
-      el.placeholder = t(key);
+      const val = t(key);
+      if (val !== key) el.placeholder = val;
     });
     /* aria-label 置換 (アクセシビリティ) */
     document.querySelectorAll('[data-i18n-aria]').forEach(function(el) {
       const key = el.getAttribute('data-i18n-aria');
-      el.setAttribute('aria-label', t(key));
+      const val = t(key);
+      if (val !== key) el.setAttribute('aria-label', val);
     });
     /* title 属性 (ツールチップ) 置換 */
     document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
       const key = el.getAttribute('data-i18n-title');
-      el.setAttribute('title', t(key));
+      const val = t(key);
+      if (val !== key) el.setAttribute('title', val);
     });
     /* alt 属性 (画像) 置換 */
     document.querySelectorAll('[data-i18n-alt]').forEach(function(el) {
       const key = el.getAttribute('data-i18n-alt');
-      el.setAttribute('alt', t(key));
+      const val = t(key);
+      if (val !== key) el.setAttribute('alt', val);
     });
     /* イベント発火（カスタムレンダリングの再実行用） */
     window.dispatchEvent(new CustomEvent('rakuraku-lang-changed', { detail: { lang: currentLang } }));

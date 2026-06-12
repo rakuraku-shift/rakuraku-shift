@@ -41,7 +41,7 @@
   a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #4F46E5; outline-offset: 2px; border-radius: 4px; }
   /* 印刷用 (事例集を紙資料として配布する場合) */
   @media print {
-    .nav, .cta-box, .footer, #rakuraku-help-widget { display:none !important; }
+    .nav, .cta-box, .footer { display:none !important; }
     .case-card { page-break-inside: avoid; box-shadow:none !important; }
     body { background:#fff; }
   }
@@ -402,7 +402,6 @@
   &copy; 2026 RAKURAKU. All rights reserved.
 </div>
 
-<script src="/help-widget.js" defer></script>
 <script src="/i18n.js"></script>
 <script>
 if(window.RakuI18n){

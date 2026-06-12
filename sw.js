@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v25 — i18n.js をネットワーク優先に変更。翻訳キー追加時に SW バージョンを上げ忘れても常に最新訳が配信される（「たまに英語になる」問題の根治）。他の静的アセットは従来通りキャッシュ優先 */
-var CACHE = 'rakuraku-v25';
+/* RAKURAKU Service Worker v26 — help-widget.js（紫のヘルプウィジェット）を全廃しキャッシュ対象からも除外。i18n.js はネットワーク優先（翻訳キー追加時に SW バージョンを上げ忘れても常に最新訳が配信される＝「たまに英語になる」問題の根治）。他の静的アセットは従来通りキャッシュ優先 */
+var CACHE = 'rakuraku-v26';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',
@@ -61,7 +61,6 @@ var ASSETS = [
   '/staff-dashboard.html',
   '/data-export.html',
   '/careers.html',
-  '/help-widget.js',
   '/roadmap.html',
   '/status.html',
   '/churn-survey.html',
