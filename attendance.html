@@ -42,6 +42,15 @@
   .label{font-size:11px;font-weight:800;color:var(--slate-500);letter-spacing:.06em;margin-bottom:8px;}
   .name-input{width:100%;padding:14px 16px;border:1.5px solid var(--slate-200);border-radius:12px;font-size:18px;font-weight:700;font-family:inherit;outline:none;background:var(--slate-50);text-align:center;letter-spacing:.02em;}
   .name-input:focus{border-color:var(--indigo);background:#fff;}
+  /* 氏名サジェスト（ひらがな1文字検索対応） */
+  .att-name-wrap{position:relative;}
+  .name-suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--slate-200);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.14);z-index:50;overflow:hidden auto;max-height:280px;text-align:left;}
+  .ns-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--slate-100);}
+  .ns-item:last-child{border-bottom:none;}
+  .ns-item:hover,.ns-item:active{background:var(--slate-50);}
+  .ns-name{font-size:16px;font-weight:700;color:var(--slate-900);}
+  .ns-yomi{font-size:11px;color:#94A3B8;margin-left:6px;font-weight:500;}
+  .ns-role-chip{font-size:10px;font-weight:800;padding:3px 8px;border-radius:999px;white-space:nowrap;flex-shrink:0;}
 
   /* Status card */
   .status-card{background:#fff;border:1.5px solid var(--slate-100);border-radius:14px;padding:20px;margin-bottom:18px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.04);}
@@ -125,7 +134,11 @@
   <!-- Name input -->
   <div class="name-card">
     <div class="label" data-i18n="att.name_label">👤 お名前</div>
-    <input type="text" class="name-input" id="staff-name" data-i18n-placeholder="att.name_ph" placeholder="お名前" autocomplete="name" aria-label="あなたのお名前" />
+    <div data-i18n="att.name_hint" style="font-size:10px;color:#94A3B8;font-weight:600;margin:-2px 0 8px;">💡 ひらがな1文字でも検索できます</div>
+    <div class="att-name-wrap">
+      <input type="text" class="name-input" id="staff-name" data-i18n-placeholder="att.name_ph" placeholder="お名前" autocomplete="off" aria-label="あなたのお名前" />
+      <div class="name-suggestions" id="name-suggestions" style="display:none;"></div>
+    </div>
   </div>
 
   <!-- GPS status -->
@@ -244,6 +257,103 @@
   function saveName(n) { try { localStorage.setItem('rakuraku_attendance_name_' + SHOP_ID, n); } catch(e) {} }
   document.getElementById('staff-name').value = loadName();
   document.getElementById('staff-name').addEventListener('input', e => saveName(e.target.value));
+
+  /* ════════════════════════════════════════
+     氏名サジェスト（ひらがな1文字検索対応）
+     既知スタッフ(known_workers)をサーバースナップショットから取得し、
+     漢字名 もしくは 読み(ひらがな) のどちらでも候補表示する。
+     ※ 読みは主にシフト提出(shift.html)側でIME変換時に保存され同期される。
+  ════════════════════════════════════════ */
+  var _attKnown = {};
+  var ATT_ROLE_LABELS = { hall:'ホール', kitchen:'キッチン', cashier:'レジ', unassigned:'' };
+  var ATT_ROLE_COLORS = { hall:'#F97316', kitchen:'#22C55E', cashier:'#3B82F6', unassigned:'#94A3B8' };
+  function _attToHira(s){ return (s || '').replace(/[ァ-ヶ]/g, function(ch){ return String.fromCharCode(ch.charCodeAt(0) - 0x60); }); }
+  function _attIsKanaOnly(s){ return /^[぀-ヿー　\s]+$/.test(s || ''); }
+  /* IME 変換確定時に読みを取得（このページで新規に名前を打つ人ぶんも拾う） */
+  var _attImeSeg = '', _attImeReading = '';
+  function attImeStart(){ _attImeSeg = ''; }
+  function attImeUpdate(e){ var d = (e && e.data) || ''; if (d && _attIsKanaOnly(d)) _attImeSeg = d; }
+  function attImeEnd(){ if (_attImeSeg) _attImeReading += _attToHira(_attImeSeg); _attImeSeg = ''; }
+  /* known_workers をサーバースナップショットから取得（同一店舗の登録スタッフ） */
+  function attLoadKnown(){
+    fetch('/api/shop/' + encodeURIComponent(SHOP_ID) + '/snapshot')
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(snap){
+        if (!snap) return;
+        var kw = snap.known_workers;
+        if (typeof kw === 'string') { try { kw = JSON.parse(kw); } catch(e){ kw = {}; } }
+        if (kw && typeof kw === 'object') _attKnown = kw;
+      })
+      .catch(function(){ /* オフラインでも打刻は可能 */ });
+  }
+  function attHideSuggestions(){ var l = document.getElementById('name-suggestions'); if (l) l.style.display = 'none'; }
+  function attShowSuggestions(query){
+    var list = document.getElementById('name-suggestions');
+    if (!list) return;
+    var qRaw = (query || '').trim();
+    if (qRaw.length < 1) { attHideSuggestions(); return; }
+    var q = _attToHira(qRaw);   // 検索語をひらがな正規化（カタカナ入力でも一致）
+    var names = Object.keys(_attKnown);
+    if (names.length === 0) { attHideSuggestions(); return; }
+    function rdg(w){ return _attToHira((w && w.reading) || ''); }
+    var matched = names.map(function(n){ return [n, _attKnown[n] || {}]; }).filter(function(e){
+      var n = e[0], w = e[1];
+      if (n.indexOf(qRaw) >= 0) return true;        // 漢字名にヒット
+      var r = rdg(w); return r.length > 0 && r.indexOf(q) >= 0;  // 読みにヒット
+    });
+    function firstHit(e){
+      var n = e[0], r = rdg(e[1]);
+      return (n.charAt(0) === qRaw.charAt(0)) || (r.length > 0 && r.charAt(0) === q.charAt(0));
+    }
+    var starts = matched.filter(firstHit);
+    var others = matched.filter(function(e){ return !firstHit(e); });
+    var matches = starts.concat(others).slice(0, 8);
+    if (matches.length === 0) { attHideSuggestions(); return; }
+    list.innerHTML = matches.map(function(e){
+      var name = e[0], w = e[1];
+      var role = w.role || 'unassigned';
+      var roleLabel = ATT_ROLE_LABELS[role] || '';
+      var roleColor = ATT_ROLE_COLORS[role] || ATT_ROLE_COLORS.unassigned;
+      var safeName = name.replace(/'/g, "\\'");
+      var idx = name.indexOf(qRaw);
+      var nameHtml = idx >= 0
+        ? name.substring(0, idx) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 2px;border-radius:3px;">' + name.substring(idx, idx + qRaw.length) + '</mark>' + name.substring(idx + qRaw.length)
+        : name;
+      var yomiHtml = '';
+      var r = rdg(w);
+      if (r) {
+        var ri = r.indexOf(q);
+        var rDisp = ri >= 0
+          ? r.substring(0, ri) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 1px;border-radius:3px;">' + r.substring(ri, ri + q.length) + '</mark>' + r.substring(ri + q.length)
+          : r;
+        yomiHtml = '<span class="ns-yomi">' + rDisp + '</span>';
+      }
+      var chip = roleLabel
+        ? '<span class="ns-role-chip" style="background:' + roleColor + '22;color:' + roleColor + ';border:1px solid ' + roleColor + '55;">' + roleLabel + '</span>'
+        : '';
+      return '<div class="ns-item" onclick="attSelectName(\'' + safeName + '\')">' +
+        '<span class="ns-name">' + nameHtml + yomiHtml + '</span>' + chip + '</div>';
+    }).join('');
+    list.style.display = 'block';
+  }
+  function attSelectName(name){
+    var el = document.getElementById('staff-name');
+    if (el) { el.value = name; saveName(name); }
+    _attImeSeg = ''; _attImeReading = '';
+    attHideSuggestions();
+    if (typeof loadHistory === 'function') loadHistory();
+  }
+  (function(){
+    var el = document.getElementById('staff-name');
+    if (!el) return;
+    el.addEventListener('input', function(){ var v = el.value.trim(); if (!v) { _attImeSeg=''; _attImeReading=''; } attShowSuggestions(v); });
+    el.addEventListener('focus', function(){ attShowSuggestions(el.value.trim()); });
+    el.addEventListener('compositionstart', attImeStart);
+    el.addEventListener('compositionupdate', attImeUpdate);
+    el.addEventListener('compositionend', attImeEnd);
+    document.addEventListener('click', function(ev){ if (!ev.target.closest('.att-name-wrap')) attHideSuggestions(); });
+  })();
+  attLoadKnown();
 
   /* ── 時計 ── */
   function updateClock() {

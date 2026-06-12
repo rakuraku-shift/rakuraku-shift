@@ -2574,10 +2574,12 @@
     </div>
 
     <div class="sf-field name-input-wrap">
-      <label class="sf-label"><span data-i18n="sf.label_name">氏名</span> <span style="font-size:10px;color:var(--slate-400);font-weight:600;margin-left:4px;" data-i18n="sf.label_name_hint">💡 1文字入力で候補表示</span></label>
+      <label class="sf-label"><span data-i18n="sf.label_name">氏名</span> <span style="font-size:10px;color:var(--slate-400);font-weight:600;margin-left:4px;" data-i18n="sf.label_name_hint">💡 ひらがな1文字でも候補表示</span></label>
       <input class="sf-input" type="text" id="staff-name"
              placeholder="スタッフ名"
-             oninput="onNameInput()" onfocus="onNameInput()" autocomplete="off" />
+             oninput="onNameInput()" onfocus="onNameInput()"
+             oncompositionstart="imeReadStart()" oncompositionupdate="imeReadUpdate(event)" oncompositionend="imeReadEnd()"
+             autocomplete="off" />
       <div class="name-suggestions" id="name-suggestions" style="display:none;"></div>
     </div>
 
@@ -4033,6 +4035,17 @@
       _syncOnline = true;
       console.log('[sync] bootstrap 完了:', count, 'keys');
       _showSyncPill('online', '● オンライン同期中');
+      /* 🔒 サーバ上の店長PINが旧・平文ならハッシュへ移行し、サーバから平文を消す
+         （snapshot 未認証配信対策。照合は verifyManagerPin が新旧両形式に対応） */
+      try {
+        var _pinV = localStorage.getItem(shopId + '_noru_mgr_pin');
+        if (_pinV && /^\d{4}$/.test(_pinV)) {
+          _hashPin(_pinV).then(function(h) {
+            storageSet(_sk('noru_mgr_pin'), h);
+            console.log('[security] 店長PINをハッシュ化（平文を解消）');
+          }).catch(function() {});
+        }
+      } catch(e) {}
       return true;
     } catch (e) {
       _syncOnline = false;
@@ -4630,9 +4643,24 @@
   var _gatePin            = '';
   var _gateAttempts       = 0;
   var _managerAuthedMem   = false; // 店長認証はメモリ内のみで保持（永続化しない＝常時ロック。リロードで必ず再ロック）
+  var _DEFAULT_MGR_PIN    = '1234'; // 未設定時の既定PIN
 
-  function getManagerPin() {
-    return storageGet(_sk('noru_mgr_pin')) || '1234';
+  /* 店長PIN検証: 入力PINをハッシュ化して保存値と比較。
+     保存値は新形式=64桁hexハッシュ。snapshot に平文が載らない。
+     旧・平文(4桁)も後方互換で受理し、照合成功時にハッシュへ移行する。 */
+  async function verifyManagerPin(inputPin) {
+    var pin = String(inputPin == null ? '' : inputPin).replace(/\D/g, '');
+    if (pin.length < 4) return false;
+    var stored = storageGet(_sk('noru_mgr_pin'));
+    if (!stored) return pin === _DEFAULT_MGR_PIN;          // 未設定 → 既定PIN
+    if (/^[0-9a-f]{64}$/.test(stored)) {                   // 新形式: ハッシュ比較
+      return (await _hashPin(pin)) === stored;
+    }
+    if (pin === stored) {                                  // 旧形式: 平文一致 → ハッシュへ移行
+      try { storageSet(_sk('noru_mgr_pin'), await _hashPin(pin)); } catch(e) {}
+      return true;
+    }
+    return false;
   }
   function isManagerAuthed() {
     /* 🆕 常時ロック: 認証はメモリ内のみ保持し永続化しない。
@@ -4668,11 +4696,11 @@
     }
   }
 
-  function checkGatePinSubmit() {
+  async function checkGatePinSubmit() {
     var inp = document.getElementById('gate-real-input');
     var pin = inp ? inp.value.replace(/\D/g,'') : _gatePin;
     if (pin.length < 4) return;
-    if (pin === getManagerPin()) {
+    if (await verifyManagerPin(pin)) {
       _managerAuthedMem = true;   /* 🆕 sessionStorage には保存しない（常時ロック: リロードで必ず再ロック） */
       document.getElementById('manager-gate-overlay').style.display = 'none';
       if (inp) inp.value = '';
@@ -4715,14 +4743,15 @@
 
   /* 旧 updateGateDots エイリアス */
   function updateGateDots() { updateGateBoxes(_gatePin); }
-  function saveNewPin() {
+  async function saveNewPin() {
     var input = document.getElementById('pin-new-input');
     var pin = (input ? input.value : '').trim();
     if (!/^\d{4}$/.test(pin)) { showToast('⚠️ 4桁の数字で入力してください'); return; }
-    /* storageSet → localStorage 保存 + SYNCED_KEYS 対象なのでサーバへ即POST
+    /* 🔒 保存・同期はハッシュのみ（平文は snapshot に載らない）。
+       storageSet → localStorage 保存 + SYNCED_KEYS 対象なのでサーバへ即POST
        → socket.io で店舗の全端末に配信され、店舗アカウントのPINが即時に切り替わる。
        新PINを明示表示して入力ミスによる締め出しを防止（入力欄は伏字のため） */
-    storageSet(_sk('noru_mgr_pin'), pin);
+    storageSet(_sk('noru_mgr_pin'), await _hashPin(pin));
     if (input) input.value = '';
     showToast('✅ PINを「' + pin + '」に変更しました（店舗の全端末に即反映）');
   }
@@ -5190,24 +5219,56 @@
   const NS_ROLE_LABELS = { hall:'ホール', kitchen:'キッチン', cashier:'レジ', unassigned:'未設定' };
   const NS_ROLE_COLORS = { hall:'#F97316', kitchen:'#22C55E', cashier:'#3B82F6', unassigned:'#94A3B8' };
 
+  /* カタカナ→ひらがな正規化（検索語・読みの比較を表記ゆれ無しで行う） */
+  function _toHira(s){
+    return (s || '').replace(/[ァ-ヶ]/g, function(ch){
+      return String.fromCharCode(ch.charCodeAt(0) - 0x60);
+    });
+  }
+  /* 文字列が「かな（ひらがな/カタカナ/長音/空白）」のみで構成されるか */
+  function _isKanaOnly(s){
+    return /^[぀-ヿー　\s]+$/.test(s || '');
+  }
+  /* ── IME 変換確定時に「読み（ひらがな）」を取得して保持 ──
+     漢字氏名（例: 田中）を入力しても、変換前のかな（たなか）を拾って
+     known_workers[name].reading に保存 → 次回ひらがな1文字でも候補表示できる。
+     既存の漢字のみ登録ぶんは、一度この経路を通るまでは漢字部分一致でフォールバック。 */
+  var _imeSeg = '';      // 変換中セグメントの「確定前かな」
+  var _imeReading = '';  // 1氏名ぶんの読み（複数文節を連結）
+  function imeReadStart(){ _imeSeg = ''; }
+  function imeReadUpdate(e){
+    var d = (e && e.data) || '';
+    /* 変換候補が漢字に変わったら上書きしない＝最後の「かなだけ」の状態を保持 */
+    if (d && _isKanaOnly(d)) _imeSeg = d;
+  }
+  function imeReadEnd(){
+    if (_imeSeg) _imeReading += _toHira(_imeSeg);
+    _imeSeg = '';
+  }
+  function imeReadReset(){ _imeSeg = ''; _imeReading = ''; }
+  function imeGetReading(){ return _imeReading; }
+
   function showNameSuggestions(query) {
     const list = document.getElementById('name-suggestions');
     if (!list) return;
-    const q = (query || '').trim();
-    if (q.length < 1) { hideSuggestions(); return; }
+    const qRaw = (query || '').trim();
+    if (qRaw.length < 1) { hideSuggestions(); return; }
+    const q = _toHira(qRaw);   // 検索語をひらがな正規化（カタカナ入力でも一致）
     const known = loadKnownWorkers();
     const all = Object.entries(known);
     if (all.length === 0) { hideSuggestions(); return; }
 
-    /* 優先度: 1文字目一致 > 部分一致 */
-    const starts = all.filter(([n]) => n.charAt(0) === q.charAt(0));
-    const others = all.filter(([n]) => n.charAt(0) !== q.charAt(0) && n.includes(q));
-    let matches = [...starts, ...others].slice(0, 8);
+    /* 読み（ひらがな）取得ヘルパ／name(漢字) もしくは reading(ひらがな) のどちらかにヒット */
+    const rdg = (w) => _toHira((w && w.reading) || '');
+    const nameHit = (n) => n.indexOf(qRaw) >= 0;
+    const readHit = (w) => { const r = rdg(w); return r.length > 0 && r.indexOf(q) >= 0; };
+    /* 優先度: 1文字目一致（漢字の頭 or 読みの頭） > 部分一致 */
+    const firstHit = (n, w) => (n.charAt(0) === qRaw.charAt(0)) || (rdg(w).length > 0 && rdg(w).charAt(0) === q.charAt(0));
 
-    /* q が長い場合は部分一致のみに絞り込み */
-    if (q.length >= 2) {
-      matches = matches.filter(([n]) => n.includes(q));
-    }
+    const matchedAll = all.filter(([n, w]) => nameHit(n) || readHit(w));
+    const starts = matchedAll.filter(([n, w]) => firstHit(n, w));
+    const others = matchedAll.filter(([n, w]) => !firstHit(n, w));
+    const matches = [...starts, ...others].slice(0, 8);
 
     if (matches.length === 0) { hideSuggestions(); return; }
 
@@ -5217,11 +5278,21 @@
       const roleColor = NS_ROLE_COLORS[role] || NS_ROLE_COLORS.unassigned;
       const safeEmail = (w.email || '').replace(/'/g, "\\'");
       const safeName  = name.replace(/'/g, "\\'");
-      /* マッチした文字を強調 */
-      const idx = name.indexOf(q);
+      /* 漢字名にヒットすれば名前側を強調 */
+      const idx = name.indexOf(qRaw);
       const highlighted = idx >= 0
-        ? name.substring(0, idx) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 2px;border-radius:3px;">' + name.substring(idx, idx + q.length) + '</mark>' + name.substring(idx + q.length)
+        ? name.substring(0, idx) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 2px;border-radius:3px;">' + name.substring(idx, idx + qRaw.length) + '</mark>' + name.substring(idx + qRaw.length)
         : name;
+      /* 読みフリガナ（あれば小さく表示。読みにヒットした箇所を強調） */
+      let yomiHtml = '';
+      const r = rdg(w);
+      if (r) {
+        const ri = r.indexOf(q);
+        const rDisp = ri >= 0
+          ? r.substring(0, ri) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 1px;border-radius:3px;">' + r.substring(ri, ri + q.length) + '</mark>' + r.substring(ri + q.length)
+          : r;
+        yomiHtml = '<span class="ns-yomi" style="font-size:10px;color:var(--slate-400);margin-left:6px;">' + rDisp + '</span>';
+      }
       const emailHtml = w.email
         ? '<span style="font-size:10px;color:var(--slate-400);margin-left:6px;">📧 ' + w.email + '</span>'
         : '';
@@ -5229,7 +5300,7 @@
         onclick="selectNameSuggestion('${safeName}','${safeEmail}','${role}')">
         <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
           <span style="display:inline-block;width:5px;height:18px;background:${roleColor};border-radius:2px;flex-shrink:0;"></span>
-          <span class="ns-name" style="flex:1;">${highlighted}${emailHtml}</span>
+          <span class="ns-name" style="flex:1;">${highlighted}${yomiHtml}${emailHtml}</span>
         </div>
         <span class="ns-role-chip" style="background:${roleColor}22;color:${roleColor};border:1px solid ${roleColor}55;">${roleLabel}</span>
       </div>`;
@@ -5248,6 +5319,7 @@
     if (nameEl)  nameEl.value  = name;
     if (emailEl && email) { emailEl.value = email; showAutofillBadge(); }
     syncRoleButtons(role);
+    imeReadReset();   // 既存候補を選んだら打鍵中の読みは破棄（別氏名への誤紐付け防止）
     hideSuggestions();
     updateChecklist();
   }
@@ -5676,6 +5748,7 @@
   function onNameInput() {
     updateChecklist();
     var query = (document.getElementById('staff-name') || {value:''}).value.trim();
+    if (!query) imeReadReset();   // 入力が空になったら読みバッファもクリア
     showNameSuggestions(query);
     clearTimeout(_nameInputTimer);
     _nameInputTimer = setTimeout(lookupWorkerEmail, 350);
@@ -5713,9 +5786,9 @@
           showAutofillBadge();
         }
         if (data.role) syncRoleButtons(data.role);
-        // ローカルにキャッシュ
+        // ローカルにキャッシュ（reading/positions 等の既存フィールドは保全）
         var k = loadKnownWorkers();
-        k[name] = { email: data.email || '', role: data.role || 'hall' };
+        k[name] = Object.assign({}, k[name] || {}, { email: data.email || '', role: data.role || 'hall' });
         saveKnownWorkers(k);
       })
       .catch(function(e) {}); // オフラインでも問題なし
@@ -5733,9 +5806,15 @@
   // 提出時 → localStorage＋サーバーに名前+メール+役職を保存
   function registerWorker(name, email, role) {
     if (!name) return;
-    // localStorage
+    // localStorage（既存フィールドを保全しつつ、IMEで拾った読みを付与）
     var known = loadKnownWorkers();
-    known[name] = { email: email || '', role: role || 'hall', savedAt: new Date().toISOString() };
+    var prev = known[name] || {};
+    known[name] = Object.assign({}, prev, {
+      email: email || prev.email || '',
+      role: role || prev.role || 'hall',
+      reading: imeGetReading() || prev.reading || '',
+      savedAt: new Date().toISOString()
+    });
     saveKnownWorkers(known);
     // サーバー（fire and forget）
     fetch('/api/staff/registry', {
@@ -7391,6 +7470,11 @@
     return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
   }
 
+  /* 店長PIN用ハッシュ: shopId をソルトに用途分離。snapshot に平文を載せないため */
+  async function _hashPin(pin) {
+    return await _sha256(getShopId() + ':mgrpin:' + String(pin));
+  }
+
   function _ppPassKey(name) {
     /* 各店舗+スタッフ別 */
     return _sk('pp_pass_' + name);
@@ -7464,14 +7548,13 @@
     _showPersonalPayrollResult();
   }
 
-  function resetPersonalPassword() {
+  async function resetPersonalPassword() {
     /* 店長権限 (PIN) で再設定可 */
     const pin = prompt('🔐 店長の管理PINを入力してください\n(パスワード忘れたスタッフのリセット用)');
     if (!pin) return;
-    /* 🔧 統一: 店長PINは getManagerPin()（noru_mgr_pin）が正。
-       旧コードは別キー mgr_pin / 既定0000 を見ており、PIN変更後に解除できないバグだった */
-    const savedPin = getManagerPin();
-    if (pin !== savedPin) {
+    /* 🔧 統一: 店長PINは verifyManagerPin()（noru_mgr_pin）が正。
+       🔒 保存値はハッシュのため、入力PINをハッシュ化して照合する */
+    if (!(await verifyManagerPin(pin))) {
       showToast('⚠ 管理PINが違います');
       return;
     }
