@@ -1,5 +1,5 @@
-/* RAKURAKU Service Worker v23 — 創業メンバー制度を廃止 (30 日 Pro 体験に一本化) + 関連ページを cache から除外 */
-var CACHE = 'rakuraku-v23';
+/* RAKURAKU Service Worker v24 — i18n.js 更新を配信 (mgr.shift_edit_* / 顔認証 att.face_* / メッセージ msg.* の新キー). i18n.js はキャッシュ優先のため、翻訳キー追加時はこのバージョンを必ず上げること */
+var CACHE = 'rakuraku-v24';
 var ASSETS = [
   '/shift.html',
   '/noru-admin.html',

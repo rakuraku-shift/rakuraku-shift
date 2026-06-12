@@ -249,11 +249,11 @@
   function updateClock() {
     const d = new Date();
     document.getElementById('now-clock').textContent =
-      String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+      String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ':' + String(d.getSeconds()).padStart(2,'0');
     document.getElementById('today-date').textContent =
       (d.getMonth()+1) + '/' + d.getDate() + ' (' + ['日','月','火','水','木','金','土'][d.getDay()] + ')';
   }
-  setInterval(updateClock, 30000);
+  setInterval(updateClock, 1000);
   updateClock();
 
   /* ══════════════════════════════════════════
@@ -483,7 +483,7 @@
     if (!_todayRecords.length) { renderEmpty(); return; }
     list.innerHTML = _todayRecords.map(r => {
       const d = new Date(r.ts);
-      const time = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+      const time = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ':' + String(d.getSeconds()).padStart(2,'0');
       const labels = { in: _t('att.btn_in'), out: _t('att.btn_out'), break_start: _t('att.btn_break_start'), break_end: _t('att.btn_break_end') };
       const warn = r.outsideAllowed ? ' ⚠️' : '';
       return '<div class="history-item">' +
@@ -548,7 +548,7 @@
     if (_todayRecords.length) {
       const last = [..._todayRecords].sort((a,b) => b.ts - a.ts)[0];
       const d = new Date(last.ts);
-      time.textContent = _t('att.last_punch') + ': ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+      time.textContent = _t('att.last_punch') + ': ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ':' + String(d.getSeconds()).padStart(2,'0');
       const { work, brk } = calcWorkBreakMinutes();
       const lang = window.RakuI18n ? RakuI18n.getLang() : 'ja';
       const wHrLbl = lang === 'ja' ? '時間' : lang === 'en' ? 'h ' : lang === 'zh' ? '小时' : '시간 ';
