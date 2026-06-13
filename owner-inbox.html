@@ -532,15 +532,15 @@ function render(){
           </div>
           <div class="row-meta">
             ${i.name ? `<strong>${escapeHtml(i.name)}</strong> 様 · ` : ''}
-            ${i.email ? `<a href="mailto:${i.email}">${i.email}</a>` : ''}
-            ${i.tel ? ` · <a href="tel:${i.tel}">${i.tel}</a>` : ''}
+            ${i.email ? `<a href="mailto:${escapeHtml(i.email)}">${escapeHtml(i.email)}</a>` : ''}
+            ${i.tel ? ` · <a href="tel:${escapeHtml(i.tel)}">${escapeHtml(i.tel)}</a>` : ''}
             ${i.meta ? `<br>${escapeHtml(i.meta)}` : ''}
             ${i.pain ? `<div class="pain">${escapeHtml(i.pain).slice(0, 200)}${i.pain.length > 200 ? '…' : ''}</div>` : ''}
           </div>
         </div>
         <div class="row-actions">
-          ${i.email ? `<a class="act-btn primary" href="mailto:${i.email}?subject=${encodeURIComponent('Re: RAKURAKU ' + (i.title.replace(/[🔥📨💎🎬]/g,'').trim()))}">📧 返信</a>` : ''}
-          ${i.tel ? `<a class="act-btn" href="tel:${i.tel}">📞 電話</a>` : ''}
+          ${i.email ? `<a class="act-btn primary" href="mailto:${escapeHtml(i.email)}?subject=${encodeURIComponent('Re: RAKURAKU ' + (i.title.replace(/[🔥📨💎🎬]/g,'').trim()))}">📧 返信</a>` : ''}
+          ${i.tel ? `<a class="act-btn" href="tel:${escapeHtml(i.tel)}">📞 電話</a>` : ''}
           <!-- 創業メンバー制度は廃止 — ライセンス発行ボタン削除 (30 日 Pro 体験に一本化) -->
           <button class="act-btn handle ${isHandled ? 'done' : ''}" onclick="markHandled('${i.id}')">${isHandled ? '✓ 対応済み' : '対応済みに'}</button>
         </div>

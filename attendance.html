@@ -287,6 +287,8 @@
       .catch(function(){ /* オフラインでも打刻は可能 */ });
   }
   function attHideSuggestions(){ var l = document.getElementById('name-suggestions'); if (l) l.style.display = 'none'; }
+  /* XSS防止用 HTMLエスケープ (このファイルには未定義だったため追加) */
+  function attEsc(s){ if (s === null || s === undefined) return ''; return String(s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
   function attShowSuggestions(query){
     var list = document.getElementById('name-suggestions');
     if (!list) return;
@@ -309,34 +311,37 @@
     var others = matched.filter(function(e){ return !firstHit(e); });
     var matches = starts.concat(others).slice(0, 8);
     if (matches.length === 0) { attHideSuggestions(); return; }
-    list.innerHTML = matches.map(function(e){
+    attSelectName._sel = matches;
+    list.innerHTML = matches.map(function(e, i){
       var name = e[0], w = e[1];
       var role = w.role || 'unassigned';
       var roleLabel = ATT_ROLE_LABELS[role] || '';
       var roleColor = ATT_ROLE_COLORS[role] || ATT_ROLE_COLORS.unassigned;
-      var safeName = name.replace(/'/g, "\\'");
       var idx = name.indexOf(qRaw);
       var nameHtml = idx >= 0
-        ? name.substring(0, idx) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 2px;border-radius:3px;">' + name.substring(idx, idx + qRaw.length) + '</mark>' + name.substring(idx + qRaw.length)
-        : name;
+        ? attEsc(name.substring(0, idx)) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 2px;border-radius:3px;">' + attEsc(name.substring(idx, idx + qRaw.length)) + '</mark>' + attEsc(name.substring(idx + qRaw.length))
+        : attEsc(name);
       var yomiHtml = '';
       var r = rdg(w);
       if (r) {
         var ri = r.indexOf(q);
         var rDisp = ri >= 0
-          ? r.substring(0, ri) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 1px;border-radius:3px;">' + r.substring(ri, ri + q.length) + '</mark>' + r.substring(ri + q.length)
-          : r;
+          ? attEsc(r.substring(0, ri)) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 1px;border-radius:3px;">' + attEsc(r.substring(ri, ri + q.length)) + '</mark>' + attEsc(r.substring(ri + q.length))
+          : attEsc(r);
         yomiHtml = '<span class="ns-yomi">' + rDisp + '</span>';
       }
       var chip = roleLabel
         ? '<span class="ns-role-chip" style="background:' + roleColor + '22;color:' + roleColor + ';border:1px solid ' + roleColor + '55;">' + roleLabel + '</span>'
         : '';
-      return '<div class="ns-item" onclick="attSelectName(\'' + safeName + '\')">' +
+      return '<div class="ns-item" onclick="attSelectName(' + i + ')">' +
         '<span class="ns-name">' + nameHtml + yomiHtml + '</span>' + chip + '</div>';
     }).join('');
     list.style.display = 'block';
   }
-  function attSelectName(name){
+  function attSelectName(i){
+    var m = (attSelectName._sel || [])[i];
+    if (!m) return;
+    var name = m[0];
     var el = document.getElementById('staff-name');
     if (el) { el.value = name; saveName(name); }
     _attImeSeg = ''; _attImeReading = '';

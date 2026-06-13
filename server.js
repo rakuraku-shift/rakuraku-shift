@@ -889,9 +889,11 @@ function shopDataFile(shopId) {
 }
 function loadShopData(shopId) { return readJSON(shopDataFile(shopId), {}); }
 function saveShopData(shopId, data) { writeJSON(shopDataFile(shopId), data); }
+/* プロトタイプ汚染対策: 危険なキー名は書き込ませない (__proto__ / constructor / prototype) */
+function _isUnsafeKey(k) { return k === '__proto__' || k === 'constructor' || k === 'prototype'; }
 function setShopKey(shopId, key, value) {
   const data = loadShopData(shopId);
-  data[key] = value;
+  if (!_isUnsafeKey(key)) data[key] = value;
   data._updatedAt = Date.now();
   saveShopData(shopId, data);
   return data;
@@ -902,7 +904,7 @@ function loadAdminData() { return readJSON(ADMIN_FILE, {}); }
 function saveAdminData(data) { writeJSON(ADMIN_FILE, data); }
 function setAdminKey(key, value) {
   const data = loadAdminData();
-  data[key] = value;
+  if (!_isUnsafeKey(key)) data[key] = value;
   data._updatedAt = Date.now();
   saveAdminData(data);
   return data;
@@ -1005,6 +1007,41 @@ engine.setStock(loadStock());
 const app    = express();
 const server = http.createServer(app);
 const io     = new Server(server, { cors: { origin: '*' } });
+
+// ── 🔒 セキュリティヘッダー + 軽量レート制限 (依存追加なし) ──────────────────
+//   全レスポンスに防御ヘッダーを付与: クリックジャッキング/MIMEスニッフィング/リファラ漏洩を抑止。
+//   ※ noru-admin.html では後段の middleware が Referrer-Policy を no-referrer に上書きする。
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+  next();
+});
+
+/* メモリ内レート制限 (IP毎・1分スライディングウィンドウ)。
+   書き込み系エンドポイントの濫用 (全店舗/全社データの大量改ざん・DoS) を抑止する。
+   閾値は十分に緩く設定しており通常利用では到達しない。共有NAT配慮。必要なら調整可。 */
+const _rlBuckets = new Map();
+function rateLimit(maxPerMin) {
+  return (req, res, next) => {
+    const ip = String(req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'unknown').split(',')[0].trim();
+    const now = Date.now();
+    let b = _rlBuckets.get(ip);
+    if (!b || now > b.resetAt) { b = { count: 0, resetAt: now + 60000 }; _rlBuckets.set(ip, b); }
+    b.count++;
+    if (b.count > maxPerMin) {
+      res.setHeader('Retry-After', String(Math.max(1, Math.ceil((b.resetAt - now) / 1000))));
+      return res.status(429).json({ error: 'rate limit exceeded' });
+    }
+    next();
+  };
+}
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, b] of _rlBuckets) { if (now > b.resetAt) _rlBuckets.delete(ip); }
+}, 5 * 60 * 1000).unref?.();
 
 // ── Stripe Webhook (raw body — MUST come before express.json()) ──────────────
 app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
@@ -2737,9 +2774,16 @@ app.get('/api/shop/:shopId/snapshot', (req, res) => {
   res.json(loadShopData(req.params.shopId));
 });
 
-app.post('/api/shop/:shopId/data', (req, res) => {
+app.post('/api/shop/:shopId/data', rateLimit(300), (req, res) => {
   const { key, value } = req.body || {};
-  if (!key) return res.status(400).json({ error: 'key required' });
+  if (!key || typeof key !== 'string') return res.status(400).json({ error: 'key required' });
+  /* プロトタイプ汚染 / 異常に長いキー / 巨大値を拒否 (正常な同期データは余裕で通過) */
+  if (_isUnsafeKey(key) || key.length > 128) return res.status(400).json({ error: 'invalid key' });
+  try {
+    if (value != null && JSON.stringify(value).length > 4 * 1024 * 1024) {
+      return res.status(413).json({ error: 'value too large' });
+    }
+  } catch (e) { return res.status(400).json({ error: 'invalid value' }); }
   const data = setShopKey(req.params.shopId, key, value);
   const room = 'shop:' + _safeShopId(req.params.shopId);
   io.to(room).emit('shop_data_updated', {
@@ -2802,9 +2846,15 @@ app.get('/api/admin/snapshot', (req, res) => {
   res.json(loadAdminData());
 });
 
-app.post('/api/admin/data', (req, res) => {
+app.post('/api/admin/data', rateLimit(120), (req, res) => {
   const { key, value } = req.body || {};
-  if (!key) return res.status(400).json({ error: 'key required' });
+  if (!key || typeof key !== 'string') return res.status(400).json({ error: 'key required' });
+  if (_isUnsafeKey(key) || key.length > 128) return res.status(400).json({ error: 'invalid key' });
+  try {
+    if (value != null && JSON.stringify(value).length > 4 * 1024 * 1024) {
+      return res.status(413).json({ error: 'value too large' });
+    }
+  } catch (e) { return res.status(400).json({ error: 'invalid value' }); }
   const data = setAdminKey(key, value);
   io.emit('admin_data_updated', { key, value, ts: data._updatedAt });
   res.json({ ok: true, _updatedAt: data._updatedAt });
@@ -4017,4 +4067,16 @@ server.listen(PORT, () => {
   console.log(`${divider}`);
   console.log(`  ローカルIP確認: ipconfig getifaddr en0`);
   console.log(`${divider}\n`);
+
+  /* 🔒 セキュリティ設定の健全性チェック (未設定の重要 env を起動時に警告) */
+  const _secWarn = [];
+  if (!process.env.LICENSE_SECRET) _secWarn.push('LICENSE_SECRET 未設定 — 既定値が使われライセンスコードが推測可能');
+  if (!process.env.ADMIN_CLEANUP_TOKEN) _secWarn.push('ADMIN_CLEANUP_TOKEN 未設定 — 管理用クリーンアップAPIは無効');
+  if (process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_WEBHOOK_SECRET) _secWarn.push('STRIPE_WEBHOOK_SECRET 未設定 — Webhook 署名検証不可');
+  if (_secWarn.length) {
+    console.warn(`${divider}`);
+    console.warn('  ⚠️  セキュリティ警告:');
+    _secWarn.forEach(w => console.warn('     • ' + w));
+    console.warn(`${divider}\n`);
+  }
 });

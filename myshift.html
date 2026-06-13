@@ -236,29 +236,32 @@
     function firstHit(e){ var n = e[0], r = rdg(e[1]); return (n.charAt(0) === qRaw.charAt(0)) || (r.length > 0 && r.charAt(0) === q.charAt(0)); }
     var matches = matched.filter(firstHit).concat(matched.filter(function(e){ return !firstHit(e); })).slice(0, 8);
     if (matches.length === 0) { myHideSuggestions(); return; }
-    list.innerHTML = matches.map(function(e){
+    mySelectName._sel = matches;
+    list.innerHTML = matches.map(function(e, i){
       var name = e[0], w = e[1];
       var role = w.role || 'unassigned';
       var roleLabel = MY_ROLE_LABELS[role] || '';
       var roleColor = MY_ROLE_COLORS[role] || MY_ROLE_COLORS.unassigned;
-      var safeName = name.replace(/'/g, "\\'");
       var idx = name.indexOf(qRaw);
       var nameHtml = idx >= 0
-        ? name.substring(0, idx) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 2px;border-radius:3px;">' + name.substring(idx, idx + qRaw.length) + '</mark>' + name.substring(idx + qRaw.length)
-        : name;
+        ? escapeHtml(name.substring(0, idx)) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 2px;border-radius:3px;">' + escapeHtml(name.substring(idx, idx + qRaw.length)) + '</mark>' + escapeHtml(name.substring(idx + qRaw.length))
+        : escapeHtml(name);
       var yomiHtml = '';
       var r = rdg(w);
       if (r) {
         var ri = r.indexOf(q);
-        var rDisp = ri >= 0 ? r.substring(0, ri) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 1px;border-radius:3px;">' + r.substring(ri, ri + q.length) + '</mark>' + r.substring(ri + q.length) : r;
+        var rDisp = ri >= 0 ? escapeHtml(r.substring(0, ri)) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 1px;border-radius:3px;">' + escapeHtml(r.substring(ri, ri + q.length)) + '</mark>' + escapeHtml(r.substring(ri + q.length)) : escapeHtml(r);
         yomiHtml = '<span class="ns-yomi">' + rDisp + '</span>';
       }
       var chip = roleLabel ? '<span class="ns-role-chip" style="background:' + roleColor + '22;color:' + roleColor + ';border:1px solid ' + roleColor + '55;">' + roleLabel + '</span>' : '';
-      return '<div class="ns-item" onclick="mySelectName(\'' + safeName + '\')"><span class="ns-name">' + nameHtml + yomiHtml + '</span>' + chip + '</div>';
+      return '<div class="ns-item" onclick="mySelectName(' + i + ')"><span class="ns-name">' + nameHtml + yomiHtml + '</span>' + chip + '</div>';
     }).join('');
     list.style.display = 'block';
   }
-  async function mySelectName(name){
+  async function mySelectName(i){
+    var m = (mySelectName._sel || [])[i];
+    if (!m) return;
+    var name = m[0];
     var el = document.getElementById('staff-name');
     if (el) { el.value = name; saveName(name); }
     _myImeSeg = ''; _myImeReading = '';

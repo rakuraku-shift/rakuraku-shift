@@ -735,6 +735,13 @@
 
 <script>
 // ══════════════════════════════════════════
+//  XSS対策ヘルパー
+// ══════════════════════════════════════════
+/* 表示テキスト用（innerHTML に入れる名前・メール・自由記述コメント等） */
+function escapeHtml(s) { return String(s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+/* HTML属性 + JS文字列 の二重コンテキスト用（onclick="fn('...')" の '...' 内）。通常値はそのまま往復 */
+function attrJs(s) { return String(s).replace(/\\/g,'\\\\').replace(/'/g,'\\u0027').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+// ══════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════
 let currentTab = 'browse';
@@ -832,7 +839,7 @@ function renderShopList(shops) {
       <div class="shop-card-row">
         <div class="shop-avatar">🍺</div>
         <div class="shop-info">
-          <div class="shop-name">${s.shopName}</div>
+          <div class="shop-name">${escapeHtml(s.shopName)}</div>
           <div class="shop-meta">${s.count}件の評価</div>
           <div class="shop-rating-row">
             <span class="stars-display" id="stars-${s.shopId}">★★★★☆</span>
@@ -977,7 +984,7 @@ function renderShopDetail(shop) {
   // Comments
   const comments = (shop.comments || []).slice(0, 10).map(c => `
     <div class="comment-item">
-      <div class="comment-text">「${c.text}」</div>
+      <div class="comment-text">「${escapeHtml(c.text)}」</div>
       <div class="comment-meta">🕐 ${c.date} · 匿名</div>
     </div>
   `).join('') || '<div style="color:var(--slate-400);font-size:13px;">まだコメントはありません。</div>';
@@ -987,7 +994,7 @@ function renderShopDetail(shop) {
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
         <div class="shop-avatar">🍺</div>
         <div>
-          <div class="shop-name">${shop.shopName}</div>
+          <div class="shop-name">${escapeHtml(shop.shopName)}</div>
           <div class="shop-meta">${shop.count}件の評価</div>
         </div>
       </div>
@@ -1032,7 +1039,7 @@ function renderShopDetail(shop) {
       ${comments}
     </div>
 
-    <button class="btn btn-primary" onclick="prefillSurvey('${shop.shopId}','${shop.shopName.replace(/'/g,"\\'")}')">
+    <button class="btn btn-primary" onclick="prefillSurvey('${attrJs(shop.shopId)}','${attrJs(shop.shopName)}')">
       ✍️ この店舗の評価を書く
     </button>
   `;
@@ -1315,11 +1322,11 @@ function renderAdminStaffList() {
     <div class="staff-row-admin">
       <div class="staff-status-dot ${s.sentAt ? 'status-sent' : 'status-pending'}"></div>
       <div style="flex:1;">
-        <div class="staff-admin-name">${s.name}</div>
-        <div class="staff-admin-email">${s.email}</div>
+        <div class="staff-admin-name">${escapeHtml(s.name)}</div>
+        <div class="staff-admin-email">${escapeHtml(s.email)}</div>
       </div>
       <span class="invite-badge ${s.sentAt ? 'sent' : 'pending'}">${s.sentAt ? '送信済' : '未送信'}</span>
-      <button onclick="removeAdminStaff('${s.email}')" style="border:none;background:none;cursor:pointer;color:var(--slate-400);font-size:14px;padding:4px;">✕</button>
+      <button onclick="removeAdminStaff('${attrJs(s.email)}')" style="border:none;background:none;cursor:pointer;color:var(--slate-400);font-size:14px;padding:4px;">✕</button>
     </div>
   `).join('');
 }
@@ -1370,7 +1377,7 @@ function renderInviteHistory() {
   }
   el.innerHTML = hist.slice().reverse().map(h => `
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--slate-100);font-size:13px;">
-      <span>${h.shopName}</span>
+      <span>${escapeHtml(h.shopName)}</span>
       <span style="color:var(--slate-500)">${h.date} · ${h.count}人</span>
     </div>
   `).join('');

@@ -4108,6 +4108,8 @@
   }
 
   function escapeHtml(s) { return String(s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+  /* HTML属性 + JS文字列 の二重コンテキスト用エスケープ。onclick="fn('...')" の '...' 内で安全。通常の名前/メールはそのまま往復するのでキー参照も壊れない */
+  function attrJs(s) { return String(s).replace(/\\/g,'\\\\').replace(/'/g,'\\u0027').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
   function setupSocketSync() {
     if (typeof io !== 'function') {
@@ -5299,32 +5301,31 @@
 
     if (matches.length === 0) { hideSuggestions(); return; }
 
-    list.innerHTML = matches.map(([name, w]) => {
+    selectNameSuggestion._sel = matches;
+    list.innerHTML = matches.map(([name, w], i) => {
       const role = w.role || 'unassigned';
       const roleLabel = NS_ROLE_LABELS[role] || '未設定';
       const roleColor = NS_ROLE_COLORS[role] || NS_ROLE_COLORS.unassigned;
-      const safeEmail = (w.email || '').replace(/'/g, "\\'");
-      const safeName  = name.replace(/'/g, "\\'");
-      /* 漢字名にヒットすれば名前側を強調 */
+      /* 漢字名にヒットすれば名前側を強調（XSS防止: 各断片を必ず escapeHtml） */
       const idx = name.indexOf(qRaw);
       const highlighted = idx >= 0
-        ? name.substring(0, idx) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 2px;border-radius:3px;">' + name.substring(idx, idx + qRaw.length) + '</mark>' + name.substring(idx + qRaw.length)
-        : name;
+        ? escapeHtml(name.substring(0, idx)) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 2px;border-radius:3px;">' + escapeHtml(name.substring(idx, idx + qRaw.length)) + '</mark>' + escapeHtml(name.substring(idx + qRaw.length))
+        : escapeHtml(name);
       /* 読みフリガナ（あれば小さく表示。読みにヒットした箇所を強調） */
       let yomiHtml = '';
       const r = rdg(w);
       if (r) {
         const ri = r.indexOf(q);
         const rDisp = ri >= 0
-          ? r.substring(0, ri) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 1px;border-radius:3px;">' + r.substring(ri, ri + q.length) + '</mark>' + r.substring(ri + q.length)
-          : r;
+          ? escapeHtml(r.substring(0, ri)) + '<mark style="background:#FEF3C7;color:var(--indigo);font-weight:800;padding:0 1px;border-radius:3px;">' + escapeHtml(r.substring(ri, ri + q.length)) + '</mark>' + escapeHtml(r.substring(ri + q.length))
+          : escapeHtml(r);
         yomiHtml = '<span class="ns-yomi" style="font-size:10px;color:var(--slate-400);margin-left:6px;">' + rDisp + '</span>';
       }
       const emailHtml = w.email
-        ? '<span style="font-size:10px;color:var(--slate-400);margin-left:6px;">📧 ' + w.email + '</span>'
+        ? '<span style="font-size:10px;color:var(--slate-400);margin-left:6px;">📧 ' + escapeHtml(w.email) + '</span>'
         : '';
       return `<div class="ns-item"
-        onclick="selectNameSuggestion('${safeName}','${safeEmail}','${role}')">
+        onclick="selectNameSuggestion(${i})">
         <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
           <span style="display:inline-block;width:5px;height:18px;background:${roleColor};border-radius:2px;flex-shrink:0;"></span>
           <span class="ns-name" style="flex:1;">${highlighted}${yomiHtml}${emailHtml}</span>
@@ -5340,7 +5341,12 @@
     if (list) list.style.display = 'none';
   }
 
-  function selectNameSuggestion(name, email, role) {
+  function selectNameSuggestion(i) {
+    var m = (selectNameSuggestion._sel || [])[i];
+    if (!m) return;
+    var name = m[0], w = m[1] || {};
+    var email = w.email || '';
+    var role  = w.role || 'unassigned';
     var nameEl  = document.getElementById('staff-name');
     var emailEl = document.getElementById('staff-email');
     if (nameEl)  nameEl.value  = name;
@@ -5896,7 +5902,7 @@
     var itemsHtml = visibleEntries.map(function(kv) {
       var name = kv[0]; var w = kv[1];
       var positions = w.positions || (w.role && w.role !== 'unassigned' ? [w.role] : []);
-      var safeName = name.replace(/'/g,"\\'");
+      var safeName = attrJs(name);
       var safeNameId = name.replace(/[^a-zA-Z0-9]/g,'_');
       var initial  = name.charAt(0);
       var primary  = positions[0] || 'unassigned';
@@ -5914,7 +5920,7 @@
       }).join('');
 
       var emailHtml = w.email
-        ? '<a href="mailto:'+w.email+'" style="color:var(--indigo);text-decoration:none;">'+w.email+'</a>'
+        ? '<a href="mailto:'+escapeHtml(w.email)+'" style="color:var(--indigo);text-decoration:none;">'+escapeHtml(w.email)+'</a>'
         : '<span style="color:var(--slate-300);">' + ((typeof i18n!=='undefined'&&i18n.t)?i18n.t('mgr.not_registered'):'未登録') + '</span>';
 
       var posNotSetLbl = (typeof i18n!=='undefined'&&i18n.t) ? i18n.t('mgr.position_not_set') : '⚠️ ポジション未設定';
@@ -5980,9 +5986,9 @@
 
       return '<div class="reg-item" style="padding:12px;flex-direction:column;align-items:stretch;gap:10px;">'+
         '<div style="display:flex;align-items:center;gap:10px;">'+
-          '<div class="'+avClass+'" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0;">'+initial+'</div>'+
+          '<div class="'+avClass+'" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0;">'+escapeHtml(initial)+'</div>'+
           '<div style="flex:1;min-width:0;">'+
-            '<div style="font-weight:700;font-size:13px;color:var(--slate-900);">'+name+'</div>'+
+            '<div style="font-weight:700;font-size:13px;color:var(--slate-900);">'+escapeHtml(name)+'</div>'+
             '<div style="font-size:10px;color:var(--slate-500);margin-top:1px;">📧 '+emailHtml+'</div>'+
           '</div>'+
           countLbl+
@@ -7003,16 +7009,16 @@
       const candsHtml = s.candidates.length === 0
         ? '<div class="adj-no-cand">調整できそうな候補者が見つかりません。新規募集を検討してください。</div>'
         : s.candidates.map(c => {
-            const safeName = c.name.replace(/'/g, "\\'");
+            const safeName = attrJs(c.name);
             const noEmail  = !c.email;
             return `
               <div class="adj-cand">
                 <div class="adj-cand-info">
-                  <div class="adj-cand-name">${c.name}${noEmail ? '<span class="adj-no-email">📭 メール未登録</span>' : ''}</div>
+                  <div class="adj-cand-name">${escapeHtml(c.name)}${noEmail ? '<span class="adj-no-email">📭 メール未登録</span>' : ''}</div>
                   <div class="adj-cand-detail">現在: ${c.currentTime} → <strong>${c.suggestedTime}</strong><br>${c.reason}</div>
                 </div>
                 <button class="adj-mail-btn" ${noEmail ? 'disabled title="メール未登録"' : ''}
-                  onclick="sendAdjustmentMail('${s.date}','${s.period}','${safeName}','${c.email}','${c.currentTime}','${c.suggestedTime}')">
+                  onclick="sendAdjustmentMail('${s.date}','${s.period}','${safeName}','${attrJs(c.email)}','${c.currentTime}','${c.suggestedTime}')">
                   📧 依頼
                 </button>
               </div>`;
@@ -9111,10 +9117,10 @@ RAKURAKUのシフト担当です。
         }).join('');
         detail += '<div class="eval-pos-section"><div class="eval-pos-label" style="color:'+pos.color+';">'+pos.label+'</div>'+rows+'</div>';
       });
-      var safeName = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      var safeName = attrJs(name);
       return '<div class="eval-staff-row">'+
         '<div class="eval-sr-top">'+
-          '<div class="eval-sr-left"><div class="eval-sr-name">'+name+'</div><div class="eval-sr-stars">'+stars+'</div></div>'+
+          '<div class="eval-sr-left"><div class="eval-sr-name">'+escapeHtml(name)+'</div><div class="eval-sr-stars">'+stars+'</div></div>'+
           '<div class="chip-row" style="flex:1;padding:0 4px;align-items:center;">'+badges+'</div>'+
           '<button class="eval-edit-btn" onclick="openEvalOverlay(\''+safeName+'\')">評価する</button>'+
         '</div>'+
