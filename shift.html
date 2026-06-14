@@ -2121,32 +2121,37 @@
     /* ══════════════════════════════════════════
        MONTH NAVIGATION
     ══════════════════════════════════════════ */
+    /* 🆕 ライトテーマ化: 周囲(振り返りカード/KPIカード)が白背景なのに、ここだけ暗テーマの名残で
+       「白背景に白文字 = 月ラベルが見えない」事故になっていた。文字/ボタン/バッジを全て濃色に統一 */
     .month-nav-row {
-      background:rgba(255,255,255,.04);
-      border-bottom:1px solid rgba(255,255,255,.07);
-      padding:10px 18px;
+      background:#fff;
+      border:1px solid var(--slate-200);
+      border-radius:14px;
+      box-shadow:0 4px 16px rgba(0,0,0,.04);
+      margin:14px 0;
+      padding:12px 18px;
       display:flex; align-items:center; justify-content:space-between;
       position:relative; z-index:1;
     }
     .month-nav-btn {
-      background:rgba(255,255,255,.09); border:none; border-radius:9px;
-      color:rgba(255,255,255,.65); font-size:11px; font-weight:700;
+      background:var(--slate-100); border:1px solid var(--slate-200); border-radius:9px;
+      color:var(--slate-700); font-size:11px; font-weight:700;
       padding:7px 13px; cursor:pointer; font-family:inherit; transition:all .15s; letter-spacing:.02em;
     }
-    .month-nav-btn:hover:not(:disabled) { background:rgba(255,255,255,.16); color:#fff; }
-    .month-nav-btn:disabled { opacity:.25; cursor:not-allowed; }
+    .month-nav-btn:hover:not(:disabled) { background:var(--slate-200); color:var(--indigo); }
+    .month-nav-btn:disabled { opacity:.4; cursor:not-allowed; }
     .month-nav-center { text-align:center; }
-    .month-nav-label  { font-size:14px; font-weight:900; color:#fff; letter-spacing:.01em; }
+    .month-nav-label  { font-size:15px; font-weight:900; color:#0F172A; letter-spacing:.01em; }
     .month-archive-badge {
       display:inline-flex; align-items:center; gap:4px; margin-top:4px;
-      background:rgba(245,158,11,.18); border:1px solid rgba(245,158,11,.3);
-      color:#FCD34D; border-radius:5px; padding:2px 9px;
+      background:rgba(245,158,11,.14); border:1px solid rgba(245,158,11,.35);
+      color:#B45309; border-radius:5px; padding:2px 9px;
       font-size:9px; font-weight:700; letter-spacing:.06em;
     }
     .month-current-badge {
       display:inline-flex; align-items:center; gap:4px; margin-top:4px;
-      background:rgba(52,211,153,.15); border:1px solid rgba(52,211,153,.25);
-      color:#34D399; border-radius:5px; padding:2px 9px;
+      background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3);
+      color:#047857; border-radius:5px; padding:2px 9px;
       font-size:9px; font-weight:700; letter-spacing:.06em;
     }
 
