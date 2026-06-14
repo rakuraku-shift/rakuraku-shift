@@ -3405,6 +3405,16 @@ app.get('/api/sales/daily/:shopId', (req, res) => {
   res.json(readJSON(file, {}));
 });
 
+// 🆕 売上1日分の削除(クライアント削除をサーバーへ反映 — 再読込でゾンビ復活を防ぐ)
+app.delete('/api/sales/daily/:shopId/:date', (req, res) => {
+  const safeId = _safeShopId(req.params.shopId);
+  const file = path.join(DATA_DIR, `sales-${safeId}.json`);
+  const all = readJSON(file, {});
+  if (all[req.params.date]) { delete all[req.params.date]; writeJSON(file, all); }
+  io.to('shop:' + safeId).emit('sales_updated', { shopId: req.params.shopId, date: req.params.date, deleted: true });
+  res.json({ ok: true });
+});
+
 // ── POS 連携 API (Square / スマレジ etc) ────────────
 app.post('/api/pos/connect', (req, res) => {
   const { provider, token, shopId } = req.body || {};

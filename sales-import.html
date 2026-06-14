@@ -286,6 +286,62 @@ function saveSalesData(d) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch(e) {}
 }
 
+/* 🆕 店舗ID解決: アプリ全体(attendance/myshift)と完全同一ロジック。
+   これが無いとサーバーが全店を sales-default.json に混ぜるマルチテナント事故になる */
+const SHOP_ID = (function(){
+  var params = new URLSearchParams(location.search);
+  return params.get('shop')
+    || localStorage.getItem('noru_bound_shop')
+    || (function(){ try { var o = JSON.parse(localStorage.getItem('rakuraku_shop')||'{}'); return (o&&o.id)||''; } catch(e){ return ''; } })()
+    || 'default';
+})();
+
+/* 1日分をサーバーへ送信(店舗ID付き)。失敗してもローカルに保存済みなので握りつぶしてOK */
+function pushDaily(entry) {
+  if (!entry || !entry.date) return Promise.resolve();
+  try {
+    return fetch('/api/sales/daily', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date: entry.date, sales: entry.sales, customers: entry.customers, cost: entry.cost, memo: entry.memo, savedAt: entry.savedAt, shopId: SHOP_ID })
+    }).catch(function(){});
+  } catch(e) { return Promise.resolve(); }
+}
+
+/* 🆕 サーバー同期(マージ方式) — 既存ローカルを絶対に消さない設計:
+   ・取得失敗(オフライン/未デプロイ/404)時は即return = ローカル保持(クロバー防止)
+   ・ローカル∪サーバーの和集合を作り、同一日付は savedAt が新しい方を採用
+   ・サーバーに無い/ローカルが新しい分はサーバーへアップロード(=既存データの移行) */
+async function syncFromServer() {
+  var server = {};
+  try {
+    var res = await fetch('/api/sales/daily/' + encodeURIComponent(SHOP_ID) + '?_cb=' + Date.now());
+    if (!res.ok) return;                 // 404等: サーバー未対応 → ローカルそのまま
+    server = (await res.json()) || {};
+    if (!server || typeof server !== 'object') return;
+  } catch(e) { return; }                 // オフライン: ローカル保持
+  var local = loadSales();
+  var merged = {}, toPush = [], dates = {};
+  Object.keys(local).forEach(function(d){ dates[d] = 1; });
+  Object.keys(server).forEach(function(d){ dates[d] = 1; });
+  Object.keys(dates).forEach(function(d){
+    var l = local[d], s = server[d];
+    if (l && s) {
+      var lt = l.savedAt || 0, st = s.savedAt || 0;
+      merged[d] = (lt >= st) ? l : s;
+      if (lt > st) toPush.push(l);        // ローカルが新しい → サーバー更新
+    } else if (l) {
+      merged[d] = l; toPush.push(l);       // ローカルのみ → 移行アップロード
+    } else {
+      merged[d] = s;                       // サーバーのみ → ダウンロード
+    }
+  });
+  saveSalesData(merged);
+  toPush.forEach(function(e){ pushDaily(e); });
+  renderHistory();
+  updateKPI();
+}
+
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -312,14 +368,8 @@ function saveDaily() {
   data[date] = { date, sales, customers, cost, memo, savedAt: Date.now() };
   saveSalesData(data);
 
-  /* サーバー同期 (将来) */
-  try {
-    fetch('/api/sales/daily', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data[date])
-    }).catch(()=>{});
-  } catch(e) {}
+  /* サーバー同期: 店舗ID付きで送信(失敗してもローカルに保存済み) */
+  pushDaily(data[date]);
 
   document.getElementById('m-sales').value = '';
   document.getElementById('m-customers').value = '';
@@ -359,6 +409,10 @@ function deleteDaily(date) {
   const data = loadSales();
   delete data[date];
   saveSalesData(data);
+  /* サーバー側も削除(再読込でゾンビ復活しないように) */
+  try {
+    fetch('/api/sales/daily/' + encodeURIComponent(SHOP_ID) + '/' + encodeURIComponent(date), { method: 'DELETE' }).catch(function(){});
+  } catch(e) {}
   renderHistory();
   updateKPI();
   showToast('🗑 削除しました');
@@ -463,6 +517,8 @@ function importCsvData() {
   const data = loadSales();
   _csvParsed.forEach(r => { data[r.date] = { ...r, savedAt: Date.now() }; });
   saveSalesData(data);
+  /* 取込分をサーバーへも反映 */
+  _csvParsed.forEach(r => pushDaily(data[r.date]));
   document.getElementById('csv-preview').style.display = 'none';
   _csvParsed = [];
   showToast(`✅ 全 ${Object.keys(data).length} 日分の売上を取込完了`);
@@ -513,6 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('m-date').value = new Date().toISOString().slice(0,10);
   renderHistory();
   updateKPI();
+  syncFromServer();   /* 🆕 サーバーとマージ同期(別端末の入力も取り込む/既存ローカルを移行) */
 });
 </script>
 </body>
