@@ -7158,6 +7158,8 @@
         if (!adjCard) return;
         const w = document.createElement('div');
         w.id = 'validation-warn';
+        /* 🆕 管理ビューの「シフト」サブ画面以外には出さない。属性が無いと売上/スタッフ等の他サブ画面でも残り「色々な画面に出る」事故になる */
+        w.setAttribute('data-mgr-section', 'shifts');
         w.style.cssText = 'border-radius:8px;padding:12px 16px;font-size:12px;font-weight:700;margin:10px 0;display:none;line-height:1.7;';
         adjCard.parentNode.insertBefore(w, adjCard);
       }
