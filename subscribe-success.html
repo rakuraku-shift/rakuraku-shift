@@ -83,10 +83,10 @@
     const sessionId = params.get('session_id');
     if (!sessionId) return;
     try {
-      const res = await fetch('/api/subscribe/list');
+      // 本人のチェックアウト session_id で自分の契約1件だけを取得（PII最小化・listは管理トークン保護）
+      const res = await fetch('/api/subscribe/by-session/' + encodeURIComponent(sessionId));
       if (!res.ok) return;
-      const list = await res.json();
-      const sub = list.find(s => s.sessionId === sessionId);
+      const sub = await res.json();
       if (!sub) return;
       document.getElementById('email-display').textContent = sub.email || '―';
       document.getElementById('shop-display').textContent  = sub.shopName || '―';

@@ -346,8 +346,8 @@ async function submitSignup(event){
         window.location.href = result.checkoutUrl;
         return false;
       }
-      /* Free / Trial: オンボーディングへ */
-      window.location.href = (result.next || '/onboarding.html') + '?plan=' + encodeURIComponent(plan) + '&email=' + encodeURIComponent(email);
+      /* Free / Trial: オンボーディングへ。shopId を必ず引き継ぐ — 月次ログインコードは shopId 依存のため、欠落すると 'default' 店舗扱いになりログイン不能になる */
+      window.location.href = (result.next || '/onboarding.html') + '?plan=' + encodeURIComponent(plan) + '&email=' + encodeURIComponent(email) + (result.shopId ? '&shop=' + encodeURIComponent(result.shopId) : '');
       return false;
     }
     throw new Error(result.error || 'failed');

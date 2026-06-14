@@ -526,12 +526,12 @@
     .tp-step-btn:active { background:var(--slate-200); }
 
     /* min/max ステッパー (新形式) */
-    .tp-vstack { flex-direction:column; align-items:stretch; gap:10px; padding:14px 0; }
+    .tp-vstack { flex-direction:column; align-items:stretch; gap:4px; padding:7px 0; }
     .tp-row-head { display:flex; align-items:center; gap:10px; }
-    .tp-minmax { display:flex; align-items:center; gap:8px; justify-content:center; flex-wrap:nowrap; padding:6px 0 2px; }
-    .tp-mm-cell { display:flex; align-items:center; gap:4px; background:var(--slate-50); padding:6px 8px; border-radius:10px; }
+    .tp-minmax { display:flex; align-items:center; gap:8px; justify-content:center; flex-wrap:nowrap; padding:2px 0 0; }
+    .tp-mm-cell { display:flex; align-items:center; gap:4px; background:var(--slate-50); padding:4px 8px; border-radius:10px; }
     .tp-mm-label { font-size:9px; font-weight:700; color:var(--slate-500); margin-right:2px; letter-spacing:.04em; }
-    .tp-mm-btn { width:30px; height:30px; border:1.5px solid var(--slate-200); background:#fff; border-radius:7px; font-size:16px; font-weight:800; cursor:pointer; color:var(--slate-700); display:flex; align-items:center; justify-content:center; font-family:inherit; -webkit-tap-highlight-color:transparent; }
+    .tp-mm-btn { width:28px; height:28px; border:1.5px solid var(--slate-200); background:#fff; border-radius:7px; font-size:16px; font-weight:800; cursor:pointer; color:var(--slate-700); display:flex; align-items:center; justify-content:center; font-family:inherit; -webkit-tap-highlight-color:transparent; }
     .tp-mm-btn:active { background:var(--slate-200); }
     .tp-mm-val { min-width:24px; text-align:center; font-size:16px; font-weight:800; color:var(--slate-900); padding:0 4px; }
     .tp-mm-sep { font-size:13px; color:var(--slate-400); font-weight:700; }
@@ -3207,14 +3207,10 @@
   <div class="card" id="staff-eval-card" data-mgr-section="staff" style="margin-top:12px;display:none;">
     <div id="staff-eval-list"></div>
   </div>
-  <div style="background:linear-gradient(135deg,#EEF2FF,#FAF5FF);border:1.5px dashed #A5B4FC;border-radius:12px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--indigo);font-weight:700;line-height:1.7;">
-    💡 <strong>スタッフ評価</strong>は、生成されたシフト上のスタッフ名をタップして入力できます（ポジション別5段階）
-  </div>
-
   <!-- Shift rules (朝/昼/夜 下限〜上限) -->
   <div class="card" id="rule-section" data-mgr-section="shifts">
     <div class="section-title" style="margin-bottom:4px;">⚙️ シフトルール</div>
-    <div style="font-size:11px;color:var(--slate-400);margin-bottom:14px;" data-i18n="mgr.timeslot_explain">各時間帯の下限〜上限を設定してください。下限未達なら警告、上限超は要調整。</div>
+    <div style="font-size:11px;color:var(--slate-400);margin-bottom:6px;" data-i18n="mgr.timeslot_explain">各時間帯の下限〜上限を設定してください。下限未達なら警告、上限超は要調整。</div>
 
     <div class="tp-rule-row tp-vstack">
       <div class="tp-row-head">
@@ -3825,6 +3821,7 @@
     </div>
     <div class="lic-title">RAKURAKU</div>
     <div class="lic-month" id="lic-month-label"></div>
+    <div class="lic-shop" id="lic-shop-label" style="font-size:12px;margin-top:4px;line-height:1.5;color:rgba(255,255,255,.6);"></div>
     <div class="lic-sub">ご利用には月次ライセンスが必要です。<br>管理者から届いた6桁のコードを入力してください。</div>
     <div class="lic-input-wrap">
       <input id="license-code-input" class="lic-input"
@@ -7062,6 +7059,13 @@
      5. 11時間以上のインターバル無し
   ════════════════════════════════════════════ */
   function validateGeneratedShift() {
+    /* デモ (shop=demo-shop) では 🚫 重大なバリデーションエラー / ⚠ シフト警告 を出さない（営業デモを汚さないため）。
+       実店舗では従来どおり 連続勤務・週40時間超 などの労基法チェックを行う */
+    if (getShopId() === 'demo-shop') {
+      var _vw = document.getElementById('validation-warn');
+      if (_vw) _vw.style.display = 'none';
+      return;
+    }
     try {
       const submissions = loadState();
       const warns = [], errors = [];
@@ -8717,6 +8721,17 @@ RAKURAKUのシフト担当です。
     var label = cur[0] + '年' + cur[1] + '月 ライセンス';
     var el = document.getElementById('lic-month-label');
     if (el) el.textContent = label;
+    var shopEl = document.getElementById('lic-shop-label');
+    if (shopEl) {
+      var sid = getShopId();
+      if (sid === 'default') {
+        shopEl.innerHTML = '⚠ 店舗が指定されていません。登録メールの「シフト管理画面」リンク（?shop=… 付き）から開いてください';
+        shopEl.style.color = '#FCD34D';
+      } else {
+        shopEl.textContent = '店舗ID: ' + sid;
+        shopEl.style.color = 'rgba(255,255,255,.6)';
+      }
+    }
     document.getElementById('lic-error').textContent = '';
     var inp = document.getElementById('license-code-input');
     if (inp) inp.value = '';
@@ -8733,6 +8748,11 @@ RAKURAKUのシフト担当です。
       document.getElementById('license-gate-overlay').style.display = 'none';
       _resetFailCount('license'); // 成功でカウンタリセット
       showToast('✅ ライセンス認証完了！');
+      /* 🆕 管理者リンク(?view=manager)経由なら認証成功後そのまま管理画面へ（PINゲート起動）。
+         スタッフQRは対象外。これで「店長リンクが提出画面で止まる」問題を解消。 */
+      if (!isStaffMode() && new URLSearchParams(location.search).get('view') === 'manager') {
+        switchTab('manager');
+      }
     } else {
       /* 永続カウンタに加算 → 5回で運営通知 */
       var locked = _onFailedAttempt('月次ライセンスコード', 'license');
@@ -9308,9 +9328,19 @@ RAKURAKUのシフト担当です。
   initTimeRuleUI();    // 朝/昼/夜ルール表示初期化
   updateChecklist();
   applyStaffMode();    // 🆕 スタッフQR(?staff=1)端末はシフト管理タブ＆管理者ログインを隠す
-  // ライセンスチェック
-  if (!isLicensed()) {
+  /* ライセンスチェック。
+     スタッフQR(?staff=1)端末は「提出専用」→ ライセンス不要。
+     月次6桁コードは店長の課金credentialであり、スタッフに配ると①端末ごと②月替わりで破綻し
+     「別スマホでログインできない」事故になる。スタッフはQRから提出画面へ直行させる。
+     管理画面の実セキュリティは下のPINゲート(openManagerGate)が担保する。 */
+  if (!isStaffMode() && !isLicensed()) {
     openLicenseGate();
+  }
+  /* 🆕 管理者リンク(?view=manager)は管理画面へ直行（PINゲートを起動）。
+     既にライセンス済みならこの場で、未ライセンスならライセンス認証成功後(validateLicense)に発火。 */
+  if (!isStaffMode() && isLicensed() &&
+      new URLSearchParams(location.search).get('view') === 'manager') {
+    switchTab('manager');
   }
   // 店長ビューが印刷モードなどで初期表示される場合にも対応
   if (document.body.classList.contains('ppm')) {
@@ -9337,7 +9367,8 @@ RAKURAKUのシフト担当です。
   bootstrapFromServer().then(function(ok) {
     if (ok) {
       /* サーバーから取得したデータでUIを再描画 */
-      if (typeof generateShift === 'function')      { try { generateShift(); }      catch(e) {} }
+      /* デモ (shop=demo-shop) は「ワンタップでシフト作成」を実演させたいので自動生成しない（空状態で開始）。実店舗は従来どおり自動描画 */
+      if (typeof generateShift === 'function' && getShopId() !== 'demo-shop') { try { generateShift(); } catch(e) {} }
       if (typeof renderReminderCard === 'function') { try { renderReminderCard(); } catch(e) {} }
       if (typeof renderManagerView === 'function')  { try { renderManagerView(); }  catch(e) {} }
       if (typeof renderDeadlineBanner === 'function'){ try { renderDeadlineBanner(); } catch(e) {} }

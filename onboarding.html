@@ -150,7 +150,15 @@ footer a{color:#22C55E;margin:0 10px}
 <section class="step" id="step4">
   <div class="complete-icon">🎉</div>
   <h2 style="text-align:center" data-i18n="ob.s4_h2">登録完了!</h2>
-  <p style="text-align:center;font-size:1.1em;margin:20px 0" data-i18n="ob.s4_p">30 日 Pro 体験が開始されました</p>
+  <p style="text-align:center;font-size:1.1em;margin:20px 0" id="s4-plan-msg" data-i18n="ob.s4_p">30 日 Pro 体験が開始されました</p>
+  <div class="tip" id="login-info" style="display:none">
+    <strong>🔑 ログイン情報（スマホ・PC 共通）</strong>
+    <ul>
+      <li>シフト管理 URL: <a id="li-url" href="#" style="color:#16A34A;word-break:break-all"></a></li>
+      <li>この URL を<strong>各端末（スマホ・PC）でそれぞれブックマーク</strong>してください</li>
+      <li>ログイン用の 6 桁コードは<strong>登録確認メール</strong>に記載しています</li>
+    </ul>
+  </div>
   <div class="tip">
     <strong data-i18n="ob.s4_next">次にやること:</strong>
     <ul>
@@ -160,7 +168,7 @@ footer a{color:#22C55E;margin:0 10px}
     </ul>
   </div>
   <div class="btn-group">
-    <a href="/shift.html" class="btn next" style="text-decoration:none;text-align:center;flex:1" data-i18n="ob.s4_btn">シフト管理画面へ →</a>
+    <a href="/shift.html" id="go-shift" class="btn next" style="text-decoration:none;text-align:center;flex:1" data-i18n="ob.s4_btn">シフト管理画面へ →</a>
   </div>
 </section>
 
@@ -194,6 +202,29 @@ function showStep(n){
 }
 function next(cur){ showStep(cur+1); }
 function back(cur){ showStep(cur-1); }
+/* signup から引き継いだ shopId を保持し、シフト画面リンクに付与する。
+   月次ログインコードは shopId 依存のため、これが無いと 'default' 店舗扱いになりメールのコードでログインできない。 */
+(function(){
+  try{
+    var params = new URLSearchParams(location.search);
+    var sid = params.get('shop');
+    var plan = params.get('plan');
+    if(sid){
+      try{ localStorage.setItem('noru_bound_shop', sid); }catch(e){}
+      var url = '/shift.html?shop=' + encodeURIComponent(sid) + '&view=manager';
+      var go = document.getElementById('go-shift');
+      if(go) go.setAttribute('href', url);
+      var liUrl = document.getElementById('li-url');
+      if(liUrl){ liUrl.textContent = location.origin + url; liUrl.setAttribute('href', url); }
+      var li = document.getElementById('login-info');
+      if(li) li.style.display = 'block';
+    }
+    /* プラン別の完了メッセージ — 無料登録でも「Pro体験」と出る不整合を解消 */
+    var msg = document.getElementById('s4-plan-msg');
+    var t = { free:'無料プランの登録が完了しました 🎉', trial:'30 日 Pro 体験が開始されました', pro:'Pro プランの登録が完了しました' }[plan];
+    if(msg && t){ msg.removeAttribute('data-i18n'); msg.textContent = t; }
+  }catch(e){}
+})();
 </script>
 <script src="/i18n.js"></script>
 <script>

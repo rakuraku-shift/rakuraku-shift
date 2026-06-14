@@ -354,7 +354,7 @@ async function sendLicenseEmail(to, shopName, licenseCode, shopId, opts = {}) {
     ? '※ 30 日間の体験終了後は自動的に Free プランへ切り替わります（クレジットカード未登録のため、自動課金は一切発生しません）。<br>\n          ※ 体験中いつでも Pro プランへアップグレードでき、引き続き全機能をご利用いただけます。'
     : '※ 最初の30日間は無料（¥0）。31日目以降は月額¥4,990（税込）の自動課金となります。<br>\n          ※ 解約はいつでも可能。解約後は翌月以降のご請求は発生しません。';
   const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
-  const shopUrl = shopId ? `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/shift.html`;
+  const shopUrl = shopId ? `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}&view=manager` : `${baseUrl}/shift.html?view=manager`;
   /* 🆕 スタッフ配布用URL: ?staff=1 付き → 読み取った端末ではシフト管理タブ＆管理者ログインを非表示（店長専用URL=shopUrl とは別物） */
   const staffUrl = shopId ? `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}&staff=1` : `${baseUrl}/shift.html?staff=1`;
   const myShiftUrl = shopId ? `${baseUrl}/myshift.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/myshift.html`;
@@ -491,7 +491,7 @@ async function sendMonthlyCodeEmail(to, shopName, shopId) {
   }
   if (!to) return;
   const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
-  const shopUrl = shopId ? `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}` : `${baseUrl}/shift.html`;
+  const shopUrl = shopId ? `${baseUrl}/shift.html?shop=${encodeURIComponent(shopId)}&view=manager` : `${baseUrl}/shift.html?view=manager`;
 
   const thisMonth = _currentMonthKey();
   const nextMonth = _nextMonthKey();
@@ -2765,8 +2765,25 @@ app.post('/api/subscribe/create', async (req, res) => {
 });
 
 app.get('/api/subscribe/list', (req, res) => {
-  // 管理用: 全契約一覧（本番では認証を追加）
+  // 管理用: 全契約一覧。licenseCode(=ログイン資格情報)＋メール/電話などPIIを含むため管理トークン必須。
+  // ADMIN_CLEANUP_TOKEN 未設定なら fail-closed で 403（公開しない）。
+  const token = process.env.ADMIN_CLEANUP_TOKEN;
+  if (!token) return res.status(403).json({ error: 'subscribe list disabled (ADMIN_CLEANUP_TOKEN 未設定)' });
+  const given = req.query.token || req.headers['x-admin-token'] || '';
+  if (given !== token) return res.status(403).json({ error: 'forbidden' });
   res.json(loadSubscriptions());
+});
+
+/* 登録完了画面(subscribe-success)の表示専用エンドポイント。
+   チェックアウトの session_id（本人だけがリダイレクトで受け取る使い捨てトークン）で
+   自分の契約1件のみを引く。licenseCode / phone / Stripe顧客ID 等の機微情報は返さず、
+   画面表示に必要な3項目(email / shopName / shopId)だけに絞る。 */
+app.get('/api/subscribe/by-session/:sessionId', rateLimit(120), (req, res) => {
+  const sid = String(req.params.sessionId || '');
+  if (!sid.startsWith('cs_') || sid.length > 200) return res.status(400).json({ error: 'invalid session' });
+  const sub = loadSubscriptions().find(s => s.sessionId === sid);
+  if (!sub) return res.status(404).json({ error: 'not found' });
+  res.json({ email: sub.email || '', shopName: sub.shopName || '', shopId: sub.shopId || '' });
 });
 
 // ── ショップ別データ同期 API（クロスデバイス対応） ────────────
