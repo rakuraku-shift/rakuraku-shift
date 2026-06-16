@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>RAKURAKU サイトページ一覧</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#fff; --ink:#1a1d24; --sub:#6b7280;
+    --line:#e5e7eb; --accent:#2563eb; --accent-soft:#eff4ff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Segoe UI",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.6;
+  }
+  header{
+    background:linear-gradient(135deg,#1e3a8a,#2563eb); color:#fff;
+    padding:28px 20px; position:sticky; top:0; z-index:10;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+  }
+  header h1{margin:0 0 4px; font-size:22px}
+  header p{margin:0; opacity:.85; font-size:13px}
+  .wrap{max-width:1000px; margin:0 auto; padding:20px}
+  .toolbar{
+    display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+    margin-top:14px;
+  }
+  #search{
+    flex:1; min-width:200px; padding:10px 14px; border:none; border-radius:10px;
+    font-size:15px; outline:none;
+  }
+  .count{font-size:13px; opacity:.9; white-space:nowrap}
+  section{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:18px 20px; margin-bottom:18px;
+  }
+  section h2{
+    font-size:16px; margin:0 0 14px; display:flex; align-items:center; gap:8px;
+    padding-bottom:10px; border-bottom:2px solid var(--accent-soft);
+  }
+  .badge{
+    margin-left:auto; font-size:12px; font-weight:400; color:var(--sub);
+    background:var(--accent-soft); padding:2px 10px; border-radius:20px;
+  }
+  ul{list-style:none; margin:0; padding:0;
+     display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:8px}
+  li a{
+    display:flex; flex-direction:column; text-decoration:none; color:inherit;
+    padding:10px 12px; border:1px solid var(--line); border-radius:10px;
+    transition:.15s;
+  }
+  li a:hover{border-color:var(--accent); background:var(--accent-soft); transform:translateY(-1px)}
+  li a .t{font-weight:600; font-size:14px}
+  li a .f{font-size:12px; color:var(--sub); margin-top:2px; word-break:break-all}
+  .empty{display:none; text-align:center; color:var(--sub); padding:40px}
+  footer{text-align:center; color:var(--sub); font-size:12px; padding:30px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap" style="padding:0 20px">
+    <h1>📋 RAKURAKU サイトページ一覧</h1>
+    <p>サイト内の全ページへのリンク集（社内・管理用）</p>
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="🔍 ページ名・ファイル名で絞り込み…" autocomplete="off">
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap" id="content">
+
+  <section data-cat>
+    <h2>🏠 トップ・LP / マーケティング <span class="badge"></span></h2>
+    <ul>
+      <li><a href="index.html"><span class="t">トップページ（メインLP）</span><span class="f">index.html</span></a></li>
+      <li><a href="pricing.html"><span class="t">料金プラン</span><span class="f">pricing.html</span></a></li>
+      <li><a href="pricing-simulator.html"><span class="t">料金シミュレーター</span><span class="f">pricing-simulator.html</span></a></li>
+      <li><a href="checkout.html"><span class="t">チェックアウト（申込）</span><span class="f">checkout.html</span></a></li>
+      <li><a href="subscribe-success.html"><span class="t">申込完了</span><span class="f">subscribe-success.html</span></a></li>
+      <li><a href="payment-success.html"><span class="t">決済完了</span><span class="f">payment-success.html</span></a></li>
+      <li><a href="bank-transfer.html"><span class="t">銀行振込案内</span><span class="f">bank-transfer.html</span></a></li>
+      <li><a href="signup.html"><span class="t">新規登録</span><span class="f">signup.html</span></a></li>
+      <li><a href="enterprise.html"><span class="t">エンタープライズ向け</span><span class="f">enterprise.html</span></a></li>
+      <li><a href="referral.html"><span class="t">紹介プログラム</span><span class="f">referral.html</span></a></li>
+      <li><a href="partner-program.html"><span class="t">パートナー制度</span><span class="f">partner-program.html</span></a></li>
+      <li><a href="campaign-founders.html"><span class="t">創業メンバーキャンペーン</span><span class="f">campaign-founders.html</span></a></li>
+      <li><a href="founder-welcome.html"><span class="t">創業メンバー歓迎</span><span class="f">founder-welcome.html</span></a></li>
+      <li><a href="founder-activate.html"><span class="t">創業メンバー有効化</span><span class="f">founder-activate.html</span></a></li>
+      <li><a href="resend-welcome.html"><span class="t">ウェルカム再送</span><span class="f">resend-welcome.html</span></a></li>
+      <li><a href="churn-survey.html"><span class="t">解約アンケート</span><span class="f">churn-survey.html</span></a></li>
+    </ul>
+  </section>
+
+  <section data-cat>
+    <h2>🎬 デモ・体験 <span class="badge"></span></h2>
+    <ul>
+      <li><a href="demo.html"><span class="t">製品デモ</span><span class="f">demo.html</span></a></li>
+      <li><a href="demo-experience.html"><span class="t">デモ体験</span><span class="f">demo-experience.html</span></a></li>
+      <li><a href="demo-reservation.html"><span class="t">デモ予約</span><span class="f">demo-reservation.html</span></a></li>
+      <li><a href="mbti.html"><span class="t">MBTI診断</span><span class="f">mbti.html</span></a></li>
+      <li><a href="gacha.html"><span class="t">ガチャ</span><span class="f">gacha.html</span></a></li>
+    </ul>
+  </section>
+
+  <section data-cat>
+    <h2>🏪 業種別ページ <span class="badge"></span></h2>
+    <ul>
+      <li><a href="bar.html"><span class="t">バー</span><span class="f">bar.html</span></a></li>
+      <li><a href="cafe.html"><span class="t">カフェ</span><span class="f">cafe.html</span></a></li>
+      <li><a href="izakaya.html"><span class="t">居酒屋</span><span class="f">izakaya.html</span></a></li>
+      <li><a href="club.html"><span class="t">クラブ</span><span class="f">club.html</span></a></li>
+      <li><a href="lounge.html"><span class="t">ラウンジ</span><span class="f">lounge.html</span></a></li>
+      <li><a href="snack.html"><span class="t">スナック</span><span class="f">snack.html</span></a></li>
+      <li><a href="karaoke.html"><span class="t">カラオケ</span><span class="f">karaoke.html</span></a></li>
+      <li><a href="dining-bar.html"><span class="t">ダイニングバー</span><span class="f">dining-bar.html</span></a></li>
+      <li><a href="kitchen.html"><span class="t">キッチン</span><span class="f">kitchen.html</span></a></li>
+    </ul>
+  </section>
+
+  <section data-cat>
+    <h2>⚔️ 競合比較・導入事例 <span class="badge"></span></h2>
+    <ul>
+      <li><a href="vs-airshift.html"><span class="t">vs Airシフト</span><span class="f">vs-airshift.html</span></a></li>
+      <li><a href="vs-shiftee.html"><span class="t">vs Shiftee</span><span class="f">vs-shiftee.html</span></a></li>
+      <li><a href="vs-freee.html"><span class="t">vs freee</span><span class="f">vs-freee.html</span></a></li>
+      <li><a href="competitor-matrix.html"><span class="t">比較マトリクス</span><span class="f">competitor-matrix.html</span></a></li>
+      <li><a href="case-studies.html"><span class="t">導入事例一覧</span><span class="f">case-studies.html</span></a></li>
+      <li><a href="case-bar.html"><span class="t">事例: バー</span><span class="f">case-bar.html</span></a></li>
+      <li><a href="case-cafe.html"><span class="t">事例: カフェ</span><span class="f">case-cafe.html</span></a></li>
+      <li><a href="case-izakaya.html"><span class="t">事例: 居酒屋</span><span class="f">case-izakaya.html</span></a></li>
+      <li><a href="testimonials.html"><span class="t">お客様の声</span><span class="f">testimonials.html</span></a></li>
+    </ul>
+  </section>
+
+  <section data-cat>
+    <h2>📱 アプリ・業務画面 <span class="badge"></span></h2>
+    <ul>
+      <li><a href="shift.html"><span class="t">シフト表</span><span class="f">shift.html</span></a></li>
+      <li><a href="shift-edit.html"><span class="t">シフト編集</span><span class="f">shift-edit.html</span></a></li>
+      <li><a href="myshift.html"><span class="t">マイシフト</span><span class="f">myshift.html</span></a></li>
+      <li><a href="staff.html"><span class="t">スタッフ管理</span><span class="f">staff.html</span></a></li>
+      <li><a href="staff-dashboard.html"><span class="t">スタッフダッシュボード</span><span class="f">staff-dashboard.html</span></a></li>
+      <li><a href="staff-login.html"><span class="t">スタッフログイン</span><span class="f">staff-login.html</span></a></li>
+      <li><a href="staff-invite.html"><span class="t">スタッフ招待</span><span class="f">staff-invite.html</span></a></li>
+      <li><a href="staff-monthly.html"><span class="t">スタッフ月次</span><span class="f">staff-monthly.html</span></a></li>
+      <li><a href="worker-dashboard.html"><span class="t">ワーカーダッシュボード</span><span class="f">worker-dashboard.html</span></a></li>
+      <li><a href="attendance.html"><span class="t">勤怠</span><span class="f">attendance.html</span></a></li>
+      <li><a href="payroll.html"><span class="t">給与計算</span><span class="f">payroll.html</span></a></li>
+      <li><a href="messages.html"><span class="t">メッセージ</span><span class="f">messages.html</span></a></li>
+      <li><a href="owner-inbox.html"><span class="t">オーナー受信箱</span><span class="f">owner-inbox.html</span></a></li>
+      <li><a href="announcements.html"><span class="t">お知らせ</span><span class="f">announcements.html</span></a></li>
+      <li><a href="mood-feedback.html"><span class="t">コンディション・フィードバック</span><span class="f">mood-feedback.html</span></a></li>
+      <li><a href="weather-events.html"><span class="t">天気・イベント連動</span><span class="f">weather-events.html</span></a></li>
+      <li><a href="order.html"><span class="t">注文</span><span class="f">order.html</span></a></li>
+      <li><a href="pos.html"><span class="t">POSレジ</span><span class="f">pos.html</span></a></li>
+      <li><a href="tables.html"><span class="t">テーブル管理</span><span class="f">tables.html</span></a></li>
+      <li><a href="table-qr.html"><span class="t">テーブルQR</span><span class="f">table-qr.html</span></a></li>
+      <li><a href="menu-admin.html"><span class="t">メニュー管理</span><span class="f">menu-admin.html</span></a></li>
+      <li><a href="customer.html"><span class="t">顧客管理</span><span class="f">customer.html</span></a></li>
+      <li><a href="sales.html"><span class="t">売上</span><span class="f">sales.html</span></a></li>
+      <li><a href="sales-import.html"><span class="t">売上インポート</span><span class="f">sales-import.html</span></a></li>
+      <li><a href="monthly-report.html"><span class="t">月次レポート</span><span class="f">monthly-report.html</span></a></li>
+    </ul>
+  </section>
+
+  <section data-cat>
+    <h2>🛠 管理・本部 <span class="badge"></span></h2>
+    <ul>
+      <li><a href="admin-settings.html"><span class="t">管理者設定</span><span class="f">admin-settings.html</span></a></li>
+      <li><a href="hq-dashboard.html"><span class="t">本部ダッシュボード</span><span class="f">hq-dashboard.html</span></a></li>
+      <li><a href="noru-admin.html"><span class="t">運営(noru)管理画面</span><span class="f">noru-admin.html</span></a></li>
+      <li><a href="master-data.html"><span class="t">マスタデータ</span><span class="f">master-data.html</span></a></li>
+      <li><a href="all-resources.html"><span class="t">全リソース</span><span class="f">all-resources.html</span></a></li>
+      <li><a href="data-export.html"><span class="t">データエクスポート</span><span class="f">data-export.html</span></a></li>
+      <li><a href="notification-settings.html"><span class="t">通知設定</span><span class="f">notification-settings.html</span></a></li>
+      <li><a href="public/index.html"><span class="t">公開トップ</span><span class="f">public/index.html</span></a></li>
+      <li><a href="public/admin.html"><span class="t">公開管理画面</span><span class="f">public/admin.html</span></a></li>
+    </ul>
+  </section>
+
+  <section data-cat>
+    <h2>📚 サポート・ドキュメント <span class="badge"></span></h2>
+    <ul>
+      <li><a href="help.html"><span class="t">ヘルプ</span><span class="f">help.html</span></a></li>
+      <li><a href="guide.html"><span class="t">ガイド</span><span class="f">guide.html</span></a></li>
+      <li><a href="getting-started.html"><span class="t">はじめに</span><span class="f">getting-started.html</span></a></li>
+      <li><a href="onboarding.html"><span class="t">オンボーディング</span><span class="f">onboarding.html</span></a></li>
+      <li><a href="tutorials.html"><span class="t">チュートリアル</span><span class="f">tutorials.html</span></a></li>
+      <li><a href="glossary.html"><span class="t">用語集</span><span class="f">glossary.html</span></a></li>
+      <li><a href="api-docs.html"><span class="t">APIドキュメント</span><span class="f">api-docs.html</span></a></li>
+      <li><a href="integrations.html"><span class="t">外部連携</span><span class="f">integrations.html</span></a></li>
+      <li><a href="email-setup-guide.html"><span class="t">メール設定ガイド</span><span class="f">email-setup-guide.html</span></a></li>
+      <li><a href="stripe-setup-guide.html"><span class="t">Stripe設定ガイド</span><span class="f">stripe-setup-guide.html</span></a></li>
+      <li><a href="status.html"><span class="t">稼働ステータス</span><span class="f">status.html</span></a></li>
+      <li><a href="security.html"><span class="t">セキュリティ</span><span class="f">security.html</span></a></li>
+      <li><a href="roadmap.html"><span class="t">ロードマップ</span><span class="f">roadmap.html</span></a></li>
+      <li><a href="changelog.html"><span class="t">更新履歴</span><span class="f">changelog.html</span></a></li>
+      <li><a href="community.html"><span class="t">コミュニティ</span><span class="f">community.html</span></a></li>
+      <li><a href="search.html"><span class="t">サイト内検索</span><span class="f">search.html</span></a></li>
+      <li><a href="sitemap-view.html"><span class="t">サイトマップ</span><span class="f">sitemap-view.html</span></a></li>
+    </ul>
+  </section>
+
+  <section data-cat>
+    <h2>✍️ コンテンツ・営業資料 <span class="badge"></span></h2>
+    <ul>
+      <li><a href="blog.html"><span class="t">ブログ</span><span class="f">blog.html</span></a></li>
+      <li><a href="blog-freemium-launch.html"><span class="t">ブログ: フリーミアム開始</span><span class="f">blog-freemium-launch.html</span></a></li>
+      <li><a href="webinar.html"><span class="t">ウェビナー</span><span class="f">webinar.html</span></a></li>
+      <li><a href="mobile-app.html"><span class="t">モバイルアプリ紹介</span><span class="f">mobile-app.html</span></a></li>
+      <li><a href="success-tips.html"><span class="t">成功のヒント</span><span class="f">success-tips.html</span></a></li>
+      <li><a href="flyer.html"><span class="t">チラシ</span><span class="f">flyer.html</span></a></li>
+      <li><a href="qr-flyer.html"><span class="t">QRチラシ</span><span class="f">qr-flyer.html</span></a></li>
+      <li><a href="business-card.html"><span class="t">名刺</span><span class="f">business-card.html</span></a></li>
+      <li><a href="video-promo.html"><span class="t">動画プロモ</span><span class="f">video-promo.html</span></a></li>
+      <li><a href="talk-script.html"><span class="t">営業トークスクリプト</span><span class="f">talk-script.html</span></a></li>
+      <li><a href="talk-script-chain.html"><span class="t">トークスクリプト(チェーン)</span><span class="f">talk-script-chain.html</span></a></li>
+      <li><a href="pitch-deck-jafco.html"><span class="t">ピッチデック(JAFCO)</span><span class="f">pitch-deck-jafco.html</span></a></li>
+      <li><a href="tiktok-strategy.html"><span class="t">TikTok戦略</span><span class="f">tiktok-strategy.html</span></a></li>
+      <li><a href="free-templates.html"><span class="t">無料テンプレート</span><span class="f">free-templates.html</span></a></li>
+      <li><a href="careers.html"><span class="t">採用</span><span class="f">careers.html</span></a></li>
+      <li><a href="about.html"><span class="t">会社情報</span><span class="f">about.html</span></a></li>
+    </ul>
+  </section>
+
+  <section data-cat>
+    <h2>🔧 機能詳細 (features/) <span class="badge"></span></h2>
+    <ul>
+      <li><a href="features/index.html"><span class="t">機能一覧</span><span class="f">features/index.html</span></a></li>
+      <li><a href="features/gps.html"><span class="t">GPS打刻</span><span class="f">features/gps.html</span></a></li>
+      <li><a href="features/labor-law.html"><span class="t">労働法対応</span><span class="f">features/labor-law.html</span></a></li>
+      <li><a href="features/multi-language.html"><span class="t">多言語対応</span><span class="f">features/multi-language.html</span></a></li>
+    </ul>
+  </section>
+
+  <section data-cat>
+    <h2>⚖️ 法務 (legal/) <span class="badge"></span></h2>
+    <ul>
+      <li><a href="legal/terms.html"><span class="t">利用規約</span><span class="f">legal/terms.html</span></a></li>
+      <li><a href="legal/privacy.html"><span class="t">プライバシーポリシー</span><span class="f">legal/privacy.html</span></a></li>
+      <li><a href="legal/specified-commercial.html"><span class="t">特定商取引法に基づく表記</span><span class="f">legal/specified-commercial.html</span></a></li>
+    </ul>
+  </section>
+
+  <section data-cat>
+    <h2>🧩 その他・システム <span class="badge"></span></h2>
+    <ul>
+      <li><a href="404.html"><span class="t">404 エラー</span><span class="f">404.html</span></a></li>
+      <li><a href="500.html"><span class="t">500 エラー</span><span class="f">500.html</span></a></li>
+      <li><a href="503.html"><span class="t">503 エラー</span><span class="f">503.html</span></a></li>
+      <li><a href="RAKURAKU 事業概要・製品説明資料.html"><span class="t">事業概要・製品説明資料</span><span class="f">RAKURAKU 事業概要・製品説明資料.html</span></a></li>
+      <li><a href="佐藤れん様へ — RAKURAKU 創業メンバー招待状.html"><span class="t">創業メンバー招待状(個別)</span><span class="f">佐藤れん様へ — RAKURAKU 創業メンバー招待状.html</span></a></li>
+    </ul>
+  </section>
+
+  <p class="empty" id="empty">該当するページが見つかりませんでした。</p>
+</div>
+
+<footer>RAKURAKU サイトページ一覧 — 社内・管理用ページ（検索エンジン非登録）</footer>
+
+<script>
+  const search = document.getElementById('search');
+  const sections = [...document.querySelectorAll('section[data-cat]')];
+  const empty = document.getElementById('empty');
+  const countEl = document.getElementById('count');
+
+  function totalLinks(){ return document.querySelectorAll('li a').length; }
+
+  function updateBadges(){
+    sections.forEach(sec=>{
+      const visible = [...sec.querySelectorAll('li')].filter(li=>li.style.display!=='none').length;
+      sec.querySelector('.badge').textContent = visible + '件';
+    });
+  }
+
+  function filter(){
+    const q = search.value.trim().toLowerCase();
+    let shown = 0;
+    sections.forEach(sec=>{
+      let secShown = 0;
+      sec.querySelectorAll('li').forEach(li=>{
+        const text = li.textContent.toLowerCase();
+        const hit = !q || text.includes(q);
+        li.style.display = hit ? '' : 'none';
+        if(hit) secShown++;
+      });
+      sec.style.display = secShown ? '' : 'none';
+      shown += secShown;
+    });
+    updateBadges();
+    empty.style.display = shown ? 'none' : 'block';
+    countEl.textContent = q ? (shown + ' / ' + totalLinks() + ' 件') : ('全 ' + totalLinks() + ' ページ');
+  }
+
+  search.addEventListener('input', filter);
+  filter();
+</script>
+</body>
+</html>
